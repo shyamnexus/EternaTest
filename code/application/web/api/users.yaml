@@ -1,0 +1,628 @@
+openapi: 3.0.3
+info:
+  title: IP Camera API - User Management
+  description: |
+    ## User Management API
+    
+    Manage user accounts, roles, and permissions.
+    
+    ### Routing
+    
+    User endpoints use a **unified router** at `/users` that dispatches based on
+    HTTP method and URL structure:
+    
+    | Method | Path | Action |
+    |--------|------|--------|
+    | `GET` | `/users` | List all users |
+    | `POST` | `/users` or `/users/create` | Create new user |
+    | `GET` | `/users/{id}` | Get user by numeric ID |
+    | `PUT` | `/users/{id}` | Update user by numeric ID |
+    | `DELETE` | `/users/{id}` | Delete user by numeric ID |
+    | `GET` | `/users/current` | Get current authenticated user |
+    
+    **Note**: `{id}` must be a numeric user ID (e.g., `/users/5`). Paths with
+    non-numeric segments (other than `current` and `create`) return 405.
+    
+    ### Changelog
+    
+    #### Version 2.0.0 (2026-02-17)
+    
+    **Breaking Changes**
+    - **Path parameter changed**: User endpoints now use numeric `{id}` instead of `{username}`.
+      - `GET /users/{id}` replaces `GET /users/{username}`
+      - `PUT /users/{id}` replaces `PUT /users/{username}`
+      - `DELETE /users/{id}` replaces `DELETE /users/{username}`
+    - **Create response field renamed**: Response returns `user_id` (int64) instead of `username`.
+    - **Update endpoint no longer accepts `password`**: Use `/auth/reset-password` for admin password resets.
+    
+    **New Features**
+    - **Encrypted password support in Create**: `POST /users/create` now accepts either
+      plaintext password string or encrypted password object (RSA-OAEP + AES-256-GCM/CBC).
+    - **Self-deletion prevention**: `DELETE /users/{id}` returns 400 if attempting to
+      delete your own account.
+    - **Unified REST router**: `GET/POST/PUT/DELETE /users[/{id}]` dispatched by a
+      single router handler.
+    - **password_must_change flag**: New users are created with `password_must_change=true`,
+      requiring them to change password on first login and complete initial setup.
+    
+    **Bug Fixes**
+    - **Fixed SQL column mapping**: `ListUsers` and `GetUser` queries now correctly map
+      all columns (previously `enabled`, `last_login`, `last_login_ip` were shifted).
+    - **Fixed missing route registrations**: Individual user `GET/{id}`, `PUT/{id}`,
+      `DELETE/{id}` endpoints were not reachable — now handled by unified router.
+    - **Fixed CreateUser**: New users now default to `password_must_change=1` in database.
+    
+    #### Version 1.1.0 (2026-01-27)
+    - Added `failed_attempts` and `locked_until` fields to User objects (account lockout support).
+    - Users are locked for 15 minutes after 5 failed login attempts.
+    
+    #### Version 1.0.0 (2025-11-15)
+    - Initial release.
+    
+  version: 2.0.0
+  contact:
+    name: HON-BA
+
+tags:
+  - name: Users
+    description: User account management
+
+paths:
+  /users:
+    get:
+      summary: List All Users (Admin Only)
+      description: |
+        Get list of all users in the system.
+        
+        Returns basic user info for each account. Note that `failed_attempts`,
+        `locked_until`, `password_must_change`, and `security_questions_set` are
+        stored in the database but not included in the list response for brevity.
+      operationId: usersList
+      tags: [Users]
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Users list retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  users:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/UserListItem'
+              example:
+                status: success
+                users:
+                  - id: 1
+                    username: admin
+                    role: admin
+                    enabled: true
+                    created_at: 1700000000
+                    last_login: 1738000000
+                    last_login_ip: "192.168.1.50"
+                  - id: 2
+                    username: operator1
+                    role: operator
+                    enabled: true
+                    created_at: 1737900000
+                    last_login: 0
+                    last_login_ip: ""
+        '401':
+          description: Not authenticated
+        '403':
+          description: Insufficient permissions (admin required)
+
+  /users/create:
+    post:
+      summary: Create New User (Admin Only)
+      description: |
+        Create a new user account. Requires admin privileges.
+        
+        **Password Formats**: The `password` field accepts either:
+        1. **Plaintext string**: `"password": "MyPassword123"` (for internal/testing use)
+        2. **Encrypted object**: RSA-OAEP + AES-256-GCM encrypted payload (recommended for production)
+        
+        To use encrypted passwords:
+        1. Fetch the RSA public key from `GET /auth/public-key`
+        2. Generate a random AES-256 key and 12-byte IV
+        3. Encrypt the password with AES-256-GCM (produces ciphertext + auth tag)
+        4. Encrypt the AES key with the RSA public key (RSA-OAEP)
+        5. Send the encrypted payload object with `auth_tag` field
+        
+        **Defaults**:
+        - `enabled` defaults to `true` if not specified
+        - `password_must_change` is automatically set to `true` — the new user will be
+          required to change their password and complete initial setup on first login
+        
+        **Validation**:
+        - Username must be unique
+        - Password must be at least 6 characters
+        - Role must be one of: `admin`, `operator`, `viewer`
+      operationId: usersCreate
+      tags: [Users]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUserRequest'
+            examples:
+              plaintext_password:
+                summary: Create with plaintext password
+                value:
+                  username: newuser
+                  password: SecurePass123
+                  role: operator
+                  enabled: true
+              encrypted_password:
+                summary: Create with encrypted password (production, AES-GCM)
+                value:
+                  username: newuser
+                  password:
+                    encrypted_key: "BASE64_RSA_ENCRYPTED_AES_KEY..."
+                    encrypted_data: "BASE64_AES_GCM_CIPHERTEXT..."
+                    iv: "BASE64_12_BYTE_IV..."
+                    key_id: "k_1706359200_abc123"
+                    auth_tag: "BASE64_16_BYTE_GCM_TAG..."
+                  role: operator
+      responses:
+        '201':
+          description: User created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateUserResponse'
+              example:
+                status: success
+                message: User created successfully
+                user_id: 3
+        '400':
+          description: Invalid request or user already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                missing_fields:
+                  value:
+                    status: error
+                    message: "Missing required fields: username, password, role"
+                short_password:
+                  value:
+                    status: error
+                    message: "Password must be at least 6 characters"
+                invalid_role:
+                  value:
+                    status: error
+                    message: "Invalid role. Must be: admin, operator, or viewer"
+                duplicate_user:
+                  value:
+                    status: error
+                    message: "User already exists"
+                decrypt_failed:
+                  value:
+                    status: error
+                    message: "Invalid password format or decryption failed"
+        '401':
+          description: Not authenticated
+        '403':
+          description: Insufficient permissions (admin required)
+
+  /users/current:
+    get:
+      summary: Get Current User Info
+      description: |
+        Get information about the currently authenticated user.
+        
+        Returns the same fields as `GET /users/{id}` but does not require admin
+        privileges — any authenticated user can access their own info.
+      operationId: usersCurrent
+      tags: [Users]
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: User info retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  user:
+                    $ref: '#/components/schemas/UserListItem'
+              example:
+                status: success
+                user:
+                  id: 1
+                  username: admin
+                  role: admin
+                  enabled: true
+                  created_at: 1700000000
+                  last_login: 1738000000
+                  last_login_ip: "192.168.1.50"
+        '401':
+          description: Not authenticated
+        '404':
+          description: User not found (token valid but user deleted)
+
+  /users/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int64
+        description: Numeric user ID
+        example: 2
+    get:
+      summary: Get User by ID (Admin Only)
+      description: Get information about a specific user by their numeric ID.
+      operationId: usersGet
+      tags: [Users]
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: User info retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  user:
+                    $ref: '#/components/schemas/UserListItem'
+              example:
+                status: success
+                user:
+                  id: 2
+                  username: operator1
+                  role: operator
+                  enabled: true
+                  created_at: 1737900000
+                  last_login: 0
+                  last_login_ip: ""
+        '401':
+          description: Not authenticated
+        '403':
+          description: Insufficient permissions (admin required)
+        '404':
+          description: User not found
+
+    put:
+      summary: Update User (Admin Only)
+      description: |
+        Update user properties by numeric ID. Only provided fields are updated.
+        
+        **Updatable fields**: `username`, `role`, `enabled`
+        
+        **Note**: To reset a user's password, use `POST /auth/reset-password` instead.
+        This endpoint does not accept password changes.
+      operationId: usersUpdate
+      tags: [Users]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateUserRequest'
+            examples:
+              change_role:
+                summary: Change user role
+                value:
+                  role: viewer
+              disable_account:
+                summary: Disable user account
+                value:
+                  enabled: false
+              rename_user:
+                summary: Rename user
+                value:
+                  username: new_username
+              full_update:
+                summary: Update all fields
+                value:
+                  username: updated_user
+                  role: operator
+                  enabled: true
+      responses:
+        '200':
+          description: User updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+              example:
+                status: success
+                message: User updated successfully
+        '400':
+          description: Invalid request (bad role, duplicate username, etc.)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                invalid_role:
+                  value:
+                    status: error
+                    message: "Invalid role. Must be: admin, operator, or viewer"
+        '401':
+          description: Not authenticated
+        '403':
+          description: Insufficient permissions (admin required)
+        '404':
+          description: User not found
+
+    delete:
+      summary: Delete User (Admin Only)
+      description: |
+        Delete a user account by numeric ID.
+        
+        **Self-deletion prevention**: You cannot delete your own account. The server
+        compares the target user ID against the authenticated session's user ID and
+        returns 400 if they match.
+      operationId: usersDelete
+      tags: [Users]
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: User deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+              example:
+                status: success
+                message: User deleted successfully
+        '400':
+          description: Cannot delete yourself or other validation error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                self_delete:
+                  summary: Attempting to delete own account
+                  value:
+                    status: error
+                    message: "Cannot delete your own account"
+        '401':
+          description: Not authenticated
+        '403':
+          description: Insufficient permissions (admin required)
+        '404':
+          description: User not found
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    SuccessResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        message:
+          type: string
+
+    ErrorResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: error
+        message:
+          type: string
+          description: Error description
+
+    EncryptedPassword:
+      type: object
+      description: |
+        Encrypted password object (RSA-OAEP + AES-256-GCM preferred, AES-256-CBC legacy fallback).
+        See `GET /auth/public-key` for encryption details and algorithm negotiation.
+      required:
+        - encrypted_key
+        - encrypted_data
+        - iv
+        - key_id
+      properties:
+        encrypted_key:
+          type: string
+          format: byte
+          description: Base64-encoded AES key encrypted with RSA-OAEP
+        encrypted_data:
+          type: string
+          format: byte
+          description: |
+            Base64-encoded password encrypted with AES-256-GCM (preferred) or AES-256-CBC (legacy).
+            When using GCM, this is the ciphertext without the auth tag.
+        iv:
+          type: string
+          format: byte
+          description: |
+            Base64-encoded IV (12 bytes for GCM, 16 bytes for CBC).
+        key_id:
+          type: string
+          description: Key ID from the public-key endpoint
+        timestamp:
+          type: integer
+          format: int64
+          description: Optional Unix timestamp for replay protection
+        auth_tag:
+          type: string
+          format: byte
+          description: |
+            Base64-encoded 16-byte GCM authentication tag.
+            Required for AES-256-GCM. Omit for legacy AES-256-CBC.
+
+    CreateUserRequest:
+      type: object
+      required:
+        - username
+        - password
+        - role
+      properties:
+        username:
+          type: string
+          description: Username (must be unique)
+          example: newuser
+        password:
+          oneOf:
+            - type: string
+              format: password
+              description: Plaintext password (minimum 6 characters)
+            - $ref: '#/components/schemas/EncryptedPassword'
+          description: |
+            Password — accepts either a plaintext string or an encrypted password object.
+            Minimum 6 characters after decryption.
+        role:
+          type: string
+          enum: [admin, operator, viewer]
+          description: User role
+          example: operator
+        enabled:
+          type: boolean
+          default: true
+          description: Whether the account is enabled (default true)
+
+    CreateUserResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        message:
+          type: string
+          example: User created successfully
+        user_id:
+          type: integer
+          format: int64
+          description: Numeric ID of the newly created user
+
+    UpdateUserRequest:
+      type: object
+      description: |
+        All fields are optional. Only provided fields are updated.
+        Password changes are not supported here — use `/auth/reset-password`.
+      properties:
+        username:
+          type: string
+          description: New username (must be unique)
+        role:
+          type: string
+          enum: [admin, operator, viewer]
+          description: New role
+        enabled:
+          type: boolean
+          description: Enable or disable the account
+
+    UserListItem:
+      type: object
+      description: |
+        User info returned by list and get endpoints.
+        This is a subset of the full User record — sensitive fields
+        like `failed_attempts` and `locked_until` are not exposed via the API.
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: User ID
+        username:
+          type: string
+          description: Username
+        role:
+          type: string
+          enum: [admin, operator, viewer]
+          description: User role
+        enabled:
+          type: boolean
+          description: Whether the account is enabled
+        created_at:
+          type: integer
+          format: int64
+          description: Unix timestamp when user was created
+        last_login:
+          type: integer
+          format: int64
+          description: Unix timestamp of last login (0 if never logged in)
+        last_login_ip:
+          type: string
+          description: IP address of last login (empty if never logged in)
+
+    User:
+      type: object
+      description: |
+        Full user record in the database. Not all fields are exposed via
+        the REST API — see `UserListItem` for the API response schema.
+      properties:
+        id:
+          type: integer
+          format: int64
+          description: User ID
+        username:
+          type: string
+          description: Username
+        role:
+          type: string
+          enum: [admin, operator, viewer]
+          description: User role
+        enabled:
+          type: boolean
+          description: Whether the account is enabled
+        created_at:
+          type: integer
+          format: int64
+          description: Unix timestamp when user was created
+        last_login:
+          type: integer
+          format: int64
+          description: Unix timestamp of last login
+        last_login_ip:
+          type: string
+          description: IP address of last login
+        failed_attempts:
+          type: integer
+          description: |
+            Number of consecutive failed login attempts.
+            Resets to 0 on successful login.
+          example: 0
+        locked_until:
+          type: integer
+          format: int64
+          description: |
+            Unix timestamp when the account lockout expires.
+            If > current time, account is locked.
+            After 5 failed attempts, locked for 15 minutes.
+          example: 0
+        password_must_change:
+          type: boolean
+          description: |
+            User must change password on next login. 
+            Automatically set to `true` when a user is created.
+            Cleared when password is changed via `/auth/change-password`
+            or `/auth/initial-setup`.
+        security_questions_set:
+          type: boolean
+          description: User has set up security questions for recovery

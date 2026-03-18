@@ -1,0 +1,170 @@
+/*
+ * Novatek Ltd. BSP part of dts
+ */
+
+#define SENSOR_COMMON_NODE0(name) \
+	name { \
+		pinctrl = < \
+			PIN_FUNC_SENSORMISC PIN_SENSORMISC_CFG_SN_MCLK_1 \
+			PIN_FUNC_CSI        PIN_CSI_CFG_CSI \
+			PIN_FUNC_I2C        PIN_I2C_CFG_I2C_1 \
+		>; \
+	};
+
+#define SENSOR_COMMON_NODE2(name) \
+	name { \
+		pinctrl = < \
+			PIN_FUNC_SENSORMISC PIN_SENSORMISC_CFG_SN2_MCLK_1 \
+			PIN_FUNC_CSI        PIN_CSI_CFG_CSI \
+			PIN_FUNC_I2C        PIN_I2C_CFG_I2C_1 \
+		>; \
+	};
+
+#define SENSOR_COMMON_NODE4(name) \
+	name { \
+		pinctrl = < \
+			PIN_FUNC_SENSORMISC PIN_SENSORMISC_CFG_SN_MCLK_1 \
+			PIN_FUNC_CSI        PIN_CSI_CFG_CSI \
+			PIN_FUNC_I2C        PIN_I2C_CFG_I2C_1 \
+		>; \
+	};
+
+#define SENSOR_COMMON_NODE9(name) \
+	name { \
+		pinctrl = < \
+			PIN_FUNC_SENSORMISC PIN_SENSORMISC_CFG_SN_MCLK_1 \
+			PIN_FUNC_CSI        PIN_CSI_CFG_CSI3 \
+			PIN_FUNC_I2C        PIN_I2C_CFG_I2C_1 \
+		>; \
+	};
+
+&top {
+	SENSOR_COMMON_NODE0(nvt_sen_imx123@0)
+	SENSOR_COMMON_NODE0(nvt_sen_imx290@0)
+	SENSOR_COMMON_NODE0(nvt_sen_imx678@0)
+	SENSOR_COMMON_NODE0(nvt_sen_imx415@0)
+	SENSOR_COMMON_NODE0(nvt_sen_os02k10@0)
+	SENSOR_COMMON_NODE0(nvt_sen_os03a10@0)
+	SENSOR_COMMON_NODE0(nvt_sen_os04a10@0)
+	SENSOR_COMMON_NODE0(nvt_sen_os04c10@0)
+	SENSOR_COMMON_NODE0(nvt_sen_os05a10@0)
+	SENSOR_COMMON_NODE0(nvt_sen_ov48b@0)
+	SENSOR_COMMON_NODE0(nvt_sen_sc450ai@0)
+	SENSOR_COMMON_NODE0(nvt_sen_sc850sl@0)
+	SENSOR_COMMON_NODE0(nvt_sen_rtd6122c@0)
+	SENSOR_COMMON_NODE0(nvt_sen_gc8613@0)
+	SENSOR_COMMON_NODE0(nvt_sen_os12d40@0)
+	SENSOR_COMMON_NODE2(nvt_sen_imx415@1)
+
+	SENSOR_COMMON_NODE4(nvt_sen_imx636@0)
+
+	SENSOR_COMMON_NODE9(nvt_sen_ad_nvp6188@0)
+
+	nvt_sen_imx317@0 {
+		pinctrl = <
+			PIN_FUNC_SENSORMISC PIN_SENSORMISC_CFG_SN_MCLK_1 \
+			PIN_FUNC_CSI        PIN_CSI_CFG_CSI \
+			PIN_FUNC_I2C        PIN_I2C_CFG_I2C_1 \
+		>;
+	};
+
+	nvt_sen_os02k10@1 {
+		pinctrl = <
+			PIN_FUNC_SENSORMISC PIN_SENSORMISC_CFG_SN_MCLK_1 \
+			PIN_FUNC_CSI        PIN_CSI_CFG_CSI \
+			PIN_FUNC_I2C        PIN_I2C_CFG_I2C2_1 \
+		>;
+	};
+
+	nvt_sen_os04a10@1 {
+		pinctrl = <
+			PIN_FUNC_SENSORMISC PIN_SENSORMISC_CFG_SN_MCLK_1 \
+			PIN_FUNC_CSI        PIN_CSI_CFG_CSI \
+			PIN_FUNC_I2C        PIN_I2C_CFG_I2C2_1 \
+		>;
+	};
+
+	nvt_sen_os04c10@1 {
+		pinctrl = <
+			PIN_FUNC_SENSORMISC PIN_SENSORMISC_CFG_SN_MCLK_1 \
+			PIN_FUNC_CSI        PIN_CSI_CFG_CSI \
+			PIN_FUNC_I2C        PIN_I2C_CFG_I2C2_1 \
+		>;
+	};
+
+	nvt_sen_os04a10_slave@0 {
+		pinctrl = <
+			PIN_FUNC_SENSORMISC (PIN_SENSORMISC_CFG_SN_MCLK_1 | PIN_SENSORMISC_CFG_SN_XVSXHS_1) \
+			PIN_FUNC_CSI        PIN_CSI_CFG_CSI \
+			PIN_FUNC_I2C        PIN_I2C_CFG_I2C_1 \
+		>;
+	};
+
+	nvt_sen_os04a10_slave@1 {
+		pinctrl = <
+			PIN_FUNC_SENSORMISC (PIN_SENSORMISC_CFG_SN_MCLK_1 | PIN_SENSORMISC_CFG_SN_XVSXHS_1) \
+			PIN_FUNC_CSI        PIN_CSI_CFG_CSI \
+			PIN_FUNC_I2C        PIN_I2C_CFG_I2C2_1 \
+		>;
+	};
+
+	nvt_sen_rtd6122c@0 {
+		pinctrl = <
+			PIN_FUNC_SENSORMISC PIN_SENSORMISC_CFG_SN3_MCLK_1 \
+			PIN_FUNC_SENSOR2    PIN_SENSOR2_CFG_TSENSOR7BITS \
+		>;
+	};
+};
+
+#if 0
+&i2c0 {
+	#address-cells = <1>;
+	#size-cells = <0>;
+	ad_nvp6188@0 {
+		compatible = "nvt,ad_nvp6188.0";
+		reg = <0x30>;  // 7-bit slave register
+		power_cfg {
+			mclk_sel; // ex : "MCLK" or "MCLK2" or "MCLK3"
+
+			///////////////////////////////////////////////////////////////////////////////////////////////////
+			// io control description                                                                        //
+			// io_ctl0@0~19(max) = <io_pin 	 level   hold time>                                              //
+			//   io_pin - (3 types)                                                                          //
+			//     1. pin name (ex. S_GPIO(4), PGPIO(0), ...)                                                //
+			//     2. 0xfffe: the following commands will only applied on 'power on' sequence (default)      //
+			//     3. 0xfffd: the following commands will only applied on 'power off' sequence               //
+			//   level - 1: pull high, 0: pull low                                                           //
+			//   hold time - delay time (us)                                                                 //
+			///////////////////////////////////////////////////////////////////////////////////////////////////
+			//// power on ////
+			io_ctl0 = <0xfffe       0 0>;      // power on
+			io_ctl1 = <P_GPIO(3)    0 30000>;  // reset
+			io_ctl2 = <P_GPIO(3)    1 1000>;   // reset
+
+			//// power off ////
+			io_ctl3 = <0xfffd    0 0>;         // power off
+			io_ctl4 = <P_GPIO(3) 0 1000>;      // reset
+		};
+
+		outport@0 {
+			inport = <0 1 2 3>;
+			signal = <1>;                      // 0: parallel, 1:mipi
+		};
+	};
+};
+#endif
+
+&i2c1 {
+	#address-cells = <2>;
+	#size-cells = <2>;
+};
+
+&i2c2 {
+	#address-cells = <2>;
+	#size-cells = <2>;
+};
+
+&i2c3 {
+	#address-cells = <2>;
+	#size-cells = <2>;
+};

@@ -1,0 +1,12 @@
+define create-pci-symlink
+  MYKERNEL_PATH=$(shell cd $(srctree); pwd);											\
+  if [ -d $(NVT_DRIVER_DIR)/source/pcie ]; then 										\
+	yes | rm -f $$MYKERNEL_PATH/drivers/pci/nvt-pcie-dev-drv;								\
+	ln -fsn $(NVT_DRIVER_DIR)/source/pcie $$MYKERNEL_PATH/drivers/pci/nvt-pcie-dev-drv;					\
+  fi;
+endef
+
+drivers/pci/nvt-pcie-dev-drv: FORCE
+	$(Q) $(create-pci-symlink)
+
+prepare: drivers/pci/nvt-pcie-dev-drv

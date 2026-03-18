@@ -1,0 +1,349 @@
+#!/bin/sh
+#
+# S26factory - Apply Factory MAC Address at Boot
+#
+# This script runs AFTER S25_Net to apply MAC address from factory partition.
+# It must run after network initialization so eth0 exists.
+#
+# Manufacturing Process (one-time via S04provision or manual):
+#   1. Boot device - S04provision prompts for MAC on first boot
+#   2. Or run manually: factory_partition.sh set-mac eth0 XX:XX:XX:XX:XX:XX
+#
+# After provisioning, MAC persists across reboots and firmware upgrades.
+#
+# Copyright (C) 2026 HON-BA
+# SPDX-License-Identifier: GPL-2.0+
+
+# Factory partition device
+FACTORY_MTD=""
+FACTORY_BLOCK=""
+
+# Data structure offsets (must match factory_partition.sh)
+# Header: 4 bytes magic "FACT" + 4 bytes version = 8 bytes
+MAC_ETH0_OFFSET=8
+MAC_ETH1_OFFSET=14
+
+LOG_TAG="S26factory"
+
+log() {
+    echo "$LOG_TAG: $1"
+}
+
+# Convert binary to hex (works with busybox)
+bin_to_hex() {
+    if command -v xxd >/dev/null 2>&1; then
+        xxd -p
+    elif command -v hexdump >/dev/null 2>&1; then
+        hexdump -v -e '/1 "%02x"'
+    else
+        # Fallback: od
+        od -An -tx1 | tr -d ' \n'
+    fi
+}
+
+# Find factory partition and ensure block device exists
+find_factory_partition() {
+    local mtd_num=$(grep -w "factory" /proc/mtd 2>/dev/null | cut -d: -f1 | sed 's/mtd//')
+    if [ -z "$mtd_num" ]; then
+        return 1
+    fi
+    
+    FACTORY_MTD="/dev/mtd${mtd_num}"
+    FACTORY_BLOCK="/dev/mtdblock${mtd_num}"
+    
+    # Ensure mtdblock module is loaded
+    if [ ! -b "$FACTORY_BLOCK" ]; then
+        modprobe mtdblock 2>/dev/null || true
+        
+        # Wait up to 2 seconds for block device to appear
+        local retry=0
+        while [ $retry -lt 20 ] && [ ! -b "$FACTORY_BLOCK" ]; do
+            sleep 0.1
+            retry=$((retry + 1))
+        done
+    fi
+    
+    # If block device still doesn't exist, try to create it manually
+    if [ ! -b "$FACTORY_BLOCK" ]; then
+        local major=$(cat /sys/class/mtd/mtd${mtd_num}/dev 2>/dev/null | cut -d: -f1)
+        if [ -n "$major" ]; then
+            mknod "$FACTORY_BLOCK" b 31 "$mtd_num" 2>/dev/null || true
+        fi
+    fi
+    
+    [ -b "$FACTORY_BLOCK" ]
+}
+
+# Read MAC address from factory partition
+# Args: $1 = offset (16 for eth0, 22 for eth1)
+read_mac_from_flash() {
+    local offset=$1
+    local mac_hex
+    
+    mac_hex=$(dd if="$FACTORY_BLOCK" bs=1 skip=$offset count=6 2>/dev/null | bin_to_hex)
+    
+    if [ -z "$mac_hex" ] || [ "$mac_hex" = "000000000000" ] || [ "$mac_hex" = "ffffffffffff" ]; then
+        return 1
+    fi
+    
+    # Format as XX:XX:XX:XX:XX:XX
+    echo "$mac_hex" | sed 's/\(..\)/\1:/g' | sed 's/:$//' | tr 'a-f' 'A-F'
+}
+
+# Verify factory partition has valid magic
+verify_factory_magic() {
+    local magic=$(dd if="$FACTORY_BLOCK" bs=1 count=4 2>/dev/null)
+    [ "$magic" = "FACT" ]
+}
+
+# Validate MAC is a valid unicast address
+# Returns 0 if valid, 1 if invalid
+validate_mac_unicast() {
+    local mac="$1"
+    
+    # Check for all-zeros
+    if [ "$mac" = "00:00:00:00:00:00" ]; then
+        log "Invalid MAC: all-zeros"
+        return 1
+    fi
+    
+    # Check for broadcast
+    local mac_upper=$(echo "$mac" | tr 'a-f' 'A-F')
+    if [ "$mac_upper" = "FF:FF:FF:FF:FF:FF" ]; then
+        log "Invalid MAC: broadcast"
+        return 1
+    fi
+    
+    # Check for multicast (bit 0 of first byte must be 0)
+    local first_byte=$(echo "$mac" | cut -d: -f1 | tr 'a-f' 'A-F')
+    local first_byte_dec=$((0x$first_byte))
+    if [ $((first_byte_dec & 1)) -eq 1 ]; then
+        log "Invalid MAC: $mac is multicast (first byte $first_byte has LSB=1)"
+        return 1
+    fi
+    
+    return 0
+}
+
+# Apply MAC to interface
+apply_mac() {
+    local iface=$1
+    local mac=$2
+    
+    if ! ip link show "$iface" >/dev/null 2>&1; then
+        log "Interface $iface not found"
+        return 1
+    fi
+    
+    # Get current MAC
+    local current_mac=$(cat /sys/class/net/$iface/address 2>/dev/null | tr 'a-f' 'A-F')
+    local target_mac=$(echo "$mac" | tr 'a-f' 'A-F')
+    
+    # Check if MAC is already set correctly
+    if [ "$current_mac" = "$target_mac" ]; then
+        log "$iface MAC already correct: $mac"
+        return 0
+    fi
+    
+    log "Changing $iface MAC from $current_mac to $target_mac"
+    
+    # Use the exact sequence that works manually:
+    # ifconfig eth0 down
+    # ifconfig eth0 hw ether <mac>
+    # ifconfig eth0 up
+    
+    # Step 1: Bring interface down
+    ifconfig "$iface" down
+    sleep 0.3
+    
+    # Step 2: Set MAC address
+    local ifconfig_err
+    ifconfig_err=$(ifconfig "$iface" hw ether "$mac" 2>&1)
+    if [ $? -eq 0 ]; then
+        # Step 3: Bring interface up
+        ifconfig "$iface" up
+        log "Set $iface MAC to $mac (ifconfig)"
+        return 0
+    else
+        log "ifconfig hw ether failed: $ifconfig_err"
+    fi
+    
+    # Fallback to ip link
+    local ip_err
+    ip_err=$(ip link set "$iface" address "$mac" 2>&1)
+    if [ $? -eq 0 ]; then
+        ip link set "$iface" up
+        log "Set $iface MAC to $mac (ip link)"
+        return 0
+    else
+        log "ip link set address failed: $ip_err"
+    fi
+    
+    # Bring interface back up even if MAC change failed
+    ifconfig "$iface" up 2>/dev/null
+    log "Failed to set $iface MAC - all methods failed"
+    return 1
+}
+
+start() {
+    log "Starting factory MAC application..."
+    
+    # Find factory partition
+    if ! find_factory_partition; then
+        log "Factory partition not found"
+        return 1
+    fi
+    
+    # Verify magic header
+    if ! verify_factory_magic; then
+        log "Factory partition not initialized (no FACT magic)"
+        return 1
+    fi
+    
+    # Wait for eth0 to be available (max 5 seconds)
+    local retry=0
+    while [ $retry -lt 10 ]; do
+        if ip link show eth0 >/dev/null 2>&1; then
+            break
+        fi
+        sleep 0.5
+        retry=$((retry + 1))
+    done
+    
+    if ! ip link show eth0 >/dev/null 2>&1; then
+        log "eth0 interface not available after waiting"
+        return 1
+    fi
+    
+    # Read and apply eth0 MAC
+    local mac_eth0=$(read_mac_from_flash $MAC_ETH0_OFFSET)
+    if [ -n "$mac_eth0" ]; then
+        apply_mac eth0 "$mac_eth0"
+    else
+        log "No valid eth0 MAC in factory partition"
+    fi
+    
+    # Read and apply eth1 MAC (if present)
+    local mac_eth1=$(read_mac_from_flash $MAC_ETH1_OFFSET)
+    if [ -n "$mac_eth1" ]; then
+        apply_mac eth1 "$mac_eth1"
+    fi
+    
+    log "Done"
+    return 0
+}
+
+stop() {
+    return 0
+}
+
+# Apply MAC before interface is brought up (called from S25_Net)
+# This is the ideal time to set MAC - when interface exists but is still down
+apply_before_up() {
+    # Find factory partition
+    if ! find_factory_partition; then
+        return 1
+    fi
+    
+    # Verify magic header
+    if ! verify_factory_magic; then
+        return 1
+    fi
+    
+    # Check if eth0 exists
+    if ! ip link show eth0 >/dev/null 2>&1; then
+        return 1
+    fi
+    
+    # Read MAC from factory
+    local mac_eth0=$(read_mac_from_flash $MAC_ETH0_OFFSET)
+    if [ -z "$mac_eth0" ]; then
+        return 1
+    fi
+    
+    # Validate MAC is unicast before trying to set it
+    if ! validate_mac_unicast "$mac_eth0"; then
+        log "Factory MAC is invalid, cannot apply"
+        return 1
+    fi
+    
+    # Set MAC using the exact sequence that works manually:
+    # ifconfig eth0 down
+    # ifconfig eth0 hw ether <mac>
+    # (S25_Net will bring it up)
+    log "Setting eth0 MAC to $mac_eth0 (before up)"
+    
+    # Step 1: Bring interface down explicitly
+    ifconfig eth0 down
+    sleep 0.3
+    
+    # Step 2: Set MAC address
+    local ifconfig_err
+    ifconfig_err=$(ifconfig eth0 hw ether "$mac_eth0" 2>&1)
+    local ret=$?
+    
+    if [ $ret -eq 0 ]; then
+        # Verify the change
+        local new_mac=$(cat /sys/class/net/eth0/address 2>/dev/null | tr 'a-f' 'A-F')
+        log "eth0 MAC set successfully: $new_mac"
+        return 0
+    else
+        log "ifconfig hw ether failed (ret=$ret): $ifconfig_err"
+        # Try ip link as fallback
+        local ip_err
+        ip_err=$(ip link set eth0 address "$mac_eth0" 2>&1)
+        if [ $? -eq 0 ]; then
+            log "eth0 MAC set successfully (ip link fallback)"
+            return 0
+        else
+            log "ip link fallback also failed: $ip_err"
+        fi
+    fi
+    
+    log "Failed to set eth0 MAC before up"
+    return 1
+}
+
+status() {
+    if ! find_factory_partition; then
+        echo "Factory partition: NOT FOUND"
+        return 1
+    fi
+    
+    if verify_factory_magic; then
+        echo "Factory partition: VALID"
+        local mac_eth0=$(read_mac_from_flash $MAC_ETH0_OFFSET)
+        local mac_eth1=$(read_mac_from_flash $MAC_ETH1_OFFSET)
+        echo "  eth0 MAC: ${mac_eth0:-not set}"
+        echo "  eth1 MAC: ${mac_eth1:-not set}"
+        return 0
+    else
+        echo "Factory partition: NOT INITIALIZED"
+        return 1
+    fi
+}
+
+case "${1:-start}" in
+    start)
+        start
+        ;;
+    stop)
+        stop
+        ;;
+    status)
+        status
+        ;;
+    restart)
+        stop
+        start
+        ;;
+    apply_before_up)
+        apply_before_up
+        ;;
+    *)
+        echo "Usage: $0 {start|stop|status|restart|apply_before_up}"
+        exit 1
+        ;;
+esac
+
+exit $?

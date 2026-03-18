@@ -1,0 +1,82 @@
+ifeq ($(CONFIG_ARCH_NVT_IVOT_V7),y)
+nvt-platform-$(CONFIG_NVT_IVOT_PLAT_NA51103)		:= plat-na51103_a32
+nvt-platform-$(CONFIG_NVT_IVOT_PLAT_NA51090)		:= plat-na51090_a32
+nvt-platform-$(CONFIG_NVT_IVOT_PLAT_NA51055)		:= plat-na51055_a32
+nvt-platform-$(CONFIG_NVT_IVOT_PLAT_NA51089)		:= plat-na51089_a32
+nvt-platform-$(CONFIG_NVT_IVOT_PLAT_NA51000)		:= plat-na51000_a32
+nvt-platform-$(CONFIG_NVT_IVOT_PLAT_TC98110)		:= plat-tc98110_a32
+nvt-platform-$(CONFIG_NVT_IVOT_PLAT_NS02301)		:= plat-ns02301_a32
+else ifeq ($(CONFIG_ARCH_NVT_IVOT_V8),y)
+nvt-platform-$(CONFIG_NVT_IVOT_PLAT_NA51000)		:= plat-na51000_a64
+nvt-platform-$(CONFIG_NVT_IVOT_PLAT_NA51090)		:= plat-na51090_a64
+nvt-platform-$(CONFIG_NVT_IVOT_PLAT_NA51102)		:= plat-na51102_a64
+nvt-platform-$(CONFIG_NVT_IVOT_PLAT_NA51103)		:= plat-na51103_a64
+nvt-platform-$(CONFIG_NVT_IVOT_PLAT_NS02201)		:= plat-ns02201_a64
+nvt-platform-$(CONFIG_NVT_IVOT_PLAT_NS02302)		:= plat-ns02302_a64
+nvt-platform-$(CONFIG_NVT_IVOT_PLAT_NS02401)		:= plat-ns02401_a64
+endif
+
+# For OTP driver
+ifeq ($(CONFIG_NVT_IVOT_PLAT_NA51055), y)
+nvt_otp_protect := na51055
+else ifeq ($(CONFIG_NVT_IVOT_PLAT_NA51089), y)
+nvt_otp_protect := na51089
+else ifeq ($(CONFIG_NVT_IVOT_PLAT_NA51000), y)
+nvt_otp_protect := na51000
+else ifeq ($(CONFIG_NVT_IVOT_PLAT_NA51090), y)
+nvt_otp_protect := na51090_a64
+else ifeq ($(CONFIG_NVT_IVOT_PLAT_NA51102), y)
+nvt_otp_protect := na51102_a64
+else ifeq ($(CONFIG_NVT_IVOT_PLAT_NA51103), y)
+nvt_otp_protect := na51103_a32
+else ifeq ($(CONFIG_NVT_IVOT_PLAT_NS02201), y)
+nvt_otp_protect := ns02201_a64
+else ifeq ($(CONFIG_NVT_IVOT_PLAT_NS02302), y)
+nvt_otp_protect := ns02302_a64
+else ifeq ($(CONFIG_NVT_IVOT_PLAT_NS02401), y)
+nvt_otp_protect := ns02401_a64
+else
+nvt_otp_protect := na51068
+endif
+
+PLATFORM_DIR   := $(nvt-platform-y)
+MYKERNEL_PATH = $(realpath $(srctree))
+PLATFORM_INC_SYMBOLIC =  $(MYKERNEL_PATH)/drivers/soc/nvt/plat-novatek/include/plat
+PLATFORM_INC_TARGET = $(PLATFORM_DIR)
+PLATFORM_SRC_SYMBOLIC = $(MYKERNEL_PATH)/drivers/soc/nvt/plat-novatek/plat
+PLATFORM_SRC_TARGET = $(PLATFORM_DIR)
+VOS_SYMBOLIC = $(MYKERNEL_PATH)/drivers/soc/nvt/nvt_hdal/vos
+VOS_TARGET = $(realpath $(NVT_VOS_DIR))
+HDAL_SYMBOLIC = $(MYKERNEL_PATH)/drivers/soc/nvt/nvt_hdal/hdal
+HDAL_TARGET = $(realpath $(NVT_HDAL_DIR))
+OTP_DEFAULT_DIR = $(MYKERNEL_PATH)/drivers/soc/nvt/otp
+OTP_O_DIR = $(MYKERNEL_PATH)/$(O)/drivers/soc/nvt/otp
+OTP_KBUILD_OUTPUT_DIR = $(MYKERNEL_PATH)/$(KBUILD_OUTPUT)/drivers/soc/nvt/otp
+
+$(PLATFORM_INC_SYMBOLIC): FORCE
+ifneq ($(notdir $(realpath $(PLATFORM_INC_SYMBOLIC))), $(PLATFORM_INC_TARGET))
+	@echo Creating $(PLATFORM_INC_SYMBOLIC)
+	@yes | rm -f $(PLATFORM_INC_SYMBOLIC) && ln -fsn $(PLATFORM_INC_TARGET) $(PLATFORM_INC_SYMBOLIC)
+endif
+ifneq ($(notdir $(realpath $(PLATFORM_SRC_SYMBOLIC))), $(PLATFORM_SRC_TARGET))
+	@echo Creating $(PLATFORM_SRC_SYMBOLIC)
+	@yes | rm -f $(PLATFORM_SRC_SYMBOLIC) && ln -fsn $(PLATFORM_SRC_TARGET) $(PLATFORM_SRC_SYMBOLIC)
+endif
+ifneq ($(realpath $(VOS_SYMBOLIC)), $(VOS_TARGET))
+	@echo Creating $(VOS_SYMBOLIC)
+	@yes | rm -f $(VOS_SYMBOLIC) &&	ln -fsn $(VOS_TARGET) $(VOS_SYMBOLIC)
+endif
+ifneq ($(realpath $(HDAL_SYMBOLIC)), $(HDAL_TARGET))
+	@echo Creating $(HDAL_SYMBOLIC)
+	@yes | rm -f $(HDAL_SYMBOLIC) && ln -fsn $(HDAL_TARGET) $(HDAL_SYMBOLIC)
+endif
+ifneq ($(O),)
+	@echo Copying $(OTP_O_DIR)/$(nvt_otp_protect)
+	@mkdir -p $(OTP_O_DIR)/$(nvt_otp_protect) && cp -arfv $(OTP_DEFAULT_DIR)/$(nvt_otp_protect) $(OTP_O_DIR)/
+endif
+ifneq ($(KBUILD_OUTPUT),)
+	@echo Copying $(OTP_KBUILD_OUTPUT_DIR)/$(nvt_otp_protect)
+	@mkdir -p $(OTP_KBUILD_OUTPUT_DIR)/$(nvt_otp_protect) && cp -arfv $(OTP_DEFAULT_DIR)/$(nvt_otp_protect) $(OTP_KBUILD_OUTPUT_DIR)/
+endif
+
+prepare: $(PLATFORM_INC_SYMBOLIC)

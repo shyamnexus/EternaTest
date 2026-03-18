@@ -1,0 +1,10 @@
+{
+	"jsontype": "module_publish",
+	"publish_src": [
+		"csi_tx_api.c",
+		"csi_tx_drv.c",
+		"csi_tx_main.c",
+		"csi_tx_proc.c",
+		"csi_tx_platform.c"
+	]
+}

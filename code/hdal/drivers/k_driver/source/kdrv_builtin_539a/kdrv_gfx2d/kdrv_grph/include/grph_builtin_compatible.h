@@ -1,0 +1,1 @@
+../../../../kdrv_builtin/kdrv_gfx2d/kdrv_grph/include/grph_builtin_compatible.h

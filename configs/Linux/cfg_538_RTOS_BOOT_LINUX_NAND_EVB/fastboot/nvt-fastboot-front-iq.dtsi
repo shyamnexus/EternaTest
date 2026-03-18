@@ -1,0 +1,15 @@
+/*
+ * Novatek Ltd. NVT98567 ISP part of dts
+ */
+
+&fastboot {
+	front_iq_0 {
+		smooth_frm = <10>;
+		iso_w = <0 0 0 10 20 40 80 100 100 100 100 100 100 100 100 100>;
+		rth_nlm = <150>;
+		rth_nlm_lut = <150>;
+		clamp_th = <25>;
+		saturation = <60>;
+		edge_enh = <60>;
+	};
+};

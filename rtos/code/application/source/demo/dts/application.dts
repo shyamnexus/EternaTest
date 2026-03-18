@@ -1,0 +1,16 @@
+/*
+ * Novatek Ltd. NA51055 BSP part of dts
+ *
+ * Cortex-A9
+ *
+ */
+
+/dts-v1/;
+
+#if (_PACKAGE_VIDEO_)
+#include "isp.dtsi"  /* isp */
+#else
+#include "fastboot.dtsi"  /* no video means fastboot */
+#endif
+
+

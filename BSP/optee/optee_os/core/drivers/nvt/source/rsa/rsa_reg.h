@@ -1,0 +1,59 @@
+/*
+    RSA driver register definition
+
+    Copyright Novatek Microelectronics Corp. 2021.  All rights reserved.
+*/
+
+#ifndef _RSA_REG_H
+#define _RSA_REG_H
+
+#include <rcw_macro.h>
+
+REGDEF_OFFSET(RSA_CONFIG_REG,             0x00)
+REGDEF_BEGIN(RSA_CONFIG_REG)
+    REGDEF_BIT(SWRST            ,1) //0
+    REGDEF_BIT(RSA_KEY_WIDTH    ,3) //3..1
+    REGDEF_BIT(RSA_MODE         ,2) //5..4
+    REGDEF_BIT(                 ,2)
+    REGDEF_BIT(RSA_BYTEODR      ,1)
+    REGDEF_BIT(                ,23) //31..9
+REGDEF_END(RSA_CONFIG_REG)
+
+REGDEF_OFFSET(RSA_CONTROL_REG,            0x04)
+REGDEF_BEGIN(RSA_CONTROL_REG)
+    REGDEF_BIT(RSA_EN          ,1)  //0
+    REGDEF_BIT(                ,31) //31..1
+REGDEF_END(RSA_CONTROL_REG)
+
+REGDEF_OFFSET(RSA_INTEN_REG,              0x08)
+REGDEF_BEGIN(RSA_INTEN_REG)
+    REGDEF_BIT(RSAED_INTEN     ,1)  //0
+    REGDEF_BIT(                ,31) //31..1
+REGDEF_END(RSA_INTEN_REG)
+
+REGDEF_OFFSET(RSA_INTSTS_REG,             0x0C)
+REGDEF_BEGIN(RSA_INTSTS_REG)
+    REGDEF_BIT(RSAED_STS       ,1)  //0
+    REGDEF_BIT(RSA_BUSY        ,1)  //1
+    REGDEF_BIT(                ,30) //31..2
+REGDEF_END(RSA_INTSTS_REG)
+
+REGDEF_OFFSET(RSA_KEY_N_REG,              0x10)
+REGDEF_OFFSET(RSA_KEY_N_ADDR_REG,         0x14)
+REGDEF_OFFSET(RSA_KEY_ED_REG,             0x18)
+REGDEF_OFFSET(RSA_KEY_ED_ADDR_REG,        0x1C)
+
+REGDEF_OFFSET(RSA_DATA_REG,               0x20)
+REGDEF_OFFSET(RSA_DATA_ADDR_REG,          0x24)
+
+REGDEF_OFFSET(RSA_KEY_READ_REG,           0x28)
+REGDEF_BEGIN(RSA_KEY_READ_REG)
+    REGDEF_BIT(RSAKEY          ,16)
+    REGDEF_BIT(                ,16)
+REGDEF_END(RSA_KEY_READ_REG)
+
+REGDEF_OFFSET(RSA_CRC32_DEFAULT_REG,      0x30)
+REGDEF_OFFSET(RSA_CRC32_POLY_REG,         0x34)
+REGDEF_OFFSET(RSA_CRC32_OUTPUT_REG,       0x38)
+
+#endif  /* _RSA_REG_H */

@@ -1,0 +1,9 @@
+{
+	"jsontype": "module_publish",
+	"publish_src": [
+		"usb3dev_proc.c",
+		"usb3dev_drv.c",
+		"usb3dev_main.c",
+		"usb3dev_ver.c"
+	]
+}

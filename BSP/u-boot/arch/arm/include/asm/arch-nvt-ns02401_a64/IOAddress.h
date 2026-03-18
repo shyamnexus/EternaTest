@@ -1,0 +1,486 @@
+/*
+    Base IO address
+
+    Base IO address
+
+    @file       IOAddress.h
+    @ingroup
+    @note       Nothing.
+
+    Copyright   Novatek Microelectronics Corp. 2024.  All rights reserved.
+*/
+
+#ifndef __ARCH_IOADDRESS_H
+#define __ARCH_IOADDRESS_H
+
+/*
+    @addtogroup
+*/
+//@{
+#define IOADDR_GLOBAL_BASE          (0x4F0000000)
+
+// ---------------------------------------------
+// System category 0
+// ---------------------------------------------
+// Core timer
+#define IOADDR_SYSCNT_READ_BASE     (IOADDR_GLOBAL_BASE+0x0FF10000)
+
+#define IOADDR_SYSCNT_CTRL_BASE     (IOADDR_GLOBAL_BASE+0x0FF20000)
+
+// SDRAM Controller
+#define IOADDR_DRAM_REG_BASE        (IOADDR_GLOBAL_BASE+0x00200000)
+
+// SDRAM2 Controller
+#define IOADDR_DRAM2_REG_BASE       (IOADDR_GLOBAL_BASE+0x00210000)
+
+// Top
+#define IOADDR_TOP_REG_BASE         (IOADDR_GLOBAL_BASE+0x00010000)
+
+// CG
+#define IOADDR_CG_REG_BASE          (IOADDR_GLOBAL_BASE+0x00020000)
+
+#define IOADDR_STBC_CG_REG_BASE     (IOADDR_GLOBAL_BASE+0x00750000)
+
+// PAD
+#define IOADDR_PAD_REG_BASE         (IOADDR_GLOBAL_BASE+0x00030000)
+
+// Timer
+#define IOADDR_TIMER_REG_BASE       (IOADDR_GLOBAL_BASE+0x00100000)
+
+// WDT (Watch Dog Timer)
+#define IOADDR_WDT_REG_BASE         (IOADDR_GLOBAL_BASE+0x00060000)
+
+// RTC & Power Button
+#define IOADDR_RTC_REG_BASE         (IOADDR_GLOBAL_BASE+0x00A70000)
+
+// GPIO
+#define IOADDR_GPIO_REG_BASE        (IOADDR_GLOBAL_BASE+0x00040000)
+
+//LPV
+#define IOADDR_LPV_REG_BASE         (IOADDR_GLOBAL_BASE+0x005F0000)
+// Interrupt
+// **** Note ****
+// Must check INT_CTRL_ADDR in \Common\Common_src\Kernel\IntHnder.s
+#define IOADDR_INTERRUPT_REG_BASE   (IOADDR_GLOBAL_BASE+0x00112000)
+
+// GIC Interrupt
+#define IOADDR_GIC_REG_BASE         (IOADDR_GLOBAL_BASE+0x0F800000)
+
+// CC
+#define IOADDR_CC_REG_BASE          (IOADDR_GLOBAL_BASE+0x00110000)
+
+// PMC
+#define IOADDR_PMC_REG_BASE         (IOADDR_GLOBAL_BASE+0x000A0000)
+
+// TZPC
+#define IOADDR_TZPC_REG_BASE        (IOADDR_GLOBAL_BASE+0x00220000)
+
+// TRNG
+#define IOADDR_TRNG_REG_BASE        (IOADDR_GLOBAL_BASE+0x00114000)
+
+// ---------------------------------------------
+// System category 1
+// ---------------------------------------------
+// SDRAM Controller 2
+#define IOADDR_DRAM2_REG_BASE       (IOADDR_GLOBAL_BASE+0x00210000)
+
+// DRTC
+#define IOADDR_DRTC_REG_BASE        (IOADDR_GLOBAL_BASE+0x00111000)
+
+// ---------------------------------------------
+// IO category 0
+// ---------------------------------------------
+
+// BMC
+#define IOADDR_BMC_REG_BASE         (IOADDR_GLOBAL_BASE+0x00000000)
+
+// PWM
+#define IOADDR_PWM_REG_BASE         (IOADDR_GLOBAL_BASE+0x00120000)
+
+// I2C
+#define IOADDR_I2C_REG_BASE         (IOADDR_GLOBAL_BASE+0x00140000)
+
+// SPI
+#define IOADDR_SPI_REG_BASE         (IOADDR_GLOBAL_BASE+0x00150000)
+
+// SIF
+#define IOADDR_SIF_REG_BASE         (IOADDR_GLOBAL_BASE+0x0015D000)
+
+// Remote
+#define IOADDR_REMOTE_REG_BASE      (IOADDR_GLOBAL_BASE+0x00121000)
+
+// ADC
+#define IOADDR_ADC_REG_BASE         (IOADDR_GLOBAL_BASE+0x00A60000)
+
+// LVDS / HiSPi
+#define IOADDR_LVDS_REG_BASE        (IOADDR_GLOBAL_BASE+0x00270000)
+
+// MIPI - CSI
+#define IOADDR_CSI_REG_BASE         (IOADDR_GLOBAL_BASE+0x00280000)
+
+// UART
+#define IOADDR_UART_REG_BASE        (IOADDR_GLOBAL_BASE+0x00130000)
+
+// Vx1
+//#define IOADDR_VX1_REG_BASE         (IOADDR_GLOBAL_BASE+0x002A0000)
+
+// Ethernet XGMAC
+#define IOADDR_ETH_REG_BASE         (IOADDR_GLOBAL_BASE+0x00510000)
+
+#define IOADDR_ETH1_REG_BASE        (IOADDR_GLOBAL_BASE+0x00520000)
+
+
+// SLVS-EC
+//#define IOADDR_SLVSEC_REG_BASE      (IOADDR_GLOBAL_BASE+0x002C0000)
+
+// CAN-BUS
+//#define IOADDR_CANBUS_REG_BASE      (IOADDR_GLOBAL_BASE+0x002D0000)
+
+// ---------------------------------------------
+// IO category 1
+// ---------------------------------------------
+
+// UART2
+#define IOADDR_UART2_REG_BASE       (IOADDR_GLOBAL_BASE+0x00131000)
+
+// UART3
+#define IOADDR_UART3_REG_BASE       (IOADDR_GLOBAL_BASE+0x00132000)
+
+// SPI2
+#define IOADDR_SPI2_REG_BASE        (IOADDR_GLOBAL_BASE+0x00151000)
+
+// MIPI - CSI2
+#define IOADDR_CSI2_REG_BASE        (IOADDR_GLOBAL_BASE+0x00330000)
+
+// SPI3
+#define IOADDR_SPI3_REG_BASE        (IOADDR_GLOBAL_BASE+0x00152000)
+
+// I2C2
+#define IOADDR_I2C2_REG_BASE        (IOADDR_GLOBAL_BASE+0x00141000)
+
+// SPI4
+//#define IOADDR_SPI4_REG_BASE        (IOADDR_GLOBAL_BASE+0x00153000)
+
+// LVDS2
+#define IOADDR_LVDS2_REG_BASE       (IOADDR_GLOBAL_BASE+0x00370000)
+
+// UART4
+#define IOADDR_UART4_REG_BASE       (IOADDR_GLOBAL_BASE+0x00133000)
+
+// SPI5
+//#define IOADDR_SPI5_REG_BASE        (IOADDR_GLOBAL_BASE+0x0015C000)
+
+// I2C3
+#define IOADDR_I2C3_REG_BASE        (IOADDR_GLOBAL_BASE+0x00142000)
+
+// I2C4
+#define IOADDR_I2C4_REG_BASE        (IOADDR_GLOBAL_BASE+0x00143000)
+
+// I2C5
+#define IOADDR_I2C5_REG_BASE        (IOADDR_GLOBAL_BASE+0x00144000)
+
+// I2C6
+#define IOADDR_I2C6_REG_BASE        (IOADDR_GLOBAL_BASE+0x00145000)
+
+// I2C7
+#define IOADDR_I2C7_REG_BASE        (IOADDR_GLOBAL_BASE+0x00146000)
+
+// I2C7
+#define IOADDR_I2C8_REG_BASE        (IOADDR_GLOBAL_BASE+0x00147000)
+
+// Vx1_2
+//#define IOADDR_VX12_REG_BASE        (IOADDR_GLOBAL_BASE+0x003F0000)
+
+
+// ---------------------------------------------
+// IO category 2
+// ---------------------------------------------
+
+// LVDS3
+#define IOADDR_LVDS3_REG_BASE       (IOADDR_GLOBAL_BASE+0x004D0000)
+
+// LVDS4
+#define IOADDR_LVDS4_REG_BASE       (IOADDR_GLOBAL_BASE+0x004E0000)
+
+// LVDS5
+#define IOADDR_LVDS5_REG_BASE       (IOADDR_GLOBAL_BASE+0x004F0000)
+
+// LVDS6
+//#define IOADDR_LVDS6_REG_BASE       (IOADDR_GLOBAL_BASE+0x00E30000)
+
+// LVDS7
+//#define IOADDR_LVDS7_REG_BASE       (IOADDR_GLOBAL_BASE+0x00E40000)
+
+// LVDS8
+//#define IOADDR_LVDS8_REG_BASE       (IOADDR_GLOBAL_BASE+0x00E50000)
+
+// MIPI - CSI3
+#define IOADDR_CSI3_REG_BASE        (IOADDR_GLOBAL_BASE+0x004A0000)
+
+// MIPI - CSI4
+#define IOADDR_CSI4_REG_BASE        (IOADDR_GLOBAL_BASE+0x004B0000)
+
+// MIPI - CSI5
+#define IOADDR_CSI5_REG_BASE        (IOADDR_GLOBAL_BASE+0x004C0000)
+
+// MIPI - CSI6
+//#define IOADDR_CSI6_REG_BASE        (IOADDR_GLOBAL_BASE+0x00E90000)
+
+// MIPI - CSI7
+//#define IOADDR_CSI7_REG_BASE        (IOADDR_GLOBAL_BASE+0x00EA0000)
+
+// MIPI - CSI8
+//#define IOADDR_CSI8_REG_BASE        (IOADDR_GLOBAL_BASE+0x00EB0000)
+
+// ---------------------------------------------
+// Storage category 0
+// ---------------------------------------------
+
+// NAND
+#define IOADDR_NAND_REG_BASE        (IOADDR_GLOBAL_BASE+0x00570000)
+
+// SDIO
+#define IOADDR_SDIO_REG_BASE        (IOADDR_GLOBAL_BASE+0x007B0000)
+
+// ---------------------------------------------
+// Storage category 1
+// ---------------------------------------------
+
+// SDIO2
+#define IOADDR_SDIO2_REG_BASE       (IOADDR_GLOBAL_BASE+0x00560000)
+
+// SDIO3
+#define IOADDR_SDIO3_REG_BASE       (IOADDR_GLOBAL_BASE+0x007D0000)
+
+
+// ---------------------------------------------
+// Misc category 0
+// ---------------------------------------------
+
+// SATA0
+#define IOADDR_SATA0_REG_BASE       (IOADDR_GLOBAL_BASE+0x004E0000)
+#define IOADDR_SATA0_TOP_REG_BASE   (IOADDR_GLOBAL_BASE+0x004A0000)
+#define IOADDR_SATA0_PHY_REG_BASE   (IOADDR_GLOBAL_BASE+0x004A1000)
+
+// SATA1
+#define IOADDR_SATA1_REG_BASE       (IOADDR_GLOBAL_BASE+0x005D0000)
+#define IOADDR_SATA1_TOP_REG_BASE   (IOADDR_GLOBAL_BASE+0x00530000)
+#define IOADDR_SATA1_PHY_REG_BASE   (IOADDR_GLOBAL_BASE+0x00531000)
+
+// USB
+#define IOADDR_USB_REG_BASE         (IOADDR_GLOBAL_BASE+0x004C0000)
+#define IOADDR_USB2_REG_BASE        (IOADDR_GLOBAL_BASE+0x00AA0000)
+
+// USB3
+#define IOADDR_USB3_REG_BASE        (IOADDR_GLOBAL_BASE+0x004D0000)
+#define IOADDR_USB3_2_REG_BASE      (IOADDR_GLOBAL_BASE+0x00AB0000)
+
+// USB PHY
+#define IOADDR_USBPHY_REG_BASE      (IOADDR_GLOBAL_BASE+0x00480000)
+#define IOADDR_USB2PHY_REG_BASE     (IOADDR_GLOBAL_BASE+0x00A10000)
+
+// USB3 PHY
+#define IOADDR_USB3PHY_REG_BASE     (IOADDR_GLOBAL_BASE+0x00490000)
+#define IOADDR_USB3_2PHY_REG_BASE   (IOADDR_GLOBAL_BASE+0x00A20000)
+
+// Crypto
+#define IOADDR_CRYPTO_REG_BASE      (IOADDR_GLOBAL_BASE+0x00222000)
+
+// DAI
+#define IOADDR_DAI_REG_BASE         (IOADDR_GLOBAL_BASE+0x00630000)
+
+// EAC
+#define IOADDR_EAC_REG_BASE         (IOADDR_GLOBAL_BASE+0x00640000)
+
+// TSMux
+#define IOADDR_TSMUX_REG_BASE       (IOADDR_GLOBAL_BASE+0x00650000)
+
+// eFUSE
+#define IOADDR_EFUSE_REG_BASE       (IOADDR_GLOBAL_BASE+0x00221000)
+
+// eFUSE2
+#define IOADDR_EFUSE2_REG_BASE      (IOADDR_GLOBAL_BASE+0x00226000)
+
+// USB3-CTRL
+#define IOADDR_USB3CTRL_REG_BASE    (IOADDR_GLOBAL_BASE+0x00490000)
+#define IOADDR_USB3_2CTRL_REG_BASE  (IOADDR_GLOBAL_BASE+0x00A20000)
+// TSDEMux
+#define IOADDR_TSDEMUX_REG_BASE     (IOADDR_GLOBAL_BASE+0x00680000)
+
+// RSA
+#define IOADDR_RSA_REG_BASE         (IOADDR_GLOBAL_BASE+0x00224000)
+
+// Hash
+#define IOADDR_HASH_REG_BASE        (IOADDR_GLOBAL_BASE+0x00223000)
+
+// ECDSA
+#define IOADDR_ECDSA_REG_BASE       (IOADDR_GLOBAL_BASE+0x00225000)
+
+// ---------------------------------------------
+// Misc category 1
+// ---------------------------------------------
+
+
+// ---------------------------------------------
+// Display category 0
+// ---------------------------------------------
+
+// IDE
+#define IOADDR_LCD_REG_BASE         (IOADDR_GLOBAL_BASE+0x00400000)
+
+// MI
+#define IOADDR_MI_REG_BASE          (IOADDR_GLOBAL_BASE+0x00810000)
+
+// HDMI
+#define IOADDR_HDMI_REG_BASE        (IOADDR_GLOBAL_BASE+0x00450000)
+#define IOADDR_HDMI2_REG_BASE       (IOADDR_GLOBAL_BASE+0x00460000)
+
+
+// TV
+#define IOADDR_TV_REG_BASE          (IOADDR_GLOBAL_BASE+0x00830000)
+
+// MIPI-DSI
+#define IOADDR_DSI_REG_BASE         (IOADDR_GLOBAL_BASE+0x00840000)
+
+// MIPI-DSI phy
+#define IOADDR_DSIPHY_REG_BASE      (IOADDR_GLOBAL_BASE+0x00470000)
+
+// ---------------------------------------------
+// Display category 1
+// ---------------------------------------------
+
+// IDE2
+#define IOADDR_LCD2_REG_BASE        (IOADDR_GLOBAL_BASE+0x00410000)
+#define IOADDR_LCD3_REG_BASE        (IOADDR_GLOBAL_BASE+0x00420000)
+
+
+// ---------------------------------------------
+// Codec category 0
+// ---------------------------------------------
+
+// JPEG
+#define IOADDR_JPEG_REG_BASE        (IOADDR_GLOBAL_BASE+0x00300000)
+
+// H264
+#define IOADDR_H264_REG_BASE        (IOADDR_GLOBAL_BASE+0x00A10000)
+
+// ---------------------------------------------
+// Codec category 1
+// ---------------------------------------------
+
+
+// ---------------------------------------------
+// IPP category 0
+// ---------------------------------------------
+
+// SIE
+#define IOADDR_SIE_REG_BASE         (IOADDR_GLOBAL_BASE+0x00C00000)
+
+// COPY
+#define IOADDR_COPY_REG_BASE        (IOADDR_GLOBAL_BASE+0x00610000)
+
+// DCE
+#define IOADDR_DCE_REG_BASE         (IOADDR_GLOBAL_BASE+0x00C20000)
+
+// IPE
+#define IOADDR_IPE_REG_BASE         (IOADDR_GLOBAL_BASE+0x00C30000)
+
+// IME
+#define IOADDR_IME_REG_BASE         (IOADDR_GLOBAL_BASE+0x00C40000)
+
+// DIS
+#define IOADDR_DIS_REG_BASE         (IOADDR_GLOBAL_BASE+0x00C50000)
+
+// FDE
+#define IOADDR_FDE_REG_BASE         (IOADDR_GLOBAL_BASE+0x00C60000)
+
+// IFE
+#define IOADDR_IFE_REG_BASE         (IOADDR_GLOBAL_BASE+0x00C70000)
+
+// Graphic
+#define IOADDR_GRAPHIC_REG_BASE     (IOADDR_GLOBAL_BASE+0x00170000)
+
+// ISE
+#define IOADDR_ISE_REG_BASE         (IOADDR_GLOBAL_BASE+0x002A0000)
+
+// Affine
+#define IOADDR_AFFINE_REG_BASE      (IOADDR_GLOBAL_BASE+0x00CA0000)
+
+// CNN
+#define IOADDR_CNN_REG_BASE         (IOADDR_GLOBAL_BASE+0x00CB0000)
+
+// TGE
+#define IOADDR_TGE_REG_BASE         (IOADDR_GLOBAL_BASE+0x00CC0000)
+
+// DRE
+#define IOADDR_DRE_REG_BASE         (IOADDR_GLOBAL_BASE+0x00CD0000)
+
+// RHE
+#define IOADDR_RHE_REG_BASE         (IOADDR_GLOBAL_BASE+0x00CE0000)
+
+// Rotation
+#define IOADDR_ROT_REG_BASE         (IOADDR_GLOBAL_BASE+0x00CF0000)
+
+// ---------------------------------------------
+// IPP category 1
+// ---------------------------------------------
+
+// IFE2
+#define IOADDR_IFE2_REG_BASE        (IOADDR_GLOBAL_BASE+0x00D00000)
+
+// Graphic2
+#define IOADDR_GRAPHIC2_REG_BASE    (IOADDR_GLOBAL_BASE+0x00171000)
+
+// Graphic3
+#define IOADDR_GRAPHIC3_REG_BASE    (IOADDR_GLOBAL_BASE+0x00172000)
+
+// SIE2
+#define IOADDR_SIE2_REG_BASE        (IOADDR_GLOBAL_BASE+0x00D20000)
+
+// SIE3
+#define IOADDR_SIE3_REG_BASE        (IOADDR_GLOBAL_BASE+0x00D30000)
+
+// SIE4
+#define IOADDR_SIE4_REG_BASE        (IOADDR_GLOBAL_BASE+0x00D40000)
+
+// SIE5
+#define IOADDR_SIE5_REG_BASE        (IOADDR_GLOBAL_BASE+0x00D50000)
+
+// SIE6
+#define IOADDR_SIE6_REG_BASE        (IOADDR_GLOBAL_BASE+0x00D60000)
+
+// SIE7
+#define IOADDR_SIE7_REG_BASE        (IOADDR_GLOBAL_BASE+0x00D70000)
+
+// SIE8
+#define IOADDR_SIE8_REG_BASE        (IOADDR_GLOBAL_BASE+0x00D80000)
+
+// IVE
+#define IOADDR_IVE_REG_BASE         (IOADDR_GLOBAL_BASE+0x00770000)
+
+// SVM
+#define IOADDR_SVM_REG_BASE         (IOADDR_GLOBAL_BASE+0x00DA0000)
+
+// SDE
+#define IOADDR_SDE_REG_BASE         (IOADDR_GLOBAL_BASE+0x00DB0000)
+
+// ---------------------------------------------
+// DSP category 0
+// ---------------------------------------------
+// DSP
+#define IOADDR_DSP_REG_BASE         (IOADDR_GLOBAL_BASE+0x01430000)
+
+// DSP2
+#define IOADDR_DSP2_REG_BASE        (IOADDR_GLOBAL_BASE+0x01440000)
+
+// USB
+#define IOADDR_USB528_REG_BASE      (IOADDR_GLOBAL_BASE+0x0F600000)
+
+
+//@}
+
+
+// RDE - Obselete
+#define IOADDR_RDE_REG_BASE         (IOADDR_GLOBAL_BASE+0x00FFFFFF)
+
+#endif /* __ARCH_IOADDRESS_H */

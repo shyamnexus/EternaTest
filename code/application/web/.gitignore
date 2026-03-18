@@ -1,0 +1,2 @@
+# Ignore unpacked www folder - use www.tar.gz instead
+www/

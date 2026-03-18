@@ -1,0 +1,339 @@
+/*
+ * Copyright (c) 2021, NovaTek Inc. All rights reserved.
+ *
+ * SPDX-License-Identifier: BSD-3-Clause
+ */
+
+#ifndef __DRIVERS_NVT_TZRTC_REG_H
+#define __DRIVERS_NVT_TZRTC_REG_H
+
+
+#ifndef ENUM_DUMMY4WORD
+#define ENUM_DUMMY4WORD(name)   E_##name = 0x10000000
+#endif
+
+#define REGVALUE        uint32_t
+#define UBITFIELD		unsigned int 	/* Unsigned bit field */
+
+// Macros for Register Cache Word (RCW) type definition
+//
+// Each RCW type should be exactly the same size with REGVALUE type
+// For example, to declare a Register Cache Word type:
+//
+//     #define rcwname_OFS   0x00   /* the name of RCW corresponding register address offset
+//                                     should be in specific format with "_OFS" appended */
+//     REGDEF_BEGIN(rcwname)
+//         REGDEF_BIT(field1, 8)    /* declare field1 as 8 bits width */
+//         REGDEF_BIT(field2, 8)    /* declare field1 as 8 bits width */
+//         REGDEF_BIT(, 16)         /* pad reserved (not-used) bits to fill RCW type same as REGVALUE size */
+//     REGDEF_END(rcwname)
+//
+// Register Cache Word type defintion header
+#define REGDEF_BEGIN(name)      \
+typedef union                   \
+{                               \
+    REGVALUE    reg;            \
+    struct                      \
+    {
+
+// Register Cache Word bit defintion
+#define REGDEF_BIT(field, bits) \
+    UBITFIELD   field : bits;
+
+// Register Cache Word type defintion trailer
+#define REGDEF_END(name)        \
+    } bit;                      \
+} T_##name;                     \
+
+
+// RTC //
+#define RTC_TIMER_REG_OFS    0x00
+//REGDEF_OFFSET(RTC_TIMER_OFS, 0x00)
+REGDEF_BEGIN(RTC_TIMER_REG)
+REGDEF_BIT(sec, 6)
+REGDEF_BIT(min, 6)
+REGDEF_BIT(hour, 5)
+REGDEF_BIT(, 14)
+REGDEF_BIT(collision, 1)
+REGDEF_END(RTC_TIMER_REG)
+
+#define RTC_DAYKEY_REG_OFS    0x04
+//REGDEF_OFFSET(RTC_DAYKEY_REG, 0x04)
+REGDEF_BEGIN(RTC_DAYKEY_REG)
+REGDEF_BIT(day, 16)
+REGDEF_BIT(key, 4)
+REGDEF_BIT(, 11)
+REGDEF_BIT(collision, 1)
+REGDEF_END(RTC_DAYKEY_REG)
+
+
+// RTC Alarm Register
+#define  RTC_ALARM_REG_OFS 0X08
+//REGDEF_OFFSET(RTC_ALARM_REG, 0x08)
+REGDEF_BEGIN(RTC_ALARM_REG)
+REGDEF_BIT(sec, 6)
+REGDEF_BIT(min, 6)
+REGDEF_BIT(hour, 5)
+REGDEF_BIT(, 15)
+REGDEF_END(RTC_ALARM_REG)
+
+// RTC Status Register
+#define RTC_STATUS_REG_OFS 0x0C
+//REGDEF_OFFSET(RTC_STATUS_REG, 0x0C)
+REGDEF_BEGIN(RTC_STATUS_REG)
+REGDEF_BIT(alarm_sts, 1)
+REGDEF_BIT(, 1)
+REGDEF_BIT(ready, 1)
+REGDEF_BIT(pwralarm_ensts, 1)
+REGDEF_BIT(, 4)
+REGDEF_BIT(cset_sts, 1)
+REGDEF_BIT(, 23)
+REGDEF_END(RTC_STATUS_REG)
+
+// RTC Control Register
+#define RTC_CTRL_REG_OFS 0x10
+//REGDEF_OFFSET(RTC_CTRL_REG, 0x10)
+REGDEF_BEGIN(RTC_CTRL_REG)
+REGDEF_BIT(alarm_inten, 1)
+REGDEF_BIT(srst, 1)
+REGDEF_BIT(cset, 1)
+REGDEF_BIT(time_sel, 1)
+REGDEF_BIT(day_sel, 1)
+REGDEF_BIT(key_sel, 1)
+REGDEF_BIT(pwralarmtime_sel, 1) 
+REGDEF_BIT(alarm_onesec, 1)
+REGDEF_BIT(cset_inten, 1)
+REGDEF_BIT(, 1)
+REGDEF_BIT(pwralarmday_sel, 1) 
+REGDEF_BIT(pwr_analog_sel, 1)
+REGDEF_BIT(da0_sel, 1)
+REGDEF_BIT(fast_cset, 1)
+REGDEF_BIT(, 6)
+REGDEF_BIT(pwralarm_en, 1)
+REGDEF_BIT(, 3)
+REGDEF_BIT(CLK_DIV_DEFAULT_SEL, 1)
+REGDEF_BIT(CLK_DIV_OFFSET_SEL, 1)
+REGDEF_BIT(, 6)
+REGDEF_END(RTC_CTRL_REG)
+
+// RTC Data Register
+#define RTC_DATA_REG_OFS 0x14
+//REGDEF_OFFSET(RTC_DATA_REG, 0x14)
+REGDEF_BEGIN(RTC_DATA_REG)
+REGDEF_BIT(rtc_data0, 16)
+REGDEF_BIT(, 16)
+REGDEF_END(RTC_DATA_REG)
+
+#if 0
+// RTC Power Button Control Register
+REGDEF_OFFSET(RTC_PWBC_REG, 0x18)
+REGDEF_BEGIN(RTC_PWBC_REG)              // --> Register "RTC_PWBC_REG" begin ---
+REGDEF_BIT(Reset_SDT_Timer, 1)
+REGDEF_BIT(PWR_Off, 1)
+REGDEF_BIT(, 1)
+REGDEF_BIT(PWRAlarm_En, 1)
+REGDEF_BIT(PWRAlarm_Dis, 1)
+REGDEF_BIT(PWR_EN2_LATCH, 1)
+REGDEF_BIT(PWR_EN3_CTRL, 1)
+REGDEF_BIT(, 17)
+REGDEF_BIT(PWR_SW1_IntEn, 1)
+REGDEF_BIT(PWR_SW2_IntEn, 1)
+REGDEF_BIT(, 6)
+REGDEF_END(RTC_PWBC_REG)                // --- Register "RTC_PWBC_REG" end   <--
+
+// RTC Power Button Control Status Register
+#define RTC_PWBCSTS_REG_OFS 0X1C
+//REGDEF_OFFSET(RTC_PWBCSTS_REG, 0x1C)
+REGDEF_BEGIN(RTC_PWBCSTS_REG)           // --> Register "RTC_PWBCSTS_REG" begin ---
+REGDEF_BIT(PWRAlarm_EnSts, 1)
+REGDEF_BIT(CorePWR_Valid, 1)
+REGDEF_BIT(, 6)
+REGDEF_BIT(PWROnSrc_SW1, 1)
+REGDEF_BIT(PWROnSrc_SW2, 1)
+REGDEF_BIT(PWROnSrc_SW3, 1)
+REGDEF_BIT(PWROnSrc_SW4, 1)
+REGDEF_BIT(PWROn_PwrEn2_Log, 1)
+REGDEF_BIT(, 2)
+REGDEF_BIT(PWROnSrc_PWRAlarm, 1)
+REGDEF_BIT(PWR_SW1_Pin, 1)
+REGDEF_BIT(PWR_SW2_Pin, 1)
+REGDEF_BIT(PWR_SW3_Pin, 1)
+REGDEF_BIT(PWR_SW4_Pin, 1)
+REGDEF_BIT(PWR_EN2_Sts, 1)
+REGDEF_BIT(, 3)
+REGDEF_BIT(PWR_SW1_Sts, 1)
+REGDEF_BIT(PWR_SW2_Sts, 1)
+REGDEF_BIT(, 6)
+REGDEF_END(RTC_PWBCSTS_REG)
+#endif
+
+// RTC Power Alarm Timer Register
+#define RTC_PWRALM_REG_OFS 0x18
+//REGDEF_OFFSET(RTC_PWRALM_REG, 0x18)
+REGDEF_BEGIN(RTC_PWRALM_REG)
+REGDEF_BIT(sec, 6)
+REGDEF_BIT(min, 6)
+REGDEF_BIT(hour, 5)
+REGDEF_BIT(, 3)
+REGDEF_BIT(day, 5)
+REGDEF_BIT(, 7)
+REGDEF_END(RTC_PWRALM_REG)
+
+// RTC Write Protect register
+#define RTC_WRIPROT_REG_OFS 0X1C 
+//REGDEF_OFFSET(RTC_WRIPROT_REG, 0x1C)
+REGDEF_BEGIN(RTC_WRIPROT_REG)
+REGDEF_BIT(SOUT_NO_USE_KEEP0, 1)
+REGDEF_BIT(NO_WRITE_IN_AUTOREAD, 1)
+REGDEF_BIT(SEPARATE_READ_WRUTE_CLK, 1)
+REGDEF_BIT(, 29)
+REGDEF_END(RTC_WRIPROT_REG)
+
+// RTC OSC Analog Register
+#define RTC_OSCAN_REG_OFS 0X24
+//REGDEF_OFFSET(RTC_OSCAN_REG, 0x24)
+REGDEF_BEGIN(RTC_OSCAN_REG)
+REGDEF_BIT(osc_analogcfg, 16)
+REGDEF_BIT(osc_period, 8)
+REGDEF_BIT(osc_autoreadperiod, 8)
+REGDEF_END(RTC_OSCAN_REG)
+
+// RTC Source Clock Divider regiseter
+#define RTC_CLKDIV_REG_OFS 0X28
+//REGDEF_OFFSET(RTC_CLKDIV_REG, 0x28)
+REGDEF_BEGIN(RTC_CLKDIV_REG)
+REGDEF_BIT(CLK_DIV_DEFAULT, 9)
+REGDEF_BIT(, 3)
+REGDEF_BIT(CLK_DIV_OFFSET, 9)
+REGDEF_BIT(, 4)
+REGDEF_BIT(DIV_VALUE_SEL, 1)
+REGDEF_BIT(, 6)
+REGDEF_END(RTC_CLKDIV_REG)
+
+// Reserved (0x2C)
+
+// RTC Source Clock Divider Adjust Register
+#define RTC_DIVADJ_REG_OFS 0X30
+//REGDEF_OFFSET(RTC_DIVADJ_REG, 0x30)
+REGDEF_BEGIN(RTC_DIVADJ_REG)
+REGDEF_BIT(ADJ_MODE_SEL, 1)
+REGDEF_BIT(START_PSS_CNT, 1)
+REGDEF_BIT(PSS_CNT_STS, 1)
+REGDEF_BIT(, 29)
+REGDEF_END(RTC_DIVADJ_REG)
+
+// RTC Source Clock PSS Mode Value Register
+#define RTC_PSSVAL_REG_OFS 0X34
+//REGDEF_OFFSET(RTC_PSSVAL_REG, 0x34)
+REGDEF_BEGIN(RTC_PSSVAL_REG)
+REGDEF_BIT(EXT_CLK_CNT_VAL, 28)
+REGDEF_BIT(, 4)
+REGDEF_END(RTC_PSSVAL_REG)
+
+// RTC Source Clock PSS Mode Value Register
+#define RTC_PSSVAL2_REG_OFS 0X38
+//REGDEF_OFFSET(RTC_PSSVAL2_REG, 0x38)
+REGDEF_BEGIN(RTC_PSSVAL2_REG)
+REGDEF_BIT(INTER_CLK_CNT_VAL, 28)
+REGDEF_BIT(, 4)
+REGDEF_END(RTC_PSSVAL2_REG)
+
+
+// PWBC // 
+// Power Button Control Register
+#define PWBC_CTRL_REG_OFS 0X00
+//REGDEF_OFFSET(PWBC_CTRL_REG, 0x00)
+REGDEF_BEGIN(PWBC_CTRL_REG)
+REGDEF_BIT(reset_sdt_timer, 1)
+REGDEF_BIT(pwr_off, 1)
+REGDEF_BIT(, 3)
+REGDEF_BIT(PWR_EN2_CTRL, 1)
+REGDEF_BIT(PWR_EN3_CTRL, 1)
+REGDEF_BIT(, 17)
+REGDEF_BIT(PWR_SW1_IntEn, 1)
+REGDEF_BIT(PWR_SW2_IntEn, 1)
+REGDEF_BIT(PWR_SW3_IntEn, 1)
+REGDEF_BIT(PWR_SW4_IntEn, 1)
+REGDEF_BIT(, 4)
+REGDEF_END(PWBC_CTRL_REG)
+
+// PWBC Status
+#define PWBC_STS_REG_OFS 0x04
+//REGDEF_OFFSET(PWBC_STS_REG, 0x04)
+REGDEF_BEGIN(PWBC_STS_REG)
+REGDEF_BIT(, 8)
+REGDEF_BIT(PWROnSrc_SW1, 1)
+REGDEF_BIT(PWROnSrc_SW2, 1)
+REGDEF_BIT(PWROnSrc_SW3, 1)
+REGDEF_BIT(PWROnSrc_SW4, 1)
+REGDEF_BIT(PWROn_PwrEn2_Log, 1)
+REGDEF_BIT(, 2)
+REGDEF_BIT(PWROnSrc_PWRAlarm, 1)
+REGDEF_BIT(PWR_SW1_Pin, 1)
+REGDEF_BIT(PWR_SW2_Pin, 1)
+REGDEF_BIT(PWR_SW3_Pin, 1)
+REGDEF_BIT(PWR_SW4_Pin, 1)
+REGDEF_BIT(PWR_EN2_Sts, 1)
+REGDEF_BIT(PWR_EN3_Sts, 1)
+REGDEF_BIT(pwbc_cset_done, 1)
+REGDEF_BIT(PWBC_READY, 1)
+REGDEF_BIT(PWR_SW1_INT_STS, 1)
+REGDEF_BIT(PWR_SW2_INT_STS, 1)
+REGDEF_BIT(PWR_SW3_INT_STS, 1)
+REGDEF_BIT(PWR_SW4_INT_STS, 1)
+REGDEF_BIT(, 4)
+REGDEF_END(PWBC_STS_REG)
+
+
+// PWBC Sequence Time Register
+#define PWBC_SEQTIME_REG_OFS 0X08
+//REGDEF_OFFSET(PWBC_SEQTIME_REG, 0x08)
+REGDEF_BEGIN(PWBC_SEQTIME_REG)
+REGDEF_BIT(PWR_ON_SEQ_TIME1, 8)
+REGDEF_BIT(PWR_ON_SEQ_TIME2, 8)
+REGDEF_BIT(PWR_OFF_SEQ_TIME1, 8)
+REGDEF_BIT(PWR_OFF_SEQ_TIME2, 8)
+REGDEF_END(PWBC_SEQTIME_REG)
+
+// PWBC Control Register2
+#define PWBC_CTRL2_REG_OFS 0X10
+//REGDEF_OFFSET(PWBC_CTRL2_REG, 0x10)
+REGDEF_BEGIN(PWBC_CTRL2_REG)
+REGDEF_BIT(pwbc_cset, 1)
+REGDEF_BIT(pwbc_cset_inten, 1)
+REGDEF_BIT(pwr_en2_ctrl_sel, 1)
+REGDEF_BIT(pwr_en3_ctrl_sel, 1)
+REGDEF_BIT(seq_time1_sel, 1)
+REGDEF_BIT(seq_time2_sel, 1)
+REGDEF_BIT(seq_time3_sel, 1)
+REGDEF_BIT(seq_time4_sel, 1)
+REGDEF_BIT(pwbc_ana_sel, 1)
+REGDEF_BIT(, 23)
+REGDEF_END(PWBC_CTRL2_REG)
+
+
+// PWBC Write Protect Register
+#define PWBC_WRIPROT_REG_OFS 0X1C 
+//REGDEF_OFFSET(PWBC_WRIPROT_REG, 0x1C)
+REGDEF_BEGIN(PWBC_WRIPROT_REG)
+REGDEF_BIT(PWBC_SOUT_ON_USE_KEEP0, 1)
+REGDEF_BIT(PWBC_NO_WRITE_IN_AUTOREAD, 1)
+REGDEF_BIT(PWBC_SEPARATE_READ_WRUTE_CLK, 1)
+REGDEF_BIT(, 29)
+REGDEF_END(PWBC_WRIPROT_REG)
+
+// PWBC OSC Analog Register
+#define PWBC_OSCAN_REG_OFS 0X24
+//REGDEF_OFFSET(PWBC_OSCAN_REG, 0x24)
+REGDEF_BEGIN(PWBC_OSCAN_REG)
+REGDEF_BIT(PWBC_OSC_AnalogCfg, 16)
+REGDEF_BIT(PERIOD, 8)
+REGDEF_BIT(AUTO_READ_PERIOD, 8)
+REGDEF_END(PWBC_OSCAN_REG)
+
+
+
+//@}
+
+
+#endif

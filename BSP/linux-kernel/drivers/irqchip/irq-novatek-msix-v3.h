@@ -1,0 +1,75 @@
+/*
+ * MSIX header for Novatek RC/EP interworking
+ *
+ * Copyright (c) 2021 - Novatek Microelectronics Corp.
+ *
+ * This file is licensed under the terms of the GNU General Public
+ * License version 2. This program is licensed "as is" without any
+ * warranty of any kind, whether express or implied.
+ */
+
+#ifndef __IRQ_NOVATEK_MSIX_V3_H
+#define __IRQ_NOVATEK_MSIX_V3_H
+
+/* MSIX controller registers */
+
+typedef enum {
+
+	MSIx_SEL_TYPE_PULSE_GEN = 0x0,
+	MSIx_SEL_TYPE_AXICMD,
+
+	MSIx_SEL_TYPE_CNT,
+} MSIx_SEL_TYPE;
+
+#define INTR_GROUP_PENDING_OFS	0x04
+#define INTR_GROUP_PENDING2_OFS	0xDC
+
+// AXI command ADDR[31..0]
+#define AXI_CMD_ADDR_LSB_OFS  0x08
+
+// AXI command ADDR[63..32]
+#define AXI_CMD_ADDR_MSB_OFS  0x0C
+#define AXI_CMD_ADDR_MSB_MSK	GENMASK(7, 0)
+#define MSI_SEL_MSK		GENMASK(31, 31)
+
+// 2nd AXI command ADDR[31..0]
+#define AXI_CMD_MAU_ADDR_LSB_OFS  0x70
+
+// 2nd AXI command ADDR[63..32]
+#define AXI_CMD_MAU_ADDR_MSB_OFS  0x74
+
+// AXI command ADDR[31..0]
+#define AXI_CMD_MAU_DATA_OFS  	0x78
+
+#define MSIx_SYS_INT_SET_EN0_OFS  	0x10
+#define MSIx_SYS_INT_SET_EN1_OFS  	0x14
+#define MSIx_SYS_INT_SET_EN2_OFS  	0x18
+#define MSIx_SYS_INT_SET_EN3_OFS  	0x1C
+
+#define MSIx_SYS_INT_SET_CLR0_OFS  	0x30
+#define MSIx_SYS_INT_SET_CLR1_OFS  	0x34
+#define MSIx_SYS_INT_SET_CLR2_OFS  	0x38
+#define MSIx_SYS_INT_SET_CLR3_OFS  	0x3C
+
+#define MSIx_MSIx_INT_SET_EN0_OFS  	0x70
+#define MSIx_MSIx_INT_SET_EN1_OFS  	0x74
+#define MSIx_MSIx_INT_SET_EN2_OFS  	0x78
+#define MSIx_MSIx_INT_SET_EN3_OFS  	0x7C
+
+#define MSIx_MSIx_INT_SET_CLR0_OFS  0x90
+#define MSIx_MSIx_INT_SET_CLR1_OFS  0x94
+#define MSIx_MSIx_INT_SET_CLR2_OFS  0x98
+#define MSIx_MSIx_INT_SET_CLR3_OFS  0x9C
+
+#define MSIx_MSIx_INT_STS0_OFS  0xB0
+#define MSIx_MSIx_INT_STS1_OFS  0xB4
+#define MSIx_MSIx_INT_STS2_OFS  0xB8
+#define MSIx_MSIx_INT_STS3_OFS  0xBC
+
+#define MSIx_RCV_AXI_CMD_Group_0_BIT_0_31_SET_EN_OFS		0x100
+#define MSIx_RCV_AXI_CMD_Group_0_BIT_0_31_CLR_EN_OFS		0x200
+#define MSIx_RCV_AXI_CMD_Group_0_BIT_0_31_SET_PENDING_OFS	0x300
+#define MSIx_RCV_AXI_CMD_Group_0_BIT_0_31_CLR_PENDING_OFS	0x400
+
+
+#endif

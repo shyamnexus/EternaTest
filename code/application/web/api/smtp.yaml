@@ -1,0 +1,244 @@
+openapi: 3.0.3
+info:
+  title: IP Camera API - SMTP
+  version: 1.0.0
+  description: |
+    SMTP (Simple Mail Transfer Protocol) configuration API for email notifications.
+    
+    **Security**: Credentials are encrypted using dual-layer protection:
+    - AES-256-GCM encryption
+    - SQLCipher encrypted database storage
+    - Passwords never stored in plaintext configuration files
+    
+    **Implementation**: Modern C++ with NetworkManager facade pattern and standalone SmtpManager.
+paths:
+  /smtp:
+    get:
+      summary: Get SMTP Configuration
+      description: Returns current SMTP (email) configuration including server, port, authentication settings
+      operationId: getSmtpConfig
+      tags: [Networking]
+      responses:
+        '200':
+          description: SMTP configuration retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SmtpConfig'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    post:
+      summary: Update SMTP Configuration
+      description: Updates SMTP configuration for email notifications
+      operationId: updateSmtpConfig
+      tags: [Networking]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SmtpConfig'
+            example:
+              server: smtp.gmail.com
+              port: 587
+              use_ssl: 2
+              username: camera@example.com
+              password: your_password
+              from_email: camera@example.com
+              from_name: IP Camera
+              enabled: 1
+              timeout_sec: 30
+      responses:
+        '200':
+          description: Configuration updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: SMTP configuration updated successfully
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /smtp/test:
+    post:
+      summary: Test SMTP Connection
+      description: Tests SMTP configuration by connecting to server or sending test email
+      operationId: testSmtp
+      tags: [Networking]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                to_email:
+                  type: string
+                  format: email
+                  description: Email address to send test email to (optional)
+                config:
+                  $ref: '#/components/schemas/SmtpConfig'
+                  description: Custom SMTP config to test (optional)
+            examples:
+              testConnection:
+                summary: Test connection only
+                value:
+                  config:
+                    server: smtp.gmail.com
+                    port: 587
+                    username: camera@example.com
+                    password: your_password
+              sendTestEmail:
+                summary: Send test email
+                value:
+                  to_email: admin@example.com
+      responses:
+        '200':
+          description: Test successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [success, failed]
+                  message:
+                    type: string
+                  recipient:
+                    type: string
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /smtp/send:
+    post:
+      summary: Send Email
+      description: Sends an email using configured SMTP settings
+      operationId: sendEmail
+      tags: [Networking]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [to, subject, body]
+              properties:
+                to:
+                  type: string
+                  format: email
+                  description: Recipient email address
+                  example: admin@example.com
+                cc:
+                  type: string
+                  description: CC recipients (comma-separated)
+                  example: user1@example.com,user2@example.com
+                subject:
+                  type: string
+                  description: Email subject
+                  example: Camera Alert
+                body:
+                  type: string
+                  description: Email body content
+                  example: Motion detected at 2025-12-14 10:30:00
+                is_html:
+                  type: boolean
+                  description: true for HTML body, false for plain text
+                  default: false
+            example:
+              to: admin@example.com
+              subject: Motion Detected
+              body: Motion was detected in zone 1 at 10:30 AM
+              is_html: false
+      responses:
+        '200':
+          description: Email sent successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                    example: Email sent successfully
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+components:
+  schemas:
+    SmtpConfig:
+      type: object
+      properties:
+        server:
+          type: string
+          description: SMTP server address
+          example: smtp.gmail.com
+        port:
+          type: integer
+          description: SMTP port (25, 465, 587)
+          example: 587
+        use_ssl:
+          type: integer
+          enum: [0, 1, 2]
+          description: "0 = no SSL, 1 = SSL/TLS, 2 = STARTTLS"
+          example: 2
+        username:
+          type: string
+          description: SMTP authentication username
+          example: camera@example.com
+        password:
+          type: string
+          format: password
+          description: SMTP authentication password
+        from_email:
+          type: string
+          format: email
+          description: Sender email address
+          example: camera@example.com
+        from_name:
+          type: string
+          description: Sender name
+          example: IP Camera
+        enabled:
+          type: integer
+          enum: [0, 1]
+          description: "0 = disabled, 1 = enabled"
+          example: 1
+        timeout_sec:
+          type: integer
+          description: Connection timeout in seconds
+          default: 30
+    
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error message
+
+  responses:
+    BadRequest:
+      description: Invalid request body
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ServerError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'

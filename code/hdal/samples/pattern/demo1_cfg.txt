@@ -1,0 +1,11 @@
+multi_proc 0
+sensor2_en 0
+memcpy1_fps 250
+memcpy2_fps 100
+dmacpy1_fps 100
+grph_fps 100
+ise_fps 60
+vpe_fps 100
+rot_fps 100
+ipp_strip_num 0
+cpu_calc_fps 45

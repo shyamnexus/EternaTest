@@ -1,0 +1,16 @@
+/*
+ * Novatek Ltd. BSP part of dts
+ */
+
+/ {
+	audio_i2s_part {/*																												    < 0 / 1 / 2 >*/
+		  /*<i2s_num>, <enable>, <channel >, <data_stereo>, <sample_size>, <sample_rate>, <bit_clk >, <i2s_master>, <i2s_dataorder_type>,<I2S/EAC/HDMI>*/
+		  i2s =
+				<0      >, <1     >, <2     >, <1          >, <16         >, <8000       >, <256000 >, <1         >, <1         >,      <1         >;
+    };
+    audio_mclk_part {
+    		/*<i2s_num>, <mclk>*/
+          mclk =
+                <0      >, <12288000     >;
+    };
+};

@@ -1,0 +1,41 @@
+if ARCH_NOVATEK
+	if TARGET_NS02401_A64
+		menu "Novatek PCIE EP features"
+
+		config NVT_PCIE_EP_VENDOR_ID
+				hex "NVT PCIE EP Vendor ID"
+				depends on NVT_PCIE_DAUGHTER_BRD && PHY_NOVATEK_PCIE_V3
+				default 0x1E09
+				help
+				Overwrite your EP PCIE VID
+
+		config NVT_PCIE_EP_DEV_ID
+				hex "NVT PCIE EP Device ID"
+				depends on NVT_PCIE_DAUGHTER_BRD && PHY_NOVATEK_PCIE_V3
+				default 0x0007
+				help
+				Overwrite your EP PCIE PID
+
+		config NVT_PCIE_EP_BAR0_SIZE
+				int "NVT PCIE EP BAR0 size"
+				depends on NVT_PCIE_DAUGHTER_BRD && PHY_NOVATEK_PCIE_V3
+				default 5
+				range 0 13
+				help
+				0:		1 MB (2^20)
+				1:		2 MB (2^21)
+				N:		2^(20+N)
+				5:		32 MB (2^25) (default)
+				...
+				13:		8 GB (2^33) (max)
+
+		config NVT_PCIE_EP_BAR2_EN
+				bool "NVT PCIE EP BAR2 enabled"
+				depends on NVT_PCIE_DAUGHTER_BRD && PHY_NOVATEK_PCIE_V3
+				default y
+				help
+				Enable/Disable EP PCIE BAR2
+
+		endmenu
+	endif
+endif # ARCH_NOVATEK

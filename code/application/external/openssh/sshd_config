@@ -1,0 +1,51 @@
+# OpenSSH Server Configuration for Honeywell IP Camera
+
+# Network settings
+Port 22
+AddressFamily any
+ListenAddress 0.0.0.0
+
+# Security settings
+PermitRootLogin no
+PubkeyAuthentication yes
+PasswordAuthentication yes
+PermitEmptyPasswords no
+ChallengeResponseAuthentication no
+
+# Limit authentication attempts
+MaxAuthTries 3
+MaxSessions 2
+LoginGraceTime 30
+
+# Restrict user capabilities
+X11Forwarding no
+AllowTcpForwarding no
+AllowAgentForwarding no
+PermitTunnel no
+GatewayPorts no
+
+# Enable SFTP subsystem
+Subsystem sftp internal-sftp
+
+# Strong crypto algorithms only
+Ciphers chacha20-poly1305@openssh.com,aes256-gcm@openssh.com,aes128-gcm@openssh.com,aes256-ctr,aes192-ctr,aes128-ctr
+MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-sha2-512,hmac-sha2-256
+KexAlgorithms curve25519-sha256,curve25519-sha256@libssh.org,diffie-hellman-group-exchange-sha256
+
+# Host keys
+HostKey /etc/ssh/ssh_host_rsa_key
+HostKey /etc/ssh/ssh_host_ecdsa_key
+HostKey /etc/ssh/ssh_host_ed25519_key
+
+# Logging
+SyslogFacility AUTH
+LogLevel VERBOSE
+
+# Session settings
+ClientAliveInterval 300
+ClientAliveCountMax 2
+TCPKeepAlive yes
+Compression delayed
+
+# Privilege separation
+StrictModes yes

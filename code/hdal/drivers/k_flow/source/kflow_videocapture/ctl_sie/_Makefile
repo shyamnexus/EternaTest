@@ -1,0 +1,76 @@
+MODULE_NAME = kflow_ctl_sie
+# DIRs
+VOS_DRIVER_DIR = $(NVT_VOS_DIR)/drivers
+KDRV_DIR = $(NVT_HDAL_DIR)/drivers/k_driver
+KFLOW_DIR = $(NVT_HDAL_DIR)/drivers/k_flow
+CURR_DRIVER_DIR = $(KFLOW_DIR)
+KFLOW_CTL_SIE_DIR = $(CURR_DRIVER_DIR)/source/kflow_videocapture/ctl_sie
+# INCs
+VOS_INC_PATH = $(VOS_DRIVER_DIR)/include
+KDRV_INC_PATH = $(KDRV_DIR)/include
+KFLOW_INC_PATH = $(KFLOW_DIR)/include
+CURR_DRIVER_INC_PATH = $(CURR_DRIVER_DIR)/include
+CTL_SIE_COM_INC_PATH = $(KFLOW_CTL_SIE_DIR)/include
+CTL_SIE_DBG_INC_PATH = $(KFLOW_CTL_SIE_DIR)/sie_debug
+CTL_SIE_UTI_INC_PATH = $(KFLOW_CTL_SIE_DIR)/sie_utility
+CTL_SIE_FLOW_INC_PATH = $(KFLOW_CTL_SIE_DIR)/sie_flow
+# INC FLAGs
+EXTRA_INCLUDE += \
+	-I$(VOS_INC_PATH) \
+	-I$(KDRV_INC_PATH) \
+	-I$(KFLOW_INC_PATH) \
+	-I$(CURR_DRIVER_INC_PATH) \
+	-I$(CTL_SIE_COM_INC_PATH) \
+	-I$(CTL_SIE_DBG_INC_PATH) \
+	-I$(CTL_SIE_UTI_INC_PATH) \
+	-I$(CTL_SIE_FLOW_INC_PATH) \
+
+###############################################################################
+# Linux Makefile                                                              #
+###############################################################################
+ifeq ($(NVT_PRJCFG_CFG),Linux)
+EXTRA_CFLAGS += -DDEBUG
+ifeq ($(NVT_FPGA),ON)
+EXTRA_CFLAGS += -D_NVT_FPGA_
+endif
+
+$(MODULE_NAME)-src :=\
+	ctl_sie_main.c \
+	ctl_sie_proc.c \
+	ctl_sie_drv.c \
+	ctl_sie_api.c \
+	sie_flow/kdf_sie.c \
+	sie_utility/ctl_sie_event_id.c \
+	sie_utility/ctl_sie_event.c \
+	sie_utility/ctl_sie_utility_int.c \
+	sie_debug/ctl_sie_debug_int.c \
+	sie_flow/ctl_sie_buf.c \
+	sie_flow/ctl_sie_iosize.c \
+	sie_flow/ctl_sie_id.c \
+	sie_flow/ctl_sie_isp_task.c \
+	sie_flow/ctl_sie.c \
+	sie_flow/ctl_sie_isp.c \
+	ctl_sie_ver.c
+
+###############################################################################
+# rtos Makefile                                                               #
+###############################################################################
+else ifeq ($(NVT_PRJCFG_CFG),rtos)
+SRC += \
+	ctl_sie_api.c \
+	sie_flow/kdf_sie.c \
+	sie_utility/ctl_sie_event_id.c \
+	sie_utility/ctl_sie_event.c \
+	sie_utility/ctl_sie_utility_int.c \
+	sie_debug/ctl_sie_debug_int.c \
+	sie_flow/ctl_sie_buf.c \
+	sie_flow/ctl_sie_iosize.c \
+	sie_flow/ctl_sie_id.c \
+	sie_flow/ctl_sie_isp_task.c \
+	sie_flow/ctl_sie.c \
+	sie_flow/ctl_sie_isp.c \
+	ctl_sie_ver.c
+
+endif
+
+include $(NVT_HDAL_DIR)/driver.mk

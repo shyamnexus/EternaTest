@@ -1,0 +1,98 @@
+#!/bin/sh
+
+SSHD_CONFIG="/etc/ssh/sshd_config"
+SSH_KEY_DIR="/etc/ssh"
+SSHD_BINARY="/usr/sbin/sshd"
+PRIVSEP_DIR="/var/empty"
+LOGIN_USER="admin"
+
+start() {
+    echo "Starting sshd..."
+
+    # 1. Create privilege separation dir
+    if [ ! -d "$PRIVSEP_DIR" ]; then
+        mkdir -p "$PRIVSEP_DIR"
+    fi
+    # Always enforce correct permissions/ownership for privsep
+    chmod 755 "$PRIVSEP_DIR"
+    chown root:root "$PRIVSEP_DIR"
+
+    # 2. Create sshd user/group if missing (required for priv separation)
+    if ! grep -q "^sshd:" /etc/group; then
+        addgroup -S sshd
+    fi
+    if ! grep -q "^sshd:" /etc/passwd; then
+        adduser -S -D -H -h /var/run/sshd -G sshd sshd
+    fi
+
+    # 3. Create login user 'admin' if missing
+    if ! grep -q "^${LOGIN_USER}:" /etc/passwd; then
+        echo "Creating default user ${LOGIN_USER}..."
+        adduser -D -s /bin/sh ${LOGIN_USER}
+        # Set default password (change this!)
+        echo "${LOGIN_USER}:123456" | chpasswd
+    fi
+    
+    # Ensure home directory exists
+    if [ ! -d "/home/${LOGIN_USER}" ]; then
+        mkdir -p "/home/${LOGIN_USER}"
+        chown "${LOGIN_USER}" "/home/${LOGIN_USER}"
+    fi
+
+    # 4. Generate Host Keys if missing
+    if [ ! -f "${SSH_KEY_DIR}/ssh_host_rsa_key" ]; then
+        echo "Generating RSA host key..."
+        ssh-keygen -f "${SSH_KEY_DIR}/ssh_host_rsa_key" -N '' -t rsa
+    fi
+    if [ ! -f "${SSH_KEY_DIR}/ssh_host_ecdsa_key" ]; then
+        echo "Generating ECDSA host key..."
+        ssh-keygen -f "${SSH_KEY_DIR}/ssh_host_ecdsa_key" -N '' -t ecdsa
+    fi
+    if [ ! -f "${SSH_KEY_DIR}/ssh_host_ed25519_key" ]; then
+        echo "Generating ED25519 host key..."
+        ssh-keygen -f "${SSH_KEY_DIR}/ssh_host_ed25519_key" -N '' -t ed25519
+    fi
+
+    # 5. Ensure runtime directories exist
+    mkdir -p /var/run/sshd
+
+    # 6. Start the daemon
+    start-stop-daemon -S -x "$SSHD_BINARY" -- -f "$SSHD_CONFIG"
+    if [ $? -eq 0 ]; then
+        echo "OK"
+    else
+        echo "FAIL"
+    fi
+}
+
+stop() {
+    echo "Stopping sshd..."
+    start-stop-daemon -K -x "$SSHD_BINARY"
+    [ $? -eq 0 ] && echo "OK" || echo "FAIL"
+}
+
+restart() {
+    stop
+    start
+}
+
+if [ -z "$1" ]; then
+  set -- start
+fi
+
+case "$1" in
+  start)
+    start
+    ;;
+  stop)
+    stop
+    ;;
+  restart|reload)
+    restart
+    ;;
+  *)
+    echo "Usage: $0 {start|stop|restart}"
+    exit 1
+esac
+
+exit $?

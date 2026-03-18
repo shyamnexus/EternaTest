@@ -1,0 +1,18 @@
+cmake_minimum_required(VERSION 3.1)
+set(CMAKE_INSTALL_PREFIX ${CMAKE_SOURCE_DIR}/build/output)
+include_directories(${CMAKE_SOURCE_DIR}/optee_benchmark/libyaml/include)
+include_directories(${CMAKE_SOURCE_DIR}/optee_client/public)
+include_directories(${CMAKE_SOURCE_DIR}/optee_test/host/openssl/include)
+add_subdirectory(./optee_client)
+add_subdirectory(./optee_benchmark/libyaml)
+add_subdirectory(./optee_benchmark)
+add_subdirectory(./optee_examples)
+set(OPENSSL_USE_STATIC_LIBS TRUE)
+if(CMAKE_SIZEOF_VOID_P EQUAL 8)
+set(OPTEE_TEST_SDK ${CMAKE_SOURCE_DIR}/../optee_os/out/arm-plat-novatek/export-ta_arm64)
+else()
+set(OPTEE_TEST_SDK ${CMAKE_SOURCE_DIR}/../optee_os/out/arm-plat-novatek/export-ta_arm32)
+endif()
+link_libraries(${CMAKE_DL_LIBS}) #for optee_test/xtest used our openssl
+add_subdirectory(./optee_test)
+

@@ -1,0 +1,12 @@
+obj-$(CONFIG_PINCTRL_NA51102)		+= na51102/na51102_pinmux_host.o na51102/na51102_pinmux_proc.o na51102/na51102_pad_host.o na51102/na51102_gpio_host.o pinctrl-nvt-plat.o
+obj-$(CONFIG_PINCTRL_NS02201)		+= ns02201/ns02201_pinmux_host.o ns02201/ns02201_pinmux_proc.o ns02201/ns02201_pad_host.o ns02201/ns02201_gpio_host.o pinctrl-nvt-plat.o
+obj-$(CONFIG_PINCTRL_NA51055)		+= na51055/na51055_pinmux_host.o na51055/na51055_pinmux_proc.o na51055/na51055_pad_host.o na51055/na51055_gpio_host.o pinctrl-nvt-plat.o
+obj-$(CONFIG_PINCTRL_NS02302)		+= ns02302/ns02302_pinmux_host.o ns02302/ns02302_pinmux_proc.o ns02302/ns02302_pad_host.o ns02302/ns02302_gpio_host.o pinctrl-nvt-plat.o
+obj-$(CONFIG_PINCTRL_NS02301)           += ns02301/ns02301_pinmux_host.o ns02301/ns02301_pinmux_proc.o ns02301/ns02301_pad_host.o ns02301/ns02301_gpio_host.o pinctrl-nvt-plat.o
+obj-$(CONFIG_PINCTRL_NA51102)           += na51102/na51102_pinmux_host.o na51102/na51102_pinmux_proc.o na51102/na51102_pad_host.o na51102/na51102_gpio_host.o pinctrl-nvt-plat.o
+obj-$(CONFIG_PINCTRL_NA51089)           += na51089/na51089_pinmux_host.o na51089/na51089_pinmux_proc.o na51089/na51089_pad_host.o na51089/na51089_gpio_host.o pinctrl-nvt-plat.o
+obj-$(CONFIG_PINCTRL_NS02401)           += ns02401/ns02401_pinmux_host.o ns02401/ns02401_pinmux_proc.o ns02401/ns02401_pad_host.o ns02401/ns02401_gpio_host.o pinctrl-nvt-plat.o
+obj-$(CONFIG_PINCTRL_NA51090)		+= pinctrl-nvt-plat.o na51090/na51090_pinmux_host.o na51090/na51090_pinmux_proc.o na51090/na51090_pad_host.o na51090/na51090_gpio_host.o
+obj-$(CONFIG_PINCTRL_NA51090_EP)	+= pinctrl-nvt-ep.o
+pinctrl-nvt-ep-y			:= pinctrl-nvt-plat-ep.o na51090/na51090_pinmux_host_ep.o na51090/na51090_pinmux_proc_ep.o na51090/na51090_pad_host_ep.o
+obj-$(CONFIG_PINCTRL_NA51103)		+= pinctrl-nvt-plat.o na51103/na51103_pinmux_host.o na51103/na51103_pinmux_proc.o na51103/na51103_pad_host.o na51103/na51103_gpio_host.o

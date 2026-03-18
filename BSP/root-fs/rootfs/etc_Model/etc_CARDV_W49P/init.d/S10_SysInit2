@@ -1,0 +1,189 @@
+#!/bin/sh
+GROUP_KO=ON
+KERVER=`cat /proc/version | awk -F'version ' '{print $2}' | awk -F' ' '{print $1}'`
+if [ ${NVT_CHIP_ID} == "CHIP_NT98539A" ]; then
+KO_SUFFIX="_539a"
+fi
+# System Driver Init
+#modprobe ehci-hcd
+#modprobe xhci_plat_hcd
+#modprobe nvt_status
+#modprobe nvt_pstore
+insmod /lib/modules/$KERVER/extra/crypto/cryptodev-linux/cryptodev.ko
+
+insmod /lib/modules/$KERVER/vos/kwrap/kwrap.ko max_flag_count=1000
+insmod /lib/modules/$KERVER/hdal/kdrv_builtin$KO_SUFFIX/kdrv_builtin$KO_SUFFIX.ko
+
+insmod /lib/modules/$KERVER/kernel/drivers/dma/nvt_hwcpy.ko
+insmod /lib/modules/$KERVER/hdal/comm/kdrv_comm.ko
+insmod /lib/modules/$KERVER/hdal/kdrv_gfx2d/kdrv_gfx2d.ko
+insmod /lib/modules/$KERVER/hdal/kdrv_videocapture/kdrv_videocapture.ko
+insmod /lib/modules/$KERVER/hdal/kdrv_videoprocess$KO_SUFFIX/kdrv_videoprocess$KO_SUFFIX.ko
+insmod /lib/modules/$KERVER/hdal/kflow_common/kflow_common.ko
+insmod /lib/modules/$KERVER/hdal/kflow_gfx/videosprite/nvt_videosprite.ko
+insmod /lib/modules/$KERVER/hdal/kflow_videocapture/kflow_videocapture.ko
+insmod /lib/modules/$KERVER/hdal/kflow_videoprocess$KO_SUFFIX/kflow_videoprocess$KO_SUFFIX.ko
+
+# rpc
+insmod /lib/modules/$KERVER/hdal/kdrv_rpc/kdrv_rpc.ko
+
+# kdrv_gfx2d
+insmod /lib/modules/$KERVER/hdal/kflow_gfx/nvt_gfx.ko
+
+# kdrv_vdoout
+insmod /lib/modules/$KERVER/hdal/kdrv_videoout/ide/nvt_ide.ko
+insmod /lib/modules/$KERVER/hdal/kdrv_videoout/mi/nvt_mi.ko
+insmod /lib/modules/$KERVER/hdal/kdrv_videoout/dsiphy/nvt_dsiphy.ko
+insmod /lib/modules/$KERVER/hdal/kdrv_videoout/dsi/nvt_dsi.ko
+insmod /lib/modules/$KERVER/hdal/kdrv_videoout/csi_tx/kdrv_csi_tx.ko
+insmod /lib/modules/$KERVER/hdal/kdrv_videoout/display_obj/kdrv_videoout.ko
+insmod /lib/modules/$KERVER/hdal/kdrv_videoout/hdmitx/nvt_hdmitx.ko
+
+# kflow_videoout
+insmod /lib/modules/$KERVER/hdal/kflow_videoout/unit/kflow_videoout.ko
+
+# panel device
+insmod /lib/modules/$KERVER/hdal/display_panel/nvt_dispdev_panel.ko
+case "${LCD1}" in
+    disp_off)
+        ;;
+    disp_if8b_lcd1_pw35p00)
+        insmod /lib/modules/$KERVER/hdal/display_panel/${LCD1}_hx8238d/$LCD1.ko
+        ;;
+    disp_if8b_lcd1_psd300)
+        insmod /lib/modules/$KERVER/hdal/display_panel/${LCD1}_ili8961/$LCD1_ili8961.ko
+        ;;
+    *)
+        if [[ $(echo $LCD1 | grep -c 'ifdsi') == "1" ]]; then
+            insmod /lib/modules/$KERVER/hdal/kdrv_videoout/dsi/nvt_dsi.ko
+        fi
+        insmod /lib/modules/$KERVER/hdal/display_panel/${LCD1}/${LCD1}.ko
+        ;;
+esac
+case "${LCD2}" in
+    disp_off)
+        ;;
+    disp_if8b_lcd2_pw35p00)
+        insmod /lib/modules/$KERVER/hdal/display_panel/${LCD2}_hx8238d/$LCD2.ko
+        ;;
+    disp_if8b_lcd2_psd300)
+        insmod /lib/modules/$KERVER/hdal/display_panel/${LCD2}_ili8961/$LCD2_ili8961.ko
+        ;;
+    *)
+        if [[ $(echo $LCD2 | grep -c 'ifdsi') == "1" ]]; then
+            insmod /lib/modules/$KERVER/hdal/kdrv_videoout/dsi/nvt_dsi.ko
+        fi
+        insmod /lib/modules/$KERVER/hdal/display_panel/${LCD2}/${LCD2}.ko
+        ;;
+esac
+# ipp test
+#insmod /lib/modules/$KERVER/hdal/kdrv_videoprocess/kdrv_ipp_sim/kdrv_ipp_sim.ko
+insmod /lib/modules/$KERVER/hdal/kdrv_videoprocess/kdrv_vpe/kdrv_vpe.ko
+
+# nvt_h26x
+insmod /lib/modules/$KERVER/hdal/kdrv_videocodec/kdrv_h26x.ko
+insmod /lib/modules/$KERVER/hdal/nvt_vencrc/nvt_vencrc.ko
+
+# nvt_jpeg
+insmod /lib/modules/$KERVER/hdal/kdrv_videojpeg/kdrv_jpg.ko
+insmod /lib/modules/$KERVER/hdal/kdrv_videojpeg/decoder_lib/kdrv_jpgdec.ko
+
+# nvt_h26x dec
+insmod /lib/modules/$KERVER/hdal/kdrv_videodec/h26xdec.ko
+
+# isf vdoenc
+insmod /lib/modules/$KERVER/hdal/kflow_videoenc/unit/kflow_videoenc.ko
+
+# isf vdodec
+insmod /lib/modules/$KERVER/hdal/kflow_videodec/unit/kflow_videodec.ko
+
+# audio
+insmod /lib/modules/$KERVER/hdal/kdrv_audioio/audio_common/nvt_audio.ko
+insmod /lib/modules/$KERVER/hdal/kdrv_audioio/kdrv_audio/nvt_kdrv_audio.ko
+insmod /lib/modules/$KERVER/hdal/kflow_audiocapture/unit/kflow_audiocap.ko
+insmod /lib/modules/$KERVER/hdal/kflow_audioout/unit/kflow_audioout.ko
+
+# isf audenc
+insmod /lib/modules/$KERVER/hdal/kflow_audioenc/unit/kflow_audioenc.ko
+
+# isf auddec
+insmod /lib/modules/$KERVER/hdal/kflow_audiodec/unit/kflow_audiodec.ko
+
+# sde
+insmod /lib/modules/$KERVER/hdal/kdrv_videoprocess/kdrv_sde/kdrv_sde.ko
+
+# iq, 3a
+echo "isp_id_list: 0x3F, ae_id_list: 0x3F, awb_id_list: 0x3F, iq_id_list 0x3F"
+insmod /lib/modules/$KERVER/hdal/isp$KO_SUFFIX/nvt_isp$KO_SUFFIX.ko isp_id_list=0x3F
+insmod /lib/modules/$KERVER/hdal/ae/nvt_ae.ko ae_id_list=0x3F
+insmod /lib/modules/$KERVER/hdal/awb/nvt_awb.ko awb_id_list=0x3F
+insmod /lib/modules/$KERVER/hdal/iq$KO_SUFFIX/nvt_iq$KO_SUFFIX.ko iq_id_list=0x3F
+#insmod /lib/modules/$KERVER/hdal/af/nvt_af.ko
+insmod /lib/modules/$KERVER/hdal/vpe/nvt_vpe.ko vpe_id_list=0x3 vpe_idx_list=0x3 vpe_idx_num=0x4 vpelite_id_list=0x3
+insmod /lib/modules/$KERVER/hdal/sde/nvt_sde.ko
+
+# motor & sensor
+#modprobe nvt_sen_imx290 sen_cfg_path=/mnt/app/sensor/sen_imx290_fpga.cfg
+#modprobe nvt_sen_imx477 sen_cfg_path=/mnt/app/sensor/sen_imx477_fpga.cfg
+modprobe nvt_sen_imx290 sen_cfg_path=/mnt/app/sensor/sen_imx290_530.cfg
+modprobe nvt_sen_imx415 sen_cfg_path=/mnt/app/sensor/sen_imx415_530.cfg
+modprobe nvt_sen_imx477 sen_cfg_path=/mnt/app/sensor/sen_imx477_530.cfg
+modprobe nvt_sen_imx678 sen_cfg_path=/mnt/app/sensor/sen_imx678_530.cfg
+modprobe nvt_sen_os02k10 sen_cfg_path=/mnt/app/sensor/sen_os02k10_530.cfg
+modprobe nvt_sen_os04a10 sen_cfg_path=/mnt/app/sensor/sen_os04a10_530.cfg
+modprobe nvt_sen_os08b10 sen_cfg_path=/mnt/app/sensor/sen_os08b10_530.cfg
+modprobe nvt_sen_imx335_242_241 sen_cfg_path=/mnt/app/sensor/sen_imx335_242_241_530.cfg
+
+# dsp
+insmod /lib/modules/$KERVER/hdal/kflow_rpc/nvt_ipc.ko
+insmod /lib/modules/$KERVER/hdal/dsp/nvt_dsp.ko
+
+#cv
+insmod /lib/modules/$KERVER/hdal/kdrv_ive/kdrv_ive.ko
+insmod /lib/modules/$KERVER/hdal/kdrv_md/kdrv_md.ko
+
+#ai
+insmod /lib/modules/$KERVER/hdal/kdrv_ai/kdrv_ai.ko  ai_net_supported_num=128
+insmod /lib/modules/$KERVER/hdal/kflow_ai/kflow_ai.ko;
+
+#fb
+#insmod /lib/modules/$KERVER/kernel/drivers/video/fbdev/core/fb.ko
+insmod /lib/modules/$KERVER/kernel/drivers/video/fbdev/core/cfbcopyarea.ko
+insmod /lib/modules/$KERVER/kernel/drivers/video/fbdev/core/cfbfillrect.ko
+insmod /lib/modules/$KERVER/kernel/drivers/video/fbdev/core/cfbimgblt.ko
+insmod /lib/modules/$KERVER/hdal/comm/tse/nvt_tse.ko
+insmod /lib/modules/$KERVER/hdal/kdrv_videoout/gpenc/nvt_gpenc.ko
+insmod /lib/modules/$KERVER/hdal/kdrv_videoout/fbdev/nvt_fb.ko
+
+#csi-tx
+insmod /lib/modules/$KERVER/hdal/kflow_csitx/nvt_kflow_csitx.ko
+
+#usb
+insmod /lib/modules/$KERVER/hdal/comm/uvcp/nvt_uvcp.ko
+insmod /lib/modules/$KERVER/hdal/comm/usb2dev/nvt_usb2dev.ko
+#iio & adc (for keyscan)
+insmod /lib/modules/$KERVER/kernel/drivers/iio/industrialio.ko
+#insmod /lib/modules/$KERVER/kernel/drivers/iio/industrialio-configfs.ko
+insmod /lib/modules/$KERVER/kernel/drivers/iio/adc/nvt_adc.ko
+
+#tse
+if [ "${TSE}" == "TSE_ENABLE" ]; then
+    insmod /lib/modules/$KERVER/hdal/comm/tse/nvt_tse.ko
+fi
+
+#eis
+if [ "${EIS}" == "EIS_ENABLE" ]; then
+    insmod /lib/modules/$KERVER/hdal/eis/nvt_eis.ko
+fi
+
+#gyro
+if [ "${GYRO}" == "GYRO_ICM42607" ]; then
+    insmod /lib/modules/$KERVER/hdal/comm/gyro_spi/nvt_gyro_spi.ko
+    insmod /lib/modules/$KERVER/hdal/gyro_comm/gyro_comm.ko
+    insmod /lib/modules/$KERVER/hdal/gyro_icm42607/nvt_gyro_icm42607.ko
+fi
+
+
+
+#pgl add for gsensor
+modprobe gsensor

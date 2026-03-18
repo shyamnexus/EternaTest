@@ -1,0 +1,677 @@
+openapi: 3.0.3
+info:
+  title: IP Camera API - IR Control
+  version: 1.0.0
+  description: |
+    IR LED and IR Cut Filter control API for day/night operation.
+    
+    Supports multiple operating modes:
+    - **Auto Mode**: Automatically switches based on scene luminance
+    - **Day Mode**: IR LED off, IR cut filter engaged (color mode)
+    - **Night Mode**: IR LED on, IR cut filter disengaged (B&W mode)
+    - **Schedule Mode**: Switches based on configured time schedule
+
+paths:
+  /ir:
+    get:
+      summary: Get Complete IR Configuration
+      description: Returns full IR configuration including LED, cut filter, auto settings, and status
+      operationId: getIRConfig
+      tags: [IR Control]
+      responses:
+        '200':
+          description: IR configuration retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IRFullConfig'
+              example:
+                led:
+                  enabled: true
+                  brightness: 80
+                cut:
+                  enabled: true
+                  state: "day"
+                auto:
+                  mode: "auto"
+                  day_to_night_threshold: 30
+                  night_to_day_threshold: 60
+                  switch_delay_sec: 5
+                  schedule_night_start: "18:00"
+                  schedule_day_start: "06:00"
+                  night_brightness: 80
+                  sync_sensor_bw_mode: true
+                status:
+                  ir_led_on: false
+                  ir_led_brightness: 0
+                  ir_cut_state: "day"
+                  is_night_mode: false
+                  current_luma: 128
+                  current_ev: 450
+                  last_switch_time: "2026-01-16T10:30:00Z"
+                  last_switch_reason: "Luminance above threshold"
+                  sw_cds_active: true
+
+    put:
+      summary: Update IR Configuration
+      description: Update IR LED, cut filter, and/or auto day/night settings
+      operationId: updateIRConfig
+      tags: [IR Control]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IRConfigUpdate'
+            examples:
+              enable_auto:
+                summary: Enable auto day/night mode
+                value:
+                  auto:
+                    mode: "auto"
+                    day_to_night_threshold: 30
+                    night_to_day_threshold: 60
+              force_night:
+                summary: Force night mode with specific brightness
+                value:
+                  auto:
+                    mode: "night"
+                  led:
+                    brightness: 100
+      responses:
+        '200':
+          description: Configuration updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IRUpdateResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /ir/led:
+    get:
+      summary: Get IR LED Settings
+      description: Get current IR LED configuration and on/off state
+      operationId: getIRLed
+      tags: [IR Control]
+      responses:
+        '200':
+          description: IR LED settings retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IRLedConfig'
+              example:
+                enabled: true
+                brightness: 80
+                is_on: false
+
+    put:
+      summary: Update IR LED Settings
+      description: Enable/disable IR LED and set brightness level
+      operationId: updateIRLed
+      tags: [IR Control]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IRLedUpdate'
+            example:
+              enabled: true
+              brightness: 80
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /ir/led/brightness:
+    get:
+      summary: Get IR LED Brightness
+      description: Get current IR LED brightness level
+      operationId: getIRLedBrightness
+      tags: [IR Control]
+      responses:
+        '200':
+          description: Brightness level retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  brightness:
+                    type: integer
+                    minimum: 0
+                    maximum: 100
+                  is_on:
+                    type: boolean
+
+    put:
+      summary: Set IR LED Brightness
+      description: Adjust IR LED brightness (0-100%)
+      operationId: setIRLedBrightness
+      tags: [IR Control]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - brightness
+              properties:
+                brightness:
+                  type: integer
+                  minimum: 0
+                  maximum: 100
+                  description: Brightness level as percentage
+      responses:
+        '200':
+          description: Brightness updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  brightness:
+                    type: integer
+                  message:
+                    type: string
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /ir/cut:
+    get:
+      summary: Get IR Cut Filter Settings
+      description: Get IR cut filter configuration and current state
+      operationId: getIRCut
+      tags: [IR Control]
+      responses:
+        '200':
+          description: IR cut settings retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IRCutConfig'
+              example:
+                enabled: true
+                state: "day"
+
+    put:
+      summary: Update IR Cut Filter Settings
+      description: |
+        Update IR cut filter settings or manually set state.
+        
+        States:
+        - **day**: IR cut filter engaged (blocks IR, color image)
+        - **night**: IR cut filter disengaged (allows IR, B&W image)
+      operationId: updateIRCut
+      tags: [IR Control]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IRCutUpdate'
+            examples:
+              enable:
+                summary: Enable IR cut control
+                value:
+                  enabled: true
+              switch_night:
+                summary: Switch to night mode manually
+                value:
+                  state: "night"
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /ir/daynight:
+    get:
+      summary: Get Day/Night Auto Settings
+      description: Get automatic day/night switching configuration
+      operationId: getDayNightSettings
+      tags: [IR Control]
+      responses:
+        '200':
+          description: Day/night settings retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DayNightConfig'
+              example:
+                mode: "auto"
+                day_to_night_threshold: 30
+                night_to_day_threshold: 60
+                switch_delay_sec: 5
+                schedule_night_start: "18:00"
+                schedule_day_start: "06:00"
+                night_brightness: 80
+                sync_sensor_bw_mode: true
+                is_night_mode: false
+                current_luma: 128
+
+    put:
+      summary: Update Day/Night Auto Settings
+      description: |
+        Configure automatic day/night switching behavior.
+        
+        Modes:
+        - **off**: Manual control only
+        - **auto**: Automatic based on luminance thresholds
+        - **day**: Force day mode (IR off)
+        - **night**: Force night mode (IR on)
+        - **schedule**: Switch based on time schedule
+      operationId: updateDayNightSettings
+      tags: [IR Control]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DayNightUpdate'
+            examples:
+              auto_mode:
+                summary: Enable auto mode with thresholds
+                value:
+                  mode: "auto"
+                  day_to_night_threshold: 25
+                  night_to_day_threshold: 50
+                  switch_delay_sec: 3
+              schedule_mode:
+                summary: Enable schedule mode
+                value:
+                  mode: "schedule"
+                  schedule_night_start: "19:00"
+                  schedule_day_start: "07:00"
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /ir/daynight/mode:
+    get:
+      summary: Get Current Day/Night Mode
+      description: Get the current operating mode (day or night)
+      operationId: getDayNightMode
+      tags: [IR Control]
+      responses:
+        '200':
+          description: Current mode retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  is_night_mode:
+                    type: boolean
+                  mode:
+                    type: string
+                    enum: [day, night]
+                  current_luma:
+                    type: integer
+              example:
+                is_night_mode: false
+                mode: "day"
+                current_luma: 128
+
+    put:
+      summary: Quick Switch Day/Night Mode
+      description: Immediately switch between day and night mode
+      operationId: setDayNightMode
+      tags: [IR Control]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - mode
+              properties:
+                mode:
+                  type: string
+                  enum: [day, night]
+                  description: Target mode
+            example:
+              mode: "night"
+      responses:
+        '200':
+          description: Mode switched successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  is_night_mode:
+                    type: boolean
+                  message:
+                    type: string
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /ir/status:
+    get:
+      summary: Get IR System Status
+      description: Get real-time IR system status including LED, cut filter, and auto mode state
+      operationId: getIRStatus
+      tags: [IR Control]
+      responses:
+        '200':
+          description: Status retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IRStatus'
+              example:
+                ir_led_on: false
+                ir_led_brightness: 0
+                ir_cut_state: "day"
+                is_night_mode: false
+                current_luma: 128
+                current_ev: 450
+                last_switch_time: "2026-01-16T10:30:00Z"
+                last_switch_reason: "Luminance above threshold"
+                auto_mode: "auto"
+                sw_cds_initialized: true
+                sw_cds_active: true
+
+  /ir/action:
+    post:
+      summary: Execute IR Action
+      description: |
+        Execute an immediate IR control action.
+        
+        Available actions:
+        - **switch_day**: Switch to day mode
+        - **switch_night**: Switch to night mode
+        - **reset**: Reset IR settings to defaults
+        - **test_led**: Test IR LED at specified brightness
+      operationId: executeIRAction
+      tags: [IR Control]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IRAction'
+            examples:
+              switch_night:
+                summary: Switch to night mode
+                value:
+                  action: "switch_night"
+              test_led:
+                summary: Test IR LED at 50% brightness
+                value:
+                  action: "test_led"
+                  brightness: 50
+              reset:
+                summary: Reset to defaults
+                value:
+                  action: "reset"
+      responses:
+        '200':
+          description: Action executed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  status:
+                    type: object
+                    properties:
+                      is_night_mode:
+                        type: boolean
+                      ir_led_on:
+                        type: boolean
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+components:
+  schemas:
+    IRFullConfig:
+      type: object
+      properties:
+        led:
+          $ref: '#/components/schemas/IRLedConfig'
+        cut:
+          $ref: '#/components/schemas/IRCutConfig'
+        auto:
+          $ref: '#/components/schemas/DayNightConfig'
+        status:
+          $ref: '#/components/schemas/IRStatus'
+
+    IRConfigUpdate:
+      type: object
+      properties:
+        led:
+          $ref: '#/components/schemas/IRLedUpdate'
+        cut:
+          $ref: '#/components/schemas/IRCutUpdate'
+        auto:
+          $ref: '#/components/schemas/DayNightUpdate'
+
+    IRUpdateResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+        config:
+          $ref: '#/components/schemas/IRFullConfig'
+
+    IRLedConfig:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+          description: Whether IR LED control is enabled
+        brightness:
+          type: integer
+          minimum: 0
+          maximum: 100
+          description: Brightness level (0-100%)
+        is_on:
+          type: boolean
+          description: Current on/off state (read-only)
+
+    IRLedUpdate:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+        brightness:
+          type: integer
+          minimum: 0
+          maximum: 100
+
+    IRCutConfig:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+          description: Whether IR cut filter control is enabled
+        state:
+          type: string
+          enum: [day, night]
+          description: Current filter state
+
+    IRCutUpdate:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+        state:
+          type: string
+          enum: [day, night]
+
+    DayNightConfig:
+      type: object
+      properties:
+        mode:
+          type: string
+          enum: [off, auto, day, night, schedule]
+          description: |
+            Day/night operating mode:
+            - off: Manual control only
+            - auto: Automatic based on luminance
+            - day: Force day mode
+            - night: Force night mode  
+            - schedule: Time-based switching
+        day_to_night_threshold:
+          type: integer
+          minimum: 0
+          maximum: 100
+          description: Luminance threshold to switch to night mode
+        night_to_day_threshold:
+          type: integer
+          minimum: 0
+          maximum: 100
+          description: Luminance threshold to switch to day mode
+        switch_delay_sec:
+          type: integer
+          minimum: 0
+          maximum: 60
+          description: Delay before switching to prevent rapid toggling
+        schedule_night_start:
+          type: string
+          pattern: '^\d{2}:\d{2}$'
+          description: Time to switch to night mode (HH:MM)
+        schedule_day_start:
+          type: string
+          pattern: '^\d{2}:\d{2}$'
+          description: Time to switch to day mode (HH:MM)
+        night_brightness:
+          type: integer
+          minimum: 0
+          maximum: 100
+          description: IR LED brightness in night mode
+        sync_sensor_bw_mode:
+          type: boolean
+          description: Sync sensor B&W mode with day/night state
+        is_night_mode:
+          type: boolean
+          description: Current night mode state (read-only)
+        current_luma:
+          type: integer
+          description: Current scene luminance (read-only)
+
+    DayNightUpdate:
+      type: object
+      properties:
+        mode:
+          type: string
+          enum: [off, auto, day, night, schedule]
+        day_to_night_threshold:
+          type: integer
+          minimum: 0
+          maximum: 100
+        night_to_day_threshold:
+          type: integer
+          minimum: 0
+          maximum: 100
+        switch_delay_sec:
+          type: integer
+          minimum: 0
+          maximum: 60
+        schedule_night_start:
+          type: string
+        schedule_day_start:
+          type: string
+        night_brightness:
+          type: integer
+          minimum: 0
+          maximum: 100
+        sync_sensor_bw_mode:
+          type: boolean
+
+    IRStatus:
+      type: object
+      properties:
+        ir_led_on:
+          type: boolean
+          description: Whether IR LED is currently on
+        ir_led_brightness:
+          type: integer
+          description: Current IR LED brightness (0-100)
+        ir_cut_state:
+          type: string
+          enum: [day, night]
+          description: Current IR cut filter state
+        is_night_mode:
+          type: boolean
+          description: Whether system is in night mode
+        current_luma:
+          type: integer
+          description: Current scene luminance value (0-255)
+        current_ev:
+          type: integer
+          description: Current exposure value
+        last_switch_time:
+          type: string
+          format: date-time
+          description: Timestamp of last day/night switch
+        last_switch_reason:
+          type: string
+          description: Reason for last switch
+        auto_mode:
+          type: string
+          enum: [off, auto, day, night, schedule]
+          description: Current auto mode setting
+        sw_cds_initialized:
+          type: boolean
+          description: Whether software CDS is initialized
+        sw_cds_active:
+          type: boolean
+          description: Whether software CDS is actively monitoring
+
+    IRAction:
+      type: object
+      required:
+        - action
+      properties:
+        action:
+          type: string
+          enum: [switch_day, switch_night, reset, test_led]
+          description: Action to execute
+        brightness:
+          type: integer
+          minimum: 0
+          maximum: 100
+          description: Brightness for test_led action
+
+  responses:
+    Success:
+      description: Operation completed successfully
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+              message:
+                type: string
+
+    BadRequest:
+      description: Invalid request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string

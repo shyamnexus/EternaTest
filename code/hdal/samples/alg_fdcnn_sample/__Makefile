@@ -1,0 +1,87 @@
+MODULE_NAME = alg_fdcnn_sample
+# DIRs
+HDAL_SAMPLE_DIR = $(NVT_HDAL_DIR)/samples
+ECOS_OUTPUT_DIR = $(HDAL_SAMPLE_DIR)/output
+AI_LIB_DIR = $(NVT_HDAL_DIR)/vendor/ai3
+AI_LIB = $(AI_LIB_DIR)/source
+# INCs
+HDAL_INC_PATH = $(NVT_HDAL_DIR)/include
+HDAL_LIB_PATH = $(NVT_HDAL_DIR)/output
+VOS_LIB_PATH = $(NVT_VOS_DIR)/output
+VENDOR_LIB_PATH = $(NVT_HDAL_DIR)/vendor/output
+AI_LIB_INC_PATH = $(AI_LIB_DIR)/include
+# INC FLAGs
+EXTRA_INCLUDE += \
+	-I$(HDAL_INC_PATH) \
+	-I$(NVT_HDAL_DIR)/source \
+	-I$(AI_LIB_INC_PATH) \
+
+
+EXTRA_INCLUDE += -I$(NVT_HDAL_DIR)/drivers/k_flow/include
+
+EXTRA_INCLUDE += -I$(NVT_HDAL_DIR)/drivers/k_driver/include
+
+EXTRA_INCLUDE += -I$(NVT_HDAL_DIR)/drivers/k_driver/source/include
+
+EXTRA_INCLUDE += -I$(NVT_HDAL_DIR)/vendor/ai3/include
+
+EXTRA_INCLUDE += -I$(NVT_HDAL_DIR)/vendor/ai3/source_pub/include
+
+EXTRA_INCLUDE += -I$(NVT_HDAL_DIR)/vendor/ai3/source_pub/vendor_ai_cpu
+
+EXTRA_INCLUDE += -I$(NVT_HDAL_DIR)/vendor/media/include
+
+EXTRA_INCLUDE += -I$(NVT_HDAL_DIR)/vendor/ai3/drivers/k_flow/include
+
+EXTRA_INCLUDE += -I$(NVT_HDAL_DIR)/vendor/ai3/drivers/k_flow/source/kflow_ai_net
+
+EXTRA_INCLUDE += -I$(NVT_HDAL_DIR)/vendor/third_party/fdcnn/include
+
+EXTRA_INCLUDE += -I$(NVT_HDAL_DIR)/vendor/third_party/modules_lib/include
+
+EXTRA_INCLUDE += -I$(NVT_VOS_DIR)/drivers/include
+
+EXTRA_INCLUDE += -I$(NVT_HDAL_DIR)/vendor/isp/include
+
+###############################################################################
+# Linux Makefile                                                              #
+###############################################################################
+ifeq ($(NVT_PRJCFG_CFG),Linux)
+EXTRA_LDFLAGS += \
+	-L$(HDAL_LIB_PATH) \
+	-lpthread \
+	-lhdal \
+
+EXTRA_LDFLAGS += \
+	-L$(AI_LIB) \
+	-lvendor_ai3 \
+
+EXTRA_LDFLAGS += \
+	-L$(AI_LIB)_pub \
+	-lvendor_ai3_pub \
+
+EXTRA_LDFLAGS += \
+	-L$(VENDOR_LIB_PATH) \
+	-lvendor_media \
+
+EXTRA_LDFLAGS += \
+	-L$(VOS_LIB_PATH) \
+	-lvos \
+
+EXTRA_LDFLAGS += -lprebuilt_ai
+EXTRA_LDFLAGS += -lprebuilt_fdcnn
+EXTRA_LDFLAGS += -lprebuilt_modules_lib
+EXTRA_LDFLAGS += -lm
+EXTRA_LDFLAGS += -lstdc++
+EXTRA_LDFLAGS +=  -L$(NVT_HDAL_DIR)/vendor/output -lvendor_isp
+
+SRC += alg_fdcnn_sample.c
+
+###############################################################################
+# rtos Makefile                                                               #
+###############################################################################
+else ifeq ($(NVT_PRJCFG_CFG),rtos)
+#SRC = alg_fdcnn_sample.c
+
+endif
+include $(NVT_HDAL_DIR)/executable.mk

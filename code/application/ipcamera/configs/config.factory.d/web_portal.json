@@ -1,0 +1,35 @@
+{
+  "web_portal": {
+    "http": {
+      "enabled": true,
+      "listen_address": "0.0.0.0",
+      "port": 8082,
+      "num_threads": 4,
+      "request_timeout_ms": 120000,
+      "max_request_size": 209715200,
+      "enable_directory_listing": false,
+      "document_root": ""
+    },
+    "authentication": {
+      "enabled": true,
+      "domain": "ipcamera",
+      "session_timeout_minutes": 30,
+      "max_failed_attempts": 5,
+      "lockout_duration_minutes": 15
+    },
+    "security": {
+      "enable_cors": true,
+      "allowed_origins": ["*"],
+      "enable_rate_limiting": true,
+      "rate_limit_requests_per_minute": 60,
+      "enable_https": false,
+      "ssl_certificate": "",
+      "ssl_private_key": ""
+    },
+    "unix_socket": {
+      "enabled": false,
+      "path": "/var/run/ipcam_api.sock",
+      "max_connections": 10
+    }
+  }
+}

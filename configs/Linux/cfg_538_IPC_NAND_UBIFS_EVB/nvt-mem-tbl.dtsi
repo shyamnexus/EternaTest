@@ -1,0 +1,124 @@
+/*
+ * Novatek Ltd. BSP part of dts
+ */
+/ {
+	chosen {
+		bootargs = "earlycon root=ubi0:rootfs rootfstype=ubifs ro ubi.fm_autoconvert=1 init=/linuxrc ";
+		stdout-path = "serial0:115200n8";
+	};
+
+	/* Uboot/loader memory layout */
+	nvt_memory_cfg {
+		#address-cells = <1>;
+		#size-cells = <1>;
+		dram {          reg = <0x00000000 0x80000000>;  };
+		core2entry1 {   reg = <0x00000000 0x00010000>;  };
+		core2entry2 {   reg = <0x00010000 0x00010000>;  };
+		fdt {           reg = <0x00100000 0x00100000>;  };
+		shmem{          reg = <0x00A00000 0x00100000>;  };
+		loader {        reg = <0x01000000 0x00100000>;  };
+		atf {           reg = <0x01F00000 0x00100000>;  };
+		linuxtmp {      reg = <0x02000000 0x72F00000>;  };
+		all_in_one {    reg = <0x74F00000 0x07800000>;  };
+		kernel_img {    reg = <0x7C700000 0x01900000>;  };
+		uboot{          reg = <0x7E000000 0x02000000>;  };
+	};
+	/* Linux system memory region*/
+	memory { device_type = "memory"; reg = <0x0 0x00000000 0x0 0x18000000>; };
+
+	/* Linux setup reserved memory */
+
+	reserved-memory {
+		#address-cells = <2>;
+		#size-cells = <2>;
+		ranges;
+
+		atf_reserved: atf@0x01F00000 {
+			reg = <0x0 0x01F00000 0x0 0x00100000>;
+			no-map;
+		};
+
+		cma0: cma0@0x05800000 {
+			compatible = "shared-dma-pool";
+			reusable;
+			reg = <0x0 0x05800000 0x0 0x00800000>;
+			alignment = <0x0 0x400000>;
+			status = "okay";
+		};
+	};
+
+	nvt_cma {
+		compatible = "nvt,nvt_cma";
+		memory-region = <&cma0>;
+		id = <0>;
+	};
+
+	nvt_os_mem {
+		compatible = "nvt,nvt_os_mem";
+	};
+
+	nvtfmem {
+		compatible = "nvt,nvt_fmem";
+	};
+
+	hdal-memory {
+		#address-cells = <4>;
+		#size-cells = <2>;
+		media {
+			reg = <
+				0x0 0x0 0x0 0x18000000 0x0 0x68000000 /* [DDRID-H][DDRID-L] [ADDR-H][ADDR-L] [SIZE-H][SIZE-L]  */
+			>;
+		};
+		cfgs {
+			max_pools_cnt = <1024>;
+		};
+	};
+
+	hdal-maxpath-cfg {
+		/* First is for VCAP0, second for VCAP1 and so on.*/
+		vdocap_active_list   = <1 1 1 1 1 1 1 1 1 0 0 0 0 0 0 0>;
+		vdoprc_maxdevice   = <3>;
+		vdoenc_maxpath     = <8>;
+		vdodec_maxpath     = <2>;
+		vdoout_maxdevice   = <2>;
+		adocap_maxdevice   = <1>;
+		adoout_maxdevice   = <2>;
+		adoenc_maxpath     = <1>;
+		adodec_maxpath     = <1>;
+		/* gfx jog list */
+		gfx_maxjob = <2>;
+		/* stamp max img buffer number */
+		stamp_maximg = <64>;
+		/* First is internal stamp number, second is external stamp number */
+		vdoprc_maxstamp = <0  16>;
+		/* First is internal mask number, second is external mask number */
+		vdoprc_maxmask   = <8  64>;
+		vdoenc_maxstamp  = <32 16>;
+		vdoenc_maxmask   = <16 64>;
+		vdoout_maxstamp  = <0  16>;
+		vdoout_maxmask   = <0  64>;
+	};
+
+	/* To config the nvt chip mapping relationship */
+	nvt_chip_mapping {
+		#address-cells = <4>;
+		#size-cells = <2>;
+		dram_map {
+			reg = <
+				0x0 0x0 0x0 0x00000000 0x0 0x80000000		/* [DDRID] [CHIPID] [ADDR-H] [ADDR-L] [SIZE-H] [SIZE-L] */
+			>;
+		};
+	};
+
+	/*
+	framebuffer1-1 {
+		copy = <1>;
+		//[DDRID] [CHIPID] [ADDR-H] [ADDR-L] [SIZE]
+		buffer = <0 0 0 0x7F000000 0x01000000>; };
+	*/
+
+	max-resolution {
+		/* VENC max resolution <width height> */
+		vdoenc_maxresolution   = <4096 4096>;
+	};
+};

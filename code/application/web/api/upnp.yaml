@@ -1,0 +1,354 @@
+openapi: 3.0.3
+info:
+  title: IP Camera API - UPnP
+  version: 1.0.0
+  description: |
+    UPnP (Universal Plug and Play) IGD (Internet Gateway Device) discovery and port mapping API.
+    
+    **Features**:
+    - Automatic IGD discovery on local network
+    - Dynamic port mapping/forwarding configuration
+    - Camera-specific port mapping shortcuts (HTTP/HTTPS/RTSP/ONVIF)
+    - External IP address detection
+    
+    **Implementation**: Modern C++ with NetworkManager facade pattern and standalone UpnpManager.
+    Uses miniupnpc library for IGD protocol support.
+    
+    **Security**: No sensitive credentials stored (UPnP protocol handles authentication at router level).
+paths:
+  /upnp:
+    get:
+      summary: Get UPnP Configuration and Device Info
+      description: Returns UPnP configuration and discovered device information
+      operationId: getUpnpInfo
+      tags: [Networking]
+      responses:
+        '200':
+          description: UPnP information retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  config:
+                    $ref: '#/components/schemas/UpnpConfig'
+                  device:
+                    $ref: '#/components/schemas/UpnpDeviceInfo'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    post:
+      summary: Update UPnP Configuration
+      description: Updates UPnP configuration
+      operationId: updateUpnpConfig
+      tags: [Networking]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpnpConfig'
+            example:
+              enabled: 1
+      responses:
+        '200':
+          description: Configuration updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  message:
+                    type: string
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /upnp/discover:
+    post:
+      summary: Discover UPnP Devices
+      description: Discovers UPnP IGD (Internet Gateway Device) on the network
+      operationId: discoverUpnp
+      tags: [Networking]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                timeout_ms:
+                  type: integer
+                  default: 3000
+                  description: Discovery timeout in milliseconds
+            example:
+              timeout_ms: 3000
+      responses:
+        '200':
+          description: Device discovered successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  device:
+                    $ref: '#/components/schemas/UpnpDeviceInfo'
+        '404':
+          description: No UPnP device found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  error:
+                    type: string
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /upnp/portmappings:
+    get:
+      summary: List Port Mappings
+      description: Returns all configured UPnP port mappings
+      operationId: listPortMappings
+      tags: [Networking]
+      responses:
+        '200':
+          description: Port mappings retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  mappings:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/UpnpPortMapping'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    post:
+      summary: Add Port Mapping
+      description: Adds a new UPnP port mapping (port forwarding rule)
+      operationId: addPortMapping
+      tags: [Networking]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpnpPortMapping'
+            example:
+              enabled: 1
+              external_port: 8080
+              internal_port: 80
+              protocol: TCP
+              description: Custom HTTP Port
+              lease_duration: 0
+      responses:
+        '200':
+          description: Port mapping added successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  message:
+                    type: string
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    delete:
+      summary: Delete Port Mapping
+      description: Removes a UPnP port mapping
+      operationId: deletePortMapping
+      tags: [Networking]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [external_port, protocol]
+              properties:
+                external_port:
+                  type: integer
+                protocol:
+                  type: string
+                  enum: [TCP, UDP]
+            example:
+              external_port: 8080
+              protocol: TCP
+      responses:
+        '200':
+          description: Port mapping deleted successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  message:
+                    type: string
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /upnp/camera-ports:
+    post:
+      summary: Add Camera Port Mappings
+      description: Automatically creates port mappings for standard camera ports (HTTP, HTTPS, RTSP, ONVIF)
+      operationId: addCameraPorts
+      tags: [Networking]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                http_port:
+                  type: integer
+                  description: HTTP port (0 to skip)
+                https_port:
+                  type: integer
+                  description: HTTPS port (0 to skip)
+                rtsp_port:
+                  type: integer
+                  description: RTSP port (0 to skip)
+                onvif_port:
+                  type: integer
+                  description: ONVIF port (0 to skip)
+            example:
+              http_port: 80
+              https_port: 443
+              rtsp_port: 554
+              onvif_port: 8080
+      responses:
+        '200':
+          description: Camera ports added successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  message:
+                    type: string
+                  mappings_added:
+                    type: integer
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    delete:
+      summary: Remove All Camera Port Mappings
+      description: Removes all camera-related port mappings
+      operationId: removeCameraPorts
+      tags: [Networking]
+      responses:
+        '200':
+          description: Camera ports removed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  message:
+                    type: string
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+components:
+  schemas:
+    UpnpConfig:
+      type: object
+      properties:
+        enabled:
+          type: integer
+          enum: [0, 1]
+          description: "0 = disabled, 1 = enabled"
+    UpnpDeviceInfo:
+      type: object
+      properties:
+        gateway_ip:
+          type: string
+          description: Gateway IP address
+          example: "192.168.1.1"
+        external_ip:
+          type: string
+          description: External IP address
+          example: "203.0.113.42"
+        device_model:
+          type: string
+          description: Device model name
+          example: Router Model
+        device_name:
+          type: string
+          description: Friendly device name
+          example: Home Gateway
+        is_connected:
+          type: boolean
+          description: Connection status
+    UpnpPortMapping:
+      type: object
+      properties:
+        enabled:
+          type: integer
+          enum: [0, 1]
+          description: "0 = disabled, 1 = enabled"
+        external_port:
+          type: integer
+          minimum: 1
+          maximum: 65535
+          description: External port number
+        internal_port:
+          type: integer
+          minimum: 1
+          maximum: 65535
+          description: Internal port number
+        protocol:
+          type: string
+          enum: [TCP, UDP]
+          description: Protocol type
+        description:
+          type: string
+          description: Port mapping description
+          example: HTTP Server
+        lease_duration:
+          type: integer
+          description: Lease duration in seconds (0 = permanent)
+          default: 0
+    
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error message
+
+  responses:
+    BadRequest:
+      description: Invalid request body
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ServerError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'

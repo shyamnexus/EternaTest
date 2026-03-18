@@ -1,0 +1,42 @@
+MODULE_NAME = kflow_ctl_ise
+VOS_DRIVER_DIR = $(NVT_VOS_DIR)/drivers
+KDRV_DIR=$(NVT_HDAL_DIR)/drivers/k_driver
+KFLOW_DIR=$(NVT_HDAL_DIR)/drivers/k_flow
+CURR_DRIVER_DIR = $(KFLOW_DIR)
+EXTRA_INCLUDE += \
+	-I$(VOS_DRIVER_DIR)/include \
+	-I$(KDRV_DIR)/include \
+	-I$(KDRV_DIR)/include/comm \
+	-I$(KFLOW_DIR)/include \
+	-I$(CURR_DRIVER_DIR)/source/kflow_videoprocess/ctl_ise/include \
+
+###############################################################################
+# Linux Makefile                                                              #
+###############################################################################
+ifeq ($(NVT_PRJCFG_CFG),Linux)
+EXTRA_CFLAGS += \
+	-DDEBUG \
+	-D_GROUP_KO_ \
+	-Wno-missing-braces \
+
+
+$(MODULE_NAME)-src := \
+	ctl_ise_main.c \
+	ctl_ise_proc.c \
+	ctl_ise_drv.c \
+	ctl_ise_api.c \
+	ise_flow/ctl_ise_isp.c \
+	ise_flow/ctl_ise_int.c \
+	ise_flow/ctl_ise.c \
+
+###############################################################################
+# rtos Makefile                                                               #
+###############################################################################
+else ifeq ($(NVT_PRJCFG_CFG),rtos)
+EXTRA_CFLAGS += -DDEBUG
+
+SRC += \
+
+endif
+
+include $(NVT_HDAL_DIR)/driver.mk

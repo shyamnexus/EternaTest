@@ -1,0 +1,84 @@
+#!/bin/sh
+#
+# OP-TEE tee-supplicant startup script
+#
+
+OPTEE_DATA_DIR="/mnt/app/tee"
+TEE_SUPPLICANT="/usr/sbin/tee-supplicant"
+
+start_tee() {
+    echo "Starting OP-TEE services..."
+    
+    # Wait for /mnt/app to be mounted (up to 5 seconds)
+    i=0
+    while [ ! -d "/mnt/app" ] && [ $i -lt 5 ]; do
+        sleep 1
+        i=$((i + 1))
+    done
+    
+    # Create TEE storage directory
+    if [ -d "/mnt/app" ]; then
+        mkdir -p "$OPTEE_DATA_DIR"
+        chmod 700 "$OPTEE_DATA_DIR"
+        echo "  TEE storage: $OPTEE_DATA_DIR"
+    else
+        echo "  WARNING: /mnt/app not mounted!"
+    fi
+    
+    # Wait for TEE device (up to 3 seconds)
+    i=0
+    while [ ! -c "/dev/tee0" ] && [ $i -lt 3 ]; do
+        sleep 1
+        i=$((i + 1))
+    done
+    
+    # Check if already running
+    if pgrep -x tee-supplicant > /dev/null 2>&1; then
+        echo "  tee-supplicant already running"
+        return 0
+    fi
+    
+    # Start tee-supplicant
+    if [ -x "$TEE_SUPPLICANT" ] && [ -c "/dev/tee0" ]; then
+        $TEE_SUPPLICANT &
+        echo "  Started tee-supplicant"
+    else
+        [ ! -x "$TEE_SUPPLICANT" ] && echo "  ERROR: $TEE_SUPPLICANT not found"
+        [ ! -c "/dev/tee0" ] && echo "  ERROR: /dev/tee0 not found"
+    fi
+}
+
+stop_tee() {
+    echo "Stopping OP-TEE services..."
+    killall tee-supplicant 2>/dev/null
+}
+
+# Default to "start" if no argument provided
+ACTION="${1:-start}"
+
+case "$ACTION" in
+    start)
+        start_tee
+        ;;
+    stop)
+        stop_tee
+        ;;
+    restart)
+        stop_tee
+        sleep 1
+        start_tee
+        ;;
+    status)
+        if pgrep -x tee-supplicant > /dev/null 2>&1; then
+            echo "tee-supplicant running (PID: $(pgrep -x tee-supplicant))"
+        else
+            echo "tee-supplicant not running"
+        fi
+        ;;
+    *)
+        echo "Usage: $0 {start|stop|restart|status}"
+        exit 1
+        ;;
+esac
+
+exit 0

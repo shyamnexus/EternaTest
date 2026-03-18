@@ -1,0 +1,53 @@
+MODULE_NAME = nvt_ssenif
+# DIRs
+VOS_DRIVER_DIR = $(NVT_VOS_DIR)/drivers
+KDRV_DIR = $(NVT_HDAL_DIR)/drivers/k_driver
+CURR_DRIVER_DIR = $(KDRV_DIR)
+# INCs
+VOS_INC_PATH = $(VOS_DRIVER_DIR)/include
+KDRV_INC_PATH = $(KDRV_DIR)/include
+CURR_DRIVER_INC_PATH = $(CURR_DRIVER_DIR)/include
+RTOS_DRIVER_INC_PATH = $(LINUX_BUILD_TOP)/code/driver
+# INC FLAGs
+EXTRA_INCLUDE += \
+	-I$(VOS_INC_PATH) \
+	-I$(KDRV_INC_PATH) \
+	-I$(CURR_DRIVER_INC_PATH) \
+	-I$(RTOS_DRIVER_INC_PATH) \
+
+###############################################################################
+# Linux Makefile                                                              #
+###############################################################################
+ifeq ($(NVT_PRJCFG_CFG),Linux)
+EXTRA_CFLAGS += -DDEBUG
+
+SRC += \
+	ssenif_main.c \
+	ssenif_proc.c \
+	ssenif_drv.c \
+	ssenif_api.c \
+	kdrv_ssenif.c \
+	dal_ssenif.c \
+	serial_sen_intf_lvds.c \
+	serial_sen_intf_lvds2.c \
+	serial_sen_intf_csi.c \
+	serial_sen_intf_csi2.c \
+
+###############################################################################
+# rtos Makefile                                                               #
+###############################################################################
+else ifeq ($(NVT_PRJCFG_CFG),rtos)
+EXTRA_CFLAGS += -DDEBUG
+
+SRC += \
+	kdrv_ssenif.c \
+	dal_ssenif.c \
+	serial_sen_intf_lvds.c \
+	serial_sen_intf_lvds2.c \
+	serial_sen_intf_csi.c \
+	serial_sen_intf_csi2.c \
+
+
+endif
+
+include $(NVT_HDAL_DIR)/driver.mk

@@ -1,0 +1,9 @@
+#ifndef _MD_ENG_INT_H_
+#define _MD_ENG_INT_H_
+
+#define REG_WORD_SIZE 32
+
+#define MD_LUMDIFF_MASK 0x0FFFFFFF
+#define MD_FRMID_MASK 0xFF000
+#define MD_RND_MASK 0x7FFF0000
+#endif //_MD_ENG_INT_H_

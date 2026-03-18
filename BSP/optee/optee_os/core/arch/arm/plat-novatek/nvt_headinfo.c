@@ -1,0 +1,28 @@
+/**
+   Copyright   Novatek Microelectronics Corp. 2023.  All rights reserved.
+
+   SPDX-License-Identifier: BSD-2-Clause.
+*/
+
+#include <stdint.h>
+#include <nvt_bin_info.h>
+#include <platform_config.h>
+
+extern void _start(void);
+#define __string(_x) #_x
+#define __xstring(_x) __string(_x)
+
+const HEADINFO _nvt_headinfo __attribute__((section(".nvt.headinfo"))) =
+{
+	(unsigned long)&_start, //<- fw CODE entry (4)
+	{CFG_TEE_LOAD_ADDR,{0}}, ///<- reserved (4*19): Reference nvt_bin_info.h HEADINFO_TEEOS_RESV_IDX
+	{NVT_HEADINFO_CHIP_NAME}, //<- CHIP-NAME / TAG-NAME (8)
+	{"0"}, //<- version (8)
+	{"0"}, //<- releasedate (8)
+	0x0, //<- Bin File Length (4)
+	0x0, //<- Check Sum or CRC (4)
+	0,///<- Length check for CRC (4)
+	0,///<- where modelext data is. w by Ld / u-boot (4)
+	0,
+	0,///<- Binary Tag for CRC (4)
+};

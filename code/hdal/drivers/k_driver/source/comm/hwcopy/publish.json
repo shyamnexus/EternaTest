@@ -1,0 +1,11 @@
+{
+        "jsontype": "module_publish",
+        "publish_src": [
+                 "hwcopy_main.c",
+                 "hwcopy_drv.c",
+                 "hwcopy_proc.c",
+                 "hwcopy_api.c",
+                 "hwcopy_platform.c",
+                 "kdrv_hwcopy_if.c"
+        ]
+}

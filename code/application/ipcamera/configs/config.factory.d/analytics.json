@@ -1,0 +1,450 @@
+{
+    "_comment": "AI Analytics Configuration",
+    "_version": "1.0.0",
+
+    "analytics": {
+        "enabled": true
+    },
+
+    "object_detection": {
+        "enabled": false
+    },
+
+    "motion_detection": {
+        "enabled": false,
+        "sensitivity": 50,
+        "threshold": 30,
+        "min_area": 500,
+        "cooldown_ms": 2000,
+        
+        "zones": [
+            {
+                "id": 1,
+                "name": "Full Frame",
+                "enabled": true,
+                "points": [
+                    {"x": 0, "y": 0},
+                    {"x": 100, "y": 0},
+                    {"x": 100, "y": 100},
+                    {"x": 0, "y": 100}
+                ],
+                "sensitivity": 50
+            }
+        ],
+        
+        "schedule": {
+            "enabled": false,
+            "always_on": true,
+            "rules": [
+                {
+                    "id": 1,
+                    "name": "Business Hours",
+                    "enabled": false,
+                    "days": ["mon", "tue", "wed", "thu", "fri"],
+                    "start_time": "08:00",
+                    "end_time": "18:00"
+                }
+            ]
+        },
+        
+        "actions": {
+            "recording": {
+                "enabled": true,
+                "pre_record_sec": 5,
+                "post_record_sec": 30
+            },
+            "snapshot": {
+                "enabled": true,
+                "count": 1,
+                "interval_ms": 500
+            },
+            "https_notify": {
+                "enabled": false,
+                "url": "",
+                "method": "POST",
+                "auth_type": "none",
+                "username": "",
+                "password": "",
+                "headers": {},
+                "retry_count": 3,
+                "timeout_sec": 10
+            },
+            "mqtt": {
+                "enabled": false,
+                "topic": "ipcamera/events/motion",
+                "qos": 1,
+                "retain": false
+            },
+            "email": {
+                "enabled": false,
+                "recipients": [],
+                "subject": "Motion Detected - ${device_name}",
+                "body": "Motion detected at ${timestamp} in zone ${zone_name}",
+                "attach_snapshot": true
+            },
+            "ftp_upload": {
+                "enabled": false,
+                "path": "/motion/${date}",
+                "filename_pattern": "${device_name}_${timestamp}.jpg",
+                "upload_snapshot": true,
+                "upload_video": false
+            }
+        }
+    },
+
+    "smart_detection": {
+        "enabled": false,
+        "model": "yolov5s_nvt",
+        "confidence_threshold": 0.5,
+        
+        "pedestrian": {
+            "enabled": true,
+            "sensitivity": 50,
+            "min_confidence": 0.5,
+            "min_size": 30,
+            "tracking": true
+        },
+        "vehicle": {
+            "enabled": true,
+            "sensitivity": 50,
+            "min_confidence": 0.5,
+            "min_size": 50,
+            "tracking": true,
+            "types": ["car", "truck", "bus", "motorcycle"]
+        },
+        "animal": {
+            "enabled": false,
+            "sensitivity": 50,
+            "min_confidence": 0.5
+        },
+        
+        "zones": [
+            {
+                "id": 1,
+                "name": "Detection Zone",
+                "enabled": true,
+                "points": [
+                    {"x": 0, "y": 0},
+                    {"x": 100, "y": 0},
+                    {"x": 100, "y": 100},
+                    {"x": 0, "y": 100}
+                ],
+                "detect_pedestrian": true,
+                "detect_vehicle": true,
+                "detect_animal": false
+            }
+        ],
+        
+        "schedule": {
+            "enabled": false,
+            "always_on": true,
+            "rules": []
+        },
+        
+        "actions": {
+            "recording": {
+                "enabled": true,
+                "pre_record_sec": 5,
+                "post_record_sec": 30,
+                "trigger_on": ["pedestrian", "vehicle"]
+            },
+            "snapshot": {
+                "enabled": true,
+                "count": 1,
+                "interval_ms": 500
+            },
+            "https_notify": {
+                "enabled": false,
+                "url": "",
+                "method": "POST",
+                "auth_type": "none",
+                "username": "",
+                "password": "",
+                "include_metadata": true
+            },
+            "mqtt": {
+                "enabled": false,
+                "topic": "ipcamera/events/smart",
+                "qos": 1
+            },
+            "email": {
+                "enabled": false,
+                "recipients": [],
+                "subject": "${object_type} Detected - ${device_name}",
+                "attach_snapshot": true
+            },
+            "ftp_upload": {
+                "enabled": false,
+                "path": "/smart/${object_type}/${date}",
+                "upload_snapshot": true
+            }
+        }
+    },
+
+    "line_crossing": {
+        "enabled": false,
+        "lines": [
+            {
+                "id": 1,
+                "name": "Entry Line",
+                "enabled": false,
+                "start": {"x": 0, "y": 50},
+                "end": {"x": 100, "y": 50},
+                "direction": "both",
+                "detect_pedestrian": true,
+                "detect_vehicle": true,
+                "color": "#FFFF00"
+            }
+        ],
+        "counting": {
+            "enabled": false,
+            "reset_daily": true,
+            "reset_time": "00:00"
+        },
+        "actions": {
+            "recording": {"enabled": false},
+            "snapshot": {"enabled": true},
+            "https_notify": {"enabled": false, "url": ""},
+            "mqtt": {"enabled": false, "topic": "ipcamera/events/line_cross"}
+        }
+    },
+
+    "zone_intrusion": {
+        "enabled": false,
+        "zones": [
+            {
+                "id": 1,
+                "name": "Restricted Area",
+                "enabled": false,
+                "points": [
+                    {"x": 10, "y": 10},
+                    {"x": 90, "y": 10},
+                    {"x": 90, "y": 90},
+                    {"x": 10, "y": 90}
+                ],
+                "dwell_time_sec": 3,
+                "detect_pedestrian": true,
+                "detect_vehicle": false,
+                "alarm_classes": ["person"]
+            }
+        ],
+        "actions": {
+            "recording": {"enabled": true, "post_record_sec": 60},
+            "snapshot": {"enabled": true},
+            "https_notify": {"enabled": false, "url": ""},
+            "mqtt": {"enabled": false, "topic": "ipcamera/events/intrusion"},
+            "email": {"enabled": false, "recipients": [], "subject": "Intrusion Alert!"}
+        }
+    },
+
+    "people_counting": {
+        "enabled": false,
+        "count_people": true,
+        "count_vehicles": true,
+        "reset_interval_sec": 86400,
+        "occupancy_high_threshold": 0,
+        "occupancy_low_threshold": 0,
+        "show_osd": true,
+        "actions": {
+            "https_notify": {"enabled": false, "url": ""},
+            "mqtt": {"enabled": false, "topic": "ipcamera/events/counting"}
+        }
+    },
+
+    "video_tampering": {
+        "enabled": false,
+        "sensitivity": 50,
+        
+        "defocus_detection": {
+            "enabled": true,
+            "sensitivity": 50
+        },
+        "masking_detection": {
+            "enabled": true,
+            "sensitivity": 50
+        },
+        "scene_change_detection": {
+            "enabled": true,
+            "sensitivity": 50
+        },
+        "too_dark_detection": {
+            "enabled": true,
+            "threshold": 20
+        },
+        "too_bright_detection": {
+            "enabled": true,
+            "threshold": 240
+        },
+        
+        "dwell_time_sec": 3,
+        "auto_recovery": true,
+        
+        "schedule": {
+            "enabled": false,
+            "always_on": true,
+            "rules": []
+        },
+        
+        "actions": {
+            "recording": {
+                "enabled": true,
+                "pre_record_sec": 10,
+                "post_record_sec": 60
+            },
+            "snapshot": {
+                "enabled": true,
+                "count": 3,
+                "interval_ms": 1000
+            },
+            "https_notify": {
+                "enabled": false,
+                "url": "",
+                "method": "POST"
+            },
+            "mqtt": {
+                "enabled": false,
+                "topic": "ipcamera/events/tampering",
+                "qos": 1
+            },
+            "email": {
+                "enabled": false,
+                "recipients": [],
+                "subject": "ALERT: Camera Tampering Detected - ${device_name}",
+                "body": "Tampering type: ${tamper_type}\nTime: ${timestamp}",
+                "attach_snapshot": true,
+                "priority": "high"
+            },
+            "ftp_upload": {
+                "enabled": false,
+                "path": "/tampering/${date}"
+            }
+        }
+    },
+
+    "face_detection": {
+        "enabled": false,
+        "model": "scrfd_nosig",
+        "sensitivity": 50,
+        "min_face_size": 30,
+        "confidence_threshold": 0.6,
+        "landmarks": false,
+        "recognition": {
+            "enabled": false,
+            "database_path": "/mnt/app/face_db",
+            "similarity_threshold": 0.7,
+            "max_gallery_size": 1000,
+            "margin": 0.2
+        },
+        "actions": {
+            "recording": {"enabled": false},
+            "snapshot": {"enabled": true},
+            "https_notify": {"enabled": false, "url": ""}
+        }
+    },
+
+    "license_plate": {
+        "enabled": false,
+        "model": "lpr_nvt",
+        "regions": ["us", "eu"],
+        "min_confidence": 0.7,
+        "actions": {
+            "recording": {"enabled": false},
+            "snapshot": {"enabled": true},
+            "https_notify": {"enabled": false, "url": ""},
+            "database_log": {"enabled": true}
+        }
+    },
+
+    "heat_map": {
+        "enabled": false,
+        "grid_w": 32,
+        "grid_h": 18,
+        "decay_rate": 0.97
+    },
+
+    "pose_estimation": {
+        "enabled": false,
+        "model": "yolo26n_pose",
+        "conf_threshold": 0.35,
+        "nms_threshold": 0.50,
+        "max_persons": 16
+    },
+
+    "face_attribute": {
+        "enabled": false,
+        "model": "face_attribute",
+        "margin": 0.20
+    },
+
+    "audio_classification": {
+        "enabled": false,
+        "model": "yamnet",
+        "detection_threshold": 0.3
+    },
+
+    "global_settings": {
+        "engine": {
+            "type": "vendor_ai3",
+            "model_path": "/mnt/app/models",
+            "dla_enabled": true,
+            "cpu_fallback": true
+        },
+        "input": {
+            "width": 640,
+            "height": 360,
+            "format": "yuv420",
+            "fps": 15
+        },
+        "overlay": {
+            "enabled": true,
+            "bbox_style": "rectangle",
+            "bbox_thickness": 2,
+            "show_labels": true,
+            "show_confidence": false
+        },
+        "performance": {
+            "skip_frames": 0,
+            "batch_size": 1,
+            "async_inference": true,
+            "thread_count": 2
+        }
+    },
+
+    "notification_servers": {
+        "mqtt": {
+            "enabled": false,
+            "broker": "",
+            "port": 1883,
+            "username": "",
+            "password": "",
+            "client_id": "${device_name}",
+            "use_tls": false,
+            "ca_cert": ""
+        },
+        "email": {
+            "enabled": false,
+            "smtp_server": "",
+            "smtp_port": 587,
+            "use_tls": true,
+            "username": "",
+            "password": "",
+            "from_address": ""
+        },
+        "ftp": {
+            "enabled": false,
+            "server": "",
+            "port": 21,
+            "username": "",
+            "password": "",
+            "use_sftp": false,
+            "base_path": "/ipcamera"
+        }
+    },
+
+    "debug": {
+        "log_detections": false,
+        "save_frames": false,
+        "frame_save_path": "/tmp/ai_debug",
+        "show_inference_time": false
+    }
+}

@@ -1,0 +1,10 @@
+{
+	"jsontype": "module_publish",
+	"publish_src": [
+		"gpenc_api.c",
+		"gpenc_drv.c",
+		"gpenc_main.c",
+		"gpenc_proc.c",
+		"gpenc_platform.c"
+	]
+}

@@ -1,0 +1,9 @@
+#
+# PCI DMA engine configuration for Novatek
+#
+
+config NVT_EDMA
+        bool "Novatek PCI DMA support"
+        depends on NVT_IVOT_PLAT_NA51090 && (PCIE_NVT || NVT_PCIE_COMM_DRV_EP)
+        help
+          Support for Novatek PCI DMA

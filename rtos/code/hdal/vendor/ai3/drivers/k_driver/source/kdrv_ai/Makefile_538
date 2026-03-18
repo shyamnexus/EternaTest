@@ -1,0 +1,217 @@
+current_mk_abspathname := $(abspath $(lastword $(MAKEFILE_LIST)))
+current_mk_absdir := $(dir $(current_mk_abspathname))../../../../../ai_sdk_env.mk
+ifneq ("$(wildcard $(current_mk_absdir))", "")
+include $(current_mk_absdir)
+endif
+
+MODULE_NAME = kdrv_ai
+KDRV_DIR = $(NVT_HDAL_DIR)/drivers/k_driver
+NVT_KFLOW_PATH = $(NVT_HDAL_DIR)/drivers/k_flow/$(NVT_SDK_TYPE)
+CURR_DRIVER_DIR = $(KDRV_DIR)
+NVT_KDRV_PATH = $(NVT_HDAL_DIR)/drivers/k_driver
+
+ifeq ("$(wildcard $(OWN_NVT_AI_PATH))", "")
+NVT_AI_KDRV_PATH = $(NVT_HDAL_DIR)/vendor/ai3/drivers/k_driver
+NVT_AI_KFLOW_PATH = $(NVT_HDAL_DIR)/vendor/ai3/drivers/k_flow
+endif
+
+# include
+include $(NVT_PRJCFG_MODEL_CFG)
+
+KDRV_INC_PATH = $(KDRV_DIR)/include
+KDRV_DIR_OUTPUT = $(KDRV_DIR)/output
+VG_MODULE_INC = $(NVT_KDRV_PATH)/source/include
+VOS_DRIVER_DIR = $(NVT_VOS_DIR)/drivers
+VOS_INC_PATH = $(VOS_DRIVER_DIR)/include
+
+AI_EMUF_PATH = $(NVT_HDAL_DIR)/vendor/alg/ai/drivers/source
+
+EXTRA_CFLAGS += \
+	-I$(NVT_HDAL_DIR)/include \
+	-I$(NVT_KFLOW_PATH)/include \
+
+EXTRA_CFLAGS += \
+	-I$(NVT_KDRV_PATH)/include \
+	-I$(VG_MODULE_INC) \
+	-I$(VG_MODULE_INC)/common \
+	-I$(VG_MODULE_INC)/util \
+	-I$(VOS_INC_PATH) \
+
+EXTRA_CFLAGS += -I$(NVT_KDRV_PATH)/include/kdrv_builtin
+EXTRA_CFLAGS += -I$(NVT_AI_KDRV_PATH)/include
+EXTRA_CFLAGS += -I$(NVT_AI_KFLOW_PATH)/include/net_flow_sample
+EXTRA_CFLAGS += -I$(NVT_AI_KFLOW_PATH)/include/kflow_ai_net
+#EXTRA_CFLAGS += -I$(NVT_AI_KDRV_PATH)/source/include
+EXTRA_CFLAGS += -I$(NVT_AI_KDRV_PATH)/source/kdrv_ai/538/include
+EXTRA_CFLAGS += -I$(NVT_AI_KDRV_PATH)/source/kdrv_ai/538/eng/rou/include
+EXTRA_CFLAGS += -I$(NVT_AI_KDRV_PATH)/source/kdrv_ai/538/eng/nue2/include
+EXTRA_CFLAGS += -I$(NVT_AI_KDRV_PATH)/source/kdrv_ai/538/eng/conv/include
+EXTRA_CFLAGS += -I$(NVT_AI_KDRV_PATH)/source/kdrv_ai/538/eng/jobm/include
+EXTRA_CFLAGS += -I$(NVT_AI_KDRV_PATH)/source/kdrv_ai/538/eng/cal/include
+EXTRA_CFLAGS += -I$(NVT_AI_KDRV_PATH)/source/kdrv_ai/538/eng/ppu/include
+EXTRA_CFLAGS += -I$(NVT_AI_KDRV_PATH)/source/kdrv_ai/538/eng/util/include
+EXTRA_CFLAGS += -I$(NVT_AI_KDRV_PATH)/source/kdrv_ai/538/eng/lsu/include
+EXTRA_CFLAGS += -I$(NVT_AI_KDRV_PATH)/source/kdrv_ai/538/eng/jmisp/include
+EXTRA_CFLAGS += -I$(NVT_AI_KDRV_PATH)/source/kdrv_ai/538/eng/pou/include
+EXTRA_CFLAGS += -I$(LINUX_BUILD_TOP)/linux-supplement/include
+
+ifeq ($(NVT_VP_BUILD), Y)
+EXTRA_CFLAGS += \
+	-D \
+	KDRV_AI_VP_ENV \
+
+endif
+
+EXTRA_INCLUDE += \
+				-I$(CURR_DRIVER_DIR)/source/include \
+				-I$(NVT_HDAL_DIR)/include \
+				-I$(NVT_HDAL_DIR)/drivers/k_driver/include/rtos_ns02302 \
+				-I$(NVT_AI_KDRV_PATH)/include \
+				-I$(KDRV_DIR)/include \
+				-I$(VOS_DRIVER_DIR)/include \
+				-I$(NVT_AI_KFLOW_PATH)/include/net_flow_sample \
+				-I$(LIBRARY_DIR)/include \
+				-I$(VOS_DRIVER_DIR)/include \
+				-I$(KDRV_INC_PATH)\
+				-I$(KDRV_INC_PATH)/comm \
+				-I$(AI_EMUF_PATH) \
+				-I../../../../../../../application/source/test/emulation \
+				-I../../../../../../../../base/rtos-code/application/source/test/emulation \
+
+###############################################################################
+# Linux Makefile                                                              #
+###############################################################################
+ifeq ($(NVT_PRJCFG_CFG),Linux)
+
+EXTRA_CFLAGS += -Wno-enum-compare
+EXTRA_CFLAGS += -D__section_name__=$(MODULE_NAME)
+
+SRC += \
+	538/ai_api.o\
+	538/ai_drv.o \
+	538/ai_main.o \
+	538/ai_proc.o \
+	538/ai_lib.o \
+	538/kdrv_ai_api.o \
+	538/kdrv_ai_platform.o \
+	538/eng/conv/conv_eng.c \
+	538/eng/conv/conv_eng_base.c \
+	538/eng/conv/conv_eng_dma_base.c \
+	538/eng/conv/conv_eng_platform.c \
+	538/eng/rou/rou_eng.c \
+	538/eng/rou/rou_eng_base.c \
+	538/eng/rou/rou_eng_dma_base.c \
+	538/eng/rou/rou_eng_platform.c \
+	538/eng/cal/cal_eng.c \
+	538/eng/cal/cal_eng_base.c \
+	538/eng/cal/cal_eng_dma_base.c \
+	538/eng/cal/cal_eng_platform.c \
+	538/eng/lsu/lsu_eng.c \
+	538/eng/lsu/lsu_eng_base.c \
+	538/eng/lsu/lsu_eng_dma_base.c \
+	538/eng/lsu/lsu_eng_platform.c \
+	538/eng/nue2/nue2_eng.c \
+	538/eng/nue2/nue2_eng_base.c \
+	538/eng/nue2/nue2_eng_dma_base.c \
+	538/eng/nue2/nue2_eng_platform.c \
+	538/eng/util/util_eng.c \
+	538/eng/util/util_eng_base.c \
+	538/eng/util/util_eng_dma_base.c \
+	538/eng/util/util_eng_platform.c \
+	538/eng/ppu/ppu_eng.c \
+	538/eng/ppu/ppu_eng_base.c \
+	538/eng/ppu/ppu_eng_dma_base.c \
+	538/eng/ppu/ppu_eng_platform.c \
+	538/eng/jobm/jobm_eng.c \
+	538/eng/jobm/jobm_eng_base.c \
+	538/eng/jobm/jobm_eng_dma_base.c \
+	538/eng/jobm/jobm_eng_platform.c \
+	538/eng/jmisp/jmisp_eng.c \
+	538/eng/jmisp/jmisp_eng_base.c \
+	538/eng/jmisp/jmisp_eng_dma_base.c \
+	538/eng/jmisp/jmisp_eng_platform.c \
+	538/eng/pou/pou_eng.c \
+	538/eng/pou/pou_eng_base.c \
+	538/eng/pou/pou_eng_dma_base.c \
+	538/eng/pou/pou_eng_platform.c
+
+###############################################################################
+# rtos Makefile                                                               #
+###############################################################################
+else ifeq ($(NVT_PRJCFG_CFG),rtos)
+EXTRA_INCLUDE += -I$(KDRV_INC_PATH)/rtos_ns02201
+
+EXTRA_INCLUDE += -I$(NVT_AI_KDRV_PATH)/source/kdrv_ai/538/eng/rou/include
+
+EXTRA_INCLUDE += -I$(NVT_AI_KDRV_PATH)/source/kdrv_ai/538/eng/cal/include
+
+EXTRA_INCLUDE += -I$(NVT_AI_KDRV_PATH)/source/kdrv_ai/538/eng/nue2/include
+
+EXTRA_INCLUDE += -I$(NVT_AI_KDRV_PATH)/source/kdrv_ai/538/eng/conv/include
+
+EXTRA_INCLUDE += -I$(NVT_AI_KDRV_PATH)/source/kdrv_ai/538/eng/util/include
+
+EXTRA_INCLUDE += -I$(NVT_AI_KDRV_PATH)/source/kdrv_ai/538/eng/lsu/include
+
+EXTRA_INCLUDE += -I$(NVT_AI_KDRV_PATH)/source/kdrv_ai/538/eng/jobm/include
+
+EXTRA_INCLUDE += -I$(NVT_AI_KDRV_PATH)/source/kdrv_ai/538/eng/ppu/include
+
+EXTRA_INCLUDE += -I$(NVT_AI_KDRV_PATH)/source/kdrv_ai/538/eng/jmisp/include
+
+EXTRA_INCLUDE += -I$(NVT_AI_KDRV_PATH)/source/kdrv_ai/538/eng/pou/include
+
+EXTRA_CFLAGS += \
+	-DDEBUG \
+	-I$(CURDIR)/include \
+
+SRC += \
+	538/ai_api.c\
+	538/ai_lib.c \
+	538/ai_ioctl.c \
+	538/kdrv_ai_api.c \
+	538/kdrv_ai_platform.c \
+	538/eng/conv/conv_eng.c \
+	538/eng/conv/conv_eng_base.c \
+	538/eng/conv/conv_eng_dma_base.c \
+	538/eng/conv/conv_eng_platform.c \
+	538/eng/rou/rou_eng.c \
+	538/eng/rou/rou_eng_base.c \
+	538/eng/rou/rou_eng_dma_base.c \
+	538/eng/rou/rou_eng_platform.c \
+	538/eng/cal/cal_eng.c \
+	538/eng/cal/cal_eng_base.c \
+	538/eng/cal/cal_eng_dma_base.c \
+	538/eng/cal/cal_eng_platform.c \
+	538/eng/lsu/lsu_eng.c \
+	538/eng/lsu/lsu_eng_base.c \
+	538/eng/lsu/lsu_eng_dma_base.c \
+	538/eng/lsu/lsu_eng_platform.c \
+	538/eng/nue2/nue2_eng.c \
+	538/eng/nue2/nue2_eng_base.c \
+	538/eng/nue2/nue2_eng_dma_base.c \
+	538/eng/nue2/nue2_eng_platform.c \
+	538/eng/util/util_eng.c \
+	538/eng/util/util_eng_base.c \
+	538/eng/util/util_eng_dma_base.c \
+	538/eng/util/util_eng_platform.c \
+	538/eng/ppu/ppu_eng.c \
+	538/eng/ppu/ppu_eng_base.c \
+	538/eng/ppu/ppu_eng_dma_base.c \
+	538/eng/ppu/ppu_eng_platform.c \
+	538/eng/jobm/jobm_eng.c \
+	538/eng/jobm/jobm_eng_base.c \
+	538/eng/jobm/jobm_eng_dma_base.c \
+	538/eng/jobm/jobm_eng_platform.c \
+	538/eng/jmisp/jmisp_eng.c \
+	538/eng/jmisp/jmisp_eng_base.c \
+	538/eng/jmisp/jmisp_eng_dma_base.c \
+	538/eng/jmisp/jmisp_eng_platform.c \
+	538/eng/pou/pou_eng.c \
+	538/eng/pou/pou_eng_base.c \
+	538/eng/pou/pou_eng_dma_base.c \
+	538/eng/pou/pou_eng_platform.c
+
+endif
+
+include $(NVT_HDAL_DIR)/driver.mk

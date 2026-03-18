@@ -1,0 +1,234 @@
+openapi: 3.0.3
+info:
+  title: IP Camera API - SNMP
+  version: 1.0.0
+  description: |
+    SNMP (Simple Network Management Protocol) configuration and daemon control API.
+    
+    **Security**: Community strings and SNMPv3 credentials are encrypted:
+    - AES-256-GCM encryption
+    - SQLCipher encrypted database storage
+    - Generated snmpd.conf has restricted permissions (0600)
+    
+    **Implementation**: Modern C++ with NetworkManager facade pattern and standalone SnmpManager.
+    Daemon process management with full lifecycle control (start/stop/restart).
+    
+    **External Access**: SNMP daemon listens on UDP:161 and is accessible from network clients.
+paths:
+  /snmp:
+    get:
+      summary: Get SNMP Configuration and Status
+      description: Returns SNMP configuration and daemon status
+      operationId: getSnmpConfig
+      tags: [Networking]
+      responses:
+        '200':
+          description: SNMP information retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  config:
+                    $ref: '#/components/schemas/SnmpConfig'
+                  status:
+                    $ref: '#/components/schemas/SnmpStatus'
+        '500':
+          $ref: '#/components/responses/ServerError'
+    post:
+      summary: Update SNMP Configuration
+      description: Updates SNMP configuration and optionally restarts the daemon
+      operationId: updateSnmpConfig
+      tags: [Networking]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SnmpConfig'
+            example:
+              enabled: 1
+              community_ro: public
+              community_rw: private
+              sys_location: Server Room
+              sys_contact: admin@example.com
+              sys_name: IP Camera
+              port: 161
+              listen_address: 0.0.0.0
+              version: 2
+      responses:
+        '200':
+          description: Configuration updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  message:
+                    type: string
+                  daemon:
+                    type: string
+                  daemon_warning:
+                    type: string
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /snmp/control:
+    post:
+      summary: Control SNMP Daemon
+      description: Start, stop, or restart the SNMP daemon
+      operationId: controlSnmpDaemon
+      tags: [Networking]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [action]
+              properties:
+                action:
+                  type: string
+                  enum: [start, stop, restart]
+            example:
+              action: start
+      responses:
+        '200':
+          description: Action completed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  message:
+                    type: string
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /snmp/test:
+    post:
+      summary: Test SNMP Configuration
+      description: Tests SNMP configuration by querying system information
+      operationId: testSnmp
+      tags: [Networking]
+      responses:
+        '200':
+          description: Test result
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [success, failed]
+                  message:
+                    type: string
+                  error:
+                    type: string
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+components:
+  schemas:
+    SnmpConfig:
+      type: object
+      properties:
+        enabled:
+          type: integer
+          enum: [0, 1]
+          description: SNMP enabled/disabled
+        community_ro:
+          type: string
+          description: Read-only community string
+          example: public
+        community_rw:
+          type: string
+          description: Read-write community string
+          example: private
+        sys_location:
+          type: string
+          description: System location
+          example: Server Room
+        sys_contact:
+          type: string
+          description: System contact
+          example: admin@example.com
+        sys_name:
+          type: string
+          description: System name
+          example: IP Camera
+        port:
+          type: integer
+          description: SNMP port
+          default: 161
+        listen_address:
+          type: string
+          description: Listen address
+          default: "0.0.0.0"
+        version:
+          type: integer
+          enum: [1, 2, 3]
+          description: SNMP version
+          example: 2
+        v3_user:
+          type: string
+          description: SNMPv3 username
+        v3_auth_protocol:
+          type: string
+          enum: [MD5, SHA]
+          description: SNMPv3 authentication protocol
+        v3_auth_password:
+          type: string
+          format: password
+          description: SNMPv3 authentication password
+        v3_priv_protocol:
+          type: string
+          enum: [DES, AES]
+          description: SNMPv3 privacy protocol
+        v3_priv_password:
+          type: string
+          format: password
+          description: SNMPv3 privacy password
+    SnmpStatus:
+      type: object
+      properties:
+        running:
+          type: integer
+          enum: [0, 1]
+          description: "1 if running, 0 if stopped"
+        pid:
+          type: integer
+          description: Process ID of snmpd
+        uptime_seconds:
+          type: integer
+          description: Uptime in seconds
+    
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error message
+
+  responses:
+    BadRequest:
+      description: Invalid request body
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    ServerError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'

@@ -1,0 +1,152 @@
+menu "Novatek HDAL Drivers"
+
+config NVT_VOS_KWRAP
+	bool "Novatek vos basic handling API"
+	default y
+	depends on NVT_HDAL_BUILD_IN
+	help
+	  Novatek VOS api to provide basic multi-OS interface.
+
+config NVT_SMALL_HDAL
+	bool "NVT small HDAL"
+	depends on ARCH_NVT_IVOT_V7
+	depends on NVT_IVOT_PLAT_NS02301 || NVT_IVOT_PLAT_NA51089
+	default n
+	help
+	  This option will configure fewer HDAL paths.
+config NVT_HDAL_KDRV_BUILTIN
+	bool "Novatek hdal k-driver built-in part"
+	default y
+	depends on NVT_HDAL_BUILD_IN && NVT_VOS_KWRAP
+	help
+	  Novatek hdal k-driver's built-in
+config NVT_FAST_ISP_FLOW
+	bool "NVT fast boot isp flow"
+	depends on NVT_HDAL_BUILD_IN
+        depends on (NVT_IVOT_PLAT_NA51055 || NVT_IVOT_PLAT_NA51089)
+	default y
+	help
+	  This option will configure fast boot isp table and flow.
+config NVT_HDAL_KDRV_COMM
+        bool
+        depends on NVT_HDAL_BUILD_IN_ADV
+        default y
+config NVT_HDAL_KDRV_GFX2D
+        bool
+        depends on NVT_HDAL_BUILD_IN_ADV
+        default y
+config NVT_HDAL_KDRV_VIDEOCAPTURE
+        bool
+        depends on NVT_HDAL_BUILD_IN_ADV
+        default y
+config NVT_HDAL_KDRV_VIDEOPROCESS
+        bool
+        depends on NVT_HDAL_BUILD_IN_ADV
+        default y
+config NVT_HDAL_KDRV_DRE
+        bool
+        depends on NVT_HDAL_BUILD_IN_ADV
+        depends on NVT_IVOT_PLAT_NS02302
+        default y
+config NVT_HDAL_KDRV_VPE
+        bool
+        depends on NVT_HDAL_BUILD_IN_ADV
+        default y
+config NVT_HDAL_KDRV_VIDEOCODEC
+        bool
+        depends on NVT_HDAL_BUILD_IN_ADV
+        default y
+config NVT_HDAL_KDRV_VIDEOJPEG
+        bool
+        depends on NVT_HDAL_BUILD_IN_ADV
+        default y
+config NVT_HDAL_KDRV_VIDEOOUT
+        bool
+        depends on NVT_HDAL_BUILD_IN_ADV
+        default y
+config NVT_HDAL_KDRV_IDE
+        bool
+        depends on NVT_HDAL_BUILD_IN_ADV
+        default y
+config NVT_HDAL_KDRV_MI
+        bool
+        depends on NVT_HDAL_BUILD_IN_ADV
+        depends on NVT_IVOT_PLAT_NS02302
+        default y
+config NVT_HDAL_KDRV_DSI
+        bool
+        depends on NVT_HDAL_BUILD_IN_ADV
+        depends on NVT_IVOT_PLAT_NS02302
+        default y
+config NVT_HDAL_KDRV_DSIPHY
+        bool
+        depends on NVT_HDAL_BUILD_IN_ADV
+        depends on NVT_IVOT_PLAT_NS02302
+        default y
+config NVT_HDAL_KDRV_AUDIO_COMMON
+        bool
+        depends on NVT_HDAL_BUILD_IN_ADV
+        default y
+config NVT_HDAL_KDRV_AUDIO
+        bool
+        depends on NVT_HDAL_BUILD_IN_ADV
+        default y
+config NVT_HDAL_KFLOW_COMMON
+        bool
+        depends on NVT_HDAL_BUILD_IN_ADV
+        default y
+config NVT_HDAL_KFLOW_VIDEOCAPTURE
+        bool
+        depends on NVT_HDAL_BUILD_IN_ADV
+        default y
+config NVT_HDAL_KFLOW_VIDEOPROCESS
+        bool
+        depends on NVT_HDAL_BUILD_IN_ADV
+        default y
+config NVT_HDAL_KFLOW_VIDEOENC
+        bool
+        depends on NVT_HDAL_BUILD_IN_ADV
+        default y
+config NVT_HDAL_KFLOW_VIDEOOUT
+        bool
+        depends on NVT_HDAL_BUILD_IN_ADV
+        default y
+config NVT_HDAL_KFLOW_GFX2D
+        bool
+        depends on NVT_HDAL_BUILD_IN_ADV
+        default y
+config NVT_HDAL_KFLOW_VIDEOSPRITE
+        bool
+        depends on NVT_HDAL_BUILD_IN_ADV
+        default y
+config NVT_HDAL_KFLOW_AUDIOCAPTURE
+        bool
+        depends on NVT_HDAL_BUILD_IN_ADV
+        default y
+config NVT_HDAL_KFLOW_AUDIOOUT
+        bool
+        depends on NVT_HDAL_BUILD_IN_ADV
+        default y
+config NVT_HDAL_ISP_ISP
+        bool
+        depends on NVT_HDAL_BUILD_IN_ADV
+        default y
+config NVT_HDAL_ISP_IQ
+        bool
+        depends on NVT_HDAL_BUILD_IN_ADV
+        default y
+config NVT_HDAL_ISP_VPE
+        bool
+        depends on NVT_HDAL_BUILD_IN_ADV
+        depends on (NVT_IVOT_PLAT_NA51055 || IVT_IVOT_PLAT_NA51102 || NVT_IVOT_PLAT_NS02301 || NVT_IVOT_PLAT_NS02302)
+        default y
+config NVT_HDAL_ISP_AE
+        bool
+        depends on NVT_HDAL_BUILD_IN_2A
+        default y
+config NVT_HDAL_ISP_AWB
+        bool
+        depends on NVT_HDAL_BUILD_IN_2A
+        default y
+
+endmenu

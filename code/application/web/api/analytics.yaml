@@ -1,0 +1,2788 @@
+openapi: 3.0.3
+info:
+  title: IP Camera API - Analytics & Video Intelligence
+  version: 2.0.0
+  description: |
+    Comprehensive API for video analytics, intelligent detection, and event-driven automation.
+    
+    ## Features Overview
+    
+    | Feature | Status | Description |
+    |---------|--------|-------------|
+    | Motion Detection | ✅ Available | Software-based motion detection with zones |
+    | Video Tampering | ✅ Available | Defocus, masking, scene change, exposure detection |
+    | Smart Detection | 🔄 Planned | Pedestrian, vehicle, animal classification |
+    | Line Crossing | 🔄 Planned | Virtual tripwire with counting |
+    | Zone Intrusion | 🔄 Planned | Region-based enter/exit/loiter detection |
+    | Face Detection | ✅ Available | Face detection, recognition, and attribute analysis |
+    | License Plate | ✅ Available | ANPR/ALPR recognition |
+    | Heat Map | ✅ Available | Spatial activity density visualization |
+    | Pose Estimation | ✅ Available | Human body keypoint detection |
+    | Audio Classification | ✅ Available | Environmental sound event detection (YAMNet) |
+    
+    ## Common Patterns
+    
+    All analytics features follow a consistent API structure:
+    - `/api/v1/analytics/{feature}` - Main feature configuration
+    - `/api/v1/analytics/{feature}/zones` - Detection zones (where applicable)
+    - `/api/v1/analytics/{feature}/schedule` - Time-based activation rules
+    - `/api/v1/analytics/{feature}/actions` - Event-triggered actions (recording, notifications)
+
+paths:
+  # ============================================================================
+  # Analytics Overview
+  # ============================================================================
+  /analytics:
+    get:
+      summary: Get Analytics Configuration Overview
+      description: |
+        Returns a summary of all analytics features and their enabled states.
+      operationId: getAnalyticsConfig
+      tags: [Analytics Overview]
+      responses:
+        '200':
+          description: Analytics configuration retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnalyticsConfig'
+              example:
+                version: "2.0.0"
+                motion_detection:
+                  enabled: true
+                  sensitivity: 50
+                video_tampering:
+                  enabled: true
+                  sensitivity: 50
+                smart_detection:
+                  enabled: false
+                  pedestrian_enabled: false
+                  vehicle_enabled: false
+                global_settings:
+                  inference_fps: 10
+                  overlay_enabled: false
+    put:
+      summary: Update Global Analytics Settings
+      description: Update global settings that affect all analytics features.
+      operationId: updateAnalyticsConfig
+      tags: [Analytics Overview]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                global_settings:
+                  type: object
+                  properties:
+                    inference_fps:
+                      type: integer
+                      minimum: 1
+                      maximum: 30
+                    overlay_enabled:
+                      type: boolean
+            example:
+              global_settings:
+                inference_fps: 15
+                overlay_enabled: true
+      responses:
+        '200':
+          description: Settings updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResult'
+
+  /analytics/status:
+    get:
+      summary: Get Analytics Engine Status
+      description: |
+        Returns the current running status and aggregate statistics for all
+        analytics features including frames processed, detection events, and
+        processing performance metrics.
+      operationId: getAnalyticsStatus
+      tags: [Analytics Overview]
+      responses:
+        '200':
+          description: Analytics status retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnalyticsStatus'
+              example:
+                running: true
+                frames_processed: 1234567
+                total_detections: 456
+                motion_events: 239
+                line_cross_events: 0
+                loitering_events: 0
+                avg_process_time_ms: 4.5
+                current_fps: 14.28
+                tamper_detection:
+                  running: true
+                  frames_processed: 1234500
+                  defocus_events: 0
+                  masking_events: 2
+                  scene_change_events: 1
+                  too_dark_events: 0
+                  too_bright_events: 0
+    post:
+      summary: Control Analytics Engine
+      description: Start, stop, or reset the analytics engine.
+      operationId: controlAnalytics
+      tags: [Analytics Overview]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [action]
+              properties:
+                action:
+                  type: string
+                  enum: [start, stop, reset_stats, start_tamper, stop_tamper]
+            examples:
+              start:
+                value:
+                  action: start
+              stop:
+                value:
+                  action: stop
+              reset:
+                value:
+                  action: reset_stats
+      responses:
+        '200':
+          description: Action completed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResult'
+
+  /analytics/capabilities:
+    get:
+      summary: Get Analytics Capabilities
+      description: |
+        Returns the full list of supported analytics features, their availability,
+        and hardware/software capabilities. Use this endpoint to discover what
+        features are available on the camera.
+      operationId: getAnalyticsCapabilities
+      tags: [Analytics Overview]
+      responses:
+        '200':
+          description: Capabilities retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnalyticsCapabilities'
+              example:
+                api_version: "2.0.0"
+                features:
+                  motion_detection:
+                    available: true
+                    library: "software"
+                    max_zones: 8
+                  video_tampering:
+                    available: true
+                    library: "software"
+                    detectors: ["defocus", "masking", "scene_change", "too_dark", "too_bright"]
+                  smart_detection:
+                    available: false
+                    planned: true
+                    classes: ["pedestrian", "vehicle", "animal"]
+                common:
+                  schedule:
+                    available: true
+                    max_rules: 10
+                  actions:
+                    available: ["recording", "snapshot", "https_notify", "mqtt", "email", "ftp_upload"]
+
+  /analytics/toggles:
+    get:
+      summary: Get Feature Toggle States
+      description: Quick overview of which features are enabled/disabled.
+      operationId: getAnalyticsToggles
+      tags: [Analytics Overview]
+      responses:
+        '200':
+          description: Toggle states retrieved
+          content:
+            application/json:
+              example:
+                object_detection: false
+                person_detection: false
+                vehicle_detection: false
+                animal_detection: false
+                face_detection: false
+                motion_detection: true
+                line_crossing: false
+                zone_intrusion: false
+                license_plate: false
+                object_tracking: false
+    put:
+      summary: Update Feature Toggles
+      description: Quickly enable/disable multiple features at once.
+      operationId: updateAnalyticsToggles
+      tags: [Analytics Overview]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              motion_detection: true
+              object_detection: true
+              person_detection: true
+      responses:
+        '200':
+          description: Toggles updated successfully
+
+  # ============================================================================
+  # Motion Detection
+  # ============================================================================
+  /analytics/motion:
+    get:
+      summary: Get Motion Detection Configuration
+      description: Returns the current motion detection settings.
+      operationId: getMotionConfig
+      tags: [Motion Detection]
+      responses:
+        '200':
+          description: Motion detection configuration
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MotionConfig'
+              example:
+                enabled: true
+                sensitivity: 50
+                threshold: 30
+                min_area: 500
+                cooldown_ms: 2000
+    put:
+      summary: Update Motion Detection Configuration
+      description: Update motion detection parameters.
+      operationId: updateMotionConfig
+      tags: [Motion Detection]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MotionConfig'
+      responses:
+        '200':
+          description: Configuration updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MotionConfig'
+
+  /analytics/motion/zones:
+    get:
+      summary: Get Motion Detection Zones
+      description: Returns the list of configured motion detection zones.
+      operationId: getMotionZones
+      tags: [Motion Detection]
+      responses:
+        '200':
+          description: Motion zones list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DetectionZone'
+              example:
+                - id: 1
+                  name: "Full Frame"
+                  enabled: true
+                  sensitivity: 50
+                  points:
+                    - {x: 0, y: 0}
+                    - {x: 100, y: 0}
+                    - {x: 100, y: 100}
+                    - {x: 0, y: 100}
+    post:
+      summary: Create Motion Detection Zone
+      description: Add a new motion detection zone.
+      operationId: createMotionZone
+      tags: [Motion Detection]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DetectionZoneCreate'
+      responses:
+        '201':
+          description: Zone created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DetectionZone'
+    put:
+      summary: Update All Motion Zones
+      description: Replace the entire zones configuration.
+      operationId: updateMotionZones
+      tags: [Motion Detection]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/DetectionZone'
+      responses:
+        '200':
+          description: Zones updated successfully
+
+  /analytics/motion/zones/{zoneId}:
+    parameters:
+      - name: zoneId
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: Zone ID
+    put:
+      summary: Update Motion Detection Zone
+      description: Updates a specific motion detection zone by ID.
+      operationId: updateMotionZone
+      tags: [Motion Detection]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DetectionZoneCreate'
+      responses:
+        '200':
+          description: Zone updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DetectionZone'
+    delete:
+      summary: Delete Motion Detection Zone
+      description: Delete a specific motion detection zone by ID.
+      operationId: deleteMotionZone
+      tags: [Motion Detection]
+      responses:
+        '200':
+          description: Zone deleted successfully
+
+  /analytics/motion/schedule:
+    get:
+      summary: Get Motion Detection Schedule
+      description: Returns the schedule configuration for motion detection.
+      operationId: getMotionSchedule
+      tags: [Motion Detection]
+      responses:
+        '200':
+          description: Schedule configuration
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FeatureSchedule'
+    put:
+      summary: Update Motion Detection Schedule
+      operationId: updateMotionSchedule
+      tags: [Motion Detection]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FeatureSchedule'
+      responses:
+        '200':
+          description: Schedule updated successfully
+
+  /analytics/motion/actions:
+    get:
+      summary: Get Motion Event Actions
+      description: Returns the actions triggered when motion is detected.
+      operationId: getMotionActions
+      tags: [Motion Detection]
+      responses:
+        '200':
+          description: Event actions configuration
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventActions'
+    put:
+      summary: Update Motion Event Actions
+      operationId: updateMotionActions
+      tags: [Motion Detection]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventActions'
+      responses:
+        '200':
+          description: Actions updated successfully
+
+  # ============================================================================
+  # Video Tampering Detection
+  # ============================================================================
+  /analytics/tampering:
+    get:
+      summary: Get Video Tampering Configuration
+      description: |
+        Returns the current video tampering detection settings including
+        individual detector configurations for defocus, masking, scene change,
+        and exposure issues.
+      operationId: getTamperingConfig
+      tags: [Video Tampering]
+      responses:
+        '200':
+          description: Tampering detection configuration
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TamperingConfig'
+              example:
+                enabled: true
+                sensitivity: 50
+                defocus_detection:
+                  enabled: true
+                  sensitivity: 50
+                masking_detection:
+                  enabled: true
+                  sensitivity: 50
+                scene_change_detection:
+                  enabled: true
+                  sensitivity: 50
+                too_dark_detection:
+                  enabled: true
+                  threshold: 20
+                too_bright_detection:
+                  enabled: true
+                  threshold: 240
+                dwell_time_sec: 3
+                auto_recovery: true
+    put:
+      summary: Update Video Tampering Configuration
+      operationId: updateTamperingConfig
+      tags: [Video Tampering]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TamperingConfig'
+      responses:
+        '200':
+          description: Configuration updated successfully
+
+  /analytics/tampering/status:
+    get:
+      summary: Get Tampering Detection Status
+      description: |
+        Returns real-time tampering detection status including current alarms,
+        event statistics, and live image quality metrics.
+      operationId: getTamperingStatus
+      tags: [Video Tampering]
+      responses:
+        '200':
+          description: Live tampering status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TamperingStatus'
+              example:
+                running: true
+                frames_processed: 640068
+                current_alarms:
+                  defocus: false
+                  masking: false
+                  scene_change: false
+                  too_bright: false
+                  too_dark: false
+                statistics:
+                  defocus_events: 0
+                  masking_events: 2
+                  scene_change_events: 1
+                  too_dark_events: 0
+                  too_bright_events: 0
+                  auto_resets: 28
+                last_metrics:
+                  brightness: 112.65
+                  blur: 1214.75
+                  edge_ratio: 0.98
+                  histogram_diff: 0.17
+
+  /analytics/tampering/schedule:
+    get:
+      summary: Get Tampering Detection Schedule
+      operationId: getTamperingSchedule
+      tags: [Video Tampering]
+      responses:
+        '200':
+          description: Schedule configuration
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FeatureSchedule'
+    put:
+      summary: Update Tampering Detection Schedule
+      operationId: updateTamperingSchedule
+      tags: [Video Tampering]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FeatureSchedule'
+      responses:
+        '200':
+          description: Schedule updated successfully
+
+  /analytics/tampering/actions:
+    get:
+      summary: Get Tampering Event Actions
+      description: |
+        Returns the actions triggered when tampering is detected.
+        Supports recording, snapshot, HTTPS webhook, MQTT, email, and FTP upload.
+      operationId: getTamperingActions
+      tags: [Video Tampering]
+      responses:
+        '200':
+          description: Event actions configuration
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TamperingActions'
+              example:
+                recording:
+                  enabled: true
+                  pre_record_sec: 5
+                  post_record_sec: 30
+                snapshot:
+                  enabled: true
+                  count: 1
+                https_notify:
+                  enabled: false
+                  url: ""
+                mqtt:
+                  enabled: false
+                  topic: "camera/events/tampering"
+                email:
+                  enabled: false
+                  subject: "ALERT: Video Tampering Detected"
+                  priority: "high"
+                ftp_upload:
+                  enabled: false
+                  path: "/tampering"
+    put:
+      summary: Update Tampering Event Actions
+      operationId: updateTamperingActions
+      tags: [Video Tampering]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TamperingActions'
+      responses:
+        '200':
+          description: Actions updated successfully
+
+  # ============================================================================
+  # Smart Detection (Pedestrian/Vehicle/Animal)
+  # ============================================================================
+  /analytics/smart:
+    get:
+      summary: Get Smart Detection Configuration
+      description: |
+        Returns AI-based smart detection settings for pedestrian, vehicle,
+        and animal classification. Requires AI inference libraries.
+      operationId: getSmartConfig
+      tags: [Smart Detection]
+      responses:
+        '200':
+          description: Smart detection configuration
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SmartDetectionConfig'
+              example:
+                enabled: false
+                confidence_threshold: 0.5
+                pedestrian:
+                  enabled: true
+                  sensitivity: 50
+                  min_confidence: 0.5
+                vehicle:
+                  enabled: true
+                  sensitivity: 50
+                  min_confidence: 0.5
+                animal:
+                  enabled: false
+                  sensitivity: 50
+    put:
+      summary: Update Smart Detection Configuration
+      operationId: updateSmartConfig
+      tags: [Smart Detection]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SmartDetectionConfig'
+      responses:
+        '200':
+          description: Configuration updated successfully
+
+  /analytics/smart/zones:
+    get:
+      summary: Get Smart Detection Zones
+      operationId: getSmartZones
+      tags: [Smart Detection]
+      responses:
+        '200':
+          description: Detection zones
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DetectionZone'
+    post:
+      summary: Create Smart Detection Zone
+      operationId: createSmartZone
+      tags: [Smart Detection]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DetectionZoneCreate'
+      responses:
+        '201':
+          description: Zone created
+
+  /analytics/smart/schedule:
+    get:
+      summary: Get Smart Detection Schedule
+      operationId: getSmartSchedule
+      tags: [Smart Detection]
+      responses:
+        '200':
+          description: Schedule configuration
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FeatureSchedule'
+    put:
+      summary: Update Smart Detection Schedule
+      operationId: updateSmartSchedule
+      tags: [Smart Detection]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FeatureSchedule'
+      responses:
+        '200':
+          description: Schedule updated
+
+  /analytics/smart/actions:
+    get:
+      summary: Get Smart Detection Event Actions
+      operationId: getSmartActions
+      tags: [Smart Detection]
+      responses:
+        '200':
+          description: Event actions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventActions'
+    put:
+      summary: Update Smart Detection Event Actions
+      operationId: updateSmartActions
+      tags: [Smart Detection]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventActions'
+      responses:
+        '200':
+          description: Actions updated
+
+  # ============================================================================
+  # Line Crossing Detection
+  # ============================================================================
+  /analytics/linecross:
+    get:
+      summary: Get Line Crossing Configuration
+      description: |
+        Returns virtual tripwire detection settings including counting options
+        and object class filtering.
+      operationId: getLineCrossConfig
+      tags: [Line Crossing]
+      responses:
+        '200':
+          description: Line crossing configuration
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LineCrossConfig'
+              example:
+                enabled: false
+                counting:
+                  enabled: false
+                  reset_daily: true
+                  reset_time: "00:00"
+                object_filter:
+                  pedestrian: true
+                  vehicle: true
+                  bicycle: true
+    put:
+      summary: Update Line Crossing Configuration
+      operationId: updateLineCrossConfig
+      tags: [Line Crossing]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LineCrossConfig'
+      responses:
+        '200':
+          description: Configuration updated
+
+  /analytics/linecross/lines:
+    get:
+      summary: Get Configured Lines
+      description: Returns all configured virtual tripwire lines.
+      operationId: getLineCrossLines
+      tags: [Line Crossing]
+      responses:
+        '200':
+          description: Lines configuration
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TripwireLine'
+              example:
+                - id: 1
+                  name: "Entrance"
+                  enabled: true
+                  x1: 0.25
+                  y1: 0.5
+                  x2: 0.75
+                  y2: 0.5
+                  direction: "both"
+                  color: "#00FF00"
+    post:
+      summary: Create New Line
+      operationId: createLineCrossLine
+      tags: [Line Crossing]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TripwireLineCreate'
+      responses:
+        '201':
+          description: Line created
+    put:
+      summary: Update All Lines
+      operationId: updateLineCrossLines
+      tags: [Line Crossing]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/TripwireLine'
+      responses:
+        '200':
+          description: Lines updated
+
+  /analytics/linecross/lines/{lineId}:
+    parameters:
+      - name: lineId
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: Line ID
+    put:
+      summary: Update Line Crossing Line
+      description: Updates a specific line crossing detection line by ID.
+      operationId: updateLineCrossLine
+      tags: [Line Crossing]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TripwireLineCreate'
+      responses:
+        '200':
+          description: Line updated successfully
+    delete:
+      summary: Delete Line
+      description: Delete a specific line crossing detection line by ID.
+      operationId: deleteLineCrossLine
+      tags: [Line Crossing]
+      responses:
+        '200':
+          description: Line deleted
+
+  /analytics/linecross/schedule:
+    get:
+      summary: Get Line Crossing Schedule
+      operationId: getLineCrossSchedule
+      tags: [Line Crossing]
+      responses:
+        '200':
+          description: Schedule configuration
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FeatureSchedule'
+    put:
+      summary: Update Line Crossing Schedule
+      operationId: updateLineCrossSchedule
+      tags: [Line Crossing]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FeatureSchedule'
+      responses:
+        '200':
+          description: Schedule updated
+
+  /analytics/linecross/actions:
+    get:
+      summary: Get Line Crossing Event Actions
+      operationId: getLineCrossActions
+      tags: [Line Crossing]
+      responses:
+        '200':
+          description: Event actions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventActions'
+    put:
+      summary: Update Line Crossing Event Actions
+      operationId: updateLineCrossActions
+      tags: [Line Crossing]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventActions'
+      responses:
+        '200':
+          description: Actions updated
+
+  # ============================================================================
+  # Zone Intrusion Detection
+  # ============================================================================
+  /analytics/intrusion:
+    get:
+      summary: Get Zone Intrusion Configuration
+      description: |
+        Returns region-based intrusion detection settings including alarm modes
+        (enter, exit, loiter) and object class filtering.
+      operationId: getIntrusionConfig
+      tags: [Zone Intrusion]
+      responses:
+        '200':
+          description: Intrusion detection configuration
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IntrusionConfig'
+              example:
+                enabled: false
+                dwell_time_ms: 1000
+                alarm_mode: "enter"
+                object_filter:
+                  pedestrian: true
+                  vehicle: true
+                  bicycle: false
+    put:
+      summary: Update Zone Intrusion Configuration
+      operationId: updateIntrusionConfig
+      tags: [Zone Intrusion]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IntrusionConfig'
+      responses:
+        '200':
+          description: Configuration updated
+
+  /analytics/intrusion/zones:
+    get:
+      summary: Get Intrusion Detection Zones
+      operationId: getIntrusionZones
+      tags: [Zone Intrusion]
+      responses:
+        '200':
+          description: Intrusion zones
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/IntrusionZone'
+    post:
+      summary: Create Intrusion Zone
+      operationId: createIntrusionZone
+      tags: [Zone Intrusion]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IntrusionZoneCreate'
+      responses:
+        '201':
+          description: Zone created
+    put:
+      summary: Update All Intrusion Zones
+      operationId: updateIntrusionZones
+      tags: [Zone Intrusion]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/IntrusionZone'
+      responses:
+        '200':
+          description: Zones updated
+
+  /analytics/intrusion/zones/{zoneId}:
+    parameters:
+      - name: zoneId
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: Zone ID
+    put:
+      summary: Update Intrusion Detection Zone
+      description: Updates a specific zone intrusion detection zone by ID.
+      operationId: updateIntrusionZone
+      tags: [Zone Intrusion]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IntrusionZoneCreate'
+      responses:
+        '200':
+          description: Zone updated successfully
+    delete:
+      summary: Delete Intrusion Zone
+      description: Delete a specific zone intrusion detection zone by ID.
+      operationId: deleteIntrusionZone
+      tags: [Zone Intrusion]
+      responses:
+        '200':
+          description: Zone deleted
+
+  /analytics/intrusion/schedule:
+    get:
+      summary: Get Intrusion Detection Schedule
+      operationId: getIntrusionSchedule
+      tags: [Zone Intrusion]
+      responses:
+        '200':
+          description: Schedule configuration
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FeatureSchedule'
+    put:
+      summary: Update Intrusion Detection Schedule
+      operationId: updateIntrusionSchedule
+      tags: [Zone Intrusion]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FeatureSchedule'
+      responses:
+        '200':
+          description: Schedule updated
+
+  /analytics/intrusion/actions:
+    get:
+      summary: Get Intrusion Event Actions
+      operationId: getIntrusionActions
+      tags: [Zone Intrusion]
+      responses:
+        '200':
+          description: Event actions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventActions'
+    put:
+      summary: Update Intrusion Event Actions
+      operationId: updateIntrusionActions
+      tags: [Zone Intrusion]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventActions'
+      responses:
+        '200':
+          description: Actions updated
+
+  # ============================================================================
+  # Notification Servers
+  # ============================================================================
+  /analytics/notifications:
+    get:
+      summary: Get All Notification Server Configurations
+      description: Returns configuration for all notification backends (MQTT, Email, FTP).
+      operationId: getNotificationServers
+      tags: [Notifications]
+      responses:
+        '200':
+          description: Notification servers configuration
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationServers'
+    put:
+      summary: Update Notification Server Configurations
+      operationId: updateNotificationServers
+      tags: [Notifications]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NotificationServers'
+      responses:
+        '200':
+          description: Configuration updated
+
+  /analytics/notifications/mqtt:
+    get:
+      summary: Get MQTT Broker Configuration
+      operationId: getMqttConfig
+      tags: [Notifications]
+      responses:
+        '200':
+          description: MQTT configuration
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MqttConfig'
+              example:
+                enabled: false
+                broker: "mqtt.example.com"
+                port: 1883
+                username: ""
+                client_id: "ipcamera"
+                use_tls: false
+                topic_prefix: "camera/"
+                qos: 1
+                retain: false
+    put:
+      summary: Update MQTT Broker Configuration
+      operationId: updateMqttConfig
+      tags: [Notifications]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MqttConfig'
+      responses:
+        '200':
+          description: Configuration updated
+
+  /analytics/notifications/email:
+    get:
+      summary: Get Email/SMTP Configuration
+      operationId: getEmailConfig
+      tags: [Notifications]
+      responses:
+        '200':
+          description: Email configuration
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EmailConfig'
+              example:
+                enabled: false
+                smtp_server: "smtp.example.com"
+                smtp_port: 587
+                use_tls: true
+                use_starttls: true
+                username: ""
+                from_address: "camera@example.com"
+                from_name: "IP Camera"
+                default_recipients: []
+    put:
+      summary: Update Email/SMTP Configuration
+      operationId: updateEmailConfig
+      tags: [Notifications]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EmailConfig'
+      responses:
+        '200':
+          description: Configuration updated
+
+  /analytics/notifications/ftp:
+    get:
+      summary: Get FTP/SFTP Configuration
+      operationId: getFtpConfig
+      tags: [Notifications]
+      responses:
+        '200':
+          description: FTP configuration
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FtpConfig'
+    put:
+      summary: Update FTP/SFTP Configuration
+      operationId: updateFtpConfig
+      tags: [Notifications]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FtpConfig'
+      responses:
+        '200':
+          description: Configuration updated
+
+  /analytics/notifications/test:
+    post:
+      summary: Test Notification Delivery
+      description: |
+        Send a test notification to verify configuration for a specific backend.
+        Checks server connectivity and credentials before sending.
+      operationId: testNotification
+      tags: [Notifications]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [type]
+              properties:
+                type:
+                  type: string
+                  enum: [mqtt, email, ftp, https, webhook]
+                  description: Notification backend to test
+                recipient:
+                  type: string
+                  description: Test recipient (required for email)
+                url:
+                  type: string
+                  format: uri
+                  description: Webhook URL (required for https/webhook)
+            examples:
+              mqtt:
+                value:
+                  type: mqtt
+              email:
+                value:
+                  type: email
+                  recipient: "test@example.com"
+              ftp:
+                value:
+                  type: ftp
+              webhook:
+                value:
+                  type: https
+                  url: "https://example.com/webhook"
+      responses:
+        '200':
+          description: Test notification sent successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResult'
+              example:
+                success: true
+                message: "MQTT test message sent to mqtt.example.com"
+        '400':
+          description: Invalid request or server not configured
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResult'
+              example:
+                success: false
+                error: "MQTT broker not configured"
+
+  # ============================================================================
+  # Line Crossing Counts
+  # ============================================================================
+  /analytics/linecross/counts:
+    get:
+      summary: Get Line Crossing Counts
+      description: |
+        Returns per-line in/out crossing counts since last reset.
+      operationId: getLineCrossCounts
+      tags: [Line Crossing]
+      responses:
+        '200':
+          description: Crossing counts
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  total_in:
+                    type: integer
+                  total_out:
+                    type: integer
+                  last_reset:
+                    type: string
+                  lines:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        name:
+                          type: string
+                        in_count:
+                          type: integer
+                        out_count:
+                          type: integer
+              example:
+                total_in: 45
+                total_out: 38
+                last_reset: ""
+                lines:
+                  - id: 1
+                    name: "Entrance"
+                    in_count: 45
+                    out_count: 38
+    post:
+      summary: Reset Line Crossing Counts
+      description: Reset all line crossing counters to zero.
+      operationId: resetLineCrossCounts
+      tags: [Line Crossing]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [action]
+              properties:
+                action:
+                  type: string
+                  enum: [reset]
+            example:
+              action: reset
+      responses:
+        '200':
+          description: Counts reset successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResult'
+
+  # ============================================================================
+  # Face Detection & Recognition
+  # ============================================================================
+  /analytics/face:
+    get:
+      summary: Get Face Detection Configuration
+      description: |
+        Returns face detection, recognition, and attribute analysis settings
+        including model selection, confidence thresholds, recognition gallery,
+        and face attribute extraction configuration.
+      operationId: getFaceConfig
+      tags: [Face Detection]
+      responses:
+        '200':
+          description: Face detection configuration
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FaceDetectionConfig'
+              example:
+                enabled: false
+                model: "scrfd_nosig"
+                min_face_size: 30
+                confidence_threshold: 0.6
+                recognition:
+                  enabled: false
+                  database_path: "/mnt/app/face_db"
+                  similarity_threshold: 0.7
+                  max_gallery_size: 1000
+                  margin: 0.2
+                attributes:
+                  enabled: false
+                  margin: 0.2
+    put:
+      summary: Update Face Detection Configuration
+      description: |
+        Update face detection, recognition, and attribute settings.
+        Partial updates are supported — only provided fields are changed.
+      operationId: updateFaceConfig
+      tags: [Face Detection]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FaceDetectionConfig'
+            examples:
+              enable_face:
+                summary: Enable face detection
+                value:
+                  enabled: true
+                  confidence_threshold: 0.5
+              enable_recognition:
+                summary: Enable face recognition
+                value:
+                  recognition:
+                    enabled: true
+                    similarity_threshold: 0.65
+              enable_attributes:
+                summary: Enable face attribute analysis
+                value:
+                  attributes:
+                    enabled: true
+      responses:
+        '200':
+          description: Configuration updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResult'
+
+  /analytics/face/gallery:
+    get:
+      summary: Get Face Gallery
+      description: |
+        Returns the face recognition gallery — the list of enrolled faces
+        and gallery metadata.
+      operationId: getFaceGallery
+      tags: [Face Detection]
+      responses:
+        '200':
+          description: Face gallery data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FaceGallery'
+              example:
+                gallery: []
+                max_size: 1000
+                database_path: "/mnt/app/face_db"
+
+  # ============================================================================
+  # License Plate Recognition (LPR)
+  # ============================================================================
+  /analytics/lpr:
+    get:
+      summary: Get License Plate Recognition Configuration
+      description: |
+        Returns ANPR/ALPR settings including model selection, supported regions,
+        confidence threshold, and event-triggered actions.
+      operationId: getLprConfig
+      tags: [License Plate Recognition]
+      responses:
+        '200':
+          description: LPR configuration
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LprConfig'
+              example:
+                enabled: false
+                model: "lpr_nvt"
+                regions:
+                  - "us"
+                  - "eu"
+                min_confidence: 0.7
+                actions:
+                  recording:
+                    enabled: false
+                    pre_record_sec: 5
+                    post_record_sec: 30
+                  snapshot:
+                    enabled: false
+                    count: 1
+                  https_notify:
+                    enabled: false
+                    url: ""
+                  mqtt:
+                    enabled: false
+                    topic: ""
+                  email:
+                    enabled: false
+                  ftp_upload:
+                    enabled: false
+                    path: ""
+    put:
+      summary: Update License Plate Recognition Configuration
+      description: |
+        Update LPR settings and event actions.
+        Partial updates are supported — only provided fields are changed.
+      operationId: updateLprConfig
+      tags: [License Plate Recognition]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LprConfig'
+            examples:
+              enable_lpr:
+                summary: Enable LPR
+                value:
+                  enabled: true
+                  min_confidence: 0.6
+              set_regions:
+                summary: Set supported regions
+                value:
+                  regions: ["us", "eu", "uk"]
+      responses:
+        '200':
+          description: Configuration updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResult'
+
+  # ============================================================================
+  # Heat Map Analytics
+  # ============================================================================
+  /analytics/heatmap:
+    get:
+      summary: Get Heat Map Configuration
+      description: |
+        Returns heat map analytics settings including grid dimensions
+        and temporal decay rate.
+      operationId: getHeatMapConfig
+      tags: [Heat Map]
+      responses:
+        '200':
+          description: Heat map configuration
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HeatMapConfig'
+              example:
+                enabled: false
+                grid_w: 32
+                grid_h: 18
+                decay_rate: 0.97
+    put:
+      summary: Update Heat Map Configuration
+      description: |
+        Update heat map settings including grid resolution and decay rate.
+        Partial updates are supported.
+      operationId: updateHeatMapConfig
+      tags: [Heat Map]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/HeatMapConfig'
+            example:
+              enabled: true
+              decay_rate: 0.95
+      responses:
+        '200':
+          description: Configuration updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResult'
+
+  /analytics/heatmap/grid:
+    get:
+      summary: Get Heat Map Grid Data
+      description: |
+        Returns the current heat map grid as a 2D array of float values
+        representing activity density at each cell. Values range from 0.0
+        (no activity) to higher values indicating more activity.
+      operationId: getHeatMapGrid
+      tags: [Heat Map]
+      responses:
+        '200':
+          description: Heat map grid data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HeatMapGrid'
+              example:
+                grid_w: 32
+                grid_h: 18
+                data:
+                  - [0.0, 0.0, 0.1, 0.3]
+                  - [0.0, 0.5, 0.8, 0.2]
+
+  /analytics/heatmap/reset:
+    post:
+      summary: Reset Heat Map Data
+      description: |
+        Clears all accumulated heat map data, resetting the grid to zero.
+      operationId: resetHeatMap
+      tags: [Heat Map]
+      responses:
+        '200':
+          description: Heat map data reset successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResult'
+              example:
+                success: true
+
+  # ============================================================================
+  # Pose Estimation
+  # ============================================================================
+  /analytics/pose:
+    get:
+      summary: Get Pose Estimation Configuration
+      description: |
+        Returns human body pose estimation settings including model selection,
+        confidence thresholds, NMS threshold, and maximum number of tracked persons.
+      operationId: getPoseConfig
+      tags: [Pose Estimation]
+      responses:
+        '200':
+          description: Pose estimation configuration
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PoseEstimationConfig'
+              example:
+                enabled: false
+                model: "yolo26n_pose"
+                conf_threshold: 0.35
+                nms_threshold: 0.5
+                max_persons: 16
+    put:
+      summary: Update Pose Estimation Configuration
+      description: |
+        Update pose estimation settings.
+        Partial updates are supported — only provided fields are changed.
+      operationId: updatePoseConfig
+      tags: [Pose Estimation]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PoseEstimationConfig'
+            example:
+              enabled: true
+              conf_threshold: 0.4
+              max_persons: 8
+      responses:
+        '200':
+          description: Configuration updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResult'
+
+  # ============================================================================
+  # Audio Classification
+  # ============================================================================
+  /analytics/audio:
+    get:
+      summary: Get Audio Classification Configuration
+      description: |
+        Returns audio classification settings using YAMNet for environmental
+        sound event detection (e.g., glass breaking, gunshot, dog bark, siren).
+        Processes 16kHz mono PCM audio from the camera's microphone.
+      operationId: getAudioClassificationConfig
+      tags: [Audio Classification]
+      responses:
+        '200':
+          description: Audio classification configuration
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AudioClassificationConfig'
+              example:
+                enabled: false
+                model: "yamnet"
+                detection_threshold: 0.3
+    put:
+      summary: Update Audio Classification Configuration
+      description: |
+        Update audio classification settings.
+        Partial updates are supported — only provided fields are changed.
+      operationId: updateAudioClassificationConfig
+      tags: [Audio Classification]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AudioClassificationConfig'
+            example:
+              enabled: true
+              detection_threshold: 0.5
+      responses:
+        '200':
+          description: Configuration updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResult'
+
+  # ============================================================================
+  # Detection Counts and Events
+  # ============================================================================
+  /analytics/counts:
+    get:
+      summary: Get Detection Counts
+      description: |
+        Retrieves current detection counts for line crossing and object detection.
+        Returns counts since last reset.
+      operationId: getDetectionCounts
+      tags: [Analytics Overview]
+      responses:
+        '200':
+          description: Counts retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DetectionCounts'
+              example:
+                line_crossings:
+                  "1":
+                    in: 45
+                    out: 38
+                object_counts:
+                  person: 123
+                  vehicle: 67
+                  animal: 0
+                since: "2026-02-09T00:00:00Z"
+    delete:
+      summary: Reset Detection Counts
+      description: Resets all detection counters to zero.
+      operationId: resetDetectionCounts
+      tags: [Analytics Overview]
+      responses:
+        '200':
+          description: Counts reset successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResult'
+
+  /analytics/events:
+    get:
+      summary: Get Recent Analytics Events
+      description: |
+        Retrieves recent analytics events (detections, alerts).
+        Supports pagination and filtering by event type and timestamp.
+      operationId: getAnalyticsEvents
+      tags: [Analytics Overview]
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 50
+            maximum: 200
+          description: Maximum number of events to return
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            default: 0
+          description: Offset for pagination
+        - name: type
+          in: query
+          schema:
+            type: string
+            enum: [motion, person, vehicle, line_cross, zone_intrusion, face, tampering]
+          description: Filter by event type
+        - name: since
+          in: query
+          schema:
+            type: string
+            format: date-time
+          description: Only return events since this timestamp
+      responses:
+        '200':
+          description: Events retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnalyticsEventList'
+              example:
+                events:
+                  - id: 1
+                    timestamp: "2026-02-09T12:34:56Z"
+                    type: "motion"
+                    details:
+                      zone_id: 1
+                      zone_name: "Front Door"
+                    snapshot_url: "/api/v1/snapshots/1234.jpg"
+                  - id: 2
+                    timestamp: "2026-02-09T12:35:10Z"
+                    type: "person"
+                    details:
+                      confidence: 0.87
+                      bbox: {x: 120, y: 80, w: 100, h: 200}
+                total: 2
+                offset: 0
+                limit: 50
+
+tags:
+  - name: Analytics Overview
+    description: Global analytics configuration and status
+  - name: Motion Detection
+    description: Motion detection configuration and zones
+  - name: Video Tampering
+    description: Camera tampering detection (defocus, masking, scene change)
+  - name: Smart Detection
+    description: AI-based pedestrian, vehicle, and animal detection
+  - name: Line Crossing
+    description: Virtual tripwire and counting
+  - name: Zone Intrusion
+    description: Region-based intrusion detection
+  - name: Face Detection
+    description: Face detection, recognition, and attribute analysis
+  - name: License Plate Recognition
+    description: Automatic number plate recognition (ANPR/ALPR)
+  - name: Heat Map
+    description: Spatial activity density visualization
+  - name: Pose Estimation
+    description: Human body keypoint detection and tracking
+  - name: Audio Classification
+    description: Environmental sound event detection using YAMNet
+  - name: Notifications
+    description: Notification server configuration (MQTT, Email, FTP)
+
+# ==============================================================================
+# Components (Schemas)
+# ==============================================================================
+components:
+  schemas:
+    OperationResult:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+        error:
+          type: string
+
+    AnalyticsConfig:
+      type: object
+      properties:
+        version:
+          type: string
+        motion_detection:
+          type: object
+          properties:
+            enabled:
+              type: boolean
+            sensitivity:
+              type: integer
+        video_tampering:
+          type: object
+          properties:
+            enabled:
+              type: boolean
+            sensitivity:
+              type: integer
+        smart_detection:
+          type: object
+          properties:
+            enabled:
+              type: boolean
+            pedestrian_enabled:
+              type: boolean
+            vehicle_enabled:
+              type: boolean
+        global_settings:
+          type: object
+          properties:
+            inference_fps:
+              type: integer
+            overlay_enabled:
+              type: boolean
+
+    AnalyticsStatus:
+      type: object
+      properties:
+        running:
+          type: boolean
+        frames_processed:
+          type: integer
+          format: int64
+        total_detections:
+          type: integer
+        motion_events:
+          type: integer
+        line_cross_events:
+          type: integer
+        loitering_events:
+          type: integer
+        avg_process_time_ms:
+          type: number
+          format: float
+        current_fps:
+          type: number
+          format: float
+        tamper_detection:
+          type: object
+          properties:
+            running:
+              type: boolean
+            frames_processed:
+              type: integer
+              format: int64
+            defocus_events:
+              type: integer
+            masking_events:
+              type: integer
+            scene_change_events:
+              type: integer
+            too_dark_events:
+              type: integer
+            too_bright_events:
+              type: integer
+
+    AnalyticsCapabilities:
+      type: object
+      properties:
+        api_version:
+          type: string
+        features:
+          type: object
+          additionalProperties:
+            type: object
+            properties:
+              available:
+                type: boolean
+              planned:
+                type: boolean
+              library:
+                type: string
+        common:
+          type: object
+          properties:
+            schedule:
+              type: object
+            actions:
+              type: object
+
+    MotionConfig:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+          description: Enable/disable motion detection
+        sensitivity:
+          type: integer
+          minimum: 1
+          maximum: 100
+          description: Detection sensitivity (1-100)
+        threshold:
+          type: integer
+          minimum: 1
+          maximum: 100
+          description: Motion threshold percentage
+        min_area:
+          type: integer
+          minimum: 0
+          description: Minimum motion area in pixels
+        cooldown_ms:
+          type: integer
+          minimum: 0
+          description: Cooldown period between events in milliseconds
+
+    DetectionZone:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+        enabled:
+          type: boolean
+        sensitivity:
+          type: integer
+        points:
+          type: array
+          items:
+            type: object
+            properties:
+              x:
+                type: number
+                description: X coordinate (0-100 percent)
+              y:
+                type: number
+                description: Y coordinate (0-100 percent)
+
+    DetectionZoneCreate:
+      type: object
+      properties:
+        name:
+          type: string
+        enabled:
+          type: boolean
+          default: true
+        sensitivity:
+          type: integer
+          default: 50
+        points:
+          type: array
+          items:
+            type: object
+            properties:
+              x:
+                type: number
+              y:
+                type: number
+
+    FeatureSchedule:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+          description: Enable schedule-based activation
+        always_on:
+          type: boolean
+          description: If true, feature is always active regardless of rules
+        rules:
+          type: array
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+              enabled:
+                type: boolean
+              days:
+                type: array
+                items:
+                  type: integer
+                  minimum: 0
+                  maximum: 6
+                description: Days of week (0=Sunday, 6=Saturday)
+              start_time:
+                type: string
+                pattern: '^([01]?[0-9]|2[0-3]):[0-5][0-9]$'
+                example: "08:00"
+              end_time:
+                type: string
+                pattern: '^([01]?[0-9]|2[0-3]):[0-5][0-9]$'
+                example: "18:00"
+
+    EventActions:
+      type: object
+      properties:
+        recording:
+          type: object
+          properties:
+            enabled:
+              type: boolean
+            pre_record_sec:
+              type: integer
+              minimum: 0
+              maximum: 30
+            post_record_sec:
+              type: integer
+              minimum: 0
+              maximum: 300
+        snapshot:
+          type: object
+          properties:
+            enabled:
+              type: boolean
+            count:
+              type: integer
+              minimum: 1
+              maximum: 10
+        https_notify:
+          type: object
+          properties:
+            enabled:
+              type: boolean
+            url:
+              type: string
+              format: uri
+        mqtt:
+          type: object
+          properties:
+            enabled:
+              type: boolean
+            topic:
+              type: string
+        email:
+          type: object
+          properties:
+            enabled:
+              type: boolean
+        ftp_upload:
+          type: object
+          properties:
+            enabled:
+              type: boolean
+            path:
+              type: string
+
+    TamperingConfig:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+        sensitivity:
+          type: integer
+          minimum: 1
+          maximum: 100
+        defocus_detection:
+          type: object
+          properties:
+            enabled:
+              type: boolean
+            sensitivity:
+              type: integer
+        masking_detection:
+          type: object
+          properties:
+            enabled:
+              type: boolean
+            sensitivity:
+              type: integer
+        scene_change_detection:
+          type: object
+          properties:
+            enabled:
+              type: boolean
+            sensitivity:
+              type: integer
+        too_dark_detection:
+          type: object
+          properties:
+            enabled:
+              type: boolean
+            threshold:
+              type: integer
+              minimum: 0
+              maximum: 255
+              description: Brightness threshold (0-255)
+        too_bright_detection:
+          type: object
+          properties:
+            enabled:
+              type: boolean
+            threshold:
+              type: integer
+              minimum: 0
+              maximum: 255
+              description: Brightness threshold (0-255)
+        dwell_time_sec:
+          type: integer
+          minimum: 1
+          maximum: 60
+          description: Seconds condition must persist before alarm
+        auto_recovery:
+          type: boolean
+          description: Automatically reset reference after scene change
+
+    TamperingStatus:
+      type: object
+      properties:
+        running:
+          type: boolean
+        frames_processed:
+          type: integer
+          format: int64
+        current_alarms:
+          type: object
+          properties:
+            defocus:
+              type: boolean
+            masking:
+              type: boolean
+            scene_change:
+              type: boolean
+            too_dark:
+              type: boolean
+            too_bright:
+              type: boolean
+        statistics:
+          type: object
+          properties:
+            defocus_events:
+              type: integer
+            masking_events:
+              type: integer
+            scene_change_events:
+              type: integer
+            too_dark_events:
+              type: integer
+            too_bright_events:
+              type: integer
+            auto_resets:
+              type: integer
+        last_metrics:
+          type: object
+          properties:
+            brightness:
+              type: number
+              description: Mean frame brightness (0-255)
+            blur:
+              type: number
+              description: Laplacian variance (higher = sharper)
+            edge_ratio:
+              type: number
+              description: Edge density (0-1)
+            histogram_diff:
+              type: number
+              description: Histogram change vs reference
+
+    TamperingActions:
+      allOf:
+        - $ref: '#/components/schemas/EventActions'
+        - type: object
+          properties:
+            email:
+              type: object
+              properties:
+                enabled:
+                  type: boolean
+                subject:
+                  type: string
+                priority:
+                  type: string
+                  enum: [low, normal, high]
+
+    SmartDetectionConfig:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+        confidence_threshold:
+          type: number
+          format: float
+          minimum: 0
+          maximum: 1
+        pedestrian:
+          type: object
+          properties:
+            enabled:
+              type: boolean
+            sensitivity:
+              type: integer
+            min_confidence:
+              type: number
+        vehicle:
+          type: object
+          properties:
+            enabled:
+              type: boolean
+            sensitivity:
+              type: integer
+            min_confidence:
+              type: number
+        animal:
+          type: object
+          properties:
+            enabled:
+              type: boolean
+            sensitivity:
+              type: integer
+
+    LineCrossConfig:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+        counting:
+          type: object
+          properties:
+            enabled:
+              type: boolean
+            reset_daily:
+              type: boolean
+            reset_time:
+              type: string
+              pattern: '^([01]?[0-9]|2[0-3]):[0-5][0-9]$'
+        object_filter:
+          type: object
+          properties:
+            pedestrian:
+              type: boolean
+            vehicle:
+              type: boolean
+            bicycle:
+              type: boolean
+
+    TripwireLine:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+        enabled:
+          type: boolean
+        x1:
+          type: number
+          minimum: 0
+          maximum: 1
+          description: Start X (normalized 0-1)
+        y1:
+          type: number
+          minimum: 0
+          maximum: 1
+          description: Start Y (normalized 0-1)
+        x2:
+          type: number
+          minimum: 0
+          maximum: 1
+          description: End X (normalized 0-1)
+        y2:
+          type: number
+          minimum: 0
+          maximum: 1
+          description: End Y (normalized 0-1)
+        direction:
+          type: string
+          enum: [in, out, both]
+        color:
+          type: string
+          pattern: '^#[0-9A-Fa-f]{6}$'
+
+    TripwireLineCreate:
+      type: object
+      properties:
+        name:
+          type: string
+        enabled:
+          type: boolean
+          default: true
+        x1:
+          type: number
+        y1:
+          type: number
+        x2:
+          type: number
+        y2:
+          type: number
+        direction:
+          type: string
+          enum: [in, out, both]
+          default: both
+        color:
+          type: string
+          default: "#00FF00"
+
+    IntrusionConfig:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+        dwell_time_ms:
+          type: integer
+          minimum: 0
+          description: Time object must remain in zone before alarm
+        alarm_mode:
+          type: string
+          enum: [enter, exit, both, loiter]
+        object_filter:
+          type: object
+          properties:
+            pedestrian:
+              type: boolean
+            vehicle:
+              type: boolean
+            bicycle:
+              type: boolean
+
+    IntrusionZone:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+        enabled:
+          type: boolean
+        color:
+          type: string
+        dwell_time_ms:
+          type: integer
+        points:
+          type: array
+          items:
+            type: object
+            properties:
+              x:
+                type: number
+                minimum: 0
+                maximum: 1
+              y:
+                type: number
+                minimum: 0
+                maximum: 1
+
+    IntrusionZoneCreate:
+      type: object
+      properties:
+        name:
+          type: string
+        enabled:
+          type: boolean
+          default: true
+        color:
+          type: string
+          default: "#FF0000"
+        dwell_time_ms:
+          type: integer
+          default: 1000
+        points:
+          type: array
+          items:
+            type: object
+            properties:
+              x:
+                type: number
+              y:
+                type: number
+
+    NotificationServers:
+      type: object
+      properties:
+        mqtt:
+          type: object
+          properties:
+            enabled:
+              type: boolean
+            broker:
+              type: string
+            port:
+              type: integer
+            use_tls:
+              type: boolean
+        email:
+          type: object
+          properties:
+            enabled:
+              type: boolean
+            smtp_server:
+              type: string
+            smtp_port:
+              type: integer
+            use_tls:
+              type: boolean
+        ftp:
+          type: object
+          properties:
+            enabled:
+              type: boolean
+            server:
+              type: string
+            port:
+              type: integer
+            use_sftp:
+              type: boolean
+
+    MqttConfig:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+        broker:
+          type: string
+          description: MQTT broker hostname or IP
+        port:
+          type: integer
+          default: 1883
+        username:
+          type: string
+        password:
+          type: string
+          writeOnly: true
+        client_id:
+          type: string
+        use_tls:
+          type: boolean
+        topic_prefix:
+          type: string
+          description: Prefix for all MQTT topics
+        qos:
+          type: integer
+          minimum: 0
+          maximum: 2
+        retain:
+          type: boolean
+
+    EmailConfig:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+        smtp_server:
+          type: string
+        smtp_port:
+          type: integer
+          default: 587
+        use_tls:
+          type: boolean
+        use_starttls:
+          type: boolean
+        username:
+          type: string
+        password:
+          type: string
+          writeOnly: true
+        from_address:
+          type: string
+          format: email
+        from_name:
+          type: string
+        default_recipients:
+          type: array
+          items:
+            type: string
+            format: email
+
+    FtpConfig:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+        server:
+          type: string
+        port:
+          type: integer
+          default: 21
+        use_sftp:
+          type: boolean
+        username:
+          type: string
+        password:
+          type: string
+          writeOnly: true
+        base_path:
+          type: string
+          description: Base path on FTP server for uploads
+
+    FaceDetectionConfig:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+          description: Enable/disable face detection
+        model:
+          type: string
+          description: Face detection model name
+          example: "scrfd_nosig"
+        min_face_size:
+          type: integer
+          minimum: 10
+          maximum: 500
+          description: Minimum detectable face size in pixels
+        confidence_threshold:
+          type: number
+          format: float
+          minimum: 0
+          maximum: 1
+          description: Minimum confidence to accept a face detection
+        recognition:
+          type: object
+          description: Face recognition settings
+          properties:
+            enabled:
+              type: boolean
+              description: Enable/disable face recognition
+            database_path:
+              type: string
+              description: Path to face embedding database on device
+              readOnly: true
+            similarity_threshold:
+              type: number
+              format: float
+              minimum: 0
+              maximum: 1
+              description: Minimum cosine similarity for a positive match
+            max_gallery_size:
+              type: integer
+              minimum: 1
+              maximum: 10000
+              description: Maximum number of enrolled faces
+            margin:
+              type: number
+              format: float
+              minimum: 0
+              maximum: 1
+              description: Face crop margin ratio for recognition
+        attributes:
+          type: object
+          description: Face attribute analysis settings (age, gender, expression)
+          properties:
+            enabled:
+              type: boolean
+              description: Enable/disable face attribute extraction
+            margin:
+              type: number
+              format: float
+              minimum: 0
+              maximum: 1
+              description: Face crop margin ratio for attribute analysis
+
+    FaceGallery:
+      type: object
+      properties:
+        gallery:
+          type: array
+          description: List of enrolled face entries
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                description: Unique face identifier
+              name:
+                type: string
+                description: Person name or label
+              enrolled_at:
+                type: string
+                format: date-time
+                description: Enrollment timestamp
+        max_size:
+          type: integer
+          description: Maximum gallery capacity
+        database_path:
+          type: string
+          description: Path to face database on device
+
+    LprConfig:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+          description: Enable/disable license plate recognition
+        model:
+          type: string
+          description: LPR model name
+          example: "lpr_nvt"
+        regions:
+          type: array
+          description: Supported license plate region formats
+          items:
+            type: string
+          example: ["us", "eu"]
+        min_confidence:
+          type: number
+          format: float
+          minimum: 0
+          maximum: 1
+          description: Minimum confidence for plate recognition
+        actions:
+          $ref: '#/components/schemas/EventActions'
+
+    HeatMapConfig:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+          description: Enable/disable heat map analytics
+        grid_w:
+          type: integer
+          minimum: 1
+          maximum: 128
+          description: Heat map grid width (number of columns)
+        grid_h:
+          type: integer
+          minimum: 1
+          maximum: 128
+          description: Heat map grid height (number of rows)
+        decay_rate:
+          type: number
+          format: float
+          minimum: 0
+          maximum: 1
+          description: |
+            Temporal decay rate per frame. Higher values (closer to 1.0)
+            retain heat longer; lower values fade faster.
+
+    HeatMapGrid:
+      type: object
+      properties:
+        grid_w:
+          type: integer
+          description: Grid width (columns)
+        grid_h:
+          type: integer
+          description: Grid height (rows)
+        data:
+          type: array
+          description: 2D array of float values (rows x columns)
+          items:
+            type: array
+            items:
+              type: number
+              format: float
+
+    PoseEstimationConfig:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+          description: Enable/disable pose estimation
+        model:
+          type: string
+          description: Pose estimation model name
+          example: "yolo26n_pose"
+        conf_threshold:
+          type: number
+          format: float
+          minimum: 0
+          maximum: 1
+          description: Minimum confidence for person detection
+        nms_threshold:
+          type: number
+          format: float
+          minimum: 0
+          maximum: 1
+          description: Non-maximum suppression IoU threshold
+        max_persons:
+          type: integer
+          minimum: 1
+          maximum: 64
+          description: Maximum number of persons to track simultaneously
+
+    AudioClassificationConfig:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+          description: Enable/disable audio classification
+        model:
+          type: string
+          description: Audio classification model name
+          example: "yamnet"
+        detection_threshold:
+          type: number
+          format: float
+          minimum: 0
+          maximum: 1
+          description: |
+            Minimum confidence score for reporting an audio event.
+            Processes 16kHz mono PCM audio in ~1 second windows.
+
+    DetectionCounts:
+      type: object
+      properties:
+        line_crossings:
+          type: object
+          additionalProperties:
+            type: object
+            properties:
+              in:
+                type: integer
+                description: Count of objects crossing line inward
+              out:
+                type: integer
+                description: Count of objects crossing line outward
+        object_counts:
+          type: object
+          properties:
+            person:
+              type: integer
+            vehicle:
+              type: integer
+            animal:
+              type: integer
+        since:
+          type: string
+          format: date-time
+          description: Timestamp when counters were last reset
+
+    AnalyticsEventList:
+      type: object
+      properties:
+        events:
+          type: array
+          items:
+            $ref: '#/components/schemas/AnalyticsEvent'
+        total:
+          type: integer
+          description: Total number of events matching filter
+        offset:
+          type: integer
+          description: Current offset in results
+        limit:
+          type: integer
+          description: Maximum events per page
+
+    AnalyticsEvent:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Unique event ID
+        timestamp:
+          type: string
+          format: date-time
+          description: Event timestamp
+        type:
+          type: string
+          enum: [motion, person, vehicle, animal, line_cross, zone_intrusion, face, tampering]
+          description: Event type
+        details:
+          type: object
+          description: Event-specific details (varies by type)
+        snapshot_url:
+          type: string
+          description: URL to event snapshot image (if available)

@@ -1,0 +1,200 @@
+/*
+ * Novatek Ltd. BSP part of dts
+ *
+ * Configuration: cfg_538A_ETERNA_128MBNAND_RAMDISK_AIISP_TEE_SECBOOT
+ *
+ * Memory Layout for ETERNA with OP-TEE Secure Boot and AI-ISP
+ *
+ * DRAM: 512MB (0x20000000)
+ * 
+ * MEMORY LAYOUT:
+ * ==============
+ * Address       Size        Region         Description
+ * ----------    ----------  ----------     -----------------------------
+ * 0x00000000    0x00010000  core2entry1    CPU Core 2 Entry Point 1 (64KB)
+ * 0x00010000    0x00010000  core2entry2    CPU Core 2 Entry Point 2 (64KB)
+ * 0x00100000    0x00100000  fdt            Flattened Device Tree (1MB)
+ * 0x00A00000    0x00100000  shmem          Shared Memory (1MB)
+ * 0x01000000    0x00100000  loader         Bootloader (1MB)
+ * 0x01F00000    0x00100000  atf            ARM Trusted Firmware (1MB)
+ * 0x02000000    0x00800000  teeos          OP-TEE TZDRAM (8MB)
+ * 0x02800000    0x00400000  nsmem          OP-TEE Shared Memory (4MB, CFG_SHMEM_START)
+ * 0x02C00000    0x0D400000  linuxtmp       Linux Temp (212MB)
+ * 0x10000000    0x06000000  all_in_one     Firmware Image (96MB)
+ * 0x16000000    0x01000000  kernel_img     Kernel Image (16MB)
+ * 0x1FE00000    0x00200000  uboot          U-Boot (2MB)
+ *
+ * LINUX SYSTEM MEMORY: 0x00000000 - 0x0E000000 (224MB)
+ * 
+ * RESERVED MEMORY (no-map):
+ * - ATF:   0x01F00000 - 0x02000000 (1MB)
+ * - TEE:   0x02000000 - 0x02C00000 (12MB, includes TZDRAM + SHMEM)
+ * - CMA0:  0x05800000 - 0x06000000 (8MB, reusable)
+ *
+ * HDAL MEDIA MEMORY:
+ * - Start: 0x0F600000
+ * - Size:  0x10A00000 (266MB)
+ *
+ * OP-TEE Configuration (matches BSP/optee/optee_os conf.mk):
+ * - CFG_TZDRAM_START = 0x02000000
+ * - CFG_TZDRAM_SIZE  = 0x00800000 (8MB)
+ * - CFG_SHMEM_START  = 0x02800000
+ * - CFG_SHMEM_SIZE   = 0x00400000 (4MB)
+ * - CFG_TEE_LOAD_ADDR = 0x02000000
+ */
+/ {
+	chosen {
+		bootargs = "earlycon root=/dev/ram0 rootfstype=ramfs rdinit=/linuxrc ";
+		stdout-path = "serial0:115200n8";
+	};
+
+	/* OP-TEE Firmware Node - Required for Linux optee driver to probe */
+	firmware {
+		optee {
+			compatible = "linaro,optee-tz";
+			method = "smc";
+		};
+	};
+
+	/* Uboot/loader memory layout */
+	nvt_memory_cfg {
+		#address-cells = <1>;
+		#size-cells = <1>;
+		dram {          reg = <0x00000000 0x20000000>;  }; /* 512MB DRAM */
+		core2entry1 {   reg = <0x00000000 0x00010000>;  }; /* 64KB */
+		core2entry2 {   reg = <0x00010000 0x00010000>;  }; /* 64KB */
+		fdt {           reg = <0x00100000 0x00100000>;  }; /* 1MB */
+		shmem{          reg = <0x00A00000 0x00100000>;  }; /* 1MB */
+		loader {        reg = <0x01000000 0x00100000>;  }; /* 1MB */
+		atf {           reg = <0x01F00000 0x00100000>;  }; /* 1MB ATF */
+		teeos {         reg = <0x02000000 0x00800000>;  }; /* 8MB OP-TEE (TZDRAM) */
+		nsmem {         reg = <0x02800000 0x00400000>;  }; /* 4MB NS Shared Memory (matches CFG_SHMEM_START) */
+		linuxtmp {      reg = <0x02C00000 0x0D400000>;  }; /* 212MB Linux Temp (starts after nsmem) */
+		all_in_one {    reg = <0x10000000 0x06000000>;  }; /* 96MB AIO */
+		kernel_img {    reg = <0x16000000 0x01000000>;  }; /* 16MB Kernel */
+		uboot{          reg = <0x1FE00000 0x00200000>;  }; /* 2MB U-Boot */
+	};
+
+	/* Linux system memory region */
+	memory { device_type = "memory"; reg = <0x0 0x00000000 0x0 0x0E000000>; }; /* 224MB */
+
+	/* Linux setup reserved memory */
+	reserved-memory {
+		#address-cells = <2>;
+		#size-cells = <2>;
+		ranges;
+
+		/* ARM Trusted Firmware reserved memory */
+		atf_reserved: atf@0x01F00000 {
+			reg = <0x0 0x01F00000 0x0 0x00100000>;
+			no-map;
+		};
+
+		/* OP-TEE reserved memory - CRITICAL for secure world */
+		tee_reserved: optee@0x02000000 {
+			reg = <0x0 0x02000000 0x0 0x00C00000>;
+			no-map;
+		};
+
+		/* CMA pool for DMA allocations */
+		cma0: cma0@0x05800000 {
+			compatible = "shared-dma-pool";
+			reusable;
+			reg = <0x0 0x05800000 0x0 0x00800000>;
+			alignment = <0x0 0x400000>;
+			status = "okay";
+		};
+	};
+
+	nvt_cma {
+		compatible = "nvt,nvt_cma";
+		memory-region = <&cma0>;
+		id = <0>;
+	};
+
+	nvt_os_mem {
+		compatible = "nvt,nvt_os_mem";
+	};
+
+	nvtfmem {
+		compatible = "nvt,nvt_fmem";
+	};
+
+	hdal-memory {
+		#address-cells = <4>;
+		#size-cells = <2>;
+		media {
+			reg = <
+				0x0 0x0 0x0 0x0F600000 0x0 0x10A00000 /* [DDRID-H][DDRID-L] [ADDR-H][ADDR-L] [SIZE-H][SIZE-L] */
+			>;
+		};
+		cfgs {
+			max_pools_cnt = <1024>;
+		};
+	};
+
+	hdal-maxpath-cfg {
+		/* First is for VCAP0, second for VCAP1 and so on.*/
+		vdocap_active_list   = <1 1 1 1 1 1 1 1 1 0 0 0 0 0 0 0>;
+		vdoprc_maxdevice   = <8>;
+		vdoenc_maxpath     = <8>;
+		vdodec_maxpath     = <2>;
+		vdoout_maxdevice   = <2>;
+		adocap_maxdevice   = <1>;
+		adoout_maxdevice   = <2>;
+		adoenc_maxpath     = <1>;
+		adodec_maxpath     = <1>;
+		/* gfx jog list */
+		gfx_maxjob = <2>;
+		/* stamp max img buffer number */
+		stamp_maximg = <64>;
+		/* First is internal stamp number, second is external stamp number */
+		vdoprc_maxstamp = <0  16>;
+		/* First is internal mask number, second is external mask number */
+		vdoprc_maxmask   = <8  64>;
+		vdoenc_maxstamp  = <32 16>;
+		vdoenc_maxmask   = <16 64>;
+		vdoout_maxstamp  = <0  16>;
+		vdoout_maxmask   = <0  64>;
+	};
+
+	/* To config the nvt chip mapping relationship */
+	nvt_chip_mapping {
+		#address-cells = <4>;
+		#size-cells = <2>;
+		dram_map {
+			reg = <
+				0x0 0x0 0x0 0x00000000 0x0 0x20000000  /* [DDRID] [CHIPID] [ADDR-H] [ADDR-L] [SIZE-H] [SIZE-L] */
+			>;
+		};
+	};
+
+	max-resolution {
+		/* VENC max resolution <width height> */
+		vdoenc_maxresolution   = <4096 4096>;
+	};
+
+	/* AI-ISP Configuration (retained from ETERNA) */
+	ai-maxpath-cfg {
+		/* max ai-isp effect */
+		ai_maxisp = <1>;
+		/* max ai-isp required ubuf(0.5MB), must be 0~3 */
+		ai_maxubuf = <3>;
+	};
+
+	ai-pool-cfg {
+		/*
+		 * [UB status]   (1:on, 2:shared)
+		 * [UB st_id]    (UBUF start index) st_id to end_id must be continuous
+		 * [UB end_id]   (UBUF end index)
+		 * [Core st_ch]  (Core num start channel) st_ch to end_ch must be continuous
+		 * [Core end_ch] (Core num end channel)
+		 */
+		pool_0= <2 0 2 0 0>;
+	};
+
+	ai-isp-cfg {
+		/* (0: off , 1: frame mode) */
+		isp_trig_mode = <1>;
+	};
+};

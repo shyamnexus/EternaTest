@@ -1,0 +1,8 @@
+{
+	"jsontype": "module_publish",
+	"publish_src": [
+		"nvt_vencrc_main.c",
+		"nvt_vencrc_main_usr.c",
+		"main/h26xenc_rate_control_usr.c"
+	]
+}

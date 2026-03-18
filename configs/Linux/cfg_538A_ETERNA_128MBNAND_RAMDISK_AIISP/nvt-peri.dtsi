@@ -1,0 +1,954 @@
+/*
+ * Novatek Ltd. BSP part of dts
+ */
+
+/ {
+	aliases {
+		serial0 = &uart0;
+		serial1 = &uart1;
+		serial2 = &uart2;
+		serial3 = &uart3;
+		serial4 = &uart4;
+		serial5 = &uart5;
+		mmc0 = &mmc0;	/* Fixed to mmcblk0 for sdio0 */
+		//mmc1 = &mmc1;
+		mmc2 = &emmc;
+	};
+
+	uart0: uart@2,f0110000 {
+		compatible = "ns16550a";
+		reg = <0x2 0xf0110000 0x0 0x1000>;
+		clocks = <&clk_uart0>;
+		clock-names = "2f0110000.uart";
+		interrupts = <GIC_SPI 43 IRQ_TYPE_LEVEL_HIGH>;
+		reg-shift = <2>;
+		reg-io-width = <4>;
+		no-loopback-test = <1>;
+		clock-frequency = <24000000>;
+		baud = <115200>;
+		rx_trig_level = <3>;
+	};
+
+	uart1: uart@2,f0111000 {
+		compatible = "ns16550a";
+		reg = <0x2 0xf0111000 0x0 0x1000>;
+		clocks = <&clk_uart1>;
+		clock-names = "2f0111000.uart";
+		interrupts = <GIC_SPI 44 IRQ_TYPE_LEVEL_HIGH>;
+		reg-shift = <2>;
+		reg-io-width = <4>;
+		no-loopback-test = <1>;
+		clock-frequency = <48000000>;
+		baud = <115200>;
+		rx_trig_level = <3>;
+		hw_flowctrl = <0>;
+	};
+
+	uart2: uart@2,f0112000 {
+		compatible = "ns16550a";
+		reg = <0x2 0xf0112000 0x0 0x1000>;
+		clocks = <&clk_uart2>;
+		clock-names = "2f0112000.uart";
+		interrupts = <GIC_SPI 45 IRQ_TYPE_LEVEL_HIGH>;
+		reg-shift = <2>;
+		reg-io-width = <4>;
+		no-loopback-test = <1>;
+		clock-frequency = <48000000>;
+		baud = <115200>;
+		rx_trig_level = <3>;
+		hw_flowctrl = <0>;
+	};
+
+	uart3: uart@2,f0113000 {
+		compatible = "ns16550a";
+		reg = <0x2 0xf0113000 0x0 0x1000>;
+		clocks = <&clk_uart3>;
+		clock-names = "2f0113000.uart";
+		interrupts = <GIC_SPI 63 IRQ_TYPE_LEVEL_HIGH>;
+		reg-shift = <2>;
+		reg-io-width = <4>;
+		no-loopback-test = <1>;
+		clock-frequency = <48000000>;
+		baud = <115200>;
+		rx_trig_level = <3>;
+		hw_flowctrl = <0>;
+	};
+
+	uart4: uart@2,f0114000 {
+		compatible = "ns16550a";
+		reg = <0x2 0xf0114000 0x0 0x1000>;
+		clocks = <&clk_uart4>;
+		clock-names = "2f0114000.uart";
+		interrupts = <GIC_SPI 64 IRQ_TYPE_LEVEL_HIGH>;
+		reg-shift = <2>;
+		reg-io-width = <4>;
+		no-loopback-test = <1>;
+		clock-frequency = <48000000>;
+		baud = <115200>;
+		rx_trig_level = <3>;
+		hw_flowctrl = <0>;
+	};
+
+	uart5: uart@2,f0115000 {
+		compatible = "ns16550a";
+		reg = <0x2 0xf0115000 0x0 0x1000>;
+		clocks = <&clk_uart5>;
+		clock-names = "2f0115000.uart";
+		interrupts = <GIC_SPI 65 IRQ_TYPE_LEVEL_HIGH>;
+		reg-shift = <2>;
+		reg-io-width = <4>;
+		no-loopback-test = <1>;
+		clock-frequency = <48000000>;
+		baud = <115200>;
+		rx_trig_level = <3>;
+		hw_flowctrl = <0>;
+	};
+
+
+	mmc0: mmc@2,f0420000 {
+		compatible = "nvt,nvt_mmc";
+		reg = <0x2 0xf0420000 0x0 0x1000>;
+		clocks = <&clk_mmc0>;
+		clock-names = "2f0420000.mmc";
+		interrupts = <GIC_SPI 30 IRQ_TYPE_LEVEL_HIGH>;
+		max-frequency = <48000000>;
+		voltage-switch = <0>;
+		max-voltage = <3300>;
+		bus-width = <4>;
+		neg-sample-edge = <0>;
+		driving = <3 3 3 3 3 3 4 3 3 4 3 3>;
+		cd_gpio = <D_GPIO(9) GPIO_FALLING_EDGE GPIO_POLLING>;
+		/*card_power_gpio = <P_GPIO(0) GPIO_LOW>;*/
+		/*ro_gpio = <D_GPIO(1) GPIO_RISING_EDGE GPIO_POLLING>;*/
+		/*power_en = <D_GPIO(2) GPIO_RISING_EDGE>;*/
+	};
+
+#if 0
+	mmc1: mmc@2,f0430000 {
+		compatible = "nvt,nvt_mmc2";
+		reg = <0x2 0xf0430000 0x0 0x1000>;
+		clocks = <&clk_mmc1>;
+		clock-names = "2f0430000.mmc";
+		interrupts = <GIC_SPI 31 IRQ_TYPE_LEVEL_HIGH>;
+		max-frequency = <48000000>;
+		voltage-switch = <0>;
+		max-voltage = <3300>;
+		bus-width = <4>;
+		neg-sample-edge = <0>;
+		driving = <3 3 3 3 3 3 4 3 3 4 3 3>;
+		cd_gpio = <0 GPIO_FALLING_EDGE GPIO_INTERRUPT>;
+		/*ro_gpio = <D_GPIO(3) GPIO_RISING_EDGE GPIO_POLLING>;*/
+		/*power_en = <D_GPIO(4) GPIO_RISING_EDGE>;*/
+	};
+#endif
+	emmc: mmc@2,f0360000 {
+		#address-cells = <2>;
+		#size-cells = <2>;
+		compatible = "nvt,nvt_mmc3";
+		reg = <0x2 0xf0360000 0x0 0x1000>;
+		clocks = <&clk_mmc2>;
+		clock-names = "2f0360000.mmc";
+		interrupts = <GIC_SPI 32 IRQ_TYPE_LEVEL_HIGH>;
+		max-frequency = <48000000>;
+		max-voltage = <3300>;
+		bus-width = <4>;
+		neg-sample-edge = <0>;
+		driving = <3 3 3 4 3 3 5 4 4 5 4 4>;
+		status = "disabled";
+	};
+
+	nand: nand@2,f0350000 {
+		#address-cells = <2>;
+		#size-cells = <2>;
+		compatible = "nvt,nvt_spinand";
+		reg = <0x2 0xf0350000 0x0 0x1000>;
+		interrupts = <GIC_SPI 29 IRQ_TYPE_LEVEL_HIGH>;
+		clock-frequency = <12000000>;
+		nvt-devname = "spi_nand.0";
+	};
+
+	nor: nor@2,f0350000 {
+		#address-cells = <2>;
+		#size-cells = <2>;
+		clocks = <&clk_nand>;
+		clock-names = "2f0350000.nor";
+		compatible = "nvt,nvt_spinor";
+		reg = <0x2 0xf0350000 0x0 0x1000>;
+		interrupts = <GIC_SPI 29 IRQ_TYPE_LEVEL_HIGH>;
+		clock-frequency = <12000000>;
+	};
+
+	gpio: gpio@2,f0040000 {
+		compatible = "nvt,nvt_gpio";
+		reg = <0x2 0xf0040000 0x0 0x10000>;
+		interrupts = <
+			GIC_SPI 24 IRQ_TYPE_LEVEL_HIGH
+			GIC_SPI 71 IRQ_TYPE_LEVEL_HIGH
+		>;
+		interrupt-controller;
+		interrupt-parent = <&gic>;
+		#interrupt-cells = <3>;
+		#gpio-cells = <2>;
+    };
+
+	eth0@2,f01b0000 {
+		compatible = "nvt,synopsys_eth";
+		reg = <0x2 0xf01b0000 0x0 0x10000>;
+		clocks = <&clk_eth0>;
+		interrupts = <
+			GIC_SPI 34 IRQ_TYPE_LEVEL_HIGH
+		>;
+		sp-clk = <0>;
+		ref-clk-out = <0>;
+	};
+
+	wdt@2,f0240000 {
+		compatible = "nvt,nvt_wdt";
+		reg = <0x2 0xf0240000 0x0 0x10000>;
+		clocks = <&clk_wdt>;
+		clock-names = "2f0240000.wdt";
+		interrupts = <GIC_SPI 57 IRQ_TYPE_LEVEL_HIGH>;
+	};
+
+	pwm@2,f0140000 {
+		compatible = "nvt,nvt_pwm";
+		reg = <0x2 0xf0140000 0x0 0x1000>;
+		interrupts = <GIC_SPI 26 IRQ_TYPE_LEVEL_HIGH>;
+		clocks = <&clk_pwm0>, <&clk_pwm1>, <&clk_pwm2>, <&clk_pwm3>, <&clk_pwm4>, <&clk_pwm5>, <&clk_pwm6>, <&clk_pwm7>, <&clk_pwm8>, <&clk_pwm9>, <&clk_pwm10>, <&clk_pwm11>;
+		clock-names = "2f0140000.pwm0", "2f0140000.pwm1", "2f0140000.pwm2", "2f0140000.pwm3", "2f0140000.pwm4", "2f0140000.pwm5", "2f0140000.pwm6", "2f0140000.pwm7", "2f0140000.pwm8", "2f0140000.pwm9", "2f0140000.pwm10", "2f0140000.pwm11";
+	};
+
+	adc@2,f0510000 {
+		compatible = "nvt,nvt_adc";
+		reg = <0x2 0xf0510000 0x0 0x1000>;
+		clocks = <&clk_adc>;
+		interrupts = <GIC_SPI 47 IRQ_TYPE_LEVEL_HIGH>;
+		clock-frequency = <16000000>;
+		#io-channel-cells = <1>;
+	};
+
+	nvt_thermal: thermal@2,f01e0000 {
+		compatible = "nvt,thermal";
+		reg = <0x2 0xf01e0000 0x0 0x100>;
+		clocks = <&clk_adc>;
+		clock-names = "2f01e0000.thermal";
+		default_trim = <191>;
+		#thermal-sensor-cells = <0>;
+	};
+
+	rtc@2,f02b0000 {
+		compatible = "nvt,nvt_rtc";
+		reg = <0x2 0xf02b0000 0x0 0x100>;
+		rtc_reset_date = <0>;
+		interrupts = <GIC_SPI 56 IRQ_TYPE_LEVEL_HIGH>;
+	};
+
+	drtc@2,f0143000 {
+		compatible = "nvt,nvt_drtc";
+		reg = <0x2 0xf0143000 0x0 0x100>;
+		clocks = <&clk_drtc>;
+		interrupts = <GIC_SPI 4 IRQ_TYPE_LEVEL_HIGH>;
+	};
+
+	cypt: cypt@2,f0161000 {
+		compatible = "nvt,nvt_crypto";
+		reg = <0x2 0xf0161000 0x0 0x100>;
+		clocks = <&clk_cypt>;
+		clock-name = "2f0161000.cypt";
+		interrupts = <GIC_SPI 38 IRQ_TYPE_LEVEL_HIGH>;
+		mclk = <0>;
+		clk_parent = "fix240m";
+	};
+
+	hash: hash@2,f0162000 {
+		compatible = "nvt,nvt_hash";
+		reg = <0x2 0xf0162000 0x0 0x100>;
+		clocks = <&clk_hash>;
+		clock-name = "2f0162000.hash";
+		interrupts = <GIC_SPI 28 IRQ_TYPE_LEVEL_HIGH>;
+		mclk = <0>;
+		clk_parent = "fix240m";
+	};
+
+	rsa: rsa@2,f0163000 {
+		compatible = "nvt,nvt_rsa";
+		reg = <0x2 0xf0163000 0x0 0x100>;
+		clocks = <&clk_rsa>;
+		clock-name = "2f0163000.rsa";
+		interrupts = <GIC_SPI 20 IRQ_TYPE_LEVEL_HIGH>;
+		mclk = <0>;
+		clk_parent = "fix240m";
+	};
+
+	top: top@2,f0010000 {
+		compatible = "nvt,nvt_top";
+		reg = <
+			0x2 0xf0010000 0x0 0x1100
+			0x2 0xf0030000 0x0 0x2000
+			0x2 0xf0040000 0x0 0x10000
+		>;
+	};
+
+	sie: sie@2,f0310000 {
+		compatible = "nvt,nvt_sie";
+		reg = <0x2 0xf0310000 0x0 0xc00
+			   0x2 0xf0311000 0x0 0xc00
+			   0x2 0xf0312000 0x0 0xc00
+			   0x2 0xf0313000 0x0 0xc00
+			   0x2 0xf0314000 0x0 0xc00>;
+
+		interrupts = <GIC_SPI 1   IRQ_TYPE_LEVEL_HIGH
+			          GIC_SPI 2   IRQ_TYPE_LEVEL_HIGH
+			          GIC_SPI 3   IRQ_TYPE_LEVEL_HIGH
+			          GIC_SPI 59  IRQ_TYPE_LEVEL_HIGH
+			          GIC_SPI 61  IRQ_TYPE_LEVEL_HIGH>;
+
+		clocks = <&clk_sie1>, <&clk_sie2>, <&clk_sie3>, <&clk_sie4>,  <&clk_sie5>,
+		         <&sie1_pclk>, <&sie2_pclk>, <&sie3_pclk>, <&sie4_pclk>, <&sie5_pclk>,
+		         <&sie1_pxclk>, <&sie3_pxclk>, <&sie5_pxclk>,
+		         <&sie2_intclk>,  <&sie4_intclk>, <&sie5_tsen_rxclk>,
+		         <&sn_mclk1>, <&sn_mclk2>, <&sn_mclk3>, <&sn_mclk4>;
+
+		clock-names = "2f0310000.sie1", "2f0311000.sie2", "2f0312000.sie3", "2f0313000.sie4", "2f0314000.sie5",
+		              "sie1_pclk", "sie2_pclk", "sie3_pclk", "sie4_pclk", "sie5_pclk",
+		              "sie1_pxclk", "sie3_pxclk", "sie5_pxclk",
+		              "sie2_intclk", "sie4_intclk", "sie5_tsen_rxclk",
+		              "sn_mclk1", "sn_mclk2", "sn_mclk3", "sn_mclk4";
+	};
+
+	tge: tge@2,f0330000 {
+		compatible = "nvt,kdrv_tge";
+		reg = <0x2 0xf0330000 0x0 0x140>;
+		clocks = <&clk_tge>, <&clk_tgeflashA>, <&clk_tgemshA>, <&tge_pclk>,
+		         <&sn_mclk1>, <&sn_mclk2>, <&sn_mclk3>, <&sn_mclk4>;
+		clock-names = "2f0340000.tge", "clk_tgeflashA", "clk_tgemshA", "tge_pclk",
+		              "sn_mclk1", "sn_mclk2", "sn_mclk3", "sn_mclk4";
+		interrupts = <GIC_SPI 22 IRQ_TYPE_LEVEL_HIGH>;
+	};
+
+	vie: vie@2,f0320000 {
+		compatible = "nvt,nvt_vie";
+		reg = <0x2 0xf0320000 0x0 0x390>;
+		clocks = <&clk_vie1>, <&vie1_pclk>, <&vie1_pxclk1>, <&vie1_pxclk2>, <&vie2_pxclk1>, <&vie2_pxclk2>, <&vie_pxclkpad>;
+		clock-names = "2f0320000.vie1", "vie1_pclk", "vie1_pxclk1", "vie1_pxclk2", "vie2_pxclk1", "vie2_pxclk2", "vie_pxclkpad";
+		interrupts = <GIC_SPI 90 IRQ_TYPE_LEVEL_HIGH>;
+		power_saving = <0>;
+		/*sensor_freq = <37125000>;*/
+	};
+
+	rhe@2,f0ce0000 {
+		compatible = "nvt,kdrv_rhe";
+		reg = <0x2 0xf0ce0000 0x0 0x900>;
+		interrupts = <GIC_SPI 13 IRQ_TYPE_LEVEL_HIGH>;
+	};
+
+	ime@2,f0410000 {
+		compatible = "nvt,kdrv_ime";
+		reg = <0x2 0xf0410000 0x0 0xC8C>;
+		clocks = <&clk_ime>;
+		clock-names = "2f0410000.ime";
+		interrupts = <GIC_SPI 6 IRQ_TYPE_LEVEL_HIGH>;
+	};
+
+	uvcp@2,f0e20000 {
+		compatible = "nvt,nvt_uvcp";
+		reg = <0x2 0xf0e20000 0x0 0x200>;
+		clocks = <&clk_uvcp>;
+		clock-names = "2f0e20000.uvcp";
+		interrupts = <GIC_SPI 74 IRQ_TYPE_LEVEL_HIGH>;
+	};
+
+	ise@2,f0380000 {
+		compatible = "nvt,kdrv_ise";
+		reg = <0x2 0xf0380000 0x0 0x154>;
+		clocks = <&clk_ise>;
+		clock-names = "2f0380000.ise";
+		interrupts = <GIC_SPI 21 IRQ_TYPE_LEVEL_HIGH>;
+	};
+
+	dre@2,f0370000 {
+		compatible = "nvt,kdrv_dre";
+		reg = <0x2 0xf0370000 0x0 0x30c>;
+		clocks = <&clk_dre>;
+		clock-names = "2f0370000.dre";
+		interrupts = <GIC_SPI 91 IRQ_TYPE_LEVEL_HIGH>;
+	};
+
+	ipe@2,f0400000 {
+		compatible = "nvt,kdrv_ipe";
+		reg = <0x2 0xf0400000 0x0 0x18BC>;
+		clocks = <&clk_ipe>;
+		clock-names = "2f0400000.ipe";
+		interrupts = <GIC_SPI 5 IRQ_TYPE_LEVEL_HIGH>;
+	};
+
+	ife@2,f0340000 {
+		compatible = "nvt,kdrv_ife";
+		reg = <0x2 0xf0340000 0x0 0xD88>;
+		clocks = <&clk_ife>;
+		clock-names = "2f0340000.ife";
+		interrupts = <GIC_SPI 8 IRQ_TYPE_LEVEL_HIGH>;
+	};
+
+	pre@2,f0341000 {
+		compatible = "nvt,kdrv_pre";
+		reg = <0x2 0xf0341000 0x0 0xEE0>;
+		clocks = <&clk_pre>;
+		clock-names = "2f0341000.pre";
+		interrupts = <GIC_SPI 99 IRQ_TYPE_LEVEL_HIGH>;
+	};
+
+	vpe: vpe@2,f0500000 {
+		compatible = "nvt,kdrv_vpe";
+		reg = <0x2 0xf0500000 0x0 0xb70>;
+		clocks = <&clk_vpe>;
+		clock-names = "2f0500000.vpe";
+		interrupts = <GIC_SPI 62 IRQ_TYPE_LEVEL_HIGH>;
+	};
+
+	ai@2,f0800000 {
+		compatible = "nvt,kdrv_ai";
+		reg = <
+			0x2 0xf0800000 0x0 0x1000
+			0x2 0xf0ec0000 0x0 0x1000
+			0x2 0xf0760000 0x0 0x1000
+			0x2 0xf0750000 0x0 0x1000
+			0x2 0xf0700000 0x0 0x1000
+			0x2 0xf0710000 0x0 0x1000
+			0x2 0xf0770000 0x0 0x1000
+			0x2 0xf0730000 0x0 0x1000
+			0x2 0xf0740000 0x0 0x1000
+		>;
+        interrupts = <
+			GIC_SPI 11  IRQ_TYPE_LEVEL_HIGH
+			GIC_SPI 13  IRQ_TYPE_LEVEL_HIGH
+			GIC_SPI 51  IRQ_TYPE_LEVEL_HIGH
+			GIC_SPI 10  IRQ_TYPE_LEVEL_HIGH
+			GIC_SPI 7   IRQ_TYPE_LEVEL_HIGH
+			GIC_SPI 9   IRQ_TYPE_LEVEL_HIGH
+			GIC_SPI 100 IRQ_TYPE_LEVEL_HIGH
+			GIC_SPI 96  IRQ_TYPE_LEVEL_HIGH
+			GIC_SPI 14  IRQ_TYPE_LEVEL_HIGH
+		>;
+	};
+
+	coe@2,f0a11000 {
+		compatible = "nvt,nvt_coe";
+		reg = <0x2 0xf0a11000 0x0 0x2c0>;
+	};
+
+	dce@2,f0c20000 {
+		compatible = "nvt,kdrv_dce";
+		reg = <0x2 0xf0c20000 0x0 0x650>;
+		clocks = <&clk_dce>;
+		clock-names = "2f0c20000.dce";
+		interrupts = <GIC_SPI 7 IRQ_TYPE_LEVEL_HIGH>;
+	};
+
+	ive@2,f0e90000 {
+		compatible = "nvt,kdrv_ive";
+		reg = <0x2 0xf0e90000 0x0 0x1c8>;
+		clocks = <&clk_ive>;
+		interrupts = <GIC_SPI 53 IRQ_TYPE_LEVEL_HIGH>;
+	};
+
+	trke@2,f0eb0000 {
+		compatible = "nvt,kdrv_trke";
+		reg = <0x2 0xf0eb0000 0x0 0xf0>;
+		clocks = <&clk_trke>;
+		interrupts = <GIC_SPI 94 IRQ_TYPE_LEVEL_HIGH>;
+	};
+
+	mdbc@2,f0ea0000 {
+		compatible = "nvt,kdrv_mdbc";
+		reg = <0x2 0xf0ea0000 0x0 0x220>;
+		clocks = <&clk_mdbc>;
+		interrupts = <GIC_SPI 46 IRQ_TYPE_LEVEL_HIGH>;
+	};
+
+	sde@2,f0d90000 {
+		compatible = "nvt,kdrv_sde";
+		reg = <0x2 0xf0d90000 0x0 0xD0>;
+		clocks = <&clk_sde>, <&sde_pclk>, <&fix240m>, <&fix320m>, <&fix480m>;
+		clock-names = "2f0d90000.sde", "sde_pclk", "fix240m", "fix320m", "fix480m";
+		interrupts = <GIC_SPI 74 IRQ_TYPE_LEVEL_HIGH>;
+	};
+
+	ide@2,f0190000 {
+		compatible = "nvt,nvt_ide";
+		clocks = <&clk_ide>;
+		reg = <
+			0x2 0xf0190000 0x0 0x3400
+		>;
+		interrupts = <
+			GIC_SPI 48 IRQ_TYPE_LEVEL_HIGH
+		>;
+	};
+
+	dsi@2,f02c0000 {
+		compatible = "nvt,nvt_dsi";
+		clocks = <&clk_dsi>;
+		reg = <0x2 0xf02c0000 0x0 0x1000>;
+		interrupts = <GIC_SPI 50 IRQ_TYPE_LEVEL_HIGH>;
+		status = "disabled";
+	};
+
+	mi@2,f01a0000 {
+		compatible = "nvt,nvt_mi";
+		clocks = <&clk_mi>;
+		reg = <0x2 0xf01a0000 0x0 0x1000>;
+		interrupts = <GIC_SPI 52 IRQ_TYPE_LEVEL_HIGH>;
+	};
+
+	csitx@2,f02d0000 {
+		compatible = "nvt,nvt_csi_tx";
+		clocks = <&clk_csi_tx>;
+		reg = <
+				0x2 0xf02d0000 0x0 0x1000
+		>;
+		interrupts = <
+				GIC_SPI 49 IRQ_TYPE_LEVEL_HIGH
+		>;
+	};
+
+	dsiphy@2,f02e0000 {
+		compatible = "nvt,nvt_dsiphy";
+		reg = <0x2 0xf02e0000 0x0 0x1000>;
+	};
+
+	hdmitx@2,f0820000 {
+		compatible = "nvt,hdmitx";
+		reg = <0x2 0xf0820000 0x0 0x1000>;
+		clocks = <&clk_hdmi>;
+		clock-names = "2f0820000.hdmi";
+		interrupts = <GIC_SPI 92 IRQ_TYPE_LEVEL_HIGH>;
+	};
+
+	gpe@2,f0860000 {
+		compatible = "nvt,nvt_gpenc";
+		reg = <
+			0x2 0xf0860000 0x0 0x100
+			0x2 0xf0870000 0x0 0x100
+		>;
+		clocks = <&clk_gpenc>, <&clk_gpenc2>;
+		clock-names = "2f0860000.gpe", "2f0870000.gpe";
+		interrupts = <GIC_SPI 104 IRQ_TYPE_LEVEL_HIGH
+		GIC_SPI 105 IRQ_TYPE_LEVEL_HIGH>;
+	};
+
+	csi: csi@2,f0300000 {
+		compatible = "nvt,nvt_csi";
+		reg = <
+			0x2 0xf0300000 0x0 0x200
+			0x2 0xf0302000 0x0 0x200
+			0x2 0xf0304000 0x0 0x200
+			0x2 0xf0306000 0x0 0x200
+		>;
+		interrupts = <
+			GIC_SPI 54 IRQ_TYPE_LEVEL_HIGH
+			GIC_SPI 55 IRQ_TYPE_LEVEL_HIGH
+			GIC_SPI 88 IRQ_TYPE_LEVEL_HIGH
+			GIC_SPI 89 IRQ_TYPE_LEVEL_HIGH
+		>;
+	};
+
+	lvds: lvds@2,f0301000 {
+		compatible = "nvt,nvt_lvds";
+		clocks = <&clk_csi0>, <&clk_csi1>, <&clk_csi2>, <&clk_csi3>;
+		clock-names = "2f0301000.lvds", "2f0303000.lvds2", "2f0305000.lvds3", "2f0307000.lvds4";
+		reg = <
+			0x2 0xf0301000 0x0 0x200
+			0x2 0xf0303000 0x0 0x200
+			0x2 0xf0305000 0x0 0x200
+			0x2 0xf0307000 0x0 0x200
+		>;
+		interrupts = <
+			GIC_SPI 54 IRQ_TYPE_LEVEL_HIGH
+			GIC_SPI 55 IRQ_TYPE_LEVEL_HIGH
+			GIC_SPI 88 IRQ_TYPE_LEVEL_HIGH
+			GIC_SPI 89 IRQ_TYPE_LEVEL_HIGH
+		>;
+	};
+
+	senphy@2,f0308000 {
+		compatible = "nvt,nvt_senphy";
+		reg = <
+			0x2 0xF0308000 0x0 0x100
+		>;
+	};
+
+	ssenif@2,f0xx0000 {
+			compatible = "nvt,nvt_ssenif";
+			reg = <0x2 0xF02C0000 0x0 0x2000>;
+			interrupts = <GIC_SPI 61 IRQ_TYPE_LEVEL_HIGH>;
+	};
+
+
+
+	graphic@2,f0e30000 {
+		compatible = "nvt,nvt_graphic";
+		clocks = <&clk_grph>, <&clk_grph2>, <&clk_grph3>;
+		reg = <
+			0x2 0xF0e30000 0x0 0x300
+			0x2 0xF0e40000 0x0 0x100
+			0x2 0xF0e50000 0x0 0x430
+		>;
+		interrupts = <
+			GIC_SPI 18  IRQ_TYPE_LEVEL_HIGH
+			GIC_SPI 19  IRQ_TYPE_LEVEL_HIGH
+			GIC_SPI 78  IRQ_TYPE_LEVEL_HIGH
+		>;
+	};
+
+	affine@2,f0ca0000 {
+		compatible = "nvt,nvt_affine";
+		reg = <0x2 0xF0CA0000 0x0 0x100>;
+		interrupts = <GIC_SPI 52 IRQ_TYPE_LEVEL_HIGH>;
+	};
+
+	h26x@2,f0a10000 {
+		compatible = "nvt,nvt_h26x";
+		reg = <0x2 0xf0a10000 0x0 0x900>;
+		interrupts = <GIC_SPI 16 IRQ_TYPE_LEVEL_HIGH>;
+	};
+
+	timer@2,f0100000 {
+		compatible = "nvt,nvt_timer";
+		reg = <0x2 0xf0100000 0x0 0x300>;
+		interrupts = <GIC_SPI 0 IRQ_TYPE_LEVEL_HIGH>;
+	};
+
+	nvt_hr_hwtimer@2,f0101000 {
+		compatible = "nvt,nvt_hwtimer";
+		reg = <0x2 0xf0101000 0x0 0x1000>;
+		clocks = <&clk_hrtimer1>;
+		interrupts = <GIC_SPI 70 IRQ_TYPE_LEVEL_HIGH>;
+		index = <0>;
+	};
+
+	nvt_hr_hwtimer@2,f0102000 {
+		compatible = "nvt,nvt_hwtimer";
+		reg = <0x2 0xf0102000 0x0 0x1000>;
+		clocks = <&clk_hrtimer2>;
+		interrupts = <GIC_SPI 79 IRQ_TYPE_LEVEL_HIGH>;
+		index = <1>;
+	};
+
+	nvt_hr_hwtimer@2,f0103000 {
+		compatible = "nvt,nvt_hwtimer";
+		reg = <0x2 0xf0103000 0x0 0x1000>;
+		clocks = <&clk_hrtimer3>;
+		interrupts = <GIC_SPI 80 IRQ_TYPE_LEVEL_HIGH>;
+		index = <2>;
+	};
+
+	nvt_hr_hwtimer@2,f0104000 {
+		compatible = "nvt,nvt_hwtimer";
+		reg = <0x2 0xf0104000 0x0 0x1000>;
+		clocks = <&clk_hrtimer4>;
+		interrupts = <GIC_SPI 81 IRQ_TYPE_LEVEL_HIGH>;
+		index = <3>;
+	};
+
+	nvt_hr_hwtimer@2,f0105000 {
+		compatible = "nvt,nvt_hwtimer";
+		reg = <0x2 0xf0105000 0x0 0x1000>;
+		clocks = <&clk_hrtimer5>;
+		interrupts = <GIC_SPI 82 IRQ_TYPE_LEVEL_HIGH>;
+		index = <4>;
+	};
+
+	nvt_hr_hwtimer@2,f0106000 {
+		compatible = "nvt,nvt_hwtimer";
+		reg = <0x2 0xf0106000 0x0 0x1000>;
+		clocks = <&clk_hrtimer6>;
+		interrupts = <GIC_SPI 83 IRQ_TYPE_LEVEL_HIGH>;
+		index = <5>;
+	};
+
+	nvt_hr_hwtimer@2,f0107000 {
+		compatible = "nvt,nvt_hwtimer";
+		reg = <0x2 0xf0107000 0x0 0x1000>;
+		clocks = <&clk_hrtimer7>;
+		interrupts = <GIC_SPI 84 IRQ_TYPE_LEVEL_HIGH>;
+		index = <6>;
+	};
+
+	nvt_hr_hwtimer@2,f0108000 {
+		compatible = "nvt,nvt_hwtimer";
+		reg = <0x2 0xf0108000 0x0 0x1000>;
+		clocks = <&clk_hrtimer8>;
+		interrupts = <GIC_SPI 85 IRQ_TYPE_LEVEL_HIGH>;
+		index = <7>;
+	};
+
+	nvt_hr_hwtimer@2,f0109000 {
+		compatible = "nvt,nvt_hwtimer";
+		reg = <0x2 0xf0109000 0x0 0x1000>;
+		clocks = <&clk_hrtimer9>;
+		interrupts = <GIC_SPI 86 IRQ_TYPE_LEVEL_HIGH>;
+		index = <8>;
+	};
+
+	clocksource@2,f010a000 {
+		compatible = "nvt,nvt_clk_src";
+		reg = <0x2 0xf010a000 0x0 0x1000>;
+		clock-frequency = <120000000>;
+		clocks = <&clk_hrtimer10>;
+		interrupts = <GIC_SPI 87 IRQ_TYPE_LEVEL_HIGH>;
+	};
+
+	eac@2,f0150000 {
+		compatible = "nvt,nvt_eac";
+		reg = <0x2 0xF0150000 0x0 0x200>;
+		clocks = <&clk_eac>,<&clk_eacdac>,<&clk_eacadc>;
+	};
+
+	usb20host@2,f05A0000 {
+		compatible = "nvt,ehci-nvtivot";
+		reg = <0x2 0xF05A0000 0x0 0x1000>;
+		phy_reg = <0x2 0xF05E0000>;
+		clocks = <&clk_usb20>;
+		clock-names = "2f05a0000.usb20";
+		interrupts = <GIC_SPI 91 IRQ_TYPE_LEVEL_HIGH>;
+		channel = <0>;
+		status = "okay";
+	};
+
+	nvt_usb_chrg@2,f05A0000 {
+		compatible = "nvt,nvt_usb_chrgdet";
+		reg = <
+			0x2 0xF05A0000 0x0 0x10000
+			0x2 0xF05E0000 0x0 0x4000
+		>;
+	};
+
+	usb20@2,f05A0000 {
+		compatible = "nvt,fotg200_udc";
+		clocks = <&clk_usb20>;
+		clock-names = "2f05a0000.usb20";
+		reg = <0x2 0xf05A0000 0x0 0x10000>;
+		interrupts = <GIC_SPI 91 IRQ_TYPE_LEVEL_HIGH>;
+	};
+
+	u3h@2,f0290000 {
+		compatible = "nvt,nvt_usb3xhci";
+		clocks = <&clk_usb3hst>;
+		clock-names = "2f0290000.u3h";
+		reg = <
+			0x2 0xf0290000 0x0 0x10000
+			0x2 0xf0280000 0x0 0x4000
+			0x2 0xf0230000 0x0 0x5000
+			>;
+		interrupts = <GIC_SPI 27 IRQ_TYPE_LEVEL_HIGH>;
+	};
+
+	u3dev@2,f0290000 {
+		compatible = "nvt,nvt_dwc3_dev";
+		clocks = <&clk_usb3dev>;
+		clock-names = "2f0292000.u3d";
+		reg = <
+			0x2 0xf0290000 0x0 0x10000
+			0x2 0xf0280000 0x0 0x4000
+			0x2 0xf0230000 0x0 0x5000
+			>;
+		interrupts = <GIC_SPI 27 IRQ_TYPE_LEVEL_HIGH>;
+		channel = <0>;
+	};
+
+	u3d@2,f0290000 {
+		compatible = "nvt,fotg330_udc";
+		clocks = <&clk_usb3dev>;
+		clock-names = "2f0292000.u3d";
+		reg = <
+			0x2 0xf0292000 0x0 0x8000
+			0x2 0xf0280000 0x0 0x1000
+			0x2 0xF0281000 0x0 0x1000
+			0x2 0xF0282000 0x0 0x1000
+			0x2 0xF0230000 0x0 0x5000
+			>;
+		interrupts = <GIC_SPI 27 IRQ_TYPE_LEVEL_HIGH>;
+		force-hs = <0>;
+	};
+
+	dai@2,f0151000 {
+		compatible = "nvt,nvt_dai";
+		reg = <
+			0x2 0xf0151000 0x0 0x1000
+		>;
+		clocks = <&clk_dai>;
+		interrupts = <
+			GIC_SPI 15 IRQ_TYPE_LEVEL_HIGH
+		>;
+	};
+
+	rotate@2,f0cf0000 {
+		compatible = "nvt,nvt_rotation";
+		reg = <0x2 0xF0CF0000 0x0 0x100>;
+		interrupts = <GIC_SPI 81 IRQ_TYPE_LEVEL_HIGH>;
+	};
+
+	drvdump@0 {
+		compatible = "nvt,nvt_drvdump";
+	};
+
+
+	spi0: spi@2,f0130000 {
+		compatible = "nvt,nvt_spi";
+		reg = <0x2 0xf0130000 0x0 0x200>;
+		interrupts = <GIC_SPI 35 IRQ_TYPE_LEVEL_HIGH>;
+		nvt-devname = <0>;
+		clock-frequency = <48000000>;
+		clocks = <&clk_spi0>;
+		clock-names = "2f0130000.spi";
+	};
+
+	spi1: spi@2,f0131000 {
+		compatible = "nvt,nvt_spi";
+		reg = <0x2 0xf0131000 0x0 0x200>;
+		interrupts = <GIC_SPI 36 IRQ_TYPE_LEVEL_HIGH>;
+		nvt-devname = <1>;
+		clock-frequency = <48000000>;
+		clocks = <&clk_spi1>;
+		clock-names = "2f0131000.spi";
+    };
+
+    spi2: spi@2,f0132000 {
+		compatible = "nvt,nvt_spi";
+		reg = <0x2 0xf0132000 0x0 0x200>;
+		interrupts = <GIC_SPI 37 IRQ_TYPE_LEVEL_HIGH>;
+		nvt-devname = <2>;
+		clock-frequency = <48000000>;
+		clocks = <&clk_spi2>;
+		clock-names = "2f0132000.spi";
+	};
+
+	spi3: spi@2,f0133000 {
+		compatible = "nvt,nvt_spi";
+		reg = <0x2 0xf0133000 0x0 0x200>;
+		interrupts = <GIC_SPI 66 IRQ_TYPE_LEVEL_HIGH>;
+		nvt-devname = <3>;
+		clock-frequency = <48000000>;
+		clocks = <&clk_spi3>;
+		clock-names = "2f0133000.spi";
+	};
+
+	spi4: spi@2,f0134000 {
+		compatible = "nvt,nvt_spi";
+		reg = <0x2 0xf0134000 0x0 0x200>;
+		interrupts = <GIC_SPI 67 IRQ_TYPE_LEVEL_HIGH>;
+		nvt-devname = <4>;
+		clock-frequency = <48000000>;
+		clocks = <&clk_spi4>;
+		clock-names = "2f0134000.spi";
+	};
+
+	sdp@2,f0135000 {
+		compatible = "nvt,nvt_sdp";
+		reg = <0x2 0xf0135000 0x0 0x200>;
+		interrupts = <GIC_SPI 12 IRQ_TYPE_LEVEL_HIGH>;
+		clocks = <&clk_sdp>;
+		clock-names = "2f0135000.sdp";
+	};
+
+	tse@2,f0e10000 {
+		compatible = "nvt,nvt_tse";
+		reg = <0x2 0xf0e10000 0x0 0x90>;
+		interrupts = <GIC_SPI 23 IRQ_TYPE_LEVEL_HIGH>;
+		clocks = <&clk_tse>;
+		clock-names = "2f0e10000.tse";
+		max-frequency = <320000000>;
+	};
+
+	sif@2,f0142000 {
+        compatible = "nvt,nvt_sif";
+        reg = <0x2 0xf0142000 0x0 0x200>;
+        interrupts = <GIC_SPI 40 IRQ_TYPE_LEVEL_HIGH>;
+        clocks = <&clk_sif>;
+        clock-names = "2f0142000.sif";
+        clock-frequency = <96000000>;
+    };
+
+	remote@2,f0141000 {
+		compatible = "nvt,nvt_remote";
+		reg = <0x2 0xf0141000 0x0 0x28>;
+		clocks = <&remote_clk>;
+		clock-names = "remote_clk";
+		interrupts = <GIC_SPI 25 IRQ_TYPE_LEVEL_HIGH>;
+	};
+
+	nvt_arb@2,f00d0000 {
+		compatible = "nvt,nvt_arb";
+		reg = <
+			0x2 0xF0180000 0x0 0x6000
+			0x2 0xF0170000 0x0 0x100
+			0x2 0xF0171000 0x0 0x100
+			0x2 0xF0172000 0x0 0x100
+			0x2 0xF01F0000 0x0 0x100
+			0x2 0xF01C0000 0x0 0x100
+		>;
+		interrupts = <GIC_SPI 33 IRQ_TYPE_LEVEL_HIGH>;
+	};
+
+	hwcp: hwcp@2,f0e00000 {
+		compatible = "nvt,nvt_hwcopy";
+		reg = <0x2 0xF0E00000 0x0 0x500>;
+		clocks = <&clk_hwcp>;
+		clock-name = "2f0e00000.hwcp";
+		interrupts = <GIC_SPI 39 IRQ_TYPE_LEVEL_HIGH>;
+		#dma-cells=<1>;
+		dma-channels=<4>;
+	};
+
+	kdrv_rpc: cc@2,f0090000 {
+		compatible = "kdrv_rpc";
+		reg = <0x2 0xf0090000 0x0 0x300>;
+		interrupts = <GIC_SPI 52 IRQ_TYPE_LEVEL_HIGH>;
+	};
+
+	rng@2,f0165000 {
+		compatible = "nvt,nvt_rng";
+		reg = <0x2 0xf0165000 0x0 0x100>;
+		clock-names = "2f0165000.rng";
+	};
+
+	nvt_otp@2,f0160000 {
+		compatible = "nvt,nvt_otp";
+		reg = <0x2 0xf0160000 0x0 0x70>;
+	};
+
+	nvt_stbc@2,f0200000 {
+		compatible = "nvt,nvt_stbc";
+		reg = <0x2 0xf0200000 0x0 0x100>;
+		clocks = <&clk_stbc>;
+		clock-names = "2f0200000.nvt_stbc";
+	};
+
+	pll_preset@0 {
+		pll3{pll_config = <3 0 0>;};
+		pll4{pll_config = <4 0 0>;};
+		pll5{pll_config = <5 0 0>;};
+		pll6{pll_config = <6 0 0>;};
+		pll7{pll_config = <7 0 0>;};
+		pll8{pll_config = <8 0 0>;};
+		pll9{pll_config = <9 0 0>;};
+		pll10{pll_config = <10 400000000 0>;};
+		pll11{pll_config = <11 0 0>;};
+		pll12{pll_config = <12 0 0>;};
+		pll13{pll_config = <13 450000000 0>;};
+		pll14{pll_config = <14 0 0>;};
+		pll15{pll_config = <15 400000000 0>;};
+		pll16{pll_config = <16 0 0>;};
+		pll17{pll_config = <17 0 0>;};
+	};
+
+	nvt_hwcpy_test@0 {
+		compatible = "nvt,nvt_hwcpy_test";
+		dma-names = "hwcp0", "hwcp1", "hwcp2", "hwcp3";
+		dmas = <&hwcp 0
+			&hwcp 1
+			&hwcp 2
+			&hwcp 3>;
+	};
+
+};

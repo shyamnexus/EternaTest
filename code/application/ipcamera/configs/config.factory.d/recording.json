@@ -1,0 +1,38 @@
+{
+  "recording": {
+    "schedule": {
+      "enabled": false,
+      "active_profile_id": "default-24x7",
+      "profiles_factory_dir": "recording/profiles",
+      "profiles_user_dir": "recording/profiles"
+    },
+    "nas": {
+      "enabled": false,
+      "protocol": "smb",
+      "server": "",
+      "share": "",
+      "mount_point": "/mnt/nas",
+      "username": "",
+      "password": "",
+      "domain": "",
+      "auto_mount": true
+    },
+    "ftp": {
+      "enabled": false,
+      "server": "",
+      "port": 21,
+      "username": "",
+      "password": "",
+      "remote_path": "/uploads",
+      "use_ssl": false,
+      "passive_mode": true,
+      "upload_schedule": "immediate",
+      "upload_hour": 2,
+      "upload_recordings": true,
+      "upload_snapshots": false,
+      "delete_after_upload": false,
+      "max_retries": 3,
+      "timeout_seconds": 30
+    }
+  }
+}

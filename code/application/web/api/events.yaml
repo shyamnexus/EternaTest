@@ -1,0 +1,546 @@
+openapi: 3.0.3
+info:
+  title: IP Camera API - Events Management
+  version: 1.1.0
+  description: |
+    Event management API for querying, filtering, and managing camera events
+    and automation rules.
+    
+    ## Changelog
+    
+    ### Version 1.1.0 (2026-02-17)
+    
+    **Documentation Updates**
+    - Verified all endpoints match actual handler implementations in `events_handler.cpp`.
+    - Added security note: Endpoints do not currently enforce authentication.
+    - Confirmed routing: CivetWeb wildcard routing handles `/events/{id}` and
+      `/events/rules/{id}` via base handlers that extract IDs from URL path.
+    
+    ### Version 1.0.0 (2026-02-17)
+    - Initial events API documentation.
+    
+    ## Security Note
+    
+    **Warning**: Event endpoints do not currently enforce authentication or RBAC.
+    All event query, rule management, and test endpoints are accessible without
+    a Bearer token. Authentication should be added in a future version.
+    
+    ## Features
+    
+    - **Event History**: Query past events with filtering by category, type, and time range
+    - **Event Rules**: Create automation rules that trigger actions on specific events
+    - **Statistics**: Monitor event processing performance and counts by type
+    - **Testing**: Trigger synthetic test events to validate rule pipelines
+    
+    ## Event Categories
+    
+    | Category | Event Types |
+    |----------|-------------|
+    | Motion | `motion_start`, `motion_stop` |
+    | Analytics | `person_detected`, `vehicle_detected`, `animal_detected` |
+    | Line Crossing | `line_cross_in`, `line_cross_out` |
+    | Intrusion | `zone_enter`, `zone_exit`, `zone_loiter` |
+    | Tampering | `tamper_defocus`, `tamper_masking`, `tamper_scene_change`, `tamper_dark`, `tamper_bright` |
+    | System | `storage_full`, `network_lost`, `system_boot` |
+
+paths:
+  # ============================================================================
+  # Events Query & History
+  # ============================================================================
+  /events:
+    get:
+      summary: Query Events
+      description: |
+        Retrieve event history with optional filtering by category, type, and limit.
+        Returns events sorted by timestamp (newest first).
+      operationId: getEvents
+      tags: [Events]
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 100
+            minimum: 1
+            maximum: 1000
+          description: Maximum number of events to return
+        - name: category
+          in: query
+          schema:
+            type: string
+            enum: [motion, analytics, line_crossing, intrusion, tampering, system]
+          description: Filter events by category
+      responses:
+        '200':
+          description: Events retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  events:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Event'
+                  count:
+                    type: integer
+                    description: Number of events returned
+              example:
+                events:
+                  - id: "evt_1707123456789"
+                    category: "motion"
+                    type: "motion_start"
+                    source: "motion_engine"
+                    channel: 0
+                    timestamp: "2026-02-17T10:30:00Z"
+                    data: {}
+                  - id: "evt_1707123456790"
+                    category: "analytics"
+                    type: "person_detected"
+                    source: "ai_engine"
+                    channel: 0
+                    timestamp: "2026-02-17T10:30:05Z"
+                    data:
+                      confidence: 0.92
+                      bbox: {x: 120, y: 80, w: 100, h: 200}
+                count: 2
+    delete:
+      summary: Clear Event History
+      description: Deletes all stored event history.
+      operationId: clearEvents
+      tags: [Events]
+      responses:
+        '200':
+          description: Event history cleared
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResult'
+              example:
+                success: true
+                message: "Event history cleared"
+
+  /events/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Event ID
+    get:
+      summary: Get Specific Event
+      description: Retrieve a single event by its ID.
+      operationId: getEvent
+      tags: [Events]
+      responses:
+        '200':
+          description: Event retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Event'
+        '404':
+          description: Event not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                error: "Event not found"
+
+  # ============================================================================
+  # Event Rules
+  # ============================================================================
+  /events/rules:
+    get:
+      summary: List Event Rules
+      description: Returns all configured event automation rules.
+      operationId: getEventRules
+      tags: [Event Rules]
+      responses:
+        '200':
+          description: Rules list
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  rules:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/EventRule'
+                  count:
+                    type: integer
+              example:
+                rules:
+                  - id: "rule_motion_record"
+                    name: "Record on Motion"
+                    enabled: true
+                    trigger:
+                      event_type: "motion_start"
+                      conditions: {}
+                    actions:
+                      - type: "recording"
+                        params:
+                          pre_record_sec: 5
+                          post_record_sec: 30
+                count: 1
+    post:
+      summary: Create Event Rule
+      description: |
+        Create a new event automation rule. Rules define triggers (event types) and
+        actions to execute when the trigger condition is met.
+      operationId: createEventRule
+      tags: [Event Rules]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventRuleCreate'
+            example:
+              name: "Alert on Tampering"
+              enabled: true
+              trigger:
+                event_type: "tamper_masking"
+              actions:
+                - type: "email"
+                  params:
+                    subject: "Camera Tampered"
+                    priority: "high"
+                - type: "recording"
+                  params:
+                    pre_record_sec: 10
+                    post_record_sec: 60
+      responses:
+        '201':
+          description: Rule created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  rule:
+                    $ref: '#/components/schemas/EventRule'
+        '409':
+          description: Rule with this ID already exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /events/rules/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Rule ID
+    get:
+      summary: Get Event Rule
+      description: Retrieve a specific event rule by ID.
+      operationId: getEventRule
+      tags: [Event Rules]
+      responses:
+        '200':
+          description: Rule retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventRule'
+        '404':
+          description: Rule not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    put:
+      summary: Update Event Rule
+      description: Update an existing event rule. The rule ID in the URL takes precedence.
+      operationId: updateEventRule
+      tags: [Event Rules]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EventRuleCreate'
+      responses:
+        '200':
+          description: Rule updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  rule:
+                    $ref: '#/components/schemas/EventRule'
+        '404':
+          description: Rule not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    delete:
+      summary: Delete Event Rule
+      description: Delete an event rule by ID.
+      operationId: deleteEventRule
+      tags: [Event Rules]
+      responses:
+        '200':
+          description: Rule deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResult'
+              example:
+                success: true
+                message: "Rule deleted"
+        '404':
+          description: Rule not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  # ============================================================================
+  # Event Statistics
+  # ============================================================================
+  /events/stats:
+    get:
+      summary: Get Event Statistics
+      description: |
+        Returns aggregate statistics about event processing including publish counts,
+        rule matches, action execution counts, and breakdowns by event type.
+      operationId: getEventStats
+      tags: [Events]
+      responses:
+        '200':
+          description: Event statistics
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventStats'
+              example:
+                events_published: 1523
+                events_processed: 1523
+                events_filtered: 89
+                rules_matched: 412
+                actions_executed: 398
+                actions_failed: 14
+                events_by_type:
+                  motion_start: 890
+                  motion_stop: 890
+                  person_detected: 234
+                  vehicle_detected: 67
+                  tamper_masking: 2
+
+  # ============================================================================
+  # Test Events
+  # ============================================================================
+  /events/test:
+    post:
+      summary: Trigger Test Event
+      description: |
+        Publish a synthetic test event to validate the event processing pipeline,
+        rule matching, and action execution. The event is marked with source `test_api`.
+      operationId: triggerTestEvent
+      tags: [Events]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                type:
+                  type: string
+                  description: Event type to simulate
+                  example: "motion_start"
+                channel:
+                  type: integer
+                  description: Camera channel
+                  default: 0
+            example:
+              type: "motion_start"
+              channel: 0
+      responses:
+        '200':
+          description: Test event published
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  event_id:
+                    type: string
+                  type:
+                    type: string
+                  message:
+                    type: string
+              example:
+                success: true
+                event_id: "evt_1707123999999"
+                type: "motion_start"
+                message: "Test event published"
+        '400':
+          description: Invalid event type
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+tags:
+  - name: Events
+    description: Event history, statistics, and test triggers
+  - name: Event Rules
+    description: Event automation rule management (CRUD)
+
+# ==============================================================================
+# Components (Schemas)
+# ==============================================================================
+components:
+  schemas:
+    OperationResult:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+
+    Event:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique event identifier
+        category:
+          type: string
+          enum: [motion, analytics, line_crossing, intrusion, tampering, system]
+          description: Event category
+        type:
+          type: string
+          description: Specific event type (e.g., motion_start, person_detected)
+        source:
+          type: string
+          description: Component that generated the event
+        channel:
+          type: integer
+          description: Camera channel index
+        timestamp:
+          type: string
+          format: date-time
+          description: Event timestamp (ISO 8601)
+        data:
+          type: object
+          description: Event-specific payload data (varies by type)
+
+    EventRule:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique rule identifier
+        name:
+          type: string
+          description: Human-readable rule name
+        enabled:
+          type: boolean
+          description: Whether the rule is active
+        trigger:
+          type: object
+          properties:
+            event_type:
+              type: string
+              description: Event type that activates this rule
+            conditions:
+              type: object
+              description: Additional conditions (e.g., confidence threshold, time window)
+        actions:
+          type: array
+          items:
+            type: object
+            properties:
+              type:
+                type: string
+                enum: [recording, snapshot, email, mqtt, https_notify, ftp_upload]
+                description: Action type
+              params:
+                type: object
+                description: Action-specific parameters
+          description: Actions to execute when rule triggers
+
+    EventRuleCreate:
+      type: object
+      required: [name, trigger, actions]
+      properties:
+        id:
+          type: string
+          description: Optional custom rule ID (auto-generated if omitted)
+        name:
+          type: string
+          description: Human-readable rule name
+        enabled:
+          type: boolean
+          default: true
+        trigger:
+          type: object
+          required: [event_type]
+          properties:
+            event_type:
+              type: string
+            conditions:
+              type: object
+        actions:
+          type: array
+          items:
+            type: object
+            required: [type]
+            properties:
+              type:
+                type: string
+                enum: [recording, snapshot, email, mqtt, https_notify, ftp_upload]
+              params:
+                type: object
+
+    EventStats:
+      type: object
+      properties:
+        events_published:
+          type: integer
+          description: Total events published
+        events_processed:
+          type: integer
+          description: Total events processed by rule engine
+        events_filtered:
+          type: integer
+          description: Events filtered out by rules
+        rules_matched:
+          type: integer
+          description: Total rule match count
+        actions_executed:
+          type: integer
+          description: Successfully executed actions
+        actions_failed:
+          type: integer
+          description: Failed action executions
+        events_by_type:
+          type: object
+          additionalProperties:
+            type: integer
+          description: Event count breakdown by event type string

@@ -1,0 +1,331 @@
+if ARCH_NVT_IVOT_V7 || ARCH_NVT_IVOT_V8
+
+menu "Novatek Video Platform Specific Features"
+
+config PLAT_NOVATEK
+       bool "Enable Novatek SOC platform dependent config"
+       depends on ARCH_NVT_IVOT_V7 || ARCH_NVT_IVOT_V8
+       help
+         This option will enable Novatek specific config for our customization.
+
+choice
+	prompt "SOC families selection"
+	depends on ARCH_NVT_IVOT_V7 || ARCH_NVT_IVOT_V8
+
+# To define new SOC type here CA9
+config NVT_IVOT_PLAT_NA51055
+	bool "To support na51055 series"
+	depends on ARM
+	select GENERIC_ALLOCATOR
+	select ARCH_REQUIRE_GPIOLIB
+	select CLKDEV_LOOKUP
+	select COMMON_CLK
+	select GENERIC_IRQ_CHIP
+	select MULTI_IRQ_HANDLER
+	select PINCTRL
+	select ARM_GLOBAL_TIMER
+	select HAVE_ARM_SCU
+	select HAVE_ARM_TWD
+	select COMMON_CLK_NA51055
+	help
+	  Support for Novatek's video processing platform.
+
+# To define new SOC type here CA9
+config NVT_IVOT_PLAT_NA51089
+	bool "To support na51089 series"
+	depends on ARM
+	select GENERIC_ALLOCATOR
+	select ARCH_REQUIRE_GPIOLIB
+	select CLKDEV_LOOKUP
+	select COMMON_CLK
+	select GENERIC_IRQ_CHIP
+	select MULTI_IRQ_HANDLER
+	select PINCTRL
+	select ARM_GLOBAL_TIMER
+	select HAVE_ARM_SCU
+	select HAVE_ARM_TWD
+	select COMMON_CLK_NA51089
+	help
+	  Support for Novatek's video processing platform.
+
+# To define new SOC type here CA9
+config NVT_IVOT_PLAT_TC98110
+	bool "To support tc98110 series"
+	depends on ARM
+	select GENERIC_ALLOCATOR
+	select ARCH_REQUIRE_GPIOLIB
+	select CLKDEV_LOOKUP
+	select COMMON_CLK
+	select GENERIC_IRQ_CHIP
+	select MULTI_IRQ_HANDLER
+	select PINCTRL
+	select ARM_GLOBAL_TIMER
+	select HAVE_ARM_SCU
+	select HAVE_ARM_TWD
+	select COMMON_CLK_NVT
+	help
+	  Support for Novatek's video processing platform.
+
+# To define new SOC type here
+config NVT_IVOT_PLAT_NS02301
+	bool "To support ns02301 series"
+	depends on ARM
+	select GENERIC_ALLOCATOR
+	select ARCH_REQUIRE_GPIOLIB
+	select CLKDEV_LOOKUP
+	select COMMON_CLK
+	select GENERIC_IRQ_CHIP
+	select MULTI_IRQ_HANDLER
+	select PINCTRL
+	select HAVE_ARM_ARCH_TIMER
+	select HAVE_ARM_SCU
+	select HAVE_ARM_TWD
+	select COMMON_CLK_NVT
+	help
+	  Support for Novatek's video processing platform.
+
+# To define new SOC type here CA53
+config NVT_IVOT_PLAT_NA51000
+	bool "To support na51000 series"
+	depends on ARM || ARM64
+	select GENERIC_ALLOCATOR
+	select ARCH_REQUIRE_GPIOLIB
+	select CLKDEV_LOOKUP
+	select COMMON_CLK
+	select GENERIC_IRQ_CHIP
+	select MULTI_IRQ_HANDLER
+	select PINCTRL
+	select COMMON_CLK_NA51000
+	select ARM_ARCH_TIMER
+	select HAVE_ARM_ARCH_TIMER
+	help
+	  Support for Novatek's video processing platform.
+
+# To define new SOC type here CA53
+config NVT_IVOT_PLAT_NA51090
+	bool "To support na51090 series"
+	depends on ARM || ARM64
+	select GENERIC_ALLOCATOR
+	select ARCH_REQUIRE_GPIOLIB
+	select CLKDEV_LOOKUP
+	select COMMON_CLK
+	select GENERIC_IRQ_CHIP
+	select MULTI_IRQ_HANDLER
+	select PINCTRL
+	select COMMON_CLK_NA51090
+	select ARM_ARCH_TIMER
+	select HAVE_ARM_ARCH_TIMER
+	help
+	  Support for Novatek's NA51090 video processing platform.
+
+config NVT_IVOT_PLAT_NA51102
+	bool "To support na51102 series"
+	depends on ARM || ARM64
+	select GENERIC_ALLOCATOR
+	select ARCH_REQUIRE_GPIOLIB
+	select CLKDEV_LOOKUP
+	select COMMON_CLK
+	select GENERIC_IRQ_CHIP
+	select MULTI_IRQ_HANDLER
+	select PINCTRL
+	select ARM_ARCH_TIMER
+	select HAVE_ARM_ARCH_TIMER
+	help
+	  Support for Novatek's NA51102 video processing platform.
+
+config NVT_IVOT_PLAT_NA51103
+	bool "To support na51103 series"
+	depends on ARM || ARM64
+	select GENERIC_ALLOCATOR
+	select ARCH_REQUIRE_GPIOLIB
+	select CLKDEV_LOOKUP
+	select COMMON_CLK
+	select GENERIC_IRQ_CHIP
+	select MULTI_IRQ_HANDLER
+	select PINCTRL
+	select COMMON_CLK_NA51103
+	select ARM_ARCH_TIMER
+	select HAVE_ARM_ARCH_TIMER
+	help
+	  Support for Novatek's NA51103 video processing platform.
+
+config NVT_IVOT_PLAT_NS02201
+	bool "To support ns02201 series"
+	depends on ARM || ARM64
+	select GENERIC_ALLOCATOR
+	select ARCH_REQUIRE_GPIOLIB
+	select CLKDEV_LOOKUP
+	select COMMON_CLK
+	select GENERIC_IRQ_CHIP
+	select MULTI_IRQ_HANDLER
+	select PINCTRL
+	select COMMON_CLK_NS02201
+	select ARM_ARCH_TIMER
+	select HAVE_ARM_ARCH_TIMER
+	select NVT_FB_DMABUF
+	select NVT_DCACHE_FLUSH_ALL
+	help
+	  Support for Novatek's NS02201 video processing platform.
+
+config NVT_IVOT_PLAT_NS02301
+	bool "To support ns02301 series"
+	depends on ARM || ARM64
+	select GENERIC_ALLOCATOR
+	select ARCH_REQUIRE_GPIOLIB
+	select CLKDEV_LOOKUP
+	select COMMON_CLK
+	select GENERIC_IRQ_CHIP
+	select MULTI_IRQ_HANDLER
+	select PINCTRL
+	select COMMON_CLK_NS02201
+	select ARM_ARCH_TIMER
+	select HAVE_ARM_ARCH_TIMER
+	select NVT_FB_DMABUF
+	help
+	  Support for Novatek's NS02301 video processing platform.
+
+config NVT_IVOT_PLAT_NS02302
+	bool "To support ns02302 series"
+	depends on ARM || ARM64
+	select GENERIC_ALLOCATOR
+	select ARCH_REQUIRE_GPIOLIB
+	select CLKDEV_LOOKUP
+	select COMMON_CLK
+	select GENERIC_IRQ_CHIP
+	select MULTI_IRQ_HANDLER
+	select PINCTRL
+	select ARM_ARCH_TIMER
+	select HAVE_ARM_ARCH_TIMER
+	help
+	  Support for Novatek's NS02302 video processing platform.
+
+config NVT_IVOT_PLAT_NS02401
+	bool "To support ns02401 series"
+	depends on ARM || ARM64
+	select GENERIC_ALLOCATOR
+	select ARCH_REQUIRE_GPIOLIB
+	select CLKDEV_LOOKUP
+	select COMMON_CLK
+	select GENERIC_IRQ_CHIP
+	select MULTI_IRQ_HANDLER
+	select PINCTRL
+	select ARM_ARCH_TIMER
+	select HAVE_ARM_ARCH_TIMER
+	help
+	  Support for Novatek's NS02401 video processing platform.
+
+endchoice
+
+# To define the EVB board type based on your SOC type
+choice
+	prompt "Board type"
+	default NVT_NT98520_EVB
+
+config NVT_NT98520_EVB
+	bool "NT98520 EVB board"
+	depends on NVT_IVOT_PLAT_NA51055
+	help
+	  Enable this option to do NT98520 EVB.
+
+config NVT_NT98560_EVB
+	bool "NT98560 EVB board"
+	depends on NVT_IVOT_PLAT_NA51089
+	help
+	  Enable this option to do NT98560 EVB.
+
+config NVT_NT96680_EVB
+	bool "NT96680 EVB board"
+	depends on NVT_IVOT_PLAT_NA51000
+	help
+	  Enable this option to do NT96680 EVB.
+
+config NVT_NT98336_EVB
+	bool "NT98336 EVB board"
+	depends on NVT_IVOT_PLAT_NA51090
+	help
+	  Enable this option to do NT98336 EVB.
+
+config NVT_NT98336_PCI_EP_EVB
+	bool "NT98336 EP Daughter board"
+	depends on NVT_IVOT_PLAT_NA51090
+	help
+	  Enable this option to do NT98336 PCIe EP EVB for PCIe submodule.
+
+config NVT_NT98530_EVB
+	bool "NT98530 EVB board"
+	depends on NVT_IVOT_PLAT_NA51102
+	help
+	  Enable this option to do NT98530 EVB.
+
+config NVT_NT98331_EVB
+	bool "NT98331 EVB board"
+	depends on NVT_IVOT_PLAT_NA51103
+	help
+	  Enable this option to do NT98331 EVB.
+
+config NVT_NT98690_EVB
+	bool "NT98690 EVB board"
+	depends on NVT_IVOT_PLAT_NS02201
+	help
+	  Enable this option to do NT98690 EVB.
+
+config NVT_NT98690_PCI_EP_EVB
+	bool "NT98690 EP Daughter board"
+	depends on NVT_IVOT_PLAT_NS02201
+	help
+	  Enable this option to do NT98690 PCIe EP EVB for PCIe submodule.
+
+config NVT_NT98567_EVB
+	bool "NT98567 EVB board"
+	depends on NVT_IVOT_PLAT_NS02301
+	help
+	  Enable this option to do NT98567 EVB.
+
+config NVT_NT98538_EVB
+	bool "NT98538 EVB board"
+	depends on NVT_IVOT_PLAT_NS02302
+	help
+	  Enable this option to do NT98538 EVB.
+
+config NVT_NT98635_EVB
+	bool "NT98635 EVB board"
+	depends on NVT_IVOT_PLAT_NS02401
+	help
+	  Enable this option to do NT98635 EVB.
+
+config NVT_TC98110_EVB
+	bool "TC98110 EVB board"
+	depends on NVT_IVOT_PLAT_TC98110
+	help
+	  Enable this option to do TC98110 EVB.
+
+config NVT_FPGA_EMULATION
+	bool "FPGA emulation"
+	help
+	  Enable this option to do FPGA emulation
+endchoice
+
+config NVT_IM_UART
+	bool "NVT IM 8250 compatible UART"
+	depends on ARCH_NVT_IVOT_V7
+	default y
+	help
+	  This option will configure the NVT IM UART HW setting.
+
+config NVT_IM_LVD_RESET
+	bool "NVT IM Low Voltage Detect Reset"
+	depends on ARCH_NVT_IVOT_V7
+	default n
+	help
+	  This option will configure the reset method.
+
+config NVT_DCACHE_FLUSH_ALL
+	bool "NVT DCACHE flush all function"
+	depends on ARCH_NVT_IVOT_V7 || ARCH_NVT_IVOT_V8
+	default n
+	help
+	  This option will configure the NVT Dcache flush all.
+
+endmenu
+
+endif

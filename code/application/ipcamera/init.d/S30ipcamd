@@ -1,0 +1,71 @@
+#!/bin/sh
+### BEGIN INIT INFO
+# Provides:          ipcamd
+# Required-Start:    $remote_fs $syslog
+# Required-Stop:     $remote_fs $syslog
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Start ipcamd at boot time
+# Description:       Init script for ipcamd daemon
+### END INIT INFO
+
+IPCAMD_BIN="/bin/ipcamd"
+PIDFILE="/run/ipcamd.pid"
+
+if [ -z "$1" ]; then
+  set -- start
+fi
+
+case "$1" in
+  start)
+    echo "Starting ipcamd..."
+    if [ ! -x "$IPCAMD_BIN" ]; then
+      echo "Error: $IPCAMD_BIN not found or not executable"
+      exit 1
+    fi
+    # Ensure /run directory exists
+    mkdir -p "$(dirname "$PIDFILE")"
+    # Start ipcamd in background - logs visible on console at boot
+    $IPCAMD_BIN &
+    echo $! > "$PIDFILE"
+    sleep 0.5
+    if kill -0 $(cat "$PIDFILE") 2>/dev/null; then
+      echo "ipcamd started (pid $(cat $PIDFILE))"
+    else
+      echo "Error: ipcamd failed to start"
+      rm -f "$PIDFILE"
+      exit 1
+    fi
+    ;;
+  stop)
+    if [ -f "$PIDFILE" ]; then
+      PID=$(cat "$PIDFILE")
+      echo "Stopping ipcamd (pid $PID)..."
+      kill "$PID" 2>/dev/null || true
+      rm -f "$PIDFILE"
+    else
+      echo "ipcamd not running (no pidfile)"
+      # Try to kill by name anyway
+      killall ipcamd 2>/dev/null || true
+    fi
+    ;;
+  restart)
+    $0 stop
+    sleep 1
+    $0 start
+    ;;
+  status)
+    if [ -f "$PIDFILE" ] && kill -0 "$(cat $PIDFILE)" 2>/dev/null; then
+      echo "ipcamd is running (pid $(cat $PIDFILE))"
+      exit 0
+    fi
+    echo "ipcamd is not running"
+    exit 1
+    ;;
+  *)
+    echo "Usage: $0 {start|stop|restart|status}"
+    exit 2
+    ;;
+esac
+
+exit 0

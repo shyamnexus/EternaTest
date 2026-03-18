@@ -1,0 +1,11 @@
+#!/bin/sh
+
+echo "net" > /proc/nvt_info/bootts
+
+echo "Configuring eth0 10.0.2.15"
+ifconfig eth0 10.0.2.15 up
+echo "Configuring loopback interface"
+ifconfig lo 127.0.0.1
+
+echo "net" > /proc/nvt_info/bootts
+telnetd

@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  ns02302-dev:
+    build: .
+    container_name: ns02302_linux_sdk_dev
+    working_dir: /workspace
+    volumes:
+      - .:/workspace
+      - /opt/ivot:/opt/ivot:ro
+    environment:
+      - TERM=xterm-256color
+    stdin_open: true
+    tty: true
+    command: /bin/bash

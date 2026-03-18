@@ -1,0 +1,44 @@
+MODULE_NAME = nvt_csi
+# DIRs
+VOS_DRIVER_DIR = $(NVT_VOS_DIR)/drivers
+KDRV_DIR = $(NVT_HDAL_DIR)/drivers/k_driver
+CURR_DRIVER_DIR = $(KDRV_DIR)
+# INC FLAGs
+EXTRA_INCLUDE += \
+	-I$(VOS_DRIVER_DIR)/include \
+	-I $(KDRV_DIR)/include \
+	-I$(KDRV_DIR)/source/include \
+	-I$(CURR_DRIVER_DIR)/include \
+	-I$(NVT_RTOS_DRIVER_INC_DIR) \
+
+EXTRA_INCLUDE += -I$(KDRV_INC_PATH)/rtos_$(SDK_CODENAME)
+
+###############################################################################
+# Linux Makefile                                                              #
+###############################################################################
+ifeq ($(NVT_PRJCFG_CFG),Linux)
+EXTRA_CFLAGS += -DDEBUG
+
+SRC += \
+	csi_main.c \
+	csi_proc.c \
+	csi_drv.c \
+	csi_api.c \
+	csi_obj.c \
+	csi.c \
+	csi2.c \
+
+###############################################################################
+# rtos Makefile                                                               #
+###############################################################################
+else ifeq ($(NVT_PRJCFG_CFG),rtos)
+EXTRA_CFLAGS += -DDEBUG
+
+SRC += \
+	csi.c \
+	csi2.c \
+	csi_obj.c \
+
+endif
+
+include $(NVT_HDAL_DIR)/driver.mk

@@ -1,0 +1,44 @@
+# ONVIF Module .gitignore
+
+# Build artifacts
+*.o
+*.obj
+*.lo
+*.a
+*.so
+*.dylib
+*.exe
+
+# CMake generated files
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+
+# Backup files (from editing)
+*.backup
+*.backup2
+*.bak
+*.orig
+*~
+
+# ONVIF test XML files
+*.xml
+
+# gSOAP generated intermediate files (keep source, ignore compiled)
+gsoap/gsoap_createfile/*.o
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# macOS
+.DS_Store
+
+# Logs
+*.log
+
+# Temporary files
+tmp/

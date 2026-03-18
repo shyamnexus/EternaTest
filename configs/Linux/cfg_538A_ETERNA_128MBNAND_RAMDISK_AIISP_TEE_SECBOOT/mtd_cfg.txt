@@ -1,0 +1,49 @@
+# Configuration: cfg_538A_ETERNA_128MBNAND_RAMDISK_AIISP_TEE_SECBOOT
+#
+# UBIFS/JFFS2 Configuration for 128MB SPI NAND with OP-TEE + Factory Partition
+#
+# Flash Partition Sizes (with TEE and Factory):
+#   rootfs:  32MB (0x2000000)
+#   rootfs1: 66MB (0x4200000)
+#   app:     21.625MB (0x15A0000) - reduced by 256KB for factory partition
+#   factory: 256KB (0x40000) - device-specific data (MAC, serial, etc.)
+#
+# UBI LEB Count Calculations:
+#   rootfs (32MB):    32MB / 128KB per LEB = 256 LEBs (with overhead ~288)
+#   rootfs1 (66MB):   66MB / 128KB per LEB = 528 LEBs (with overhead ~470)
+#   app (21.625MB):   ~169 LEBs (with overhead ~137) - reduced from 175/139
+#   factory (256KB):  2 LEBs (raw MTD, no UBI)
+
+ROOTFS_UBI_SUB_PAGE_SIZE=2048			# Same as page size
+ROOTFS_UBI_PAGE_SIZE=2048			# Nand page size
+ROOTFS_UBI_ERASE_BLK_SIZE=126976		# (64-2) * Page size=126976
+ROOTFS_UBI_MAX_LEB_COUNT=359			# For rootfs (32MB) - same as original
+ROOTFS_UBI_RW_MAX_LEB_COUNT=492			# For rootfs1 (66MB) - 2K page NAND
+ROOTFS_UBI_BLK_SIZE="128KiB"			# UBIFS Nand flash block size (KiB)
+ROOTFS_UBI_COMPRESS_MODE="favor_lzo"		# UBIFS compression type: "lzo", "favor_lzo", "zlib" "none"
+
+ROOTFS_SQ_COMPRESS_MODE="xz"			# Squashfs compression type: "gzip", "lzo" and "xz"
+ROOTFS_SQ_BLK_SIZE="128K"			# Squashfs Nand flash block size (KiB): e.g. spinand: 128K, spinor: 64K
+
+ROOTFS_JFFS2_COMPRESS_MODE="lzo"		# jffs2 compression type: "lzo" "zlib" "rtime"
+ROOTFS_JFFS2_SIZE=0x2000000			# jffs2 partition size: rootfs (32MB)
+ROOTFS_JFFS2_RW_SIZE=0x4200000			# jffs2 partition size: rootfs1 (66MB)
+ROOTFS_JFFS2_BLK_SIZE="128KiB"			# jffs2 block size (KiB): spinand: 128KiB, spinor: 64KiB
+ROOTFS_JFFS2_PAGE_SIZE="2048"			# jffs2 page size (Bytes): only used by nand, nor flash can be ignored.
+
+ROOTFS_EXT4_SIZE=$(shell printf "%d\n" 0x0A000000)
+ROOTFS_FAT_CACHE_SIZE=$(shell printf "%d\n" 0x0A000000)
+
+#APPFS (reduced by 256KB to accommodate factory partition)
+ROOTFS_APPFS_EN=ON
+ROOTFS_JFFS2_APP_SIZE=0x15A0000			# App partition size (21.625MB) - reduced from 0x15E0000
+ROOTFS_JFFS2_APP_NOR_SIZE=0x0E20000
+ROOTFS_UBI_APP_MAX_LEB_COUNT=137		# For app (21.625MB) - 2K page NAND - reduced from 139
+ROOTFS_EXT4_APP_SIZE=$(shell printf "%d\n" 0x0C000000)
+
+#FACTORY PARTITION (NEW)
+# Factory partition uses raw MTD access (no UBI/UBIFS)
+# Location: 0x7FC0000 (end of flash - 256KB)
+# Size: 256KB (0x40000)
+# Contains: MAC addresses, serial number, model name, calibration data
+# NOT included in firmware upgrades (nvt-pack excludes it)

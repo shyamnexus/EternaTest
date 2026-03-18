@@ -1,0 +1,1 @@
+../../kdrv_builtin/fdt/fdt_empty_tree.c

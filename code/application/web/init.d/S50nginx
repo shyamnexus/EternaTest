@@ -1,0 +1,62 @@
+#!/bin/sh
+#
+# Start/stop nginx
+# NOTE: nginx is managed by ipcamd - this script only provides control interface
+#
+
+NGINX=/usr/sbin/nginx
+PIDFILE=/run/nginx.pid
+
+# Don't auto-start nginx - let ipcamd manage it
+# if [ -z "$1" ]; then
+#   set -- start
+# fi
+
+if [ -z "$1" ]; then
+  echo "Usage: $0 {start|stop|restart|reload|force-reload}"
+  exit 0
+fi
+
+case "$1" in
+  start)
+    echo "Starting nginx..."
+    # Create required directories
+    mkdir -p /var/log/nginx /var/tmp/nginx /var/run
+    # Create nginx temp directory - try persistent storage first, fallback to tmpfs
+    if [ -d /mnt/app ] && [ -w /mnt/app ]; then
+      mkdir -p /mnt/app/ipcamera/nginx_temp
+    else
+      # Create directory hierarchy even if /mnt/app isn't a mountpoint
+      mkdir -p /mnt/app/ipcamera/nginx_temp 2>/dev/null || {
+        # Last resort fallback to tmpfs
+        mkdir -p /tmp/nginx_temp
+        mkdir -p /mnt/app/ipcamera 2>/dev/null
+        ln -sf /tmp/nginx_temp /mnt/app/ipcamera/nginx_temp 2>/dev/null || true
+      }
+    fi
+    sleep 1
+    start-stop-daemon -S -x "$NGINX" -p "$PIDFILE" -- -c /usr/conf/nginx.conf
+    ;;
+  stop)
+    echo "Stopping nginx..."
+    start-stop-daemon -K -x "$NGINX" -p "$PIDFILE" -o
+    # Fallback: if pidfile method didn't work, try killall
+    if pgrep -x nginx > /dev/null 2>&1; then
+      echo "nginx still running, using killall..."
+      killall -9 nginx 2>/dev/null || true
+      sleep 1
+    fi
+    ;;
+  reload|force-reload)
+    echo "Reloading nginx configuration..."
+    "$NGINX" -s reload
+    ;;
+  restart)
+    "$0" stop
+    sleep 1 # Prevent race condition: ensure nginx stops before start.
+    "$0" start
+    ;;
+  *)
+    echo "Usage: $0 {start|stop|restart|reload|force-reload}"
+    exit 1
+esac

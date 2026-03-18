@@ -1,0 +1,137 @@
+{
+    "osd": {
+        "_description": "On-Screen Display configuration for all video streams",
+        "global": {
+            "_description": "Global OSD settings (shared resources)",
+            "font_path": "/etc/ipcamera/assets/osd/arial.ttf",
+            "logo_path": "/etc/ipcamera/assets/osd/logo.bin"
+        },
+        "streams": {
+            "_description": "Per-stream OSD configuration. stamp_width/height define the OSD buffer size (should match video width).",
+            "stream0": {
+                "_description": "Main stream OSD - full width buffer (2944) to span entire video",
+                "enabled": true,
+                "timestamp": {
+                    "enabled": true,
+                    "position_x": 10,
+                    "position_y": 10,
+                    "format": "%Y-%m-%d %H:%M:%S",
+                    "font_size": 48,
+                    "outline_enabled": true,
+                    "outline_width": 2
+                },
+                "text": {
+                    "enabled": false,
+                    "content": "",
+                    "position_x": 10,
+                    "position_y": 70,
+                    "font_size": 36,
+                    "outline_enabled": true
+                },
+                "logo": {
+                    "enabled": true,
+                    "position_x": 2634,
+                    "position_y": 10,
+                    "outline_enabled": true,
+                    "outline_width": 2
+                },
+                "stamp_width": 2944,
+                "stamp_height": 200,
+                "stamp_offset_x": 0,
+                "stamp_offset_y": 0
+            },
+            "stream1": {
+                "_description": "Sub stream (1280x720) OSD settings",
+                "enabled": true,
+                "timestamp": {
+                    "enabled": true,
+                    "position_x": 6,
+                    "position_y": 6,
+                    "format": "%Y-%m-%d %H:%M:%S",
+                    "font_size": 24,
+                    "outline_enabled": true,
+                    "outline_width": 1
+                },
+                "text": {
+                    "enabled": false,
+                    "content": "",
+                    "position_x": 6,
+                    "position_y": 36,
+                    "font_size": 18,
+                    "outline_enabled": true
+                },
+                "logo": {
+                    "enabled": true,
+                    "position_x": 970,
+                    "position_y": 6,
+                    "outline_enabled": true,
+                    "outline_width": 1
+                },
+                "stamp_width": 1280,
+                "stamp_height": 120
+            },
+            "stream2": {
+                "_description": "Third stream (480p/360p) OSD settings",
+                "enabled": true,
+                "timestamp": {
+                    "enabled": true,
+                    "position_x": 5,
+                    "position_y": 5,
+                    "format": "%H:%M:%S",
+                    "font_size": 24,
+                    "outline_enabled": true,
+                    "outline_width": 1
+                },
+                "text": {
+                    "enabled": false,
+                    "content": "",
+                    "position_x": 5,
+                    "position_y": 35,
+                    "font_size": 18,
+                    "outline_enabled": true
+                },
+                "logo": {
+                    "enabled": false,
+                    "position_x": 500,
+                    "position_y": 5,
+                    "outline_enabled": true,
+                    "outline_width": 1
+                },
+                "stamp_width": 640,
+                "stamp_height": 100
+            }
+        },
+        "privacy_mask": {
+            "_description": "Privacy mask configuration (applies to all streams)",
+            "enabled": false,
+            "region0": {
+                "enabled": false,
+                "x1": 800,
+                "y1": 400,
+                "x2": 1120,
+                "y2": 680
+            },
+            "region1": {
+                "enabled": false,
+                "x1": 0,
+                "y1": 0,
+                "x2": 100,
+                "y2": 100
+            },
+            "region2": {
+                "enabled": false,
+                "x1": 0,
+                "y1": 0,
+                "x2": 100,
+                "y2": 100
+            },
+            "region3": {
+                "enabled": false,
+                "x1": 0,
+                "y1": 0,
+                "x2": 100,
+                "y2": 100
+            }
+        }
+    }
+}

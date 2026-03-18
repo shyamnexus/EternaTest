@@ -1,0 +1,760 @@
+openapi: 3.0.3
+info:
+  title: IP Camera API - OSD Settings
+  version: 1.0.0
+  description: |
+    On-Screen Display (OSD) and Privacy Mask configuration API.
+    
+    Supports per-stream OSD elements (timestamp, text, logo) and privacy masks.
+    
+    Hardware Limitations:
+    - Maximum 8 privacy mask regions total across all streams
+    - Distribution: Stream 0 = 3 masks, Stream 1 = 3 masks, Stream 2 = 2 masks
+
+paths:
+  /osd:
+    get:
+      summary: Get Complete OSD Configuration
+      description: Get full OSD configuration including all streams and global settings
+      operationId: getOsdConfig
+      tags: [OSD]
+      responses:
+        '200':
+          description: Complete OSD configuration retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OsdFullConfig'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+    post:
+      summary: Update Complete OSD Configuration
+      description: Update full OSD configuration
+      operationId: updateOsdConfig
+      tags: [OSD]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OsdFullConfig'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /osd/stream/{stream_id}:
+    get:
+      summary: Get OSD Stream Configuration
+      description: Get OSD configuration for a specific video stream
+      operationId: getOsdStreamConfig
+      tags: [OSD]
+      parameters:
+        - name: stream_id
+          in: path
+          required: true
+          description: Stream identifier (0, 1, 2)
+          schema:
+            type: integer
+            minimum: 0
+            maximum: 2
+      responses:
+        '200':
+          description: OSD configuration retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OsdStreamConfig'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          description: Stream not found
+
+    post:
+      summary: Update OSD Stream Configuration
+      description: Update OSD configuration for a specific video stream
+      operationId: updateOsdStreamConfig
+      tags: [OSD]
+      parameters:
+        - name: stream_id
+          in: path
+          required: true
+          description: Stream identifier (0, 1, 2)
+          schema:
+            type: integer
+            minimum: 0
+            maximum: 2
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OsdStreamConfig'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          description: Stream not found
+
+  /osd/stream/{stream_id}/privacy_mask:
+    get:
+      summary: Get Privacy Mask Configuration for Stream
+      description: |
+        Get privacy mask configuration for a specific video stream.
+        Each stream supports multiple privacy mask regions:
+        - Stream 0: 3 regions
+        - Stream 1: 3 regions  
+        - Stream 2: 2 regions
+      operationId: getStreamPrivacyMask
+      tags: [OSD, Privacy Mask]
+      parameters:
+        - name: stream_id
+          in: path
+          required: true
+          description: Stream identifier (0, 1, 2)
+          schema:
+            type: integer
+            minimum: 0
+            maximum: 2
+      responses:
+        '200':
+          description: Privacy mask configuration retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OsdStreamPrivacyMask'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          description: Stream not found
+
+    post:
+      summary: Update Privacy Mask Configuration for Stream
+      description: |
+        Update privacy mask configuration for a specific video stream.
+        Set `apply: true` to apply changes immediately.
+        
+        Color format is ARGB as a decimal integer:
+        - Black: 4278190080 (0xFF000000)
+        - Red: 4294901760 (0xFFFF0000)
+        - Green: 4278255360 (0xFF00FF00)
+        - Blue: 4278190335 (0xFF0000FF)
+      operationId: updateStreamPrivacyMask
+      tags: [OSD, Privacy Mask]
+      parameters:
+        - name: stream_id
+          in: path
+          required: true
+          description: Stream identifier (0, 1, 2)
+          schema:
+            type: integer
+            minimum: 0
+            maximum: 2
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OsdStreamPrivacyMaskUpdate'
+            examples:
+              single_black_mask:
+                summary: Single black privacy mask
+                value:
+                  enabled: true
+                  apply: true
+                  regions:
+                    - enabled: true
+                      x1: 100
+                      y1: 100
+                      x2: 400
+                      y2: 300
+                      color: 4278190080
+              multiple_colored_masks:
+                summary: Multiple colored privacy masks
+                value:
+                  enabled: true
+                  apply: true
+                  regions:
+                    - enabled: true
+                      x1: 100
+                      y1: 100
+                      x2: 400
+                      y2: 300
+                      color: 4278190335
+                    - enabled: true
+                      x1: 1500
+                      y1: 800
+                      x2: 1900
+                      y2: 1100
+                      color: 4278255360
+                    - enabled: true
+                      x1: 2400
+                      y1: 100
+                      x2: 2800
+                      y2: 400
+                      color: 4294901760
+      responses:
+        '200':
+          description: Privacy mask updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+                  stream_id:
+                    type: integer
+                  applied:
+                    type: boolean
+                    description: Whether changes were applied immediately
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          description: Stream not found
+
+  /osd/global:
+    get:
+      summary: Get Global OSD Configuration
+      description: Get global OSD settings (font path, logo path)
+      operationId: getOsdGlobalConfig
+      tags: [OSD]
+      responses:
+        '200':
+          description: Global OSD configuration retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OsdGlobalConfig'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+    post:
+      summary: Update Global OSD Configuration
+      description: Update global OSD settings
+      operationId: updateOsdGlobalConfig
+      tags: [OSD]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OsdGlobalConfig'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /osd/privacy_mask:
+    post:
+      summary: Apply Privacy Masks
+      description: |
+        Apply privacy masks to all streams or a specific stream.
+        This endpoint triggers immediate application of configured privacy masks.
+      operationId: applyPrivacyMasks
+      tags: [OSD, Privacy Mask]
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                stream_id:
+                  type: integer
+                  description: Optional stream ID. If omitted, applies to all streams.
+                  minimum: 0
+                  maximum: 2
+      responses:
+        '200':
+          description: Privacy masks applied
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+                  applied:
+                    type: boolean
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /osd/global_privacy_mask:
+    get:
+      summary: Get Global Privacy Mask Configuration
+      description: |
+        Get the global (VIDEOPROC-level) privacy mask configuration that applies to all streams.
+        This is independent of per-stream privacy masks.
+      operationId: getGlobalPrivacyMask
+      tags: [OSD, Privacy Mask]
+      responses:
+        '200':
+          description: Global privacy mask configuration retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GlobalPrivacyMaskConfig'
+              example:
+                enabled: true
+                regions:
+                  - enabled: true
+                    x1: 100
+                    y1: 100
+                    x2: 400
+                    y2: 300
+                    color: 4278190080
+                  - enabled: true
+                    x1: 1500
+                    y1: 800
+                    x2: 1900
+                    y2: 1100
+                    color: 4278190080
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+    post:
+      summary: Update Global Privacy Mask Configuration
+      description: |
+        Update the global privacy mask configuration. These masks are applied at
+        the VIDEOPROC level and affect all video streams uniformly.
+        
+        Coordinates are specified in the main stream resolution (e.g., 2560x1440).
+      operationId: updateGlobalPrivacyMask
+      tags: [OSD, Privacy Mask]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GlobalPrivacyMaskUpdate'
+            examples:
+              single_mask:
+                summary: Single black privacy mask
+                value:
+                  enabled: true
+                  apply: true
+                  regions:
+                    - enabled: true
+                      x1: 100
+                      y1: 100
+                      x2: 400
+                      y2: 300
+                      color: 4278190080
+              multiple_masks:
+                summary: Multiple privacy masks
+                value:
+                  enabled: true
+                  apply: true
+                  regions:
+                    - enabled: true
+                      x1: 100
+                      y1: 100
+                      x2: 400
+                      y2: 300
+                      color: 4278190080
+                    - enabled: true
+                      x1: 1500
+                      y1: 800
+                      x2: 1900
+                      y2: 1100
+                      color: 4278190080
+      responses:
+        '200':
+          description: Global privacy mask updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+                  applied:
+                    type: boolean
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /osd/auto_scaling:
+    get:
+      summary: Get OSD Auto-Scaling Configuration
+      description: |
+        Get the OSD auto-scaling configuration. When enabled, font sizes are
+        automatically adjusted based on stream resolution for consistent appearance.
+      operationId: getOsdAutoScaling
+      tags: [OSD]
+      responses:
+        '200':
+          description: Auto-scaling configuration retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OsdAutoScalingConfig'
+              example:
+                enabled: true
+                reference_resolution:
+                  width: 1920
+                  height: 1080
+                scaling_factor: 1.0
+                min_font_size: 16
+                max_font_size: 72
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+    post:
+      summary: Update OSD Auto-Scaling Configuration
+      description: |
+        Configure automatic font scaling for OSD elements based on stream resolution.
+        
+        When enabled, fonts are scaled proportionally to maintain consistent visual
+        appearance across streams of different resolutions.
+      operationId: updateOsdAutoScaling
+      tags: [OSD]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OsdAutoScalingUpdate'
+            examples:
+              enable:
+                summary: Enable auto-scaling
+                value:
+                  enabled: true
+                  reference_resolution:
+                    width: 1920
+                    height: 1080
+              custom_limits:
+                summary: Set custom font size limits
+                value:
+                  enabled: true
+                  min_font_size: 12
+                  max_font_size: 64
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+components:
+  schemas:
+    OsdFullConfig:
+      type: object
+      properties:
+        global:
+          $ref: '#/components/schemas/OsdGlobalSettings'
+        streams:
+          type: array
+          items:
+            $ref: '#/components/schemas/OsdStreamConfig'
+          minItems: 3
+          maxItems: 4
+
+    OsdStreamConfig:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+          description: Enable OSD for this stream
+        stamp_width:
+          type: integer
+          description: Width of the OSD stamp buffer in pixels
+        stamp_height:
+          type: integer
+          description: Height of the OSD stamp buffer in pixels
+        stamp_offset_x:
+          type: integer
+          description: Horizontal offset of the stamp
+        stamp_offset_y:
+          type: integer
+          description: Vertical offset of the stamp
+        timestamp:
+          $ref: '#/components/schemas/OsdTimestamp'
+        text:
+          $ref: '#/components/schemas/OsdText'
+        logo:
+          $ref: '#/components/schemas/OsdLogo'
+        privacy_mask:
+          $ref: '#/components/schemas/OsdStreamPrivacyMask'
+
+    OsdTimestamp:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+        position_x:
+          type: integer
+          description: X position in pixels from left
+        position_y:
+          type: integer
+          description: Y position in pixels from top
+        format:
+          type: string
+          description: strftime format string
+          example: "%Y-%m-%d %H:%M:%S"
+        font_size:
+          type: integer
+          minimum: 8
+          maximum: 128
+        outline_enabled:
+          type: boolean
+          description: Enable text outline for better visibility
+        outline_width:
+          type: integer
+          minimum: 1
+          maximum: 5
+
+    OsdText:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+        content:
+          type: string
+          description: Custom text to display
+          maxLength: 256
+        position_x:
+          type: integer
+        position_y:
+          type: integer
+        font_size:
+          type: integer
+          minimum: 8
+          maximum: 128
+        outline_enabled:
+          type: boolean
+
+    OsdLogo:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+        position_x:
+          type: integer
+          description: X position in pixels from left
+        position_y:
+          type: integer
+          description: Y position in pixels from top
+        outline_enabled:
+          type: boolean
+          description: Enable logo outline
+        outline_width:
+          type: integer
+          minimum: 1
+          maximum: 10
+
+    OsdStreamPrivacyMask:
+      type: object
+      description: Privacy mask configuration for a single stream
+      properties:
+        enabled:
+          type: boolean
+          description: Master enable/disable for all masks on this stream
+        regions:
+          type: array
+          description: |
+            Array of privacy mask regions.
+            Maximum regions depend on stream:
+            - Stream 0: 3 regions
+            - Stream 1: 3 regions
+            - Stream 2: 2 regions
+          items:
+            $ref: '#/components/schemas/PrivacyMaskRegion'
+          maxItems: 4
+
+    OsdStreamPrivacyMaskUpdate:
+      type: object
+      description: Privacy mask update request
+      properties:
+        enabled:
+          type: boolean
+          description: Master enable/disable for all masks on this stream
+        apply:
+          type: boolean
+          description: Set to true to apply changes immediately
+          default: false
+        regions:
+          type: array
+          items:
+            $ref: '#/components/schemas/PrivacyMaskRegion'
+          maxItems: 4
+
+    PrivacyMaskRegion:
+      type: object
+      description: A single privacy mask region (rectangular area)
+      properties:
+        enabled:
+          type: boolean
+          description: Enable this specific region
+        x1:
+          type: integer
+          description: Left edge X coordinate in pixels
+          minimum: 0
+        y1:
+          type: integer
+          description: Top edge Y coordinate in pixels
+          minimum: 0
+        x2:
+          type: integer
+          description: Right edge X coordinate in pixels
+          minimum: 0
+        y2:
+          type: integer
+          description: Bottom edge Y coordinate in pixels
+          minimum: 0
+        color:
+          type: integer
+          description: |
+            ARGB color as decimal integer.
+            Common values:
+            - Black: 4278190080 (0xFF000000)
+            - Red: 4294901760 (0xFFFF0000)
+            - Green: 4278255360 (0xFF00FF00)
+            - Blue: 4278190335 (0xFF0000FF)
+          example: 4278190080
+
+    OsdGlobalSettings:
+      type: object
+      properties:
+        font_path:
+          type: string
+          description: Path to the TTF font file
+          example: "/etc/ipcamera/assets/osd/arial.ttf"
+        logo_path:
+          type: string
+          description: Path to the logo image file
+          example: "/etc/ipcamera/assets/osd/logo.bin"
+
+    OsdGlobalConfig:
+      type: object
+      properties:
+        global:
+          $ref: '#/components/schemas/OsdGlobalSettings'
+
+    GlobalPrivacyMaskConfig:
+      type: object
+      description: Global privacy mask configuration (VIDEOPROC level)
+      properties:
+        enabled:
+          type: boolean
+          description: Master enable/disable for global privacy masks
+        regions:
+          type: array
+          description: Array of privacy mask regions (max 8)
+          items:
+            $ref: '#/components/schemas/PrivacyMaskRegion'
+          maxItems: 8
+
+    GlobalPrivacyMaskUpdate:
+      type: object
+      description: Global privacy mask update request
+      properties:
+        enabled:
+          type: boolean
+          description: Master enable/disable for global privacy masks
+        apply:
+          type: boolean
+          description: Set to true to apply changes immediately
+          default: false
+        regions:
+          type: array
+          items:
+            $ref: '#/components/schemas/PrivacyMaskRegion'
+          maxItems: 8
+
+    OsdAutoScalingConfig:
+      type: object
+      description: OSD auto-scaling configuration
+      properties:
+        enabled:
+          type: boolean
+          description: Enable automatic font scaling based on resolution
+        reference_resolution:
+          type: object
+          description: Reference resolution for scaling calculation
+          properties:
+            width:
+              type: integer
+              description: Reference width in pixels
+            height:
+              type: integer
+              description: Reference height in pixels
+        scaling_factor:
+          type: number
+          format: float
+          description: Current calculated scaling factor
+        min_font_size:
+          type: integer
+          minimum: 8
+          maximum: 128
+          description: Minimum font size after scaling
+        max_font_size:
+          type: integer
+          minimum: 8
+          maximum: 128
+          description: Maximum font size after scaling
+
+    OsdAutoScalingUpdate:
+      type: object
+      description: OSD auto-scaling update request
+      properties:
+        enabled:
+          type: boolean
+        reference_resolution:
+          type: object
+          properties:
+            width:
+              type: integer
+            height:
+              type: integer
+        min_font_size:
+          type: integer
+          minimum: 8
+          maximum: 128
+        max_font_size:
+          type: integer
+          minimum: 8
+          maximum: 128
+
+  responses:
+    Success:
+      description: Operation completed successfully
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: ok
+    BadRequest:
+      description: Invalid request parameters
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+    InternalError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string

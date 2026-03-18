@@ -1,0 +1,56 @@
+{
+  "system": {
+    "time": {
+      "timezone": "UTC",
+      "date_format": "YYYY-MM-DD",
+      "ntp": {
+        "enabled": true,
+        "source": "auto",
+        "primary_server": "pool.ntp.org",
+        "port": 123,
+        "fallback_servers": "0.pool.ntp.org,1.pool.ntp.org,2.pool.ntp.org,3.pool.ntp.org,time.google.com,time.cloudflare.com,time.windows.com,time.nist.gov,time.apple.com,ntp.ubuntu.com",
+        "fallback_ips": "216.239.35.0,216.239.35.4,162.159.200.1,129.6.15.28",
+        "use_fallback_ips": true,
+        "sync_timeout_sec": 10,
+        "retry_count": 3,
+        "refresh_interval_sec": 3600
+      },
+      "dst": {
+        "enabled": false,
+        "mode": "auto",
+        "offset_minutes": 60,
+        "start_month": 3,
+        "start_week": 2,
+        "start_day_of_week": 0,
+        "start_hour": 2,
+        "end_month": 11,
+        "end_week": 1,
+        "end_day_of_week": 0,
+        "end_hour": 2
+      }
+    },
+    "language": "en",
+    "debug_mode": false,
+    "factory_default_hard": true,
+    "factory_default_soft": true,
+    "watchdog": {
+      "enabled": true,
+      "interval_seconds": 30
+    },
+    "memory_monitor": {
+      "enabled": true,
+      "threshold_percent": 85
+    },
+    "maintenance": {
+      "auto_restart_enabled": false,
+      "restart_time": "03:00:00",
+      "restart_days": "daily"
+    },
+    "alarms": {
+      "disk_space_threshold": 90,
+      "temperature_threshold": 70,
+      "memory_threshold": 90,
+      "alarm_outputs_number": 0
+    }
+  }
+}

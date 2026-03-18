@@ -1,0 +1,33 @@
+/*
+ * Novatek Ltd. NA51089 BSP part of dts
+ *
+ * Cortex-A9
+ *
+ */
+/ {
+	hd_devnum {
+		/*
+		  major number must be RESERVED refers to
+		  https://www.kernel.org/doc/Documentation/admin-guide/devices.txt
+		*/
+		major = <255>;
+		minor {
+			/* format:  module_name = <minor1 minor2 minor3 .....> */
+			/* the number of mnior1 minor2 ... must be in order */
+			nvt_vos = <1>;
+			log_vg = <2>;
+			nvtmpp = <3>;
+			isf_flow = <4 5 6 7 8 9 10 11>;
+			nvt_isp = <12>;
+		};
+	};
+};
+
+&nvt_info {
+	/**
+	* [NVT_STATIC_DEVNODE]
+	* NVT_STATIC_DEVNODE_OFF
+	* NVT_STATIC_DEVNODE_ON
+	*/
+	NVT_STATIC_DEVNODE = "NVT_STATIC_DEVNODE_ON";
+};

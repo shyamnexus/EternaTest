@@ -1,0 +1,30 @@
+# 1 "nvt-fastboot.dts"
+# 1 "<built-in>"
+# 1 "<command-line>"
+# 1 "nvt-fastboot.dts"
+/dts-v1/;
+/plugin/;
+/ {
+ aliases {
+  sensor0 = &sen_os04c10;
+ };
+ fastboot:fastboot {
+  enable = <1>;
+  generation = <2>;
+  csi {
+   stop-nowait = <1>;
+  };
+  sensor: sensor {
+  };
+  i2c: i2c {
+   sensor0 {
+    pinmux = <0x1>;
+    speed = <1000000>;
+   };
+   sensor1 {
+    pinmux = <0x1>;
+    speed = <1000000>;
+   };
+  };
+ };
+};

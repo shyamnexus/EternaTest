@@ -1,0 +1,10 @@
+{
+	"jsontype": "module_publish",
+	"publish_src": [
+		"trke_drv_main.c",
+		"trke_drv_proc.c",
+		"trke_drv_util.c",
+		"trke_drv_ver.c",
+		"eng/trke_eng_platform.c"
+	]
+}

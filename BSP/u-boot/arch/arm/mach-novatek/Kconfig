@@ -1,0 +1,197 @@
+if ARCH_NOVATEK
+
+choice
+	prompt "NovaTek board select"
+
+config TARGET_NA51000
+	bool "NovaTek NA51000 family SoC"
+	# CPU is V7A with cache line size is 64
+	select CPU_V7A
+	select ARCH_MISC_INIT
+	select MISC_INIT_R
+	select NVT_IVOT_SOC
+	help
+	  The Novatek NA51000 series are the ARM-based SoC with a single core Cortex-A53
+
+config TARGET_NA51000_A64
+	bool "NovaTek NA51000 family A64 SoC"
+	# CPU is V7A with cache line size is 64
+	select ARM64
+	select ARCH_MISC_INIT
+	select MISC_INIT_R
+	select NVT_IVOT_SOC
+	help
+	  The Novatek NA51000 series are the ARM-based SoC with a single core Cortex-A53
+
+config TARGET_NA51055
+	bool "NovaTek NA51055 family SoC"
+	# CPU is V7A with cache line size is 32
+	select CPU_V7A
+	select ARCH_MISC_INIT
+	select MISC_INIT_R
+	select NVT_IVOT_SOC
+	help
+	  The Novatek NA51055 series are the ARM-based SoC with a single core Cortex-A9.
+
+config TARGET_NA51068
+	bool "NovaTek NA51068 family SoC"
+	# CPU is V7A with cache line size is 32
+	select CPU_V7A
+	select ARCH_MISC_INIT
+	select MISC_INIT_R
+	select NVT_IVOT_SOC
+	help
+	  The Novatek NA51068 series are the ARM-based SoC with a dual core Cortex-A9.
+
+config TARGET_NA51089
+	bool "NovaTek NA51089 family SoC"
+	# CPU is V7A with cache line size is 32
+	select CPU_V7A
+	select ARCH_MISC_INIT
+	select MISC_INIT_R
+	select NVT_IVOT_SOC
+	help
+	  The Novatek NA51089 series are the ARM-based SoC with a single core Cortex-A9.
+
+config TARGET_NA51090
+	bool "NovaTek NA51090 family SoC"
+	# CPU is V7A with cache line size is 64
+	select CPU_V7A
+	select ARCH_MISC_INIT
+	select MISC_INIT_R
+	select NVT_IVOT_SOC
+	help
+	  The Novatek NA51090 series are the ARM-based SoC with a quad core Cortex-A53
+
+config TARGET_NA51090_A64
+	bool "NovaTek NA51090 family A64 SoC"
+	# CPU is V7A with cache line size is 64
+	select ARM64
+	select ARCH_MISC_INIT
+	select MISC_INIT_R
+	select NVT_IVOT_SOC
+	help
+	  The Novatek NA51090 series are the ARM-based SoC with a quad core Cortex-A53
+
+config TARGET_NA51102
+	bool "NovaTek NA51102 family SoC"
+	# CPU is V7A with cache line size is 64
+	select CPU_V7A
+	select ARCH_MISC_INIT
+	select MISC_INIT_R
+	select NVT_IVOT_SOC
+	help
+	  The Novatek NA51102 series are the ARM-based SoC with a quad core Cortex-A53
+
+config TARGET_NA51102_A64
+	bool "NovaTek NA51102 family A64 SoC"
+	select ARM64
+	select ARCH_MISC_INIT
+	select MISC_INIT_R
+	select NVT_IVOT_SOC
+	help
+	  The Novatek NA51102 series are the ARM-based SoC with a quad core Cortex-A53
+
+config TARGET_NA51103
+	bool "NovaTek NA51103 family SoC"
+	select CPU_V7A
+	select ARCH_MISC_INIT
+	select MISC_INIT_R
+	select NVT_IVOT_SOC
+	help
+	  The Novatek NA51103 series are the ARM-based SoC with a dual core Cortex-A53
+
+config TARGET_NA51103_A64
+	bool "NovaTek NA51103 family A64 SoC"
+	select ARM64
+	select ARCH_MISC_INIT
+	select MISC_INIT_R
+	select NVT_IVOT_SOC
+	help
+	  The Novatek NA51103 series are the ARM-based SoC with a dual core Cortex-A53
+
+config TARGET_NS02201
+	bool "NovaTek NS02201 family SoC"
+	select CPU_V7A
+	select ARCH_MISC_INIT
+	select MISC_INIT_R
+	select NVT_IVOT_SOC
+	help
+	  The Novatek NS02201 series are the ARM-based SoC with a quad core Cortex-A73
+
+config TARGET_NS02201_A64
+	bool "NovaTek NS02201 family A64 SoC"
+	select ARM64
+	select ARCH_MISC_INIT
+	select MISC_INIT_R
+	select NVT_IVOT_SOC
+	help
+	  The Novatek NS02201 series are the ARM-based SoC with a quad core Cortex-A73
+
+config TARGET_NS02301
+    bool "NovaTek NS02301 family SoC"
+    select CPU_V7A
+    select ARCH_MISC_INIT
+    select MISC_INIT_R
+    select NVT_IVOT_SOC
+    help
+      The Novatek NS02301 series are the ARM-based SoC with a dual core Cortex-A7
+
+config TARGET_NS02302_A64
+	bool "NovaTek NS02302 family A64 SoC"
+	select ARM64
+	select ARCH_MISC_INIT
+	select MISC_INIT_R
+	select NVT_IVOT_SOC
+	help
+	  The Novatek NS02302 series are the ARM-based SoC with a quad core Cortex-A53
+
+config TARGET_NS02401_A64
+	bool "NovaTek NS02401 family A64 SoC"
+	select ARM64
+	select ARCH_MISC_INIT
+	select MISC_INIT_R
+	select NVT_IVOT_SOC
+	help
+	  The Novatek NS02401 series are the ARM-based SoC with a quad core Cortex-A76
+
+
+config TARGET_NS02401_V0_A64
+	bool "NovaTek NS02401 V0 family A64 SoC"
+	select ARM64
+	select ARCH_MISC_INIT
+	select MISC_INIT_R
+	select NVT_IVOT_SOC
+	help
+	  The Novatek NS02401 series are the ARM-based SoC with a quad core Cortex-A76
+
+endchoice
+
+config NVT_DISABLE_CFG_CHK
+	string
+	default y
+
+config SYS_MALLOC_LEN
+	hex
+	default 0x300000
+
+config NVT_BOARD
+	bool
+	default y
+
+# To inculde basic arch config
+source "arch/arm/mach-novatek/nvt_na51055_a32/Kconfig"
+source "arch/arm/mach-novatek/nvt_na51089_a32/Kconfig"
+source "arch/arm/mach-novatek/nvt_na51090_a32/Kconfig"
+source "arch/arm/mach-novatek/nvt_na51090_a64/Kconfig"
+source "arch/arm/mach-novatek/nvt_na51102_a32/Kconfig"
+source "arch/arm/mach-novatek/nvt_na51102_a64/Kconfig"
+source "arch/arm/mach-novatek/nvt_na51103_a32/Kconfig"
+source "arch/arm/mach-novatek/nvt_na51103_a64/Kconfig"
+source "arch/arm/mach-novatek/nvt_ns02201_a32/Kconfig"
+source "arch/arm/mach-novatek/nvt_ns02201_a64/Kconfig"
+source "arch/arm/mach-novatek/nvt_ns02301_a32/Kconfig"
+source "arch/arm/mach-novatek/nvt_ns02302_a64/Kconfig"
+source "arch/arm/mach-novatek/nvt_ns02401_a64/Kconfig"
+source "arch/arm/mach-novatek/nvt_ns02401_v0_a64/Kconfig"
+endif

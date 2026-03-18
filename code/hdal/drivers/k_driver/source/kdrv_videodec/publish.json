@@ -1,0 +1,10 @@
+{
+	"jsontype": "module_publish",
+	"publish_src": [
+		"h26xdec_dbg.c",
+		"h26xdec_entity_comm.c",
+		"h26xdec_flow.c",
+		"h26xdec_platform.c",
+		"h26xdec_proc.c"
+	]
+}

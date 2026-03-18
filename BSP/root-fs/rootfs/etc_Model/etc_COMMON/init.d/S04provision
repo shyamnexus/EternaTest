@@ -1,0 +1,370 @@
+#!/bin/sh
+#
+# S04provision - Factory Provisioning Status Check
+#
+# This script checks if the device is provisioned at boot.
+# It does NOT block boot - device will boot with random MAC if not provisioned.
+# 
+# Provisioning via ADB (after device boots):
+#   1. Connect via ADB: adb connect 192.168.0.2:5555
+#   2. Set MAC: adb shell /etc/init.d/factory_partition.sh set-mac eth0 XX:XX:XX:XX:XX:XX
+#   3. Reboot: adb shell reboot
+#
+# The MAC will persist across reboots and firmware upgrades.
+#
+# Copyright (C) 2026 HON-BA
+# SPDX-License-Identifier: GPL-2.0+
+
+PROVISION_MARKER="/tmp/.factory_provisioned"
+LOG_TAG="S04provision"
+TIMEOUT_SECONDS=60
+
+# Factory partition device
+FACTORY_BLOCK=""
+FACTORY_MTD=""
+
+# Data structure (must match factory_partition.sh)
+MAGIC="FACT"
+VERSION=1
+MAC_ETH0_OFFSET=8
+MAC_ETH1_OFFSET=14
+SERIAL_OFFSET=26
+MODEL_OFFSET=58
+
+log() {
+    echo "$LOG_TAG: $1"
+}
+
+# Find factory partition and ensure block device exists
+find_factory_partition() {
+    local mtd_num=$(grep -w "factory" /proc/mtd 2>/dev/null | cut -d: -f1 | sed 's/mtd//')
+    if [ -z "$mtd_num" ]; then
+        log "Factory partition not found in /proc/mtd"
+        return 1
+    fi
+    
+    FACTORY_MTD="/dev/mtd${mtd_num}"
+    FACTORY_BLOCK="/dev/mtdblock${mtd_num}"
+    
+    # Ensure mtdblock module is loaded
+    if [ ! -b "$FACTORY_BLOCK" ]; then
+        log "Loading mtdblock module..."
+        modprobe mtdblock 2>/dev/null || true
+        
+        # Wait up to 2 seconds for block device to appear
+        local retry=0
+        while [ $retry -lt 20 ] && [ ! -b "$FACTORY_BLOCK" ]; do
+            sleep 0.1
+            retry=$((retry + 1))
+        done
+    fi
+    
+    # If block device still doesn't exist, try to create it manually
+    if [ ! -b "$FACTORY_BLOCK" ]; then
+        local major=$(cat /sys/class/mtd/mtd${mtd_num}/dev 2>/dev/null | cut -d: -f1)
+        if [ -n "$major" ]; then
+            log "Creating $FACTORY_BLOCK manually (major=$major, minor=$mtd_num)"
+            mknod "$FACTORY_BLOCK" b 31 "$mtd_num" 2>/dev/null || true
+        fi
+    fi
+    
+    if [ -b "$FACTORY_BLOCK" ]; then
+        log "Factory partition found: mtd$mtd_num ($FACTORY_BLOCK)"
+        return 0
+    fi
+    
+    log "Factory block device not available: $FACTORY_BLOCK"
+    return 1
+}
+
+# Convert binary to hex (works with busybox)
+bin_to_hex() {
+    if command -v xxd >/dev/null 2>&1; then
+        xxd -p
+    elif command -v hexdump >/dev/null 2>&1; then
+        hexdump -v -e '/1 "%02x"'
+    else
+        # Fallback: od
+        od -An -tx1 | tr -d ' \n'
+    fi
+}
+
+# Check if factory partition is already provisioned
+is_already_provisioned() {
+    # Block device existence is already verified by find_factory_partition
+    if [ ! -b "$FACTORY_BLOCK" ]; then
+        return 1
+    fi
+    
+    local magic=$(dd if="$FACTORY_BLOCK" bs=1 count=4 2>/dev/null)
+    if [ "$magic" = "$MAGIC" ]; then
+        # Check if MAC is set (not all zeros)
+        local mac_hex=$(dd if="$FACTORY_BLOCK" bs=1 skip=$MAC_ETH0_OFFSET count=6 2>/dev/null | bin_to_hex)
+        log "Read MAC hex from factory: $mac_hex"
+        if [ -n "$mac_hex" ] && [ "$mac_hex" != "000000000000" ] && [ "$mac_hex" != "ffffffffffff" ]; then
+            return 0  # Already provisioned
+        fi
+        log "MAC is empty or invalid"
+    else
+        log "Magic mismatch: got '$magic', expected '$MAGIC'"
+    fi
+    return 1  # Not provisioned
+}
+
+# Validate MAC address format and ensure it's a valid unicast address
+# Returns 0 if valid, 1 if invalid
+validate_mac() {
+    local mac="$1"
+    
+    # Check format: XX:XX:XX:XX:XX:XX
+    if ! echo "$mac" | grep -qiE '^([0-9A-Fa-f]{2}:){5}[0-9A-Fa-f]{2}$'; then
+        log "Invalid MAC format: $mac (use XX:XX:XX:XX:XX:XX)"
+        return 1
+    fi
+    
+    # Check for all-zeros (invalid)
+    if [ "$mac" = "00:00:00:00:00:00" ]; then
+        log "Invalid MAC: all-zeros not allowed"
+        return 1
+    fi
+    
+    # Check for broadcast (all-ones)
+    local mac_upper=$(echo "$mac" | tr 'a-f' 'A-F')
+    if [ "$mac_upper" = "FF:FF:FF:FF:FF:FF" ]; then
+        log "Invalid MAC: broadcast address not allowed"
+        return 1
+    fi
+    
+    # Check for multicast bit (bit 0 of first byte must be 0 for unicast)
+    # First byte: if bit 0 is set, it's multicast
+    local first_byte=$(echo "$mac" | cut -d: -f1 | tr 'a-f' 'A-F')
+    local first_byte_dec=$((0x$first_byte))
+    if [ $((first_byte_dec & 1)) -eq 1 ]; then
+        log "Invalid MAC: $mac is a multicast address (first byte $first_byte has bit 0 set)"
+        log "Hint: First byte must be even (e.g., 00, 02, 10, etc.) for unicast"
+        return 1
+    fi
+    
+    return 0
+}
+
+# Convert MAC string to binary
+mac_to_binary() {
+    local mac="$1"
+    echo "$mac" | tr -d ':' | xxd -r -p
+}
+
+# Write factory data to flash
+write_factory_data() {
+    local mac_eth0="$1"
+    local serial="$2"
+    local model="$3"
+    local tmp_file="/tmp/factory_provision.bin"
+    local page_size=2048
+    
+    log "Writing factory data..."
+    
+    # Create binary data file
+    # Header: 8 bytes magic + 4 bytes version + 4 bytes reserved
+    {
+        printf '%s' "$MAGIC"                    # 8 bytes magic
+        printf '\x01\x00\x00\x00'               # 4 bytes version (little endian)
+        printf '\x00\x00\x00\x00'               # 4 bytes reserved
+    } > "$tmp_file"
+    
+    # MAC eth0 at offset 16
+    mac_to_binary "$mac_eth0" >> "$tmp_file"
+    
+    # MAC eth1 at offset 22 (empty)
+    printf '\x00\x00\x00\x00\x00\x00' >> "$tmp_file"
+    
+    # Padding to offset 32
+    printf '\x00\x00\x00\x00' >> "$tmp_file"
+    
+    # Serial at offset 32 (32 bytes max)
+    if [ -n "$serial" ]; then
+        printf '%-32s' "$serial" | cut -c1-32 | tr ' ' '\0' >> "$tmp_file"
+    else
+        dd if=/dev/zero bs=32 count=1 2>/dev/null >> "$tmp_file"
+    fi
+    
+    # Model at offset 64 (32 bytes max)
+    if [ -n "$model" ]; then
+        printf '%-32s' "$model" | cut -c1-32 | tr ' ' '\0' >> "$tmp_file"
+    else
+        dd if=/dev/zero bs=32 count=1 2>/dev/null >> "$tmp_file"
+    fi
+    
+    # Pad to NAND page size
+    local current_size=$(stat -c%s "$tmp_file")
+    local pad_size=$((page_size - (current_size % page_size)))
+    if [ $pad_size -lt $page_size ]; then
+        dd if=/dev/zero bs=1 count=$pad_size 2>/dev/null >> "$tmp_file"
+    fi
+    
+    # Erase factory partition
+    if command -v flash_erase >/dev/null 2>&1; then
+        flash_erase "$FACTORY_MTD" 0 0 2>/dev/null
+    elif command -v flash_eraseall >/dev/null 2>&1; then
+        flash_eraseall "$FACTORY_MTD" 2>/dev/null
+    else
+        log "WARNING: No flash erase tool available"
+    fi
+    
+    # Write to factory partition
+    if dd if="$tmp_file" of="$FACTORY_BLOCK" bs=$page_size 2>/dev/null; then
+        sync
+        log "Factory data written successfully"
+        rm -f "$tmp_file"
+        
+        # Create provisioned marker so S26factory knows to apply MAC later
+        touch "$PROVISION_MARKER"
+        echo "$mac_eth0" > /tmp/.factory_mac_eth0
+        
+        return 0
+    else
+        log "ERROR: Failed to write factory data"
+        rm -f "$tmp_file"
+        return 1
+    fi
+}
+
+# Prompt for MAC address via serial console
+prompt_for_mac() {
+    local mac=""
+    local attempts=0
+    local max_attempts=3
+    
+    echo ""
+    echo "========================================"
+    echo "  FACTORY PROVISIONING REQUIRED"
+    echo "========================================"
+    echo ""
+    echo "This device has not been provisioned."
+    echo "Please enter the MAC address for eth0."
+    echo ""
+    echo "Format: XX:XX:XX:XX:XX:XX"
+    echo "Example: 00:11:22:33:44:55"
+    echo ""
+    echo "Timeout: ${TIMEOUT_SECONDS} seconds"
+    echo "(Press Enter with no input to skip provisioning)"
+    echo ""
+    
+    while [ $attempts -lt $max_attempts ]; do
+        attempts=$((attempts + 1))
+        
+        printf "Enter MAC address [%d/%d]: " $attempts $max_attempts
+        
+        # Read with timeout
+        if command -v timeout >/dev/null 2>&1; then
+            mac=$(timeout $TIMEOUT_SECONDS sh -c 'read line && echo "$line"')
+        else
+            # Fallback without timeout command
+            read mac
+        fi
+        
+        # Check if empty (skip provisioning)
+        if [ -z "$mac" ]; then
+            echo ""
+            log "Provisioning skipped by operator"
+            return 1
+        fi
+        
+        # Normalize MAC (uppercase)
+        mac=$(echo "$mac" | tr 'a-f' 'A-F')
+        
+        # Validate format
+        if validate_mac "$mac"; then
+            echo ""
+            echo "MAC address accepted: $mac"
+            PROVISION_MAC="$mac"
+            return 0
+        else
+            echo "Invalid MAC format. Please use XX:XX:XX:XX:XX:XX"
+        fi
+    done
+    
+    echo ""
+    log "Max attempts reached, provisioning skipped"
+    return 1
+}
+
+# Prompt for serial number (optional)
+prompt_for_serial() {
+    local serial=""
+    
+    printf "Enter Serial Number (optional, press Enter to skip): "
+    
+    if command -v timeout >/dev/null 2>&1; then
+        serial=$(timeout 30 sh -c 'read line && echo "$line"')
+    else
+        read serial
+    fi
+    
+    PROVISION_SERIAL="$serial"
+}
+
+start() {
+    log "Checking provisioning status..."
+    
+    # Find factory partition
+    if ! find_factory_partition; then
+        log "Factory partition not found, skipping"
+        return 0
+    fi
+    
+    # Check if already provisioned
+    if is_already_provisioned; then
+        log "Device already provisioned"
+        return 0
+    fi
+    
+    # Device not provisioned - log and continue boot (no blocking)
+    # MAC can be set later via ADB: adb connect 192.168.0.2:5555
+    # Then: adb shell /etc/init.d/factory_partition.sh set-mac eth0 XX:XX:XX:XX:XX:XX
+    log "Device NOT provisioned - will use random MAC until provisioned via ADB"
+    log "To provision: adb shell /etc/init.d/factory_partition.sh set-mac eth0 <MAC>"
+    
+    return 0
+}
+
+stop() {
+    return 0
+}
+
+status() {
+    if ! find_factory_partition; then
+        echo "Factory partition: NOT FOUND"
+        return 1
+    fi
+    
+    if is_already_provisioned; then
+        echo "Device: PROVISIONED"
+        # Show current MAC
+        local mac_hex=$(dd if="$FACTORY_BLOCK" bs=1 skip=$MAC_ETH0_OFFSET count=6 2>/dev/null | xxd -p)
+        local mac=$(echo "$mac_hex" | sed 's/\(..\)/\1:/g' | sed 's/:$//' | tr 'a-f' 'A-F')
+        echo "  MAC eth0: $mac"
+        return 0
+    else
+        echo "Device: NOT PROVISIONED"
+        return 1
+    fi
+}
+
+case "${1:-start}" in
+    start)
+        start
+        ;;
+    stop)
+        stop
+        ;;
+    status)
+        status
+        ;;
+    *)
+        echo "Usage: $0 {start|stop|status}"
+        exit 1
+        ;;
+esac
+
+exit $?

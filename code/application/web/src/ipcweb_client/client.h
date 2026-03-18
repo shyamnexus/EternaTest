@@ -1,0 +1,415 @@
+// isp
+int hon_isp_set(const char *json);
+int hon_isp_get_scenario(int cam_id, char **value);
+int hon_isp_set_scenario(int cam_id, const char *value);
+int hon_isp_set_default(int cam_id);
+// isp adjustment
+int hon_isp_get_contrast(int cam_id, int *value);
+int hon_isp_set_contrast(int cam_id, int value);
+int hon_isp_get_brightness(int cam_id, int *value);
+int hon_isp_set_brightness(int cam_id, int value);
+int hon_isp_get_saturation(int cam_id, int *value);
+int hon_isp_set_saturation(int cam_id, int value);
+int hon_isp_get_sharpness(int cam_id, int *value);
+int hon_isp_set_sharpness(int cam_id, int value);
+int hon_isp_get_hue(int cam_id, int *value);
+int hon_isp_set_hue(int cam_id, int value);
+// isp exposure
+int hon_isp_get_exposure_mode(int cam_id, char **value);
+int hon_isp_set_exposure_mode(int cam_id, const char *value);
+int hon_isp_get_gain_mode(int cam_id, char **value);
+int hon_isp_set_gain_mode(int cam_id, const char *value);
+int hon_isp_get_exposure_time(int cam_id, char **value);
+int hon_isp_set_exposure_time(int cam_id, const char *value);
+int hon_isp_get_exposure_gain(int cam_id, int *value);
+int hon_isp_set_exposure_gain(int cam_id, int value);
+int hon_isp_get_frame_rate(int cam_id, int *value);
+int hon_isp_set_frame_rate(int cam_id, int value);
+// night_to_day
+int hon_isp_get_night_to_day(int cam_id, char **value);
+int hon_isp_set_night_to_day(int cam_id, const char *value);
+int hon_isp_get_fill_light_mode(int cam_id, char **value);
+int hon_isp_set_fill_light_mode(int cam_id, const char *value);
+int hon_isp_get_light_brightness(int cam_id, int *value);
+int hon_isp_set_light_brightness(int cam_id, int value);
+int hon_isp_get_night_to_day_filter_level(int cam_id, int *value);
+int hon_isp_set_night_to_day_filter_level(int cam_id, int value);
+int hon_isp_get_night_to_day_filter_time(int cam_id, int *value);
+int hon_isp_set_night_to_day_filter_time(int cam_id, int value);
+int hon_isp_get_IR_mode(int cam_id, char **value);
+int hon_isp_set_IR_mode(int cam_id, const char *value);
+int hon_isp_get_IR_start_time(int cam_id, char **value);
+int hon_isp_set_IR_start_time(int cam_id, const char *value); 
+int hon_isp_get_IR_end_time(int cam_id, char **value);
+int hon_isp_set_IR_end_time(int cam_id, const char *value);
+int hon_isp_get_IR_brightness_mode(int cam_id, char **value);
+int hon_isp_set_IR_brightness_mode(int cam_id, const char *value);
+int hon_isp_restart_IR_monitoring_thread();
+int hon_isp_start_IR_monitoring_thread();
+int hon_isp_stop_IR_monitoring_thread();
+// blc
+int hon_isp_get_hdr(int cam_id, char **value);
+int hon_isp_set_hdr(int cam_id, const char *value);
+int hon_isp_get_blc_region(int cam_id, char **value);
+int hon_isp_set_blc_region(int cam_id, const char *value);
+int hon_isp_get_hlc(int cam_id, char **value);
+int hon_isp_set_hlc(int cam_id, const char *value);
+int hon_isp_get_hdr_level(int cam_id, int *value);
+int hon_isp_set_hdr_level(int cam_id, int value);
+int hon_isp_get_blc_strength(int cam_id, int *value);
+int hon_isp_set_blc_strength(int cam_id, int value);
+int hon_isp_get_hlc_level(int cam_id, int *value);
+int hon_isp_set_hlc_level(int cam_id, int value);
+int hon_isp_get_dark_boost_level(int cam_id, int *value);
+int hon_isp_set_dark_boost_level(int cam_id, int value);
+// white_blance
+int hon_isp_get_white_blance_style(int cam_id, char **value);
+int hon_isp_set_white_blance_style(int cam_id, const char *value);
+int hon_isp_get_white_blance_red(int cam_id, int *value);
+int hon_isp_set_white_blance_red(int cam_id, int value);
+int hon_isp_get_white_blance_green(int cam_id, int *value);
+int hon_isp_set_white_blance_green(int cam_id, int value);
+int hon_isp_get_white_blance_blue(int cam_id, int *value);
+int hon_isp_set_white_blance_blue(int cam_id, int value);
+// enhancement
+int hon_isp_get_noise_reduce_mode(int cam_id, char **value);
+int hon_isp_set_noise_reduce_mode(int cam_id, const char *value);
+int hon_isp_get_dehaze(int cam_id, char **value);
+int hon_isp_set_dehaze(int cam_id, const char *value);
+int hon_isp_get_gray_scale_mode(int cam_id, char **value);
+int hon_isp_set_gray_scale_mode(int cam_id, const char *value);
+int hon_isp_get_distortion_correction(int cam_id, char **value);
+int hon_isp_set_distortion_correction(int cam_id, const char *value);
+int hon_isp_get_spatial_denoise_level(int cam_id, int *value);
+int hon_isp_set_spatial_denoise_level(int cam_id, int value);
+int hon_isp_get_temporal_denoise_level(int cam_id, int *value);
+int hon_isp_set_temporal_denoise_level(int cam_id, int value);
+int hon_isp_get_dehaze_level(int cam_id, int *value);
+int hon_isp_set_dehaze_level(int cam_id, int value);
+int hon_isp_get_fec_level(int cam_id, int *value);
+int hon_isp_set_fec_level(int cam_id, int value);
+int hon_isp_get_ldch_level(int cam_id, int *value);
+int hon_isp_set_ldch_level(int cam_id, int value);
+// video_adjustment
+int hon_isp_get_power_line_frequency_mode(int cam_id, char **value);
+int hon_isp_set_power_line_frequency_mode(int cam_id, const char *value);
+int hon_isp_get_image_flip(int cam_id, char **value);
+int hon_isp_set_image_flip(int cam_id, const char *value);
+// auto focus
+int hon_isp_get_af_mode(int cam_id, char **value);
+int hon_isp_set_af_mode(int cam_id, const char *mode);
+int hon_isp_get_zoom_level(int cam_id, int *value);
+int hon_isp_get_focus_level(int cam_id, int *value);
+int hon_isp_af_zoom_in(int cam_id);
+int hon_isp_af_zoom_out(int cam_id);
+int hon_isp_af_focus_in(int cam_id);
+int hon_isp_af_focus_out(int cam_id);
+int hon_isp_af_focus_once(int cam_id);
+// video
+int hon_video_set(const char *json);
+int hon_video_restart();
+int hon_video_get_gop(int stream_id, int *value);
+int hon_video_set_gop(int stream_id, int value);
+int hon_video_get_max_rate(int stream_id, int *value);
+int hon_video_set_max_rate(int stream_id, int value);
+int hon_video_get_RC_mode(int stream_id, char **value);
+int hon_video_set_RC_mode(int stream_id, const char *value);
+int hon_video_get_output_data_type(int stream_id, char **value);
+int hon_video_set_output_data_type(int stream_id, const char *value);
+int hon_video_get_rc_quality(int stream_id, char **value);
+int hon_video_set_rc_quality(int stream_id, const char *value);
+int hon_video_get_smart(int stream_id, char **value);
+int hon_video_set_smart(int stream_id, const char *value);
+int hon_video_get_gop_mode(int stream_id, char **value);
+int hon_video_set_gop_mode(int stream_id, const char *value);
+int hon_video_get_stream_type(int stream_id, char **value);
+int hon_video_set_stream_type(int stream_id, const char *value);
+int hon_video_get_h264_profile(int stream_id, char **value);
+int hon_video_set_h264_profile(int stream_id, const char *value);
+int hon_video_get_resolution(int stream_id, char **value);
+int hon_video_set_resolution(int stream_id, const char *value);
+int hon_video_get_frame_rate(int stream_id, char **value);
+int hon_video_set_frame_rate(int stream_id, const char *value);
+int hon_video_get_frame_rate_in(int stream_id, char **value);
+int hon_video_set_frame_rate_in(int stream_id, const char *value);
+int hon_video_get_rotation(int *value);
+int hon_video_set_rotation(int value);
+// jpeg
+int hon_video_get_enable_cycle_snapshot(int *value);
+int hon_video_set_enable_cycle_snapshot(int value);
+int hon_video_get_image_quality(int *value);
+int hon_video_set_image_quality(int value);
+int hon_video_get_snapshot_interval_ms(int *value);
+int hon_video_set_snapshot_interval_ms(int value);
+int hon_video_get_jpeg_resolution(char **value);
+int hon_video_set_jpeg_resolution(const char *value);
+// audio
+int hon_audio_set(const char *json);
+int hon_audio_restart();
+int hon_audio_deinit();
+int hon_audio_get_bit_rate(int stream_id, int *value);
+int hon_audio_set_bit_rate(int stream_id, int value);
+int hon_audio_get_sample_rate(int stream_id, int *value);
+int hon_audio_set_sample_rate(int stream_id, int value);
+int hon_audio_get_volume(int stream_id, int *value);
+int hon_audio_set_volume(int stream_id, int value);
+int hon_audio_get_enable_vqe(int stream_id, int *value);
+int hon_audio_set_enable_vqe(int stream_id, int value);
+int hon_audio_get_encode_type(int stream_id, char **value);
+int hon_audio_set_encode_type(int stream_id, const char *value);
+// system
+int hon_system_capability_get_video(char *value);
+int hon_system_capability_get_image_adjustment(char *value);
+int hon_system_capability_get_image_blc(char *value);
+int hon_system_capability_get_image_enhancement(char *value);
+int hon_system_capability_get_image_exposure(char *value);
+int hon_system_capability_get_image_night_to_day(char *value);
+int hon_system_capability_get_image_video_adjustment(char *value);
+int hon_system_capability_get_image_white_blance(char *value);
+int hon_system_get_deivce_name(char **value);
+int hon_system_get_telecontrol_id(char **value);
+int hon_system_get_model(char **value);
+int hon_system_get_serial_number(char **value);
+int hon_system_get_firmware_version(char **value);
+int hon_system_get_encoder_version(char **value);
+int hon_system_get_web_version(char **value);
+int hon_system_get_plugin_version(char **value);
+int hon_system_get_channels_number(char **value);
+int hon_system_get_hard_disks_number(char **value);
+int hon_system_get_alarm_inputs_number(char **value);
+int hon_system_get_alarm_outputs_number(char **value);
+int hon_system_get_firmware_version_info(char **value);
+int hon_system_get_manufacturer(char **value);
+int hon_system_get_hardware_id(char **value);
+int hon_system_set_deivce_name(const char *value);
+int hon_system_set_telecontrol_id(const char *value);
+// action
+int hon_system_reboot();
+int hon_system_factory_reset();
+int hon_system_export_log(const char *path);
+int hon_system_export_db(const char *path);
+int hon_system_import_db(const char *path);
+int hon_system_upgrade(const char *path);
+// user
+int hon_system_get_user_details(char *value, const char* sql_query);
+int hon_system_verify_security_ans(const char* username, char*password,char*securityans,char *security_que);
+int hon_system_check_user_exists(const char* username, char*password,int* userlevel,bool need_password_userlevel);
+int hon_system_get_user_num(int *value);
+int hon_system_manage_user_record(char * sql_query);
+int hon_system_record_exists(char * sql_query);
+// osd
+// osd.common
+int hon_osd_get_is_presistent_text(int *value);
+int hon_osd_set_is_presistent_text(int value);
+int hon_osd_get_font_size(int *value);
+int hon_osd_set_font_size(int value);
+int hon_osd_get_boundary(int *value);
+int hon_osd_set_boundary(int value);
+int hon_osd_get_normalized_screen_width(int *value);
+int hon_osd_get_normalized_screen_height(int *value);
+int hon_osd_get_attribute(char **value);
+int hon_osd_set_attribute(const char *value);
+int hon_osd_get_font_color_mode(char **value);
+int hon_osd_set_font_color_mode(const char *value);
+int hon_osd_get_font_color(char **value);
+int hon_osd_set_font_color(const char *value);
+int hon_osd_get_alignment(char **value);
+int hon_osd_set_alignment(const char *value);
+int hon_osd_get_font_path(char **value);
+int hon_osd_set_font_path(const char *value);
+// osd.x
+int hon_osd_get_enabled(int id, int *value);
+int hon_osd_set_enabled(int id, int value);
+int hon_osd_get_position_x(int id, int *value);
+int hon_osd_set_position_x(int id, int value);
+int hon_osd_get_position_y(int id, int *value);
+int hon_osd_set_position_y(int id, int value);
+int hon_osd_get_height(int id, int *value);
+int hon_osd_set_height(int id, int value);
+int hon_osd_get_width(int id, int *value);
+int hon_osd_set_width(int id, int value);
+int hon_osd_get_display_week_enabled(int id, int *value);
+int hon_osd_set_display_week_enabled(int id, int value);
+int hon_osd_get_date_style(int id, char **value);
+int hon_osd_set_date_style(int id, const char *value);
+int hon_osd_get_time_style(int id, char **value);
+int hon_osd_set_time_style(int id, const char *value);
+int hon_osd_get_type(int id, char **value);
+int hon_osd_set_type(int id, const char *value);
+int hon_osd_get_display_text(int id, char **value);
+int hon_osd_set_font_color_of_channelLocation(const char *value);
+int hon_osd_get_font_color_of_channelLocation(char **value);
+int hon_osd_set_font_color_of_dateTime(const char *value);
+int hon_osd_get_font_color_of_dateTime(char **value);
+int hon_osd_set_font_color_of_channelName(const char *value);
+int hon_osd_get_font_color_of_channelName(char **value);
+int hon_osd_set_display_text(int id, const char *value);
+int hon_osd_get_image_path(int id, char **value);
+int hon_osd_set_image_path(int id, const char *value);
+
+int hon_osd_restart();
+// roi.x
+int hon_roi_get_stream_type(int id, char **value);
+int hon_roi_set_stream_type(int id, const char *value);
+int hon_roi_get_name(int id, char **value);
+int hon_roi_set_name(int id, const char *value);
+int hon_roi_get_id(int id, int *value);
+int hon_roi_set_id(int id, int value);
+int hon_roi_get_enabled(int id, int *value);
+int hon_roi_set_enabled(int id, int value);
+int hon_roi_get_position_x(int id, int *value);
+int hon_roi_set_position_x(int id, int value);
+int hon_roi_get_position_y(int id, int *value);
+int hon_roi_set_position_y(int id, int value);
+int hon_roi_get_height(int id, int *value);
+int hon_roi_set_height(int id, int value);
+int hon_roi_get_width(int id, int *value);
+int hon_roi_set_width(int id, int value);
+int hon_roi_get_quality_level(int id, int *value);
+int hon_roi_set_quality_level(int id, int value);
+int hon_roi_set_all();
+// region_clip.x
+int hon_region_clip_get_enabled(int id, int *value);
+int hon_region_clip_set_enabled(int id, int value);
+int hon_region_clip_get_position_x(int id, int *value);
+int hon_region_clip_set_position_x(int id, int value);
+int hon_region_clip_get_position_y(int id, int *value);
+int hon_region_clip_set_position_y(int id, int value);
+int hon_region_clip_get_height(int id, int *value);
+int hon_region_clip_set_height(int id, int value);
+int hon_region_clip_get_width(int id, int *value);
+int hon_region_clip_set_width(int id, int value);
+int hon_region_clip_set_all();
+// network
+int hon_network_ipv4_get(const char *interface, char *method, char *address,
+                        char *netmask, char *gateway);
+int hon_network_ipv4_set(char *interface, char *method, char *address,
+                        char *netmask, char *gateway);
+bool isValidIp4(char* str);
+int hon_network_dns_get(char *ethernet_v4_dns, char *ethernet_v4_dns2);
+int hon_network_dns_set(char *dns1, char *dns2);
+int hon_network_get_mac(const char *ifname, char *mac);
+int hon_network_nicspeed_get(const char *ifname, int *speed, int *duplex,
+                            int *autoneg);
+int hon_network_nicspeed_set(const char *ifname, int speed, int duplex,
+                            int autoneg);
+int hon_network_nicspeed_support_get(const char *ifname, char *nic_supported);
+int hon_wifi_power_get(int *on);
+int hon_wifi_power_set(int on);
+int hon_wifi_scan_wifi();
+int hon_wifi_get_list(char **wifi_list);
+int hon_wifi_connect_with_ssid(const char *ssid, const char *psk);
+int hon_wifi_forget_with_ssid(const char *ssid);
+// storage
+int hon_storage_record_start();
+int hon_storage_record_stop();
+int hon_storage_record_statue_get(int *value);
+int hon_storage_get_schedule_plan(char *value, const char* sql_query);
+int hon_storage_set_schedule_plan(const char *sql_query);
+int hon_storage_get_recordings(char **value, const char* sql_query);
+int hon_storage_get_sdcard_size(float *total_size, float *free_size, int *mount_status, int *free_size_mb);
+int hon_storage_get_recording_channel(int *recording_channel);
+int hon_storage_set_recording_channel(int value);
+int hon_storage_get_recording_type(char **recording_type);
+int hon_storage_set_recording_type(const char *value);
+int hon_storage_get_FIFO_status(int *value);
+int hon_storage_set_FIFO_status(int value);
+int hon_storage_set_free_size_mb(int free_size_mb);
+int hon_take_photo();
+int hon_storage_format_sd_card(int value);
+// event
+int hon_event_ri_get_enabled(int *value);
+int hon_event_ri_set_enabled(int value);
+int hon_event_ri_get_position_x(int *value);
+int hon_event_ri_set_position_x(int value);
+int hon_event_ri_get_position_y(int *value);
+int hon_event_ri_set_position_y(int value);
+int hon_event_ri_get_width(int *value);
+int hon_event_ri_set_width(int value);
+int hon_event_ri_get_height(int *value);
+int hon_event_ri_set_height(int value);
+int hon_event_ri_get_proportion(int *value);
+int hon_event_ri_set_proportion(int value);
+int hon_event_ri_get_sensitivity_level(int *value);
+int hon_event_ri_set_sensitivity_level(int value);
+int hon_event_ri_get_time_threshold(int *value);
+int hon_event_ri_set_time_threshold(int value);
+
+//Analytics
+int hon_analytics_find_records(char *value, const char* sql_query);
+int hon_analytics_get_rules(char *value, char* sql_query);
+int hon_analytics_update_db(char* sql_query);
+int hon_analytics_delete_db(char* sql_query);
+int hon_count_db_records(int *value, const char* sql_query);
+int hon_update_analytics_module();
+int hon_stop_analytics_module();
+int hon_start_analytics_module();
+int hon_update_camera_tamper_module();
+int hon_stop_camera_tamper_module();
+int hon_start_camera_tamper_module();
+
+// Network
+int hon_network_get_method(char **value);
+int hon_network_set_method(const char *value); 
+int hon_network_set_ipv4_address(const char *value);
+int hon_network_set_ipv4_netmask(const char *value);
+int hon_network_set_ipv4_gateway(const char *value);
+int hon_network_get_dns_method(char **value);
+int hon_network_set_dns_method(const char *value); 
+int hon_network_set_dns1(const char *value); 
+
+int hon_network_get_http_port(int *value);
+int hon_network_set_http_port(int value);
+int hon_network_get_https_port(int *value);
+int hon_network_set_https_port(int value);
+int hon_network_get_rtsp_port(int *value);
+int hon_network_set_rtsp_port(int value);
+int hon_network_get_onvif_port(int *value);
+int hon_network_set_onvif_port(int value);
+
+int hon_network_get_timezone(char **value);
+int hon_network_set_timezone(const char *value);
+int hon_network_get_ntp_enable(int *value);
+int hon_network_set_ntp_enable(int value);
+int hon_network_get_ntp_refresh_time_sec(int *value);
+int hon_network_set_ntp_refresh_time_sec(int value);
+int hon_network_get_ntp_server(char **value);
+int hon_network_set_ntp_server(const char *value);
+int hon_network_get_ntp_port(int *value);
+int hon_network_set_ntp_port(int value);
+int hon_network_get_onvif_timesync_flag(int *value);
+int hon_network_set_onvif_timesync_flag(int value);
+int hon_network_smtp_get(char **value);
+int hon_network_smtp_set(const char *value);
+
+// SMTP functions
+int hon_smtp_get_config(char **value);
+int hon_smtp_set_config(const char *json_config);
+int hon_smtp_test_connection(char **error_msg);
+int hon_smtp_send_test_email(const char *to_email, char **error_msg);
+int hon_smtp_get_enabled(int *value);
+int hon_smtp_set_enabled(int value);
+
+// UPnP functions
+int hon_upnp_discover(int timeout_ms);
+int hon_upnp_get_device_info(char **json_info);
+int hon_upnp_add_port_mapping(const char *json_mapping, char **error_msg);
+int hon_upnp_delete_port_mapping(int external_port, const char *protocol, char **error_msg);
+int hon_upnp_list_port_mappings(char **json_list);
+int hon_upnp_get_external_ip(char **external_ip);
+int hon_upnp_add_camera_ports(int http_port, int https_port, int rtsp_port, int onvif_port, char **error_msg);
+int hon_upnp_get_config(char **json_config);
+int hon_upnp_set_config(const char *json_config);
+int hon_upnp_get_enabled(int *value);
+int hon_upnp_set_enabled(int value);
+
+// SNMP functions
+int hon_snmp_get_config(char **json_config);
+int hon_snmp_set_config(const char *json_config);
+int hon_snmp_get_enabled(int *value);
+int hon_snmp_set_enabled(int value);
+int hon_snmp_start(char **error_msg);
+int hon_snmp_stop(char **error_msg);
+int hon_snmp_restart(char **error_msg);
+int hon_snmp_get_status(char **json_status);
+int hon_snmp_test(char **error_msg);

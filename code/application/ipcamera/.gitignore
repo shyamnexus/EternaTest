@@ -1,0 +1,79 @@
+# Build artefacts
+/build/
+/build-*/
+*/build/
+cmake-build-*/
+
+# CMake files
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+install_manifest.txt
+compile_commands.json
+
+# FetchContent / external build deps
+_deps/
+build/_deps/
+
+# Libraries and objects
+*.o
+*.obj
+*.lo
+*.la
+*.al
+*.a
+*.so
+*.dylib
+*.dll
+*.exe
+*.out
+
+# Static analysis / coverage
+*.gcda
+*.gcov
+*.gcno
+lcov-report/
+.coverage
+.nyc_output/
+
+# IDEs and editors
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+*.swp
+*~
+
+# macOS
+.DS_Store
+
+# Logs and runtime files
+/logs/
+/output/
+*.log
+
+# Test artifacts
+CTestTestfile.cmake
+Testing/
+
+# Generated assets and packaged output
+/output/
+/output/raw/
+/output/packed/
+
+# Temporary files
+.cache/
+tmp/
+__pycache__/
+
+# Vendor archives or large binaries (if you want them untracked)
+# extern/ contains 3rd-party archives in this repo; ignore generated vendor/build dirs only
+extern/_build/
+
+# Misc
+tags
+cscope.out
+.DS_Store
+
+simulated_root/

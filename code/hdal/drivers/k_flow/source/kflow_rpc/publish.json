@@ -1,0 +1,10 @@
+{
+	"jsontype": "module_publish",
+	"publish_src": [
+	"nvt_ipc_main.c",
+	"nvt_ipc_platform.c",
+	"nvt_ipc_proc.c",
+	"nvt_ipc_ver.c",
+	"nvt_ipc_ioctl.c"
+	]
+}

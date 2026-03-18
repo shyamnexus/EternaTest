@@ -1,0 +1,5 @@
+config SND_SOC_NVT
+	tristate "NOVATEK Audio SoundCard support"
+	depends on m && NVT_IVOT_PLAT_NS02201
+	help
+	 This option enables NOVATEK SoundCard support on NVT platform.

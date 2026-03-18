@@ -1,0 +1,33 @@
+menu "Hardware crypto devices"
+
+source drivers/crypto/fsl/Kconfig
+
+if TARGET_NA51102 || TARGET_NA51102_A64
+source drivers/crypto/nvt/na51102/Kconfig
+endif
+
+if TARGET_NS02401 || TARGET_NS02401_A64
+source drivers/crypto/nvt/ns02401/Kconfig
+endif
+
+if TARGET_NS02201 || TARGET_NS02201_A64
+source drivers/crypto/nvt/ns02201/Kconfig
+endif
+
+if TARGET_NS02302 || TARGET_NS02302_A64
+source drivers/crypto/nvt/ns02302/Kconfig
+endif
+
+if TARGET_NS02301 || TARGET_NS02301_A32
+source drivers/crypto/nvt/ns02301/Kconfig
+endif
+
+if TARGET_NA51103|| TARGET_NA51103_A32
+source drivers/crypto/nvt/na51103/Kconfig
+endif
+
+if TARGET_NA51089|| TARGET_NA51089_A32
+source drivers/crypto/nvt/na51089/Kconfig
+endif
+
+endmenu

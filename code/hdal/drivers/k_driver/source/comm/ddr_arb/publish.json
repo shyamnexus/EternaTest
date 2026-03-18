@@ -1,0 +1,13 @@
+{
+	"jsontype": "module_publish",
+	"publish_src": [
+		"ddr_arb_main.c",
+		"ddr_arb_proc.c",
+		"ddr_arb_drv.c",
+		"ddr_arb_api.c",
+		"ddr_arb_platform.c",
+		"emu_arb.c",
+		"ddr_arb_export.c",
+		"arb_ver.c"
+	]
+}

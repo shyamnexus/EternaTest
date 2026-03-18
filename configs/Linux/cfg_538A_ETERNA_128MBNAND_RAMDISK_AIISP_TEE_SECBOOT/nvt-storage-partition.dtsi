@@ -1,0 +1,66 @@
+/*
+ * Novatek Ltd. BSP part of dts
+ *
+ * Configuration: cfg_538A_ETERNA_128MBNAND_RAMDISK_AIISP_TEE_SECBOOT
+ * 
+ * Flash Layout for 128MB SPI NAND with OP-TEE Secure Boot + Factory Partition
+ * 
+ * PARTITION LAYOUT (Total: 128 MB = 0x8000000)
+ * =============================================
+ * Offset      Size        Partition    Description
+ * ---------   ---------   ----------   -----------------------------------
+ * 0x0000000   0x0040000   loader       First-stage bootloader (256 KB) [FIXED]
+ * 0x0040000   0x0040000   fdt          Device Tree Blob (256 KB) [FIXED]
+ * 0x0080000   0x0040000   fdt.restore  FDT Backup (256 KB) [FIXED]
+ * 0x00C0000   0x0040000   atf          ARM Trusted Firmware (256 KB)
+ * 0x0100000   0x0100000   teeos        OP-TEE OS (1 MB) [FOR TEE]
+ * 0x0200000   0x00E0000   uboot        U-Boot (896 KB)
+ * 0x02E0000   0x0040000   uenv         U-Boot Environment (256 KB)
+ * 0x0320000   0x0500000   kernel       Linux Kernel (5 MB)
+ * 0x0820000   0x2000000   rootfs       Root Filesystem (32 MB)
+ * 0x2820000   0x4200000   rootfs1      Extended RootFS RW (66 MB)
+ * 0x6A20000   0x15A0000   app          Application (21.625 MB)
+ * 0x7FC0000   0x0040000   factory      Factory Data - MAC/Serial (256 KB) [PROTECTED]
+ * 0x0000000   0x8000000   all          Total Flash (128 MB)
+ * 
+ * FACTORY PARTITION (NEW):
+ * ========================
+ * - Stores device-specific data: MAC addresses, serial number, model name
+ * - Located at END of flash (0x7FC0000) for easy protection
+ * - NEVER included in firmware upgrades (excluded from nvtpack)
+ * - Persists across all firmware updates and factory resets
+ * - 256KB size provides redundancy with wear-leveling capability
+ *
+ * CHANGES FROM NON-TEE VERSION:
+ * - Added teeos partition at 0x0100000 (1MB for OP-TEE)
+ * - Added factory partition at 0x7FC0000 (256KB for device identity)
+ * - Reduced app partition from 0x15E0000 to 0x15A0000 (-256KB for factory)
+ * - Shifted uboot from 0x0100000 to 0x0200000
+ * - Shifted uenv from 0x01E0000 to 0x02E0000
+ * - Shifted kernel from 0x0220000 to 0x0320000
+ * - Shifted rootfs from 0x0720000 to 0x0820000
+ * - Shifted rootfs1 from 0x2720000 to 0x2820000
+ *
+ * VERIFICATION:
+ * - Total: loader(256K) + fdt(256K) + fdt.restore(256K) + atf(256K) + teeos(1M)
+ *          + uboot(896K) + uenv(256K) + kernel(5M) + rootfs(32M) + rootfs1(66M)
+ *          + app(21.625M) + factory(256K) = 128 MB ✓
+ * - Calculation: 0x6A20000 + 0x15A0000 = 0x7FC0000 (app end = factory start) ✓
+ * - Calculation: 0x7FC0000 + 0x0040000 = 0x8000000 (128MB total) ✓
+ */
+
+&nand {
+    partition_loader {      label = "loader";       reg = <0x0 0x0000000 0x0 0x0040000>; }; /* Fixed 256KB */
+    partition_fdt {         label = "fdt";          reg = <0x0 0x0040000 0x0 0x0040000>; }; /* Fixed 256KB */
+    partition_fdt.restore { label = "fdt.restore";  reg = <0x0 0x0080000 0x0 0x0040000>; }; /* Fixed 256KB */
+    partition_atf {         label = "atf";          reg = <0x0 0x00C0000 0x0 0x0040000>; }; /* 256KB */
+    partition_teeos {       label = "teeos";        reg = <0x0 0x0100000 0x0 0x0100000>; }; /* 1MB OP-TEE */
+    partition_uboot {       label = "uboot";        reg = <0x0 0x0200000 0x0 0x00E0000>; }; /* 896KB */
+    partition_uenv {        label = "uenv";         reg = <0x0 0x02E0000 0x0 0x0040000>; }; /* 256KB */
+    partition_kernel {      label = "kernel";       reg = <0x0 0x0320000 0x0 0x0500000>; }; /* 5MB */
+    partition_rootfs {      label = "rootfs";       reg = <0x0 0x0820000 0x0 0x2000000>; }; /* 32MB */
+    partition_rootfs1 {     label = "rootfs1";      reg = <0x0 0x2820000 0x0 0x4200000>; }; /* 66MB */
+    partition_app {         label = "app";          reg = <0x0 0x6A20000 0x0 0x15A0000>; }; /* 21.625MB (reduced for factory) */
+    partition_factory {     label = "factory";      reg = <0x0 0x7FC0000 0x0 0x0040000>; }; /* 256KB - PROTECTED, NOT IN FW UPGRADE */
+    partition_all {         label = "all";          reg = <0x0 0x0000000 0x0 0x8000000>; }; /* 128MB */
+};

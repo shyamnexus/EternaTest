@@ -1,0 +1,98 @@
+{
+  "logging": {
+    "_description": "Logging configuration for ipcamd — application, access, security, audit, and remote syslog",
+    "level": "info",
+    "console": {
+      "enabled": true,
+      "level": "info"
+    },
+    "file": {
+      "enabled": true,
+      "path": "/var/log/ipcamd.log",
+      "level": "debug",
+      "max_size_mb": 5,
+      "max_files": 3,
+      "flush_interval_sec": 5
+    },
+    "format": "[%Y-%m-%d %H:%M:%S.%e] [%n] [%l] %v",
+
+    "access": {
+      "_description": "HTTP API access log — records every API request with client IP, method, URI, status, timing",
+      "enabled": true,
+      "path": "/var/log/ipcamd_access.log",
+      "max_size_mb": 10,
+      "max_files": 3
+    },
+    "security": {
+      "_description": "Security event log — login/logout, auth failures, lockouts, brute-force, unauthorized access",
+      "enabled": true,
+      "path": "/var/log/ipcamd_security.log",
+      "max_size_mb": 10,
+      "max_files": 3
+    },
+    "audit": {
+      "_description": "Audit trail — configuration changes, system actions, who changed what and when",
+      "enabled": true,
+      "path": "/var/log/ipcamd_audit.log",
+      "max_size_mb": 10,
+      "max_files": 3
+    },
+    "syslog": {
+      "_description": "Remote syslog forwarding (RFC 5424) — send security/audit events to a central log server",
+      "enabled": false,
+      "host": "",
+      "port": 514,
+      "protocol": "udp",
+      "facility": "local0",
+      "min_level": "warning",
+      "include_access": false,
+      "include_security": true,
+      "include_audit": true
+    },
+
+    "system_logger": {
+      "_description": "Periodic system data collection — replaces external shell logger. All sources and destinations are API-controllable.",
+      "enabled": true,
+      "sources": {
+        "kernel": {
+          "_description": "Kernel ring buffer (dmesg) — captures new kernel messages since last collection",
+          "enabled": true,
+          "interval_sec": 30
+        },
+        "thermal": {
+          "_description": "SoC temperature from thermal_zone0 — timestamped temperature readings",
+          "enabled": true,
+          "interval_sec": 60
+        },
+        "sysdiag": {
+          "_description": "System diagnostics — uptime, load, CPU, memory, disk, network, process count",
+          "enabled": true,
+          "interval_sec": 60
+        },
+        "app_mirror": {
+          "_description": "Application log mirror — periodic snapshot of ipcamd.log to SD/flash",
+          "enabled": false,
+          "interval_sec": 120
+        }
+      },
+      "destinations": {
+        "sd_card": {
+          "_description": "SD card log storage — date-stamped files, retention by age and total size",
+          "enabled": false,
+          "path": "/mnt/sd/logs",
+          "max_total_mb": 500,
+          "max_days": 30,
+          "min_free_mb": 100
+        },
+        "flash": {
+          "_description": "Internal flash log storage — rotating files with size limits",
+          "enabled": true,
+          "path": "/mnt/app/logs",
+          "max_total_kb": 3072,
+          "max_file_kb": 1024,
+          "min_free_kb": 512
+        }
+      }
+    }
+  }
+}

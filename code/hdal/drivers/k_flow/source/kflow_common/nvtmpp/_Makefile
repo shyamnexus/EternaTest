@@ -1,0 +1,61 @@
+MODULE_NAME = nvtmpp
+# DIRs
+VOS_DRIVER_DIR = $(NVT_VOS_DIR)/drivers
+KDRV_DIR = $(NVT_HDAL_DIR)/drivers/k_driver
+KFLOW_DIR = $(NVT_HDAL_DIR)/drivers/k_flow
+CURR_DRIVER_DIR = $(KFLOW_DIR)
+# INCs
+VOS_INC_PATH = $(VOS_DRIVER_DIR)/include
+KDRV_INC_PATH = $(KDRV_DIR)/include
+KFLOW_INC_PATH = $(KFLOW_DIR)/include
+CURR_DRIVER_INC_PATH = $(CURR_DRIVER_DIR)/include
+# INC FLAGs
+EXTRA_INCLUDE += \
+	-I$(VOS_INC_PATH) \
+	-I$(KDRV_INC_PATH) \
+	-I$(KDRV_INC_PATH)/kdrv_builtin \
+	-I$(KFLOW_INC_PATH) \
+	-I$(CURR_DRIVER_INC_PATH) \
+
+###############################################################################
+# Linux Makefile                                                              #
+###############################################################################
+ifeq ($(NVT_PRJCFG_CFG),Linux)
+EXTRA_CFLAGS += -DDEBUG
+
+SRC += \
+	nvtmpp_api.c \
+	nvtmpp_pool.c \
+	nvtmpp_heap2.c \
+	nvtmpp_blk.c \
+	nvtmpp_id.c \
+	nvtmpp_log.c \
+	nvtmpp_module.c \
+	nvtmpp_main.c \
+	nvtmpp_proc.c \
+	nvtmpp_ioctl.c \
+	nvtmpp_debug_cmd.c
+
+###############################################################################
+# rtos Makefile                                                               #
+###############################################################################
+else ifeq ($(NVT_PRJCFG_CFG),rtos)
+EXTRA_CFLAGS += \
+	-DDEBUG \
+	-Wno-format \
+
+
+SRC += \
+	nvtmpp_api.c \
+	nvtmpp_pool.c \
+	nvtmpp_heap2.c \
+	nvtmpp_blk.c \
+	nvtmpp_id.c \
+	nvtmpp_log.c \
+	nvtmpp_module.c \
+	nvtmpp_ioctl.c \
+	nvtmpp_debug_cmd.c
+
+
+endif
+include $(NVT_HDAL_DIR)/driver.mk

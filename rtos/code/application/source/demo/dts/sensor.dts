@@ -1,0 +1,56 @@
+/*
+ * Novatek Ltd. NA51055 BSP part of dts
+ *
+ * Cortex-A9
+ *
+ */
+
+/dts-v1/;
+
+#include <kwrap/bsp_def.h>
+
+/ {
+	sensor {
+		/* label for sensor_cfg */
+		sen_cfg: sen_cfg {
+		};
+	};
+};
+
+/* Note: put include files in the tail since label should be declared first. */
+#if defined(_BSP_NA51089_)
+#include <dt-bindings/gpio/nvt-na51089-gpio.h>
+#elif defined(_BSP_NS02301_)
+#include <dt-bindings/gpio/nvt-ns02301-gpio.h>
+#elif defined(_BSP_NS02302_)
+#include <dt-bindings/gpio/nvt-ns02302-gpio.h>
+#else
+#error "unsupported bsp name"
+#endif
+
+#define STRINGIFY2(X) #X
+#define STRINGIFY(X) STRINGIFY2(X)
+// Macros for concatenating tokens
+#define CAT2(X,Y) X##Y
+#define CAT(X,Y) CAT2(X,Y)
+#define CAT_3(X,Y,Z) CAT(X,CAT(Y,Z))
+#define CAT_4(W,X,Y,Z) CAT(CAT(W,X),CAT(Y,Z))
+#define INCLUDE_FILE(HEAD) STRINGIFY( CAT_4(HEAD,_cfg,_SEN_SUFFIX_,.dtsi) )
+
+/**
+ * for example, expand to os04c10_cfg_567.dtsi
+ * direct to use '#include <os04c10_cfg_567.dtsi>' is okay, too.
+ * if SENSOR1 is ad sensor,, the include should be marked
+ */
+#if defined(_SEN1_)
+#include INCLUDE_FILE(_SEN1_)
+#endif
+
+/**
+ * for example, expand to os04c10_cfg_567.dtsi
+ * direct to use '#include <os04c10_cfg_567.dtsi>' is okay, too.
+ * if SENSOR2 is ad sensor,, the include should be marked
+ */
+#if !defined(_sen_off_)
+#include INCLUDE_FILE(_SEN2_)
+#endif

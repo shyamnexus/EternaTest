@@ -1,0 +1,57 @@
+&top {
+	sgpio_0_26{power_config = <PAD_POWERID_SN  PAD_3P3V>;};
+	pgpio_0_19{power_config = <PAD_POWERID_P1  PAD_3P3V>;};
+	cgpio_0_10{power_config = <PAD_POWERID_SD3 PAD_3P3V>;};
+	
+	nvt_sen_ad_tp2830@0 {
+		pinctrl = <
+			PIN_FUNC_SENSOR2    PIN_SENSOR2_CFG_CCIR8BITS_AB \
+			PIN_FUNC_I2CII      PIN_I2CII_CFG_I2C7_2 \
+		>;
+	};
+}
+
+&i2c6 {
+	#address-cells = <1>;
+	#size-cells = <0>;
+	ad_tp2830@0 {
+		compatible = "nvt,ad_tp2830.0";
+		reg = <0x44>;  // 7-bit slave register 0x88 >> 1
+		power_cfg {
+			mclk_sel = "MCLK";  // ex : "MCLK" or "MCLK2" or "MCLK3"
+
+			///////////////////////////////////////////////////////////////////////////////////////////////////
+			// io control description                                                                        //
+			// io_ctl0@0~19(max) = <io_pin 	 level   hold time>                                              //
+			//   io_pin - (3 types)                                                                          //
+			//     1. pin name (ex. S_GPIO(4), PGPIO(0), ...)                                                //
+			//     2. 0xfffe: the following commands will only applied on 'power on' sequence (default)      //
+			//     3. 0xfffd: the following commands will only applied on 'power off' sequence               //
+			//   level - 1: pull high, 0: pull low                                                           //
+			//   hold time - delay time (us)                                                                 //
+			///////////////////////////////////////////////////////////////////////////////////////////////////
+			//// power on ////
+			io_ctl0 = <0xfffe       0 0>;      // power on
+			io_ctl1 = <P_GPIO(28)    0 30000>;  // reset
+			io_ctl2 = <P_GPIO(28)    1 1000>;   // reset
+
+			//// power off ////
+			io_ctl3 = <0xfffd    0 0>;         // power off
+			io_ctl4 = <P_GPIO(28) 0 1000>;      // reset
+		};
+
+		outport@0 {
+			inport = <0>;
+			//inport = <0 1>;
+			//inport = <0 1 2 3>;
+			signal = <0>;                      // 0: parallel, 1:mipi
+		};
+		
+		outport@1 {
+			inport = <1>;
+			//inport = <2 3>;
+			//inport = <0 1 2 3>;
+			signal = <0>;                      // 0: parallel, 1:mipi
+		};
+	};
+};

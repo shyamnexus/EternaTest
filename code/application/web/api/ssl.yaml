@@ -1,0 +1,203 @@
+openapi: 3.0.3
+info:
+  title: IP Camera API - SSL Certificate Management
+  version: 1.0.0
+paths:
+  /ssl:
+    get:
+      summary: Get SSL Certificate Info
+      description: Get information about the current SSL certificate
+      operationId: getSslInfo
+      tags: [SSL]
+      responses:
+        '200':
+          description: SSL certificate info retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  certificate_path:
+                    type: string
+                    example: /etc/ssl/ipcamera.pem
+                  key_path:
+                    type: string
+                    example: /etc/ssl/ipcamera.key
+                  info:
+                    type: object
+                    properties:
+                      common_name:
+                        type: string
+                      issuer:
+                        type: string
+                      valid_from:
+                        type: string
+                      valid_to:
+                        type: string
+                      subject_alt_names:
+                        type: array
+                        items:
+                          type: string
+                      is_self_signed:
+                        type: boolean
+        '500':
+          description: Failed to get certificate info
+    
+    post:
+      summary: Set SSL Certificate Paths
+      description: Set paths to SSL certificate and key files
+      operationId: setSslCertificate
+      tags: [SSL]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - certificate_path
+                - key_path
+              properties:
+                certificate_path:
+                  type: string
+                  description: Path to SSL certificate file
+                  example: /etc/ssl/ipcamera.pem
+                key_path:
+                  type: string
+                  description: Path to SSL key file
+                  example: /etc/ssl/ipcamera.key
+      responses:
+        '200':
+          description: SSL certificate updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+        '400':
+          description: Invalid request or certificate files
+
+  /ssl/upload:
+    post:
+      summary: Upload SSL Certificate
+      description: Upload SSL certificate and key as PEM files
+      operationId: uploadSslCertificate
+      tags: [SSL]
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - certificate
+                - key
+              properties:
+                certificate:
+                  type: string
+                  format: binary
+                  description: SSL certificate file (PEM format)
+                key:
+                  type: string
+                  format: binary
+                  description: SSL private key file (PEM format)
+      responses:
+        '200':
+          description: Certificate uploaded successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  certificate_path:
+                    type: string
+                  key_path:
+                    type: string
+        '400':
+          description: Invalid certificate or key format
+        '500':
+          description: Failed to save certificate
+
+  /ssl/generate:
+    post:
+      summary: Generate Self-Signed Certificate
+      description: Generate a new self-signed SSL certificate
+      operationId: generateSslCertificate
+      tags: [SSL]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - common_name
+              properties:
+                common_name:
+                  type: string
+                  description: Common Name (CN) for the certificate
+                  example: camera.local
+                organization:
+                  type: string
+                  description: Organization name
+                  example: IPCamera Inc
+                country:
+                  type: string
+                  description: Country code (2 letters)
+                  example: US
+                state:
+                  type: string
+                  description: State or province
+                  example: California
+                locality:
+                  type: string
+                  description: City or locality
+                  example: San Francisco
+                validity_days:
+                  type: integer
+                  description: Certificate validity in days
+                  example: 365
+                  default: 365
+                subject_alt_names:
+                  type: array
+                  description: Subject Alternative Names
+                  items:
+                    type: string
+                  example: ["camera.local", "192.168.1.100"]
+      responses:
+        '200':
+          description: Certificate generated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  certificate_path:
+                    type: string
+                  key_path:
+                    type: string
+                  info:
+                    type: object
+                    properties:
+                      common_name:
+                        type: string
+                      valid_from:
+                        type: string
+                      valid_to:
+                        type: string
+        '400':
+          description: Invalid request
+        '500':
+          description: Failed to generate certificate

@@ -1,0 +1,112 @@
+#
+# NVT BASIC SoC drivers
+#
+menu "NovaTek SoC Basic drivers"
+	depends on ARCH_NVT_IVOT_V7 || ARCH_NVT_IVOT_V8
+
+config NVT_INFO
+	bool "NVT IVOT info for time measurement/memory hotplug...etc functions."
+	default y
+	help
+	  Support NVT multi-functions such as boot time measurement/memory hotplug...etc.
+	  We provide a tool can be used to measure booting time.
+	  e.g.
+		$ cat /proc/nvt_info/bootts
+		$ cat /proc/nvt_info/memperf
+
+config NVT_PCIE_LIB
+	tristate "Novatek PCIe Library"
+	default y
+	depends on NVT_IVOT_PLAT_NA51090 || NVT_IVOT_PLAT_NA51103
+	help
+	  Novatek PCIe Library.
+
+config NVT_PCIE_CASCADE_DRV
+	bool "Novatek PCIe cascade"
+	default y
+	depends on NVT_PCIE_LIB && NVT_IVOT_PLAT_NA51090 && !PCI
+	help
+	  Novatek PCIe cascade.
+
+config NVT_PCIE_COMM_DRV_EP
+	tristate "Novatek PCIe Common ep driver"
+	default n
+	depends on NVT_IVOT_PLAT_NA51090 && (PCI || NVT_NT98336_PCI_EP_EVB)
+	help
+	  Novatek common PCIe controller driver for EP role.
+	  It's used to provide PCIe edma and other functions in EP role of the pcie common framework.
+
+config NVT_TIMER
+	bool "Novatek hardware timer, it only supports 64-bit hardware timer engine"
+	default n
+	depends on PLAT_NOVATEK
+	help
+	  Novatek Timer.
+
+config NVT_FB_DMABUF
+	bool "Novatek DMABUF support"
+	default n
+	depends on PLAT_NOVATEK
+	help
+	  This option will support dma buffer on framebuffer.
+
+config NVT_GPU_AFBC_SUPPORT
+	bool "To support Mali GPU AFBC compression format."
+	default n
+	depends on PLAT_NOVATEK && (NVT_IVOT_PLAT_NS02201 || NVT_IVOT_PLAT_NS02401)
+	help
+	  Novatek GPU AFBC compression support
+
+#
+# For CA9 Cache flush enhancement
+#
+config NVT_CACHE_FLUSH_ALL_FOR_HDAL
+	bool "Enable flush/clean all L2 cache operation for HDAL"
+	depends on ARCH_NVT_IVOT_V7 && NVT_CACHE_FLUSH_ALL_L2_CACHE
+	default y
+	help
+		Use flush/clean all of L2 cache instead of flush/clean range when flush/clean DRAM size over the order of L2 cache size.
+
+config NVT_CACHE_FLUSH_ALL_THRESHOLD
+	int "The threshold of flush all of L2 cache for HDAL"
+	depends on NVT_CACHE_FLUSH_ALL_FOR_HDAL
+	default 1
+	help
+		Set a threshold to judgment whether execute flush/clean all L2 cache instead of flush/clean range.
+		The threshold is an order of L2 cache size. When flush/clean range over the threshold then All of L2 cache are flushed/cleaned
+
+config NVT_CACHE_FLUSH_ALL_L2_CACHE
+	bool "Enable flush/clean all L2 cache operation"
+	depends on ARCH_NVT_IVOT_V7
+	depends on CACHE_L2X0
+	default y
+	help
+		When flush/clean DRAM size over the order of L2 cache size use flush/clean all of L2 cache instead of flush/clean range.
+
+config NVT_CACHE_FLUSH_ALL_L2_THRESHOLD
+	int "The threshold of flush all L2 cache"
+	depends on NVT_CACHE_FLUSH_ALL_L2_CACHE
+	default 1
+	help
+		Set a threshold to judgment whether execute flush/clean all L2 cache instead of flush/clean range.
+		The threshold is an order of L2 cache size.  When flush/clean range over the threshold then all of L2 cache are flushed/cleaned
+
+config NVT_CACHE_INVALIDATE_ALL_FOR_HDAL
+	bool "Enable invalidate all L2 cache operation"
+	depends on ARCH_NVT_IVOT_V7 && NVT_CACHE_FLUSH_ALL_L2_CACHE
+	default n
+	help
+		When invalidate DRAM size over L2 cache size use flush all cache instead of invalidate range.
+
+config NVT_CACHE_INVALIDATE_ALL_THRESHOLD
+	int "The threshold of invalidate all L2 cache"
+	depends on NVT_CACHE_INVALIDATE_ALL_FOR_HDAL
+	default 2
+	help
+		Set a threshold to judgment whether execute flush all L2 cache instead of invalidate range.
+		The threshold is an order of L2 cache size. When flush range over the threshold then L2 cache are flushed and invalidated
+#
+# For CA9 Cache flush enhancement done
+#
+
+endmenu

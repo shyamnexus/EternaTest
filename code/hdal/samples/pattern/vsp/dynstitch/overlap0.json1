@@ -1,0 +1,35 @@
+{
+    "overlap_direction": 0,
+    "stats computing parameters": {
+        "grid_num_hor": 2,
+        "grid_num_ver": 65,
+        "roi_trailer_pix_x": 0,
+        "roi_size_ratio_x": 1.0,
+        "roi_size_ratio_y": 2.0,
+        "roi_conf_thd": 1.5,
+        "ds_num": 4,
+        "filter_coeff": 0,
+        "search_width": 100
+    },
+    "Anchor stats fusion strategies": {
+        "scene_change_pix_thd": 10,
+        "scene_change_area_thd": 1.0,
+        "pdiff_monitor_fnum": 5,
+        "pdiff_stable_tolerance": 5,
+        "lowc_fnum_2unstable": 5,
+        "pdiff_converge_tolerance": 3
+    },
+    "LUT updating strategies": {
+        "min_pix_offset_per_frame": 5.0,
+        "moving_ratio_per_frame": 1.0
+    },
+    "algo calling frequency": {
+        "trigger_cycle_frames": 1
+    },
+    "Debug": {
+        "blend_transition": 50,
+        "save_src_img": 0,
+        "save_conf_info": 1,
+        "save_scoring_img": 0
+    }
+}

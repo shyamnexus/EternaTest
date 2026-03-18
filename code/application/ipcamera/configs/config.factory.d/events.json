@@ -1,0 +1,416 @@
+{
+    "_comment": "Event Actions Configuration",
+    "_version": "1.0.0",
+
+    "events": {
+        "enabled": true,
+        "max_history": 1000,
+        "default_cooldown_seconds": 10,
+        "queue_max_size": 100,
+        
+        "global_settings": {
+            "snapshot_on_event": true,
+            "snapshot_quality": 85,
+            "thumbnail_on_event": true,
+            "thumbnail_size": "320x180",
+            "log_all_events": true
+        }
+    },
+
+    "rules": [
+        {
+            "id": "rule-motion-recording",
+            "name": "Motion Recording",
+            "description": "Start recording when motion is detected",
+            "enabled": true,
+            "priority": 10,
+            "trigger": {
+                "events": ["motion_start"],
+                "zones": [],
+                "classes": [],
+                "min_confidence": 0.0,
+                "min_objects": 1
+            },
+            "cooldown_seconds": 30,
+            "schedule": {
+                "enabled": false,
+                "days_of_week": [0, 1, 2, 3, 4, 5, 6],
+                "time_ranges": [
+                    {"start": "00:00", "end": "23:59"}
+                ],
+                "invert": false
+            },
+            "actions": [
+                {
+                    "type": "start_recording",
+                    "name": "Event Recording",
+                    "enabled": true,
+                    "priority": 10,
+                    "delay_ms": 0,
+                    "config": {
+                        "duration_seconds": 30,
+                        "pre_record_seconds": 5,
+                        "post_record_seconds": 10,
+                        "channels": [0],
+                        "quality": "main"
+                    }
+                },
+                {
+                    "type": "capture_snapshot",
+                    "name": "Event Snapshot",
+                    "enabled": true,
+                    "priority": 20,
+                    "delay_ms": 0,
+                    "config": {
+                        "count": 1,
+                        "format": "jpg",
+                        "quality": 85,
+                        "include_overlay": false,
+                        "include_timestamp": true
+                    }
+                },
+                {
+                    "type": "log_event",
+                    "name": "Log to History",
+                    "enabled": true,
+                    "priority": 0,
+                    "config": {
+                        "save_to_database": true,
+                        "include_metadata": true
+                    }
+                }
+            ]
+        },
+        {
+            "id": "rule-person-notification",
+            "name": "Person Detection Alert",
+            "description": "Send notifications when a person is detected",
+            "enabled": true,
+            "priority": 20,
+            "trigger": {
+                "events": ["person_detected"],
+                "zones": [],
+                "classes": ["person"],
+                "min_confidence": 0.6,
+                "min_objects": 1
+            },
+            "cooldown_seconds": 60,
+            "schedule": {
+                "enabled": false
+            },
+            "actions": [
+                {
+                    "type": "publish_onvif_event",
+                    "name": "ONVIF Notification",
+                    "enabled": true,
+                    "priority": 10,
+                    "config": {}
+                },
+                {
+                    "type": "send_email",
+                    "name": "Email Alert",
+                    "enabled": false,
+                    "priority": 5,
+                    "config": {
+                        "recipients": [],
+                        "subject_template": "[{device_name}] Person detected at {time}",
+                        "body_template": "A person was detected by your camera.\n\nTime: {timestamp}\nConfidence: {confidence}%\n\nThis is an automated alert.",
+                        "attach_snapshot": true,
+                        "attach_video": false,
+                        "max_attachment_size_mb": 10
+                    }
+                },
+                {
+                    "type": "send_webhook",
+                    "name": "Webhook Notification",
+                    "enabled": false,
+                    "priority": 5,
+                    "config": {
+                        "url": "",
+                        "method": "POST",
+                        "headers": {
+                            "Content-Type": "application/json"
+                        },
+                        "body_template": "{\"event_type\": \"{event_type}\", \"timestamp\": \"{timestamp}\", \"device_id\": \"{device_id}\", \"confidence\": {confidence}, \"objects\": {objects_json}}",
+                        "timeout_seconds": 10,
+                        "retry_count": 3,
+                        "retry_delay_seconds": 5,
+                        "include_snapshot_base64": false,
+                        "verify_ssl": true
+                    }
+                },
+                {
+                    "type": "publish_mqtt",
+                    "name": "MQTT Publish",
+                    "enabled": false,
+                    "priority": 5,
+                    "config": {
+                        "topic": "ipcamera/{device_id}/events/person",
+                        "qos": 1,
+                        "retain": false,
+                        "payload_template": "{\"event\": \"person_detected\", \"timestamp\": \"{timestamp}\", \"confidence\": {confidence}}"
+                    }
+                },
+                {
+                    "type": "capture_snapshot",
+                    "name": "Person Snapshot",
+                    "enabled": true,
+                    "priority": 15,
+                    "config": {
+                        "count": 1,
+                        "format": "jpg",
+                        "quality": 90,
+                        "include_overlay": true
+                    }
+                }
+            ]
+        },
+        {
+            "id": "rule-vehicle-notification",
+            "name": "Vehicle Detection Alert",
+            "description": "Send notifications when a vehicle is detected",
+            "enabled": true,
+            "priority": 20,
+            "trigger": {
+                "events": ["vehicle_detected"],
+                "zones": [],
+                "classes": ["vehicle", "car", "truck", "motorcycle"],
+                "min_confidence": 0.6,
+                "min_objects": 1
+            },
+            "cooldown_seconds": 60,
+            "schedule": {
+                "enabled": false
+            },
+            "actions": [
+                {
+                    "type": "publish_onvif_event",
+                    "name": "ONVIF Notification",
+                    "enabled": true,
+                    "priority": 10,
+                    "config": {}
+                },
+                {
+                    "type": "capture_snapshot",
+                    "name": "Vehicle Snapshot",
+                    "enabled": true,
+                    "priority": 15,
+                    "config": {
+                        "count": 1,
+                        "format": "jpg",
+                        "quality": 90
+                    }
+                }
+            ]
+        },
+        {
+            "id": "rule-line-crossing",
+            "name": "Line Crossing Alert",
+            "description": "Alert when objects cross defined lines",
+            "enabled": false,
+            "priority": 15,
+            "trigger": {
+                "events": ["line_crossed_any"],
+                "zones": [],
+                "classes": []
+            },
+            "cooldown_seconds": 5,
+            "schedule": {
+                "enabled": false
+            },
+            "actions": [
+                {
+                    "type": "publish_onvif_event",
+                    "name": "ONVIF Notification",
+                    "enabled": true,
+                    "config": {}
+                },
+                {
+                    "type": "log_event",
+                    "name": "Log Crossing",
+                    "enabled": true,
+                    "config": {
+                        "save_to_database": true
+                    }
+                }
+            ]
+        },
+        {
+            "id": "rule-intrusion-alarm",
+            "name": "Zone Intrusion Alarm",
+            "description": "Trigger alarm when intrusion detected in restricted zones",
+            "enabled": false,
+            "priority": 30,
+            "trigger": {
+                "events": ["zone_entered", "zone_loitering"],
+                "zones": [],
+                "classes": ["person"]
+            },
+            "cooldown_seconds": 30,
+            "schedule": {
+                "enabled": false
+            },
+            "actions": [
+                {
+                    "type": "start_recording",
+                    "name": "Alarm Recording",
+                    "enabled": true,
+                    "priority": 20,
+                    "config": {
+                        "duration_seconds": 60,
+                        "pre_record_seconds": 10,
+                        "post_record_seconds": 20
+                    }
+                },
+                {
+                    "type": "capture_snapshot",
+                    "name": "Intrusion Snapshot",
+                    "enabled": true,
+                    "priority": 15,
+                    "config": {
+                        "count": 3,
+                        "interval_ms": 2000
+                    }
+                },
+                {
+                    "type": "trigger_alarm_output",
+                    "name": "Activate Alarm Relay",
+                    "enabled": false,
+                    "priority": 10,
+                    "config": {
+                        "output_id": 0,
+                        "state": true,
+                        "duration_ms": 5000
+                    }
+                },
+                {
+                    "type": "send_email",
+                    "name": "Intrusion Email Alert",
+                    "enabled": false,
+                    "config": {
+                        "subject_template": "[ALARM] Intrusion detected in {zone_name}",
+                        "body_template": "SECURITY ALERT!\n\nAn intrusion was detected in zone: {zone_name}\nTime: {timestamp}\n\nImmediate attention may be required.",
+                        "attach_snapshot": true,
+                        "attach_video": false
+                    }
+                },
+                {
+                    "type": "publish_onvif_event",
+                    "name": "ONVIF Alarm",
+                    "enabled": true,
+                    "config": {}
+                }
+            ]
+        }
+    ],
+
+    "notifications": {
+        "email": {
+            "enabled": false,
+            "use_smtp_config": true,
+            "rate_limit_per_hour": 10,
+            "batch_interval_seconds": 60
+        },
+        "push": {
+            "enabled": false,
+            "provider": "firebase",
+            "api_key": "",
+            "project_id": "",
+            "device_tokens": []
+        },
+        "onvif": {
+            "enabled": true,
+            "publish_to_subscribers": true,
+            "include_metadata": true
+        }
+    },
+
+    "integrations": {
+        "webhook": {
+            "enabled": false,
+            "default_timeout_seconds": 10,
+            "max_retries": 3,
+            "retry_delay_seconds": 5,
+            "verify_ssl": true,
+            "user_agent": "IPCamera-EventSystem/1.0"
+        },
+        "mqtt": {
+            "enabled": false,
+            "broker": "",
+            "port": 1883,
+            "username": "",
+            "password": "",
+            "client_id": "ipcamera_{device_id}",
+            "use_tls": false,
+            "ca_cert_path": "",
+            "base_topic": "ipcamera",
+            "discovery_enabled": false,
+            "discovery_prefix": "homeassistant",
+            "keep_alive_seconds": 60,
+            "clean_session": true
+        },
+        "ftp": {
+            "use_storage_config": true,
+            "event_upload_enabled": false,
+            "upload_snapshots": true,
+            "upload_videos": true
+        },
+        "cloud": {
+            "enabled": false,
+            "provider": "none",
+            "bucket": "",
+            "access_key": "",
+            "secret_key": "",
+            "region": "",
+            "endpoint": "",
+            "path_prefix": "events/"
+        }
+    },
+
+    "io": {
+        "alarm_outputs": [
+            {
+                "id": 0,
+                "name": "Alarm Output 1",
+                "gpio_pin": -1,
+                "active_high": true,
+                "default_state": false,
+                "pulse_duration_ms": 5000
+            }
+        ],
+        "alarm_inputs": [
+            {
+                "id": 0,
+                "name": "Alarm Input 1",
+                "gpio_pin": -1,
+                "active_high": true,
+                "debounce_ms": 100,
+                "enabled": false
+            }
+        ],
+        "siren": {
+            "enabled": false,
+            "gpio_pin": -1,
+            "default_duration_ms": 5000,
+            "max_duration_ms": 30000
+        },
+        "white_light": {
+            "enabled": false,
+            "gpio_pin": -1,
+            "default_duration_ms": 10000,
+            "max_duration_ms": 60000,
+            "brightness_levels": 3
+        }
+    },
+
+    "storage": {
+        "event_snapshots_path": "/mnt/sd/events/snapshots",
+        "event_videos_path": "/mnt/sd/events/videos",
+        "event_thumbnails_path": "/mnt/sd/events/thumbnails",
+        "max_snapshot_age_days": 30,
+        "max_video_age_days": 7,
+        "max_storage_percent": 80,
+        "cleanup_enabled": true,
+        "cleanup_interval_hours": 24
+    }
+}

@@ -1,0 +1,33 @@
+config COMMON_CLK_NVT
+	tristate "Clock driver for Novatek"
+	depends on COMMON_CLK && OF
+	depends on PLAT_NOVATEK
+
+config COMMON_CLK_NVT_EP
+	tristate "PCI EP Clock driver for Novatek"
+	depends on COMMON_CLK && OF
+	depends on PLAT_NOVATEK
+
+config COMMON_CLK_NA51055
+        bool "Clock driver for Novatek NA51055"
+        depends on NVT_IVOT_PLAT_NA51055
+
+config COMMON_CLK_NA51102
+	bool "Clock driver for Novatek NA51102"
+	depends on NVT_IVOT_PLAT_NA51102
+
+config COMMON_CLK_NA51103
+	bool "Clock driver for Novatek NA51103"
+	depends on NVT_IVOT_PLAT_NA51103
+
+config COMMON_CLK_NA51089
+        bool "Clock driver for Novatek NA51089"
+        depends on NVT_IVOT_PLAT_NA51089
+
+config COMMON_CLK_NA51090
+	bool "Clock driver for Novatek NA51090"
+	depends on NVT_IVOT_PLAT_NA51090
+
+config COMMON_CLK_NA51090_EP
+        tristate "Clock driver for Novatek NA51090 PCIE EPs"
+        depends on NVT_IVOT_PLAT_NA51090

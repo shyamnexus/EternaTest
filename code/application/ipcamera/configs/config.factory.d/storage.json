@@ -1,0 +1,73 @@
+{
+  "storage": {
+    "sdcard_path": "/mnt/sd",
+    "persistent_path": "/mnt/app/ipcamera",
+    "recording_base_dir": "DCIM",
+    "free_size_del_min": 500,
+    "free_size_del_max": 500,
+    "num_limit_enable": false,
+    "recording_type": "disabled",
+    "recording_autostart": false,
+    "FIFO": true,
+    "recording_encryption_enabled": false,
+    "recording_encryption_algorithm": "AES-256-CTR",
+    "pre_record_enabled": false,
+    "pre_record_seconds": 5,
+    "post_record_enabled": false,
+    "post_record_seconds": 5,
+    "database": {
+      "type": "sqlcipher",
+      "encryption_enabled": true,
+      "user_management": {
+        "path": "/mnt/app/ipcamera/db/users.db",
+        "on_sdcard": false,
+        "enabled": true,
+        "_comment": "UNIFIED with config::UserManager - was usermng.db (legacy SHA256), now users.db (PBKDF2)"
+      },
+      "recordings": {
+        "path": "/mnt/sd/.ipcamera/recordings.db",
+        "on_sdcard": true,
+        "enabled": true
+      },
+      "secure_config": {
+        "path": "/mnt/app/ipcamera/db/secure.db",
+        "on_sdcard": false,
+        "enabled": true
+      }
+    },
+    "channels": [
+      {
+        "id": 0,
+        "enabled": false,
+        "folder_name": "CH01",
+        "file_format": "mp4",
+        "file_duration": 300,
+        "video_quota": 30,
+        "file_max_num": 300
+      },
+      {
+        "id": 1,
+        "enabled": false,
+        "folder_name": "CH02",
+        "file_format": "mp4",
+        "file_duration": 300,
+        "video_quota": 30,
+        "file_max_num": 300
+      },
+      {
+        "id": 2,
+        "enabled": false,
+        "folder_name": "CH03",
+        "file_format": "mp4",
+        "file_duration": 300,
+        "video_quota": 30,
+        "file_max_num": 300
+      }
+    ],
+    "file_management": {
+      "cleanup_enabled": true,
+      "max_storage_gb": 100,
+      "cleanup_threshold_percent": 90
+    }
+  }
+}

@@ -1,0 +1,14 @@
+# SPDX-License-Identifier: GPL-2.0+
+
+menuconfig SOC_NOVATEK
+	bool "SOC_NOVATEK SOC drivers support"
+
+if SOC_NOVATEK
+
+config NOVATEK_SIF
+	bool "Enable support Novatek SIF driver"
+	depends on NVT_IVOT_SOC
+	help
+	 SIF uboot device driver for NOVATEK SOC
+
+endif # SOC_NOVATEK

@@ -1,0 +1,32 @@
+{
+	"jsontype": "module_publish",
+	"publish_src": [
+		"kflow_videocapture_main.c",
+		"ctl_sie/ctl_sie_drv.c",
+		"ctl_sie/ctl_sie_export.c",
+		"ctl_sie/ctl_sie_main.c",
+		"ctl_sie/ctl_sie_proc.c",
+		"ctl_sie/sie_utility/ctl_sie_utility_int.c",
+		"ctl_sie/ctl_sie_ver.c",
+		"ctl_vie/ctl_vie_drv.c",
+		"ctl_vie/ctl_vie_export.c",
+		"ctl_vie/ctl_vie_main.c",
+		"ctl_vie/ctl_vie_proc.c",
+		"ctl_vie/ctl_vie_ver.c",
+		"ctl_vie/vie_utility/ctl_vie_utility_int.c",
+		"ctl_sen/ctl_sen_api.c",
+		"ctl_sen/ctl_sen_config.c",
+		"ctl_sen/ctl_sen_export.c",
+		"ctl_sen/ctl_sen_main.c",
+		"ctl_sen/ctl_sen_proc.c",
+		"ctl_sen/sen_flow/ctl_sen_clk.c",
+		"ctl_sen/sen_utility/ctl_sen_utility.c",
+		"ctl_sen/ctl_sen_ver.c",
+		"unit/isf_vdocap_verinfo.c",
+		"unit/linux/isf_vdocap_drv.c",
+		"unit/linux/isf_vdocap_main.c",
+		"unit/linux/isf_vdocap_proc.c",
+		"unit/rtos/isf_vdocap_drv.c",
+		"unit/rtos/isf_vdocap_proc.c"
+	]
+}

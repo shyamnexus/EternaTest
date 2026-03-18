@@ -1,0 +1,9 @@
+{
+	"jsontype": "module_publish",
+	"publish_src": [
+		"isf_audenc/isf_audenc_verinfo.c",
+		"linux/isf_audenc_drv.c",
+		"linux/isf_audenc_main.c",
+		"linux/isf_audenc_proc.c"
+	]
+}

@@ -1,0 +1,2 @@
+add_executable(webipc_client src/webipc_client.cpp)
+target_compile_features(webipc_client PRIVATE cxx_std_17)

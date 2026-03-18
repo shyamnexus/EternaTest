@@ -1,0 +1,22 @@
+#!/bin/sh
+if [ -z "$1" ]; then
+  set -- start
+fi
+case "$1" in
+  start)
+    echo "Starting adbd..."
+    start-stop-daemon --start --background --make-pidfile --pidfile /var/run/adbd.pid --exec /bin/adbd
+    ;;
+  stop)
+    echo "Stopping adbd..."
+    start-stop-daemon --stop --pidfile /var/run/adbd.pid --exec /bin/adbd
+    ;;
+  restart)
+    $0 stop
+    $0 start
+    ;;
+  *)
+    echo "Usage: $0 {start|stop|restart}"
+    exit 1
+    ;;
+esac

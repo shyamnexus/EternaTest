@@ -1,0 +1,271 @@
+/*
+    IDE Memory Interface register header
+
+    IDE Memory Interface register header
+
+    @file       mi_reg.h
+    @ingroup    mIDrvDisp_MI
+    @note       Nothing
+
+    Copyright   Novatek Microelectronics Corp. 2010.  All rights reserved.
+*/
+#ifndef _MI_REG_H
+#define _MI_REG_H
+#ifdef __KERNEL__
+#include <rcw_macro.h>
+#include "kwrap/type.h"
+#else
+#if defined(__FREERTOS)
+#include "rcw_macro.h"
+#include "kwrap/type.h"
+#else
+#include "DrvCommon.h"
+#endif
+#endif
+//0x00 Memory Interface Control Register
+#define MI_CTRL_REG_OFS                     0x00
+REGDEF_BEGIN(MI_CTRL_REG)
+REGDEF_BIT(EN, 1)
+REGDEF_BIT(SRC, 2)
+REGDEF_BIT(, 1)
+REGDEF_BIT(TYPE, 3)
+REGDEF_BIT(, 1)
+REGDEF_BIT(OP, 1)
+REGDEF_BIT(AUTO_TYPE, 2)
+REGDEF_BIT(, 5)
+REGDEF_BIT(DATAFMT, 4)
+REGDEF_BIT(, 6)
+REGDEF_BIT(RGBSWAP, 1)
+REGDEF_BIT(BITSWAP, 1)
+REGDEF_BIT(SYNC, 1)
+REGDEF_BIT(PINMUX, 1)
+REGDEF_BIT(, 2)
+REGDEF_END(MI_CTRL_REG)
+
+//0x04 Memory Interface SYNC Timing Control Register
+#define MI_SYNC_CTRL_REG_OFS                0x04
+REGDEF_BEGIN(MI_SYNC_CTRL_REG)
+REGDEF_BIT(SYNC_CLKCNT, 12)
+REGDEF_BIT(SYNC_LINECNT, 2)
+REGDEF_BIT(, 10)
+REGDEF_BIT(SYNC_POL, 1)
+REGDEF_BIT(SYNC_SEL, 1)
+REGDEF_BIT(, 6)
+REGDEF_END(MI_SYNC_CTRL_REG)
+
+//0x08 Memory Interface Command Count Register
+#define MI_CMD_NUM_REG_OFS                  0x08
+REGDEF_BEGIN(MI_CMD_NUM_REG)
+REGDEF_BIT(CMD_CNT, 3)
+REGDEF_BIT(, 29)
+REGDEF_END(MI_CMD_NUM_REG)
+
+//0x0C Memory Interface Start Byte Register
+#define MI_START_BYTE_REG_OFS               0x0C
+REGDEF_BEGIN(MI_START_BYTE_REG)
+REGDEF_BIT(CMD_START_BYTE, 10)
+REGDEF_BIT(CMD_START_LEN, 2)
+REGDEF_BIT(PIX_START_BYTE, 10)
+REGDEF_BIT(PIX_START_LEN, 2)
+REGDEF_BIT(, 4)
+REGDEF_BIT(SERIAL_RS_AUTO, 1)
+REGDEF_BIT(SERIAL_CS_CTRL, 1)
+REGDEF_BIT(, 2)
+REGDEF_END(MI_START_BYTE_REG)
+
+//0x10 Memory Interface Command Register 1
+#define MI_CMD1_REG_OFS                     0x10
+REGDEF_BEGIN(MI_CMD1_REG)
+REGDEF_BIT(CMD, 18)
+REGDEF_BIT(, 6)
+REGDEF_BIT(CMDTYPE, 2)
+REGDEF_BIT(, 6)
+REGDEF_END(MI_CMD1_REG)
+
+//0x14 Memory Interface Command Register 2
+#define MI_CMD2_REG_OFS                     0x14
+REGDEF_BEGIN(MI_CMD2_REG)
+REGDEF_BIT(CMD, 18)
+REGDEF_BIT(, 6)
+REGDEF_BIT(CMDTYPE, 2)
+REGDEF_BIT(, 6)
+REGDEF_END(MI_CMD2_REG)
+
+//0x18 Memory Interface Command Register 3
+#define MI_CMD3_REG_OFS                     0x18
+REGDEF_BEGIN(MI_CMD3_REG)
+REGDEF_BIT(CMD, 18)
+REGDEF_BIT(, 6)
+REGDEF_BIT(CMDTYPE, 2)
+REGDEF_BIT(, 6)
+REGDEF_END(MI_CMD3_REG)
+
+//0x1C Memory Interface Command Register 4
+#define MI_CMD4_REG_OFS                     0x1C
+REGDEF_BEGIN(MI_CMD4_REG)
+REGDEF_BIT(CMD, 18)
+REGDEF_BIT(, 6)
+REGDEF_BIT(CMDTYPE, 2)
+REGDEF_BIT(, 6)
+REGDEF_END(MI_CMD4_REG)
+
+//0x20 Memory Interface Command Register 5
+#define MI_CMD5_REG_OFS                     0x20
+REGDEF_BEGIN(MI_CMD5_REG)
+REGDEF_BIT(CMD, 18)
+REGDEF_BIT(, 6)
+REGDEF_BIT(CMDTYPE, 2)
+REGDEF_BIT(, 6)
+REGDEF_END(MI_CMD5_REG)
+
+//0x24 Memory Interface Command Register 6
+#define MI_CMD6_REG_OFS                     0x24
+REGDEF_BEGIN(MI_CMD6_REG)
+REGDEF_BIT(CMD, 18)
+REGDEF_BIT(, 6)
+REGDEF_BIT(CMDTYPE, 2)
+REGDEF_BIT(, 6)
+REGDEF_END(MI_CMD6_REG)
+
+//0x28 Memory Interface Command Register 7
+#define MI_CMD7_REG_OFS                     0x28
+REGDEF_BEGIN(MI_CMD7_REG)
+REGDEF_BIT(CMD, 18)
+REGDEF_BIT(, 6)
+REGDEF_BIT(CMDTYPE, 2)
+REGDEF_BIT(, 6)
+REGDEF_END(MI_CMD7_REG)
+
+//0x2C Memory Interface Command Register 8
+#define MI_CMD8_REG_OFS                     0x2C
+REGDEF_BEGIN(MI_CMD8_REG)
+REGDEF_BIT(CMD, 18)
+REGDEF_BIT(, 6)
+REGDEF_BIT(CMDTYPE, 2)
+REGDEF_BIT(, 6)
+REGDEF_END(MI_CMD8_REG)
+
+//0x30 Memory Interface ReadBack Register 1
+#define MI_RBK1_REG_OFS                     0x30
+REGDEF_BEGIN(MI_RBK1_REG)
+REGDEF_BIT(READBACK, 18)
+REGDEF_BIT(, 14)
+REGDEF_END(MI_RBK1_REG)
+
+//0x34 Memory Interface ReadBack Register 2
+#define MI_RBK2_REG_OFS                     0x34
+REGDEF_BEGIN(MI_RBK2_REG)
+REGDEF_BIT(READBACK, 18)
+REGDEF_BIT(, 14)
+REGDEF_END(MI_RBK2_REG)
+
+//0x38 Memory Interface ReadBack Register 3
+#define MI_RBK3_REG_OFS                     0x38
+REGDEF_BEGIN(MI_RBK3_REG)
+REGDEF_BIT(READBACK, 18)
+REGDEF_BIT(, 14)
+REGDEF_END(MI_RBK3_REG)
+
+//0x3C Memory Interface ReadBack Register 4
+#define MI_RBK4_REG_OFS                     0x3C
+REGDEF_BEGIN(MI_RBK4_REG)
+REGDEF_BIT(READBACK, 18)
+REGDEF_BIT(, 14)
+REGDEF_END(MI_RBK4_REG)
+
+//0x40 Memory Interface ReadBack Register 5
+#define MI_RBK5_REG_OFS                     0x40
+REGDEF_BEGIN(MI_RBK5_REG)
+REGDEF_BIT(READBACK, 18)
+REGDEF_BIT(, 14)
+REGDEF_END(MI_RBK5_REG)
+
+//0x44 Memory Interface ReadBack Register 6
+#define MI_RBK6_REG_OFS                     0x44
+REGDEF_BEGIN(MI_RBK6_REG)
+REGDEF_BIT(READBACK, 18)
+REGDEF_BIT(, 14)
+REGDEF_END(MI_RBK6_REG)
+
+//0x48 Memory Interface ReadBack Register 7
+#define MI_RBK7_REG_OFS                     0x48
+REGDEF_BEGIN(MI_RBK7_REG)
+REGDEF_BIT(READBACK, 18)
+REGDEF_BIT(, 14)
+REGDEF_END(MI_RBK7_REG)
+
+//0x4C Memory Interface ReadBack Register 8
+#define MI_RBK8_REG_OFS                     0x4C
+REGDEF_BEGIN(MI_RBK8_REG)
+REGDEF_BIT(READBACK, 18)
+REGDEF_BIT(, 14)
+REGDEF_END(MI_RBK8_REG)
+
+//0x50 Memory Interface Polarity Control Register
+#define MI_POL_CTRL_REG_OFS                 0x50
+REGDEF_BEGIN(MI_POL_CTRL_REG)
+REGDEF_BIT(CS_INV, 1)
+REGDEF_BIT(RS_INV, 1)
+REGDEF_BIT(RD_INV, 1)
+REGDEF_BIT(WR_INV, 1)
+REGDEF_BIT(SCL_MODE, 2)
+REGDEF_BIT(, 2)
+REGDEF_BIT(CS_MANUAL, 1)
+REGDEF_BIT(CS_LEVEL, 1)
+REGDEF_BIT(, 22)
+REGDEF_END(MI_POL_CTRL_REG)
+
+//0xA0 Memory Interface Interrupt Enable Register
+#define MI_INT_EN_REG_OFS                   0xA0
+REGDEF_BEGIN(MI_INT_EN_REG)
+REGDEF_BIT(CMD_DONE, 1)
+REGDEF_BIT(FM_END, 1)
+REGDEF_BIT(FIFO_OVER, 1)
+REGDEF_BIT(SYNC, 1)
+REGDEF_BIT(, 28)
+REGDEF_END(MI_INT_EN_REG)
+
+//0xA4 Memory Interface Interrupt Status Register
+#define MI_INT_STS_REG_OFS                  0xA4
+REGDEF_BEGIN(MI_INT_STS_REG)
+REGDEF_BIT(CMD_DONE, 1)
+REGDEF_BIT(FM_END, 1)
+REGDEF_BIT(FIFO_OVR, 1)
+REGDEF_BIT(SYNC, 1)
+REGDEF_BIT(, 28)
+REGDEF_END(MI_INT_STS_REG)
+
+//0x100 Memory Interface Timing Register 0
+#define MI_TIMING_REG_OFS                   0x100
+REGDEF_BEGIN(MI_TIMING_REG)
+REGDEF_BIT(TCS, 5)
+REGDEF_BIT(, 3)
+REGDEF_BIT(TRS, 5)
+REGDEF_BIT(, 3)
+REGDEF_BIT(TRD_R, 5)
+REGDEF_BIT(, 3)
+REGDEF_BIT(TRD_A, 5)
+REGDEF_BIT(, 3)
+REGDEF_END(MI_TIMING_REG)
+
+//0x104 Memory Interface Timing Register 1
+#define MI_TIMING1_REG_OFS                  0x104
+REGDEF_BEGIN(MI_TIMING1_REG)
+REGDEF_BIT(TWR_R, 5)
+REGDEF_BIT(, 3)
+REGDEF_BIT(TWR_A, 5)
+REGDEF_BIT(, 3)
+REGDEF_BIT(CMD_DELAY, 5)
+REGDEF_BIT(, 3)
+REGDEF_BIT(CMD_PIX_DELAY_MIN, 5)
+REGDEF_BIT(, 3)
+REGDEF_END(MI_TIMING1_REG)
+
+//0x108 Memory Interface Timing Register 2
+#define MI_TIMING2_REG_OFS                  0x108
+REGDEF_BEGIN(MI_TIMING2_REG)
+REGDEF_BIT(CMD_AUTO_FRAME_DELAY, 5)
+REGDEF_BIT(, 27)
+REGDEF_END(MI_TIMING2_REG)
+
+#endif

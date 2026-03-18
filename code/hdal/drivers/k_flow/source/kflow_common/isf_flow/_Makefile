@@ -1,0 +1,71 @@
+MODULE_NAME = kflow_isf
+# DIRs
+VOS_DRIVER_DIR = $(NVT_VOS_DIR)/drivers
+KDRV_DIR = $(NVT_HDAL_DIR)/drivers/k_driver
+KFLOW_DIR = $(NVT_HDAL_DIR)/drivers/k_flow
+CURR_DRIVER_DIR = $(KFLOW_DIR)
+# INCs
+VOS_INC_PATH = $(VOS_DRIVER_DIR)/include
+KDRV_INC_PATH = $(KDRV_DIR)/include
+KFLOW_INC_PATH = $(KFLOW_DIR)/include
+CURR_DRIVER_INC_PATH = $(CURR_DRIVER_DIR)/include
+# INC FLAGs
+EXTRA_INCLUDE += \
+	-I$(VOS_INC_PATH) \
+	-I$(KDRV_INC_PATH) \
+	-I$(KFLOW_INC_PATH) \
+	-I$(CURR_DRIVER_INC_PATH) \
+
+###############################################################################
+# Linux Makefile                                                              #
+###############################################################################
+ifeq ($(NVT_PRJCFG_CFG),Linux)
+EXTRA_CFLAGS += -DDEBUG
+
+SRC += \
+	linux/isf_flow_main.c \
+	linux/isf_flow_proc.c \
+	linux/isf_flow_drv.c \
+	isf_flow_api.c \
+	isf_flow_core.c \
+	isf_flow_queue.c \
+	isf_flow_debug.c \
+	isf_flow_id.c \
+	isf_flow_unit_data.c \
+	isf_flow_unit_param.c \
+	isf_flow_unit_state.c \
+	isf_flow_data_common.c \
+	isf_flow_data_vdofm.c \
+	isf_flow_data_vdobs.c \
+	isf_flow_data_audfm.c \
+	isf_flow_data_audbs.c \
+	isf_flow_verinfo.c
+
+###############################################################################
+# rtos Makefile                                                               #
+###############################################################################
+else ifeq ($(NVT_PRJCFG_CFG),rtos)
+EXTRA_CFLAGS += \
+	-DDEBUG \
+	-Wno-format \
+
+
+SRC += \
+	rtos/isf_flow_drv.c \
+	isf_flow_api.c \
+	isf_flow_core.c \
+	isf_flow_queue.c \
+	isf_flow_debug.c \
+	isf_flow_id.c \
+	isf_flow_unit_data.c \
+	isf_flow_unit_param.c \
+	isf_flow_unit_state.c \
+	isf_flow_data_common.c \
+	isf_flow_data_vdofm.c \
+	isf_flow_data_vdobs.c \
+	isf_flow_data_audfm.c \
+	isf_flow_data_audbs.c
+
+endif
+
+include $(NVT_HDAL_DIR)/driver.mk

@@ -1,0 +1,293 @@
+
+#ifndef ENUM_DUMMY4WORD
+#define ENUM_DUMMY4WORD(name)   E_##name = 0x10000000
+#endif
+
+// ref from code/hdal/drivers/k_driver/include/rtos_na51103/pll.h
+typedef enum {
+	AXI0_CLK,  			///< AXI0 clock
+	AXI1_MCLK,          ///< AXI1 clock
+	AXI2_MCLK,          ///< AXI2 clock
+	AXI3_MCLK,          ///< AXI3 clock
+	AXI4_MCLK,          ///< AXI4 clock
+	AXI5_MCLK,          ///< AXI5 clock
+	MAU_CLK       = 12, ///< MAU clock
+	MAU2_CLK,           ///< MAU2 clock
+	CNN_CLK       = 16, ///< CNN clock
+	CNN2_CLK,           ///< CNN2 Clock
+	CNN3_CLK,           ///< CNN3 clock
+	GPDEC_CLK,          ///< GPDEC clock
+	GPENC_CLK,          ///< GPENC clock
+	GPENC2_CLK,         ///< GPENC clock
+	JPEG_CLK, 	        ///< JPEG MCLK3
+	LCD310_CLK    = 24, ///< LCD310 clock
+	LCD310_2_CLK,       ///< LCD310_2 clock
+	LCD210_CLK,         ///< LCD210 clock
+	ETH_CLK,            ///< ETH clock
+	ETH2_CLK,           ///< ETH2 clock
+	HASH_CLK,			///< HASH clock
+	RSA_CLK,            ///< RSA clock
+	CRYPTO_CLK,			///< Crypto clock
+
+	VENC_CLK      = 32, ///< VENC clock
+	VENC2_CLK,			///< VENC2 clock
+	H264D_CLK,			///< H264D clock
+	H265D_CLK,          ///< H265D clock
+	OSG_CLK,         	///< OSG clock
+	SSCA_CLK,           ///< SSCA clock
+	AGE_CLK,	 	    ///< AGE clock
+	ETH_EXTPHY_CLK,     ///< ethernet external phy clock
+	ETH2_EXTPHY_CLK,    ///< ethernet2 external phy clock
+	HWCOPY_CLK,     	///< Hwcopy clock
+	NAND_CLK,     		///< NAND clock
+	SDIO_CLK,			///< SDIO clock
+	SDIO2_CLK,          ///< SDIO2 clock
+	TVE_CLK,			///< TVE clock
+	HDMITX_CLK, 		///< HDMITX clock
+	NUE_CLK,            ///< NUE clock
+	NUE2_CLK,           ///< NUE2 clock
+	IVE_CLK       = 50, ///< IVE clock
+	SATA_CLK,           ///< SATA clock
+	SATA2_CLK,          ///< SATA2 clock
+	SATA3_CLK,          ///< SATA3 clock
+	PCIE_CLK,           ///< PCIE clock
+	USB2_CLK      = 56, ///< USB2 clock
+	USB2_2_CLK,         ///< USB2_2 clock
+	USB3_CLK,           ///< USB3 clock
+	DEI_CLK       = 60, ///< DEI clock
+	DEI2_CLK,           ///< DEI2 clock
+	VPE_CLK,            ///< VPE clock
+	VPE_LITE_CLK,       ///< VPE LITE clock
+
+	VCAPM0_CLK    = 64, ///< VCAP M0 clock
+	VCAPM1_CLK,         ///< VCAP M1 clock
+	VCAPM2_CLK,         ///< VCAP M2 clock
+	VCAP_CLK,           ///< VCAP clock
+	VCAP_PATGEN_CLK,   ///< VCAP patgen clock
+	VCAP2M0_CLK   = 72, ///< VCAP2 M0 clock
+	VCAP2M1_CLK,        ///< VCAP2 M1 clock
+	VCAP2M2_CLK,        ///< VCAP2 M2 clock
+	VCAP2_CLK,          ///< VCAP2 clock
+	VCAP2_PATGEN_CLK,   ///< VCAP2 patgen clock
+	I2C_CLK   	  = 80,	///< I2C clock
+	I2C2_CLK,           ///< I2C2 clock
+	I2C3_CLK,           ///< I2C3 clock
+	I2C4_CLK,           ///< I2C4 clock
+	UART_CLK,           ///< UART clock
+	UART2_CLK,          ///< UART2 clock
+	UART3_CLK,          ///< UART3 clock
+	UART4_CLK,          ///< UART4 clock
+	UART5_CLK,          ///< UART5 clock
+	REMOTE_CLK,         ///< remote clock
+	TMR_CLK,            ///< timer clock
+	TEMP_CLK,           ///< temp snesor clock
+	TRNG_CLK,           ///< TRNG clock
+	TRNGRO_CLK,         ///< TRNGRO clock
+	RO32K_CLK,          ///< RO 32k clock
+
+	PWM_CLK   	  = 96, ///< PWM clock
+	PWM2_CLK,           ///< PWM2 clock
+	PWM3_CLK,           ///< PWM3 clock
+	PWM4_CLK,           ///< PWM4 clock
+	WDT_CLK,            ///< WDT clock
+	USB2_PHY_CLK,		///< USB2_0 PHY clock
+	USB2_1PHY_CLK,		///< USB2_1 PHY clock
+	//USB3PHY_CLK	  = 103,///< USB3PHY clock
+	//SATAPHY_CLK,        ///< SATAPHY clock
+	//SATA2PHY_CLK,       ///< SATA2PHY clock
+	//SATA3_PCIE_PHY_CLK, ///< SATA3_PCIE phy clock
+	MSI_CLK 	  = 107,///< MSI clock
+	HVYLD_CLK 	  = 108,///< heavyload clock
+	DAI_CLK   	  = 112,///< DAI clock
+	DAI2_CLK,           ///< DAI2 clock
+	DAI3_CLK,           ///< DAI3 clock
+	DAI4_CLK,           ///< DAI4 clock
+	DAI5_CLK,           ///< DAI5 clock
+	TMR2_CLK          = 120,///< TIMER2 clock
+	TMR3_CLK,           ///< TIMER3 clock
+	SPI_CLK,            ///< SPI clock
+	CSI_CLK   	  = 120,///< CSI clock
+	CSI2_CLK,           ///< CSI2 clock
+	CSI3_CLK,           ///< CSI3 clock
+	CSI4_CLK,           ///< CSI4 clock
+	CSI5_CLK,           ///< CSI5 clock
+	CSI6_CLK,           ///< CSI6 clock
+	CSI7_CLK,           ///< CSI7 clock
+	CSI8_CLK,           ///< CSI8 clock
+
+	CSI_CK0D4_CLK = 128,///< CSI CK0/4 clock
+	CSI_CK1D4_CLK,      ///< CSI CK1/4 clock
+	CSI2_CK1D4_CLK,     ///< CSI2 CK1/4 clock
+	CSI3_CK0D4_CLK,		///< CSI3 CK0/4 clock
+	CSI3_CK1D4_CLK,     ///< CSI3 CK1/4 clock
+	CSI4_CK1D4_CLK,     ///< CSI4 CK1/4 clock
+	CSI5_CK0D4_CLK,		///< CSI5 CK0/4 clock
+	CSI5_CK1D4_CLK,     ///< CSI5 CK1/4 clock
+	CSI6_CK1D4_CLK,     ///< CSI6 CK1/4 clock
+	CSI7_CK0D4_CLK,		///< CSI7 CK0/4 clock
+	CSI7_CK1D4_CLK,     ///< CSI7 CK1/4 clock
+	CSI8_CK1D4_CLK,     ///< CSI8 CK1/4 clock
+	EXT_CLK,			///< Extclk clock
+	EXT2_CLK,			///< Extclk2 clock
+	EXT3_CLK,			///< Extclk3 clock
+	EXT4_CLK,			///< Extclk4 clock
+	CSI_PXCLK,			///< CSI pixel clock
+	CSI2_PXCLK,		    ///< CSI2 pixel clock
+	CSI3_PXCLK,         ///< CSI3 pixel clock
+	CSI4_PXCLK,         ///< CSI4 pixel clock
+	CSI5_PXCLK,         ///< CSI5 pixel clock
+	CSI6_PXCLK,         ///< CSI6 pixel clock
+	CSI7_PXCLK,         ///< CSI7 pixel clock
+	CSI8_PXCLK,         ///< CSI8 pixel clock
+
+	ENUM_DUMMY4WORD(CG_EN)
+} CG_EN;
+
+typedef enum {
+	PLL_ID_0        = 0,        ///< PLL0 (for AXI0)
+	PLL_ID_1        = 1,        ///< PLL1 (for internal 480 MHz)
+	PLL_ID_2        = 2,        ///< PLL2 (for AXI1)
+	PLL_ID_3        = 3,        ///< PLL3 (for DRAM)
+	PLL_ID_4        = 4,        ///< PLL4 (for AHB)
+	PLL_ID_5        = 5,        ///< PLL5 (for SATAPHY)
+	PLL_ID_6        = 6,        ///< PLL6 (for SDC)
+	PLL_ID_7        = 7,        ///< PLL7 (for ETH)
+	PLL_ID_8        = 8,        ///< PLL8 (for CNN)
+	PLL_ID_9        = 9,        ///< PLL9 (for DISP0)
+	PLL_ID_10       = 10,       ///< PLL10 (for DISP1)
+	PLL_ID_11       = 11,       ///< PLL11 (for DIPS2)
+	PLL_ID_12       = 12,       ///< PLL12 (for SSP)
+	PLL_ID_13       = 13,       ///< PLL13 (for AXI2)
+	PLL_ID_14       = 14,       ///< PLL14 (for VENC)
+	PLL_ID_15       = 15,       ///< PLL15 (for IPP CODEC BAKUP)
+	PLL_ID_16       = 16,       ///< PLL16 (for CPU)
+	PLL_ID_17       = 17,       ///< PLL17 (for DRAM2)
+	PLL_ID_18       = 18,       ///< PLL18 (for VDEC)
+	PLL_ID_19       = 19,       ///< PLL19 (for VCAP)
+	PLL_ID_20       = 20,       ///< PLL20 (for USB3 PHY)
+
+	PLL_ID_MAX,
+	ENUM_DUMMY4WORD(PLL_ID)
+} PLL_ID;
+
+//
+// Clock Rate bit definition
+//
+#define PLL_CLKSEL_CPU_MASK             (0x03 << PLL_CLKSEL_CPU)
+#define PLL_CLKSEL_APB_MASK             (0x01 << PLL_CLKSEL_APB)
+#define PLL_CLKSEL_DMA_ARBT_MASK		(0x03 << PLL_CLKSEL_DMA_ARBT)
+#define PLL_CLKSEL_DMA_ARBT2_MASK       (0x03 << PLL_CLKSEL_DMA_ARBT2)
+
+#define PLL_CLKSEL_IVE_MASK             (0x03 << (PLL_CLKSEL_IVE - PLL_CLKSEL_R1_OFFSET))
+#define PLL_CLKSEL_SSCA_MASK            (0x01 << (PLL_CLKSEL_SSCA - PLL_CLKSEL_R1_OFFSET))
+#define PLL_CLKSEL_CNN_MASK             (0x01 << (PLL_CLKSEL_CNN - PLL_CLKSEL_R1_OFFSET))
+#define PLL_CLKSEL_CNN2_MASK            (0x01 << (PLL_CLKSEL_CNN2 - PLL_CLKSEL_R1_OFFSET))
+#define PLL_CLKSEL_CNN3_MASK            (0x01 << (PLL_CLKSEL_CNN3 - PLL_CLKSEL_R1_OFFSET))
+#define PLL_CLKSEL_NUE_MASK             (0x01 << (PLL_CLKSEL_NUE - PLL_CLKSEL_R1_OFFSET))
+#define PLL_CLKSEL_NUE2_MASK            (0x01 << (PLL_CLKSEL_NUE2 - PLL_CLKSEL_R1_OFFSET))
+#define PLL_CLKSEL_VCAP_PATGEN_MASK     (0x03 << (PLL_CLKSEL_VCAP_PATGEN - PLL_CLKSEL_R1_OFFSET))
+#define PLL_CLKSEL_VCAP2_PATGEN_MASK    (0x03 << (PLL_CLKSEL_VCAP2_PATGEN - PLL_CLKSEL_R1_OFFSET))
+#define PLL_CLKSEL_VCAP_MASK            (0x01 << (PLL_CLKSEL_VCAP - PLL_CLKSEL_R1_OFFSET))
+#define PLL_CLKSEL_VCAP2_MASK           (0x01 << (PLL_CLKSEL_VCAP2 - PLL_CLKSEL_R1_OFFSET))
+#define PLL_CLKSEL_VPE_MASK             (0x03 << (PLL_CLKSEL_VPE - PLL_CLKSEL_R1_OFFSET))
+#define PLL_CLKSEL_VPE_LITE_MASK        (0x03 << (PLL_CLKSEL_VPE_LITE - PLL_CLKSEL_R1_OFFSET))
+#define PLL_CLKSEL_DEI_MASK             (0x03 << (PLL_CLKSEL_DEI - PLL_CLKSEL_R1_OFFSET))
+#define PLL_CLKSEL_DEI2_MASK             (0x03 << (PLL_CLKSEL_DEI2 - PLL_CLKSEL_R1_OFFSET))
+
+#define PLL_CLKSEL_JPEG_MASK            (0x03 << (PLL_CLKSEL_JPEG - PLL_CLKSEL_R3_OFFSET))
+#define PLL_CLKSEL_VENC_VENC2_MASK      (0x03 << (PLL_CLKSEL_VENC_VENC2 - PLL_CLKSEL_R3_OFFSET))
+#define PLL_CLKSEL_H264D_A_MASK         (0x03 << (PLL_CLKSEL_H264D_A - PLL_CLKSEL_R3_OFFSET))
+#define PLL_CLKSEL_H265D_A_MASK         (0x01 << (PLL_CLKSEL_H265D_A - PLL_CLKSEL_R3_OFFSET))
+#define PLL_CLKSEL_H264D_M_MASK         (0x01 << (PLL_CLKSEL_H264D_M - PLL_CLKSEL_R3_OFFSET))
+#define PLL_CLKSEL_H265D_M_MASK         (0x01 << (PLL_CLKSEL_H265D_M - PLL_CLKSEL_R3_OFFSET))
+#define PLL_CLKSEL_OSG_MASK	            (0x01 << (PLL_CLKSEL_OSG - PLL_CLKSEL_R3_OFFSET))
+
+#define PLL_CLKSEL_SDIO_MASK            (0x03 << (PLL_CLKSEL_SDIO - PLL_CLKSEL_R4_OFFSET))
+#define PLL_CLKSEL_SDIO2_MASK           (0x03 << (PLL_CLKSEL_SDIO2 - PLL_CLKSEL_R4_OFFSET))
+#define PLL_CLKSEL_LCD210_MASK 	        (0x03 << (PLL_CLKSEL_LCD210 - PLL_CLKSEL_R4_OFFSET))
+#define PLL_CLKSEL_LCD310_MASK		    (0x03 << (PLL_CLKSEL_LCD310 - PLL_CLKSEL_R4_OFFSET))
+#define PLL_CLKSEL_LCD310_2_MASK	    (0x01 << (PLL_CLKSEL_LCD310_2 - PLL_CLKSEL_R4_OFFSET))
+#define PLL_CLKSEL_LCD310_M_MASK 	    (0x01 << (PLL_CLKSEL_LCD310_M - PLL_CLKSEL_R4_OFFSET))
+#define PLL_CLKSEL_LCD310_2_M_MASK      (0x01 << (PLL_CLKSEL_LCD310_2_M - PLL_CLKSEL_R4_OFFSET))
+
+#define PLL_CLKSEL_EXTCLK_MASK          (0x03 << (PLL_CLKSEL_EXTCLK - PLL_CLKSEL_R5_OFFSET))
+#define PLL_CLKSEL_EXTCLK2_MASK         (0x03 << (PLL_CLKSEL_EXTCLK2 - PLL_CLKSEL_R5_OFFSET))
+#define PLL_CLKSEL_EXTCLK3_MASK         (0x03 << (PLL_CLKSEL_EXTCLK3 - PLL_CLKSEL_R5_OFFSET))
+#define PLL_CLKSEL_EXTCLK4_MASK         (0x03 << (PLL_CLKSEL_EXTCLK4 - PLL_CLKSEL_R5_OFFSET))
+#define PLL_CLKSEL_HASH_MASK			(0x01 << (PLL_CLKSEL_HASH - PLL_CLKSEL_R5_OFFSET))
+#define PLL_CLKSEL_RSA_MASK				(0x01 << (PLL_CLKSEL_RSA - PLL_CLKSEL_R5_OFFSET))
+#define PLL_CLKSEL_CRYPTO_MASK			(0x01 << (PLL_CLKSEL_CRYPTO - PLL_CLKSEL_R5_OFFSET))
+#define PLL_CLKSEL_TRNG_MASK            (0x01 << (PLL_CLKSEL_TRNG - PLL_CLKSEL_R5_OFFSET))
+#define PLL_CLKSEL_TRNGRO_CLKSRC_MASK   (0x01 << (PLL_CLKSEL_TRNGRO_CLKSRC- PLL_CLKSEL_R5_OFFSET))
+#define PLL_CLKSEL_REMOTE_MASK          (0x03 << (PLL_CLKSEL_REMOTE - PLL_CLKSEL_R5_OFFSET))
+
+#define PLL_CLKSEL_CSI_MASK				(0x01 << (PLL_CLKSEL_CSI - PLL_CLKSEL_R6_OFFSET))
+#define PLL_CLKSEL_CSI2_MASK			(0x01 << (PLL_CLKSEL_CSI2 - PLL_CLKSEL_R6_OFFSET))
+#define PLL_CLKSEL_CSI3_MASK			(0x01 << (PLL_CLKSEL_CSI3 - PLL_CLKSEL_R6_OFFSET))
+#define PLL_CLKSEL_CSI4_MASK			(0x01 << (PLL_CLKSEL_CSI4 - PLL_CLKSEL_R6_OFFSET))
+#define PLL_CLKSEL_CSI5_MASK			(0x01 << (PLL_CLKSEL_CSI5 - PLL_CLKSEL_R6_OFFSET))
+#define PLL_CLKSEL_CSI6_MASK			(0x01 << (PLL_CLKSEL_CSI6 - PLL_CLKSEL_R6_OFFSET))
+#define PLL_CLKSEL_CSI7_MASK			(0x01 << (PLL_CLKSEL_CSI7 - PLL_CLKSEL_R6_OFFSET))
+#define PLL_CLKSEL_CSI8_MASK			(0x01 << (PLL_CLKSEL_CSI8 - PLL_CLKSEL_R6_OFFSET))
+#define PLL_CLKSEL_CSI_PXCLK_MASK		(0x03 << (PLL_CLKSEL_CSI_PXCLK - PLL_CLKSEL_R6_OFFSET))
+#define PLL_CLKSEL_CSI2_PXCLK_MASK		(0x03 << (PLL_CLKSEL_CSI2_PXCLK - PLL_CLKSEL_R6_OFFSET))
+#define PLL_CLKSEL_CSI3_PXCLK_MASK		(0x03 << (PLL_CLKSEL_CSI3_PXCLK - PLL_CLKSEL_R6_OFFSET))
+#define PLL_CLKSEL_CSI4_PXCLK_MASK		(0x03 << (PLL_CLKSEL_CSI4_PXCLK - PLL_CLKSEL_R6_OFFSET))
+#define PLL_CLKSEL_CSI5_PXCLK_MASK		(0x03 << (PLL_CLKSEL_CSI5_PXCLK - PLL_CLKSEL_R6_OFFSET))
+#define PLL_CLKSEL_CSI6_PXCLK_MASK		(0x03 << (PLL_CLKSEL_CSI6_PXCLK - PLL_CLKSEL_R6_OFFSET))
+#define PLL_CLKSEL_CSI7_PXCLK_MASK		(0x03 << (PLL_CLKSEL_CSI7_PXCLK - PLL_CLKSEL_R6_OFFSET))
+#define PLL_CLKSEL_CSI8_PXCLK_MASK		(0x03 << (PLL_CLKSEL_CSI8_PXCLK - PLL_CLKSEL_R6_OFFSET))
+
+#define PLL_CLKSEL_CSIPHY_CSI_CK0_MASK	(0x01 << (PLL_CLKSEL_CSIPHY_CSI_CK0_PHASE - PLL_CLKSEL_R7_OFFSET))
+#define PLL_CLKSEL_CSIPHY_CSI_CK1_MASK	(0x01 << (PLL_CLKSEL_CSIPHY_CSI_CK1_PHASE - PLL_CLKSEL_R7_OFFSET))
+#define PLL_CLKSEL_CSIPHY_CSI2_CK1_MASK	(0x01 << (PLL_CLKSEL_CSIPHY_CSI2_CK1_PHASE - PLL_CLKSEL_R7_OFFSET))
+#define PLL_CLKSEL_CSIPHY2_CSI3_CK0_MASK	(0x01 << (PLL_CLKSEL_CSIPHY2_CSI3_CK0_PHASE - PLL_CLKSEL_R7_OFFSET))
+#define PLL_CLKSEL_CSIPHY2_CSI3_CK1_MASK	(0x01 << (PLL_CLKSEL_CSIPHY2_CSI3_CK1_PHASE - PLL_CLKSEL_R7_OFFSET))
+#define PLL_CLKSEL_CSIPHY2_CSI4_CK1_MASK	(0x01 << (PLL_CLKSEL_CSIPHY2_CSI4_CK1_PHASE - PLL_CLKSEL_R7_OFFSET))
+#define PLL_CLKSEL_CSIPHY3_CSI5_CK0_MASK	(0x01 << (PLL_CLKSEL_CSIPHY3_CSI5_CK0_PHASE - PLL_CLKSEL_R7_OFFSET))
+#define PLL_CLKSEL_CSIPHY3_CSI5_CK1_MASK	(0x01 << (PLL_CLKSEL_CSIPHY3_CSI5_CK1_PHASE - PLL_CLKSEL_R7_OFFSET))
+#define PLL_CLKSEL_CSIPHY3_CSI6_CK1_MASK	(0x01 << (PLL_CLKSEL_CSIPHY3_CSI6_CK1_PHASE - PLL_CLKSEL_R7_OFFSET))
+#define PLL_CLKSEL_CSIPHY4_CSI7_CK0_MASK	(0x01 << (PLL_CLKSEL_CSIPHY4_CSI7_CK0_PHASE - PLL_CLKSEL_R7_OFFSET))
+#define PLL_CLKSEL_CSIPHY4_CSI7_CK1_MASK	(0x01 << (PLL_CLKSEL_CSIPHY4_CSI7_CK1_PHASE - PLL_CLKSEL_R7_OFFSET))
+#define PLL_CLKSEL_CSIPHY4_CSI8_CK1_MASK	(0x01 << (PLL_CLKSEL_CSIPHY4_CSI8_CK1_PHASE - PLL_CLKSEL_R7_OFFSET))
+
+
+#define PLL_CLKSEL_VCAP_PATGEN_CLKDIV_MASK     (0x3F << (PLL_CLKSEL_VCAP_PATGEN_CLKDIV - PLL_CLKSEL_R8_OFFSET))
+#define PLL_CLKSEL_VCAP2_PATGEN_CLKDIV_MASK    (0x3F << (PLL_CLKSEL_VCAP2_PATGEN_CLKDIV - PLL_CLKSEL_R8_OFFSET))
+
+#define PLL_CLKSEL_PWM_CLKDIV_MASK      (0x3FFF << (PLL_CLKSEL_PWM_CLKDIV - PLL_CLKSEL_R9_OFFSET))
+#define PLL_CLKSEL_PWM2_CLKDIV_MASK     (0x3FFF << (PLL_CLKSEL_PWM2_CLKDIV - PLL_CLKSEL_R9_OFFSET))
+
+#define PLL_CLKSEL_PWM3_CLKDIV_MASK     (0x3FFF << (PLL_CLKSEL_PWM3_CLKDIV - PLL_CLKSEL_R10_OFFSET))
+#define PLL_CLKSEL_PWM4_CLKDIV_MASK     (0x3FFF << (PLL_CLKSEL_PWM4_CLKDIV - PLL_CLKSEL_R10_OFFSET))
+
+#define PLL_CLKSEL_SDIO_CLKDIV_MASK     (0x7FF<< (PLL_CLKSEL_SDIO_CLKDIV - PLL_CLKSEL_R12_OFFSET))
+#define PLL_CLKSEL_SDIO2_CLKDIV_MASK    (0x7FF<< (PLL_CLKSEL_SDIO2_CLKDIV - PLL_CLKSEL_R12_OFFSET))
+
+#define PLL_CLKSEL_UART_CLKDIV_MASK     (0xFF << (PLL_CLKSEL_UART_CLKDIV - PLL_CLKSEL_R13_OFFSET))
+#define PLL_CLKSEL_UART2_CLKDIV_MASK    (0xFF << (PLL_CLKSEL_UART2_CLKDIV - PLL_CLKSEL_R13_OFFSET))
+#define PLL_CLKSEL_UART3_CLKDIV_MASK    (0xFF << (PLL_CLKSEL_UART3_CLKDIV - PLL_CLKSEL_R13_OFFSET))
+#define PLL_CLKSEL_UART4_CLKDIV_MASK    (0xFF << (PLL_CLKSEL_UART4_CLKDIV - PLL_CLKSEL_R13_OFFSET))
+
+#define PLL_CLKSEL_UART5_CLKDIV_MASK    (0xFF << (PLL_CLKSEL_UART5_CLKDIV - PLL_CLKSEL_R14_OFFSET))
+#define PLL_CLKSEL_NAND_CLKDIV_MASK     (0x3F << (PLL_CLKSEL_NAND_CLKDIV - PLL_CLKSEL_R14_OFFSET))
+
+#define PLL_CLKSEL_LCD210_CLKDIV_MASK    (0x3F << (PLL_CLKSEL_LCD210_CLKDIV - PLL_CLKSEL_R15_OFFSET))
+#define PLL_CLKSEL_LCD310_CLKDIV_MASK    (0x3F << (PLL_CLKSEL_LCD310_CLKDIV - PLL_CLKSEL_R15_OFFSET))
+#define PLL_CLKSEL_LCD310_2_CLKDIV_MASK  (0x3F << (PLL_CLKSEL_LCD310_2_CLKDIV - PLL_CLKSEL_R15_OFFSET))
+
+#define PLL_CLKSEL_TRNG_RO_CLKDIV_MASK  (0xFF << (PLL_CLKSEL_TRNG_RO_CLKDIV - PLL_CLKSEL_R16_OFFSET))
+#define PLL_CLKSEL_TRNG_RO_DELAY_MASK   (0xF  << (PLL_CLKSEL_TRNG_RO_DELAY - PLL_CLKSEL_R16_OFFSET))
+#define PLL_CLKSEL_TRNG_CLKDIV_MASK     (0xFF << (PLL_CLKSEL_TRNG_CLKDIV - PLL_CLKSEL_R16_OFFSET))
+
+#define PLL_CLKSEL_EXTCLK_CLKDIV_MASK    (0x1F << (PLL_CLKSEL_EXTCLK_CLKDIV - PLL_CLKSEL_R17_OFFSET))
+#define PLL_CLKSEL_EXTCLK2_CLKDIV_MASK   (0x1F << (PLL_CLKSEL_EXTCLK2_CLKDIV - PLL_CLKSEL_R17_OFFSET))
+#define PLL_CLKSEL_EXTCLK3_CLKDIV_MASK   (0x1F << (PLL_CLKSEL_EXTCLK3_CLKDIV - PLL_CLKSEL_R17_OFFSET))
+#define PLL_CLKSEL_EXTCLK4_CLKDIV_MASK   (0x1F << (PLL_CLKSEL_EXTCLK4_CLKDIV - PLL_CLKSEL_R17_OFFSET))
+
+#define PLL_CLKSEL_DAI_CLKDIV_MASK    (0xFF << (PLL_CLKSEL_DAI_CLKDIV - PLL_CLKSEL_R18_OFFSET))
+#define PLL_CLKSEL_DAI2_CLKDIV_MASK   (0xFF << (PLL_CLKSEL_DAI2_CLKDIV - PLL_CLKSEL_R18_OFFSET))
+#define PLL_CLKSEL_DAI3_CLKDIV_MASK   (0xFF << (PLL_CLKSEL_DAI3_CLKDIV - PLL_CLKSEL_R18_OFFSET))
+#define PLL_CLKSEL_DAI4_CLKDIV_MASK   (0xFF << (PLL_CLKSEL_DAI4_CLKDIV - PLL_CLKSEL_R18_OFFSET))
+
+#define PLL_CLKSEL_DAI5_CLKDIV_MASK   (0xFF << (PLL_CLKSEL_DAI5_CLKDIV - PLL_CLKSEL_R19_OFFSET))

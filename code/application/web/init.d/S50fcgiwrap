@@ -1,0 +1,67 @@
+#!/bin/sh
+
+DESC="Simple FastCGI wrapper for CGI scripts"
+DAEMON=/usr/sbin/fcgiwrap
+PIDFILE=/run/fcgiwrap.pid
+SOCKET=/run/fcgiwrap.socket
+
+test -x $DAEMON || exit 0
+
+# if [ -z "$1" ]; then
+#   set -- start
+# fi
+
+start() {
+	FCGIWRAP_ARGS="$FCGIWRAP_ARGS -f -s unix:$SOCKET"
+	printf "Starting fcgiwrap daemon: "
+	# TODO: Fix this security issue
+	umask 000
+
+	# Ensure the directory for the socket exists
+	SOCKET_DIR=$(dirname "$SOCKET")
+	[ -d "$SOCKET_DIR" ] || mkdir -p "$SOCKET_DIR"
+
+	start-stop-daemon -S -m -p $PIDFILE \
+		-b \
+		-x $DAEMON -- $FCGIWRAP_ARGS
+	[ $? = 0 ] && echo "OK" || echo "FAIL"
+
+	# Wait up to 0.5 seconds for the socket to appear
+	for i in $(seq 1 5); do
+		[ -S "$SOCKET" ] && break
+		sleep 0.1
+	done
+	if [ -S "$SOCKET" ]; then
+		chmod a+wx $SOCKET
+	else
+		echo "Warning: $SOCKET not found, cannot chmod."
+	fi
+}
+stop() {
+	printf "Stopping fcgiwrap: "
+	start-stop-daemon -K -p $PIDFILE
+	[ $? = 0 ] && echo "OK" || echo "FAIL"
+	rm -rf $PIDFILE
+}
+restart() {
+	stop
+	start
+}
+
+case "$1" in
+	start)
+		export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/lib
+		start
+		;;
+	stop)
+		stop
+		;;
+	restart|reload)
+		restart
+		;;
+	*)
+		echo "Usage: $0 {start|stop|restart}"
+		exit 1
+esac
+
+exit $?

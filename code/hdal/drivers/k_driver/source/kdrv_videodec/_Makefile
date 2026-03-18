@@ -1,0 +1,114 @@
+MODULE_NAME := h26xdec
+# DIRs
+RTOS_OUTPUT_DIR = $(CURR_DRIVER_DIR)/output
+# INCs
+CURR_DRIVER_INC_PATH = $(CURR_DRIVER_DIR)/include
+# INC FLAGs
+EXTRA_INCLUDE += \
+	-I$(VOS_INC_PATH) \
+	-I$(KDRV_INC_PATH) \
+	-I$(CURR_DRIVER_INC_PATH) \
+
+###############################################################################
+# Linux Makefile                                                              #
+###############################################################################
+ifeq ($(NVT_PRJCFG_CFG),Linux)
+C_CFLAGS += \
+	-D__LINUX \
+	-Werror \
+
+EXTRA_CFLAGS += \
+	-Wno-date-time  \
+	-I$(src)/include \
+	-DDEBUG
+
+vpu_265-src = \
+	vpu/h265/hevc_tool.c \
+	vpu/h265/hevc_hw.c \
+	vpu/h265/hevc_resmgr.c \
+	vpu/hevc_dec_entity.c \
+
+vps_265-src = \
+	vps/h265/hevc_bitstream.c \
+	vps/h265/hevc_rbspstream.c \
+	vps/h265/hevc_nal.c
+
+vpu_264-src = \
+	vpu/h264/H264Dec_Reg.c \
+	vpu/h264/H264Dec_Tools.c \
+	vpu/h264/H264Dec_LLD.c \
+	vpu/h264/H264Dec_VLD.c \
+
+vpu_264-src = \
+	vpu/h264/H264Dec_Picbuf.c \
+	vpu/h264/H264Dec_Drv.c \
+	vpu/avc_dec_entity.c \
+
+vps_264-src = \
+	vps/h264/bitstream.c \
+	vps/h264/rbspstream.c \
+	vps/h264/H264PS_DrvVLD.c \
+
+
+EXTRA_CFLAGS += -I$(VG_LOG_DIR) -I$(CURR_DRIVER_INC_PATH) -I$(CURR_DRIVER_INC_PATH)/kdrv_videodec -I$(KDRV_SRC_DIR)
+
+top-src = \
+	h26xdec_flow.c \
+	h26xdec_entity_comm.c \
+	h26xdec_dbg.c \
+	h26xdec_platform.c \
+	h26xdec_proc.c \
+	h26xdec_cert.c \
+
+top-src = \
+	imvq.c \
+	h26xdec_ll.c \
+
+top-src = kdrv_videodec.c
+top-src = $(vpu_265-src) $(vpu_264-src)
+top-src = $(vps_265-src) $(vps_264-src)
+
+SRC = $(top-src)
+
+###############################################################################
+# rtos Makefile                                                               #
+###############################################################################
+else ifeq ($(NVT_PRJCFG_CFG),rtos)
+
+SUBDIRS := $(dir $(shell find . -name Makefile))
+SUBDIRS := $(shell echo $(SUBDIRS) | sed -e 's/\.\///g';)
+OUTPUT_NAME = lib$(MODULE_NAME).a
+RTOS_KERNEL_DIR = $(KERNELDIR)/lib/FreeRTOS
+RTOS_LIB_DIR = $(KERNELDIR)/lib
+
+C_CFLAGS = $(PLATFORM_CFLAGS) $(EXTRA_INCLUDE) $(EXTRA_CFLAGS)
+
+SRC += \
+	vpu/h265/hevc_tool.c \
+	vpu/h265/hevc_hw.c \
+	vpu/h265/hevc_resmgr.c \
+	vpu/hevc_dec_entity.c \
+	vps/h265/hevc_bitstream.c \
+	vps/h265/hevc_rbspstream.c \
+	vps/h265/hevc_nal.c \
+	vpu/h264/H264Dec_Reg.c \
+	vpu/h264/H264Dec_Tools.c \
+	vpu/h264/H264Dec_LLD.c \
+	vpu/h264/H264Dec_VLD.c \
+	vpu/h264/H264Dec_Picbuf.c \
+	vpu/h264/H264Dec_Drv.c \
+	vpu/avc_dec_entity.c \
+	vps/h264/bitstream.c \
+	vps/h264/rbspstream.c \
+	vps/h264/H264PS_DrvVLD.c \
+	kdrv_videodec.c \
+	h26xdec_flow.c \
+	h26xdec_entity_comm.c \
+	h26xdec_platform.c \
+	imvq.c h26xdec_ll.c \
+	platform_port_rtos.c \
+	h26xdec_cert.c \
+
+endif
+
+include $(NVT_HDAL_DIR)/drivers.mk

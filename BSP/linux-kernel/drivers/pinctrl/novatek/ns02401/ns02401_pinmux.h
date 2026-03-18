@@ -1,0 +1,519 @@
+#ifndef __PINCTRL_NVT_H
+#define __PINCTRL_NVT_H
+
+#include <plat/top_reg.h>
+#include <plat/hardware.h>
+#include <plat/top.h>
+#include <plat/nvt-gpio.h>
+#include <plat/pad.h>
+#include <linux/spinlock.h>
+#include <linux/slab.h>
+#include <linux/delay.h>
+
+
+#define DRV_VERSION "0.00.02"
+
+#define TOP_SETREG(info, ofs,value)    OUTW(info->top_base+(ofs),(value))
+#define TOP_GETREG(info, ofs)          INW(info->top_base+(ofs))
+
+#define TGE_REG_ADDR(ofs)              (NVT_TGE_BASE_VIRT+(ofs))
+#define TGE_GETREG(ofs)                INW(TGE_REG_ADDR(ofs))
+#define TGE_SETREG(ofs,value)          OUTW(TGE_REG_ADDR(ofs), (value))
+#define TGE_CONTROL_OFS                0x0
+
+#define MAX_PAD_NUM  137
+
+#define GPIO_SETREG(info, ofs,value)   OUTW(info->gpio_base+(ofs),(value))
+#define GPIO_GETREG(info, ofs)         INW(info->gpio_base+(ofs))
+
+struct nvt_pad_info {
+	unsigned long pad_ds_pin;
+	unsigned long driving;
+	unsigned long pad_gpio_pin;
+	unsigned long direction;
+};
+
+struct nvt_gpio_info {
+	unsigned long gpio_pin;
+	unsigned long direction;
+	unsigned long level;
+};
+
+struct nvt_power_info {
+	unsigned long pad_power_id;
+	unsigned long pad_power;
+};
+
+typedef enum {
+	CGPIO_0,
+	CGPIO_1,
+	CGPIO_2,
+	CGPIO_3,
+	CGPIO_4,
+	CGPIO_5,
+	CGPIO_6,
+	CGPIO_7,
+	CGPIO_8,
+	CGPIO_9,
+	CGPIO_10,
+	CGPIO_11,
+	CGPIO_12,
+	CGPIO_13,
+	CGPIO_14,
+	CGPIO_15,
+	CGPIO_16,
+	CGPIO_17,
+	C_GPIO_all,
+	JGPIO_0,
+	JGPIO_1,
+	JGPIO_2,
+	JGPIO_3,
+	JGPIO_4,
+	JGPIO_5,
+	J_GPIO_all,
+	PGPIO_0,
+	PGPIO_1,
+	PGPIO_2,
+	PGPIO_3,
+	PGPIO_4,
+	PGPIO_5,
+	PGPIO_6,
+	PGPIO_7,
+	PGPIO_8,
+	PGPIO_9,
+	PGPIO_10,
+	PGPIO_11,
+	PGPIO_12,
+	PGPIO_13,
+	PGPIO_14,
+	PGPIO_15,
+	PGPIO_16,
+	PGPIO_17,
+	PGPIO_18,
+	PGPIO_19,
+	PGPIO_20,
+	PGPIO_21,
+	PGPIO_22,
+	PGPIO_23,
+	PGPIO_24,
+	PGPIO_25,
+	PGPIO_26,
+	PGPIO_27,
+	PGPIO_28,
+	PGPIO_29,
+	PGPIO_30,
+	PGPIO_31,
+	PGPIO_32,
+	PGPIO_33,
+	PGPIO_34,
+	PGPIO_35,
+	PGPIO_36,
+	PGPIO_37,
+	PGPIO_38,
+	PGPIO_39,
+	PGPIO_40,
+	PGPIO_41,
+	PGPIO_42,
+	PGPIO_43,
+	PGPIO_44,
+	PGPIO_45,
+	PGPIO_46,
+	PGPIO_47,
+	P_GPIO_all,
+	EGPIO_0,
+	EGPIO_1,
+	EGPIO_2,
+	EGPIO_3,
+	EGPIO_4,
+	EGPIO_5,
+	EGPIO_6,
+	EGPIO_7,
+	EGPIO_8,
+	EGPIO_9,
+	EGPIO_10,
+	EGPIO_11,
+	EGPIO_12,
+	EGPIO_13,
+	EGPIO_14,
+	EGPIO_15,
+	EGPIO_16,
+	EGPIO_17,
+	EGPIO_18,
+	EGPIO_19,
+	EGPIO_20,
+	EGPIO_21,
+	EGPIO_22,
+	EGPIO_23,
+	EGPIO_24,
+	EGPIO_25,
+	EGPIO_26,
+	EGPIO_27,
+	EGPIO_28,
+	EGPIO_29,
+	EGPIO_30,
+	EGPIO_31,
+	E_GPIO_all,
+	DGPIO_0,
+	DGPIO_1,
+	DGPIO_2,
+	DGPIO_3,
+	DGPIO_4,
+	DGPIO_5,
+	DGPIO_6,
+	DGPIO_7,
+	DGPIO_8,
+	DGPIO_9,
+	DGPIO_10,
+	DGPIO_11,
+	D_GPIO_all,
+	BGPIO_0,
+	BGPIO_1,
+	BGPIO_2,
+	BGPIO_3,
+	BGPIO_4,
+	BGPIO_5,
+	BGPIO_6,
+	BGPIO_7,
+	BGPIO_8,
+	BGPIO_9,
+	BGPIO_10,
+	BGPIO_11,
+	BGPIO_12,
+	BGPIO_13,
+	BGPIO_14,
+	BGPIO_15,
+	BGPIO_16,
+	B_GPIO_all,
+	AGPIO_0,
+	AGPIO_1,
+	AGPIO_2,
+	AGPIO_3,
+	A_GPIO_all,
+	GPIO_total,
+
+	// backward compatible
+	/*CGPIO_18,
+	CGPIO_19,
+	CGPIO_20,
+	CGPIO_21,
+	CGPIO_22,
+	CGPIO_23,
+	CGPIO_24,
+	CGPIO_25,
+	DGPIO_12,
+	DGPIO_13,
+	DGPIO_14,*/
+
+	ENUM_DUMMY4WORD(GPIO_ALL)
+} GPIO_ALL;
+
+typedef enum {
+	/* [0x04] Storage */
+	func_FSPI = 1,
+	func_SDIO,
+	func_SDIO_2,
+	func_SDIO_3,
+	func_SDIO2,
+	func_EJTAG,
+	func_EXTROM,
+
+	/* [0x0C] ETH */
+	func_ETH,
+	func_ETH2,
+
+	/* [0x10] I2C */
+	func_I2C,
+	func_I2C2,
+	func_I2C3,
+	func_I2C3_2,
+	func_I2C3_3,
+	func_I2C3_4,
+	func_I2C4,
+	func_I2C4_2,
+	func_I2C4_3,
+	func_I2C4_4,
+	func_I2C5,
+	func_I2C5_2,
+	func_I2C5_3,
+	func_I2C5_4,
+	func_I2C6,
+	func_I2C7,
+	func_I2C8,
+
+	/* [0x18] PWM */
+	func_PWM,
+	func_PWM2,
+	func_PWM3,
+	func_PWM4,
+	func_PWM5,
+	func_PWM6,
+
+	/* [0x30] I2S */
+	func_I2S,
+	func_I2S_MCLK,
+	func_I2S_2,
+	func_I2S_2_MCLK,
+	func_I2S2,
+	func_I2S2_MCLK,
+	func_I2S2_2,
+	func_I2S2_2_MCLK,
+	func_I2S2_3,
+	func_I2S2_3_MCLK,
+	func_I2S3,
+	func_I2S3_MCLK,
+	func_I2S4,
+	func_I2S4_MCLK,
+	func_HDMI_CEC,
+	func_HDMI2_CEC,
+	func_HDMI3_CEC,
+
+	/* [0x34] UART */
+	func_UART,
+	func_UART_2,
+	func_UART2,
+	func_UART2_2,
+	func_UART3,
+	func_UART4,
+	func_UART4_2,
+	func_UART4_3,
+	func_UART5,
+	func_UART5_2,
+	func_UART_RTSCTS,
+	func_UART_2_RTSCTS,
+	func_UART2_RTSCTS,
+	func_UART2_2_RTSCTS,
+	func_UART3_RTSCTS,
+
+	/* [0x40] Remote / SDP */
+	func_Remote,
+	func_SDP,
+	func_SDP_2,
+	func_SDP_RDY,
+	func_SDP_2_RDY,
+
+	/* [0x44] SPI */
+	func_SPI,
+	func_SPI2,
+	func_SPI2_2,
+	func_SPI2_3,
+	func_SPI2_4,
+	func_SPI_RDY,
+	func_SPI2_RDY,
+
+	func_MISC,
+
+	/* [0x08] LCD */
+	func_LCD,
+
+	FUNC_total,
+
+#if 0
+	// backward compatible
+	func_I2C_1,
+	func_I2C_2,
+	func_I2C2_1,
+	func_I2C2_2,
+	func_I2C3_1,
+	func_I2C4_1,
+	func_I2C5_1,
+	func_I2C6_1,
+	func_I2C6_2,
+	func_I2C6_3,
+	func_I2C7_1,
+	func_I2C7_2,
+	func_I2C8_1,
+	func_I2C8_2,
+	func_I2C9_1,
+	func_I2C9_2,
+	func_I2C10_1,
+	func_I2C10_2,
+	func_I2C11_1,
+	func_I2C12_1,
+	func_I2C13_1,
+	func_I2C13_2,
+	func_I2C14_1,
+	func_I2C14_2,
+	func_I2C15_1,
+	func_I2C15_2,
+	func_I2C15_3,
+	func_I2C16_1,
+	func_I2C16_2,
+	func_I2C17_1,
+	func_I2C17_2,
+	func_I2C17_3,
+	func_I2C18_1,
+	func_I2C18_2,
+	func_I2C18_3,
+	func_I2C19_1,
+	func_I2C19_2,
+	func_I2C19_3,
+	func_I2C20_1,
+	func_I2C20_2,
+	func_PWM_1,
+	func_PWM_2,
+	func_PWM1_1,
+	func_PWM1_2,
+	func_PWM2_1,
+	func_PWM2_2,
+	func_PWM3_1,
+	func_PWM3_2,
+	func_PWM4_1,
+	func_PWM4_2,
+	func_PWM5_1,
+	func_PWM5_2,
+	func_PWM6_1,
+	func_PWM6_2,
+	func_PWM7_1,
+	func_PWM7_2,
+	func_PWM8_1,
+	func_PWM8_2,
+	func_PWM8_3,
+	func_PWM9_1,
+	func_PWM9_2,
+	func_PWM9_3,
+	func_PWM10_1,
+	func_PWM10_2,
+	func_PWM10_3,
+	func_PWM11_1,
+	func_PWM11_2,
+	func_PWM11_3,
+	func_PWM12_1,
+	func_CCNT,
+	func_CCNT2,
+	func_CCNT3,
+	/*SENSOR*/
+	func_SENSOR,
+	/*func_SENSOR_SN3_MCLK2,
+	func_SENSOR_SN4_MCLK2,*/
+	func_SENSOR2,
+	/*func_SENSOR2_CCIR8_A,
+	func_SENSOR2_CCIR8_B,
+	func_SENSOR2_CCIR8_AB,
+	func_SENSOR2_CCIR16,
+	func_SENSOR2_CCIR_VSHS,
+	func_SENSOR2_SN1_MCLK,
+	func_SENSOR2_SN2_MCLK,*/
+	func_SENSORMISC,
+	func_SENSORMISCII,
+	func_SN1_MCLK,
+	func_SN1_XVSXHS,
+	func_SN2_MCLK,
+	func_SN2_XVSXHS,
+	func_SN3_MCLK,
+	func_SN3_XVSXHS,
+	func_SN4_MCLK,
+	func_SN4_XVSXHS,
+	func_SN5_MCLK,
+	func_SN5_XVSXHS,
+	func_SN6_MCLK,
+	func_SN6_XVSXHS,
+	func_SN7_MCLK,
+	func_SN7_XVSXHS,
+	func_SN8_MCLK,
+	func_SN8_XVSXHS,
+	func_MIPI,
+	func_I2S_1,
+	func_I2S_1_MCLK,
+	func_I2S2_1,
+	func_I2S2_1_MCLK,
+	func_I2S3_1,
+	func_I2S3_1_MCLK,
+	func_I2S3_2,
+	func_I2S3_2_MCLK,
+	func_I2S4_1,
+	func_I2S4_1_MCLK,
+	func_I2S4_2,
+	func_I2S4_2_MCLK,
+	func_AUDIO_DMIC,
+	func_AUDIO_EXT_MCLK,
+	func_UART4_1,
+	func_UART5_1,
+	func_UART6_1,
+	func_UART6_2,
+	func_UART7_1,
+	func_UART7_2,
+	func_UART8_1,
+	func_UART8_2,
+	func_UART9_1,
+	func_UART9_2,
+	func_UART2_CTSRTS,
+	func_UART2_DTROE,
+	func_UART3_CTSRTS,
+	func_UART3_DTROE,
+	func_UART4_CTSRTS,
+	func_UART4_DTROE,
+	func_UART5_CTSRTS,
+	func_UART5_DTROE,
+	func_UART6_CTSRTS,
+	func_UART6_DTROE,
+	func_UART7_CTSRTS,
+	func_UART7_DTROE,
+	func_UART8_CTSRTS,
+	func_UART8_DTROE,
+	func_UART9_CTSRTS,
+	func_UART9_DTROE,
+	func_SDP_1,
+	func_SPI_1,
+	func_SPI_2,
+	func_SPI_3,
+	func_SPI2_1,
+	func_SPI3_1,
+	func_SPI3_2,
+	func_SPI4_1,
+	func_SPI4_2,
+	func_SPI4_3,
+	func_SPI5_1,
+	func_SPI5_2,
+	func_SPI3_RDY,
+	func_SPI3_RDY2,
+	func_SIF_1,
+	func_SIF_2,
+	func_SIF1_1,
+	func_SIF1_2,
+	func_SIF2_1,
+	func_SIF2_2,
+	func_SIF3_1,
+	func_SIF3_2,
+	func_SIF3_3,
+	func_SIF4_1,
+	func_SIF4_2,
+	func_SIF5_1,
+	func_SIF5_2,
+	func_LCD2,
+#endif
+
+	ENUM_DUMMY4WORD(FUNC_ALL)
+} FUNC_ALL;
+struct nvt_pinctrl_info {
+	void __iomem *top_base;
+	void __iomem *pad_base;
+	void __iomem *gpio_base;
+	PIN_GROUP_CONFIG top_pinmux[PIN_FUNC_MAX];
+	struct nvt_pad_info pad[MAX_PAD_NUM];
+};
+
+#define MAX_MODULE_NAME 10
+
+ER pinmux_init(struct nvt_pinctrl_info *info);
+ER pad_init(struct nvt_pinctrl_info *info, unsigned long nr_pad);
+void gpio_init(struct nvt_gpio_info *gpio, int nr_gpio, struct nvt_pinctrl_info *info);
+ER power_init(struct nvt_power_info *power, int nr_power, struct nvt_pinctrl_info *info);
+void pinmux_parsing(struct nvt_pinctrl_info *info);
+ER pinmux_parsing_i2c(uint32_t config);
+ER pinmux_parsing_i2cII(uint32_t config);
+ER pinmux_parsing_i2cIV(uint32_t config);
+ER pinmux_parsing_i2cIII(uint32_t config);
+int nvt_pinmux_proc_init(void);
+void pinmux_preset(struct nvt_pinctrl_info *info);
+void pad_preset(struct nvt_pinctrl_info *info);
+void pinmux_gpio_parsing(struct nvt_pinctrl_info *info);
+int pinmux_set_config(PINMUX_FUNC_ID id, u32 pinmux);
+
+int pad_suspend(struct nvt_pinctrl_info *info);
+int pad_resume(struct nvt_pinctrl_info *info);
+
+static inline int pinmux_set_host(struct nvt_pinctrl_info *info, PINMUX_FUNC_ID id, u32 pinmux)
+{
+	return 0;
+};
+#endif /* __PINCTRL_NVT_H */

@@ -1,0 +1,9 @@
+{
+    "_comment": "Reset Button Configuration (P_GPIO12)",
+    "gpio_pin": 12,
+    "hold_duration_sec": 10,
+    "active_low": true,
+    "enable_feedback": true,
+    "debounce_ms": 50,
+    "poll_interval_ms": 100
+}

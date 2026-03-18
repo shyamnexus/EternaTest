@@ -1,0 +1,128 @@
+{
+  "isp": {
+    "scenario": "normal",
+    "init_form_ini": true,
+    "normal_scene": "day",
+    "custom1_scene": "night",
+    "ircut_open_gpio": 35,
+    "ircut_close_gpio": 36,
+    "adjustment": {
+      "brightness": 50,
+      "contrast": 50,
+      "saturation": 50,
+      "sharpness": 50,
+      "hue": 50,
+      "gamma": 50,
+      "fps": 25,
+      "bw_mode": false,
+      "image_effect": "off"
+    },
+    "white_balance": {
+      "mode": "auto",
+      "preset": "daylight",
+      "color_temperature": 5500,
+      "r_gain": 128,
+      "g_gain": 128,
+      "b_gain": 128,
+      "awb_scene": "auto"
+    },
+    "orientation": {
+      "mirror": false,
+      "flip": false,
+      "rotation": 0,
+      "rotation_mode": "rotate_0"
+    },
+    "anti_flicker": {
+      "mode": "auto",
+      "frequency": 50
+    },
+    "exposure": {
+      "mode": "auto",
+      "iris_type": "auto",
+      "gain_mode": "auto",
+      "auto_iris_level": 5,
+      "auto_exposure_enabled": true,
+      "auto_gain_enabled": true,
+      "exposure_time": "1/30",
+      "exposure_gain": 1,
+      "metering_mode": "center",
+      "ev_compensation": 0,
+      "max_gain": 100,
+      "min_gain": 1,
+      "max_exposure_time": "1/6",
+      "min_exposure_time": "1/10000",
+      "ae_mode": "auto",
+      "manual_exposure_time_us": 33333,
+      "manual_gain_db": 0,
+      "manual_iso": 100,
+      "manual_aperture": 2.8
+    },
+    "night_to_day": {
+      "mode": "auto",
+      "ir_mode": "auto",
+      "sensitivity": 5,
+      "filter_level": 5,
+      "filter_time": 5,
+      "start_time": "18:00:00",
+      "end_time": "06:00:00",
+      "ircut_filter_action": "auto",
+      "over_exposure_suppress": "open",
+      "over_exposure_suppress_type": "auto",
+      "fill_light_mode": "IR",
+      "brightness_adjustment_mode": "auto",
+      "light_brightness": 100,
+      "light_brightness_mode": "auto"
+    },
+    "blc": {
+      "mode": "off",
+      "blc_region": "close",
+      "blc_strength": 50,
+      "wdr": "close",
+      "wdr_mode": "off",
+      "wdr_level": 50,
+      "wdr_color_protect": 50,
+      "hdr": "close",
+      "hdr_mode": "off",
+      "hdr_level": 50,
+      "hlc": "close",
+      "hlc_level": 50,
+      "dark_boost_level": 0,
+      "position_x": 0,
+      "position_y": 0,
+      "blc_region_width": 120,
+      "blc_region_height": 90
+    },
+    "image_enhancement": {
+      "scene_preset": "custom",
+      "nr_2d_enabled": true,
+      "nr_2d_mode": "auto",
+      "nr_2d_level": 50,
+      "nr_3d_enabled": true,
+      "nr_3d_mode": "auto",
+      "nr_3d_level": 50,
+      "nr_3d_motion_th": 50,
+      "color_nr_enabled": true,
+      "color_nr_level": 50,
+      "defog_enabled": false,
+      "defog_mode": "off",
+      "defog_level": 50,
+      "fog_detection": false,
+      "edge_enhance_enabled": true,
+      "edge_enhance_level": 50,
+      "edge_coring": 50
+    },
+    "corrections": {
+      "dpc_enabled": true,
+      "dpc_strength": 50,
+      "shading_enabled": true,
+      "shading_strength": 50
+    },
+    "enhancement_ratios": {
+      "dark_enhance": 30,
+      "contrast_enhance": 40,
+      "green_enhance": 0,
+      "skin_enhance": 0,
+      "auto_tone": 0
+    }
+  }
+}

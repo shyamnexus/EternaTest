@@ -1,0 +1,17 @@
+# go2rtc configuration file
+# WebSocket configuration for camera streaming
+# TLS is handled by nginx proxy (/go2rtc/ on port 443 -> port 1984)
+
+streams:
+  camera1:
+    - rtsp://0.0.0.0  # Default RTSP source
+  stream0:
+    - rtsp://0.0.0.0/stream0
+  stream1:
+    - rtsp://0.0.0.0/stream1
+  stream2:
+    - rtsp://0.0.0.0/stream2
+
+api:
+  listen: ":1984"  # HTTP port (nginx proxies /go2rtc/ from port 443 -> here)
+  origin: "*"  # Allow all origins (CORS fix)

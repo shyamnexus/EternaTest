@@ -1,0 +1,40 @@
+MODULE_NAME = nvt_senphy
+# DIRs
+VOS_DRIVER_DIR = $(NVT_VOS_DIR)/drivers
+KDRV_DIR = $(NVT_HDAL_DIR)/drivers/k_driver
+CURR_DRIVER_DIR = $(KDRV_DIR)
+# INC FLAGs
+EXTRA_INCLUDE += \
+	-I$(VOS_DRIVER_DIR)/include \
+	-I $(KDRV_DIR)/include \
+	-I$(KDRV_DIR)/source/include \
+	-I$(CURR_DRIVER_DIR)/include \
+	-I$(NVT_RTOS_DRIVER_INC_DIR) \
+
+EXTRA_INCLUDE += -I$(KDRV_INC_PATH)/rtos_$(SDK_CODENAME)
+
+###############################################################################
+# Linux Makefile                                                              #
+###############################################################################
+ifeq ($(NVT_PRJCFG_CFG),Linux)
+EXTRA_CFLAGS += -DDEBUG
+
+SRC += \
+	senphy_main.c \
+	senphy_proc.c \
+	senphy_drv.c \
+	senphy_api.c \
+	senphy.c
+
+###############################################################################
+# rtos Makefile                                                               #
+###############################################################################
+else ifeq ($(NVT_PRJCFG_CFG),rtos)
+EXTRA_CFLAGS += -DDEBUG
+
+SRC += \
+	senphy.c \
+
+endif
+
+include $(NVT_HDAL_DIR)/driver.mk

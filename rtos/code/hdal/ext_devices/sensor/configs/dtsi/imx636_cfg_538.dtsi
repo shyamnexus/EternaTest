@@ -1,0 +1,37 @@
+&sen_cfg {
+	sen_imx636 {
+		MAP {
+			path_1 = <0>;                        /* Path 1 Disable  */
+			path_2 = <0>;                        /* Path 2 Disable */
+			path_3 = <0>;                        /* Path 3 Disable */
+			path_4 = <0>;                        /* Path 4 Disable */
+			path_5 = <1>;                        /* Path 5 Enable */
+			path_6 = <0>;                        /* Path 6 Disable */
+			path_7 = <0>;                        /* Path 7 Disable */
+			path_8 = <0>;                        /* Path 8 Disable */
+		};
+
+		PRESET {
+			id_4_expt_time = <10000>;            /* 10000us */
+			id_4_gain_ratio = <1000>;            /* 1x gain */
+		};
+
+		DIRECTION {
+			id_4_mirror = <0>;                   /* no mirror */
+			id_4_flip = <0>;                     /* no flip */
+		};
+
+		POWER {
+			id_4_mclk = <0>;                     /* CTL_SEN_CLK_SEL_SIEMCLK1 */
+			id_4_pwdn_pin = <S_GPIO(10)>;        /* S_GPIO_10 */   
+			id_4_rst_pin = <S_GPIO(12)>;         /* S_GPIO_12 */
+			id_4_rst_time = <1>;                 /* 1ms */
+			id_4_stable_time = <1>;              /* 1ms */
+		};
+
+		I2C {
+			id_4_i2c_id = <0>;                   /* SEN_I2C_ID_1 */
+			id_4_i2c_addr = <0x3C>;              /* 0x78 >> 1  = 0x3C */
+		};
+	};
+};

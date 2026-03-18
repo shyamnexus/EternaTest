@@ -1,0 +1,83 @@
+MODULE_NAME = kflow_ctl_ipp
+# DIRs
+VOS_DRIVER_DIR = $(NVT_VOS_DIR)/drivers
+KDRV_DIR = $(NVT_HDAL_DIR)/drivers/k_driver
+KFLOW_DIR = $(NVT_HDAL_DIR)/drivers/k_flow
+CURR_DRIVER_DIR = $(KFLOW_DIR)
+KFLOW_CTL_IPP_DIR = $(CURR_DRIVER_DIR)/source/kflow_videoprocess/ctl
+# INCs
+VOS_INC_PATH = $(VOS_DRIVER_DIR)/include
+KDRV_INC_PATH = $(KDRV_DIR)/include
+KFLOW_INC_PATH = $(KFLOW_DIR)/include
+CURR_DRIVER_INC_PATH = $(CURR_DRIVER_DIR)/include
+CTL_IPP_COM_INC_PATH = $(KFLOW_CTL_IPP_DIR)/include
+CTL_IPP_DBG_INC_PATH = $(KFLOW_CTL_IPP_DIR)/ipp_debug
+CTL_IPP_UTI_INC_PATH = $(KFLOW_CTL_IPP_DIR)/ipp_utility
+CTL_IPP_FLOW_INC_PATH = $(KFLOW_CTL_IPP_DIR)/ipp_flow
+# INC FLAGs
+EXTRA_INCLUDE += \
+	-I$(VOS_INC_PATH) \
+	-I$(KDRV_INC_PATH) \
+	-I$(KFLOW_INC_PATH) \
+	-I$(CURR_DRIVER_INC_PATH) \
+	-I$(CTL_IPP_COM_INC_PATH) \
+	-I$(CTL_IPP_DBG_INC_PATH) \
+	-I$(CTL_IPP_UTI_INC_PATH) \
+	-I$(CTL_IPP_FLOW_INC_PATH) \
+
+###############################################################################
+# Linux Makefile                                                              #
+###############################################################################
+ifeq ($(NVT_PRJCFG_CFG),Linux)
+EXTRA_CFLAGS += -DDEBUG
+
+$(MODULE_NAME)-src := \
+	ctl_ipp_main.c \
+	ctl_ipp_proc.c \
+	ctl_ipp_drv.c \
+	ctl_ipp_api.c \
+	ctl_ipp_verinfo.c \
+	ipp_utility/ctl_ipp_util.c \
+	ipp_utility/ipp_event_id.c \
+	ipp_utility/ipp_event.c \
+	ipp_flow/kdf_ipp_id.c \
+	ipp_flow/kdf_ipp_int.c \
+	ipp_flow/kdf_ipp.c \
+	ipp_flow/ctl_ipp_isp_int.c \
+	ipp_flow/ctl_ipp_isp.c \
+	ipp_flow/ctl_ipp_buf.c \
+	ipp_flow/ctl_ipp_id.c \
+	ipp_flow/ctl_ipp_int.c \
+	ipp_flow/ctl_ipp.c \
+	ipp_flow/ctl_ipp_flow_task.c \
+	ipp_debug/ipp_debug_int.c \
+
+###############################################################################
+# rtos Makefile                                                               #
+###############################################################################
+else ifeq ($(NVT_PRJCFG_CFG),rtos)
+EXTRA_CFLAGS += \
+	-DDEBUG \
+	-I$(CURDIR)/include \
+
+
+SRC += \
+	ipp_debug/ipp_debug_int.c \
+	ipp_utility/ctl_ipp_util.c \
+	ipp_utility/ipp_event_id.c \
+	ipp_utility/ipp_event.c \
+	ipp_flow/kdf_ipp_id.c \
+	ipp_flow/kdf_ipp_int.c \
+	ipp_flow/kdf_ipp.c \
+	ipp_flow/ctl_ipp_isp_int.c \
+	ipp_flow/ctl_ipp_isp.c \
+	ipp_flow/ctl_ipp_buf.c \
+	ipp_flow/ctl_ipp_id.c \
+	ipp_flow/ctl_ipp_int.c \
+	ipp_flow/ctl_ipp.c \
+	ipp_flow/ctl_ipp_flow_task.c \
+	ctl_ipp_api.c \
+
+endif
+
+include $(NVT_HDAL_DIR)/driver.mk

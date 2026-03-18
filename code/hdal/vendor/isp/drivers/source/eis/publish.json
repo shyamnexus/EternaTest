@@ -1,0 +1,9 @@
+{
+	"jsontype": "module_publish",
+	"publish_src": [
+		"eis_version.c",
+		"linux/eis_main.c",
+		"linux/eis_ioctl.c",
+		"linux/eis_proc.c"
+	]
+}

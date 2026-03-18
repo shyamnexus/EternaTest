@@ -1,0 +1,1318 @@
+openapi: 3.0.3
+info:
+  title: IP Camera API - Authentication
+  description: |
+    ## Authentication & Security API
+    
+    This API handles user authentication, session management, password management,
+    and the security questions-based password recovery system.
+    
+    ### Changelog
+    
+    #### Version 1.5.0 (2026-03-04)
+    
+    **Breaking Change — AES-256-CBC removed**
+    - The AES-256-CBC fallback has been **removed**. AES-256-GCM is now the only
+      accepted cipher for password transit encryption.
+    - The `auth_tag` field in `EncryptedPassword` is now **required** (was optional in v1.4.0).
+    - Requests without `auth_tag` are rejected with HTTP 400.
+    - The `iv` field must be 12 bytes (96-bit GCM IV). 16-byte CBC IVs are no longer accepted.
+    
+    **Updated Schemas**
+    - `EncryptedPassword.auth_tag`: Changed from optional to **required**.
+    
+    #### Version 1.4.0 (2026-02-25)
+    
+    **Security Hardening**
+    - **AES-256-GCM replaces AES-256-CBC** for password transit encryption.
+      - `/auth/public-key` now returns `"aes_algorithm": "AES-256-GCM"` instead of `"AES-256-CBC"`.
+      - GCM provides authenticated encryption (integrity + confidentiality), preventing ciphertext tampering.
+    - **PBKDF2-HMAC-SHA256 (210K iterations)** for password hashing (transparent to API consumers).
+    - **Constant-time password comparison** prevents timing side-channel attacks.
+    - **Per-device random salt** for SQLCipher database key derivation.
+    - **WSSE password storage upgraded** from XOR obfuscation to AES-256-GCM.
+    - **Hardcoded default password fallback removed** from ONVIF integration.
+    - **Shell command injection protection** added to NTP sync and config restore.
+    - **std::rand() fallbacks removed** in favor of RAND_bytes() for all device ID generation.
+    
+    **Updated Schemas**
+    - `EncryptedPassword`: Added `auth_tag` field for GCM authentication tag.
+    - `PublicKeyResponse.aes_algorithm`: Now returns `"AES-256-GCM"`.
+    
+    **Frontend Integration Notes (AES-GCM)**
+    
+    For secure login with AES-256-GCM:
+    1. Fetch RSA public key from `/auth/public-key` — note `aes_algorithm` is `"AES-256-GCM"`.
+    2. Generate a random 32-byte AES-256 key.
+    3. Generate a random **12-byte IV** (not 16 — GCM uses 96-bit IV).
+    4. Encrypt password with AES-256-GCM — this produces ciphertext + 16-byte auth tag.
+    5. Encrypt AES key with RSA-OAEP.
+    6. Send encrypted payload with `auth_tag` (Base64-encoded GCM tag).
+    
+    #### Version 1.3.1 (2026-02-17)
+    
+    **Bug Fixes**
+    - **Fixed HandleRotateKeys database path**: Key rotation handler was using a hardcoded
+      `/userdata/db/users.db` path instead of reading from `auth.database.path` config.
+      This caused authentication to fail when validating the admin token during key rotation.
+      Now uses `config::Get<std::string>("auth.database.path")` with proper fallback.
+    - **Fixed HandleRotateKeys user manager initialization**: Replaced broken `extern g_user_manager`
+      reference with proper `EnsureUserManagerInitialized()` pattern matching other handlers.
+    
+    #### Version 1.3.0 (2026-01-27)
+    
+    **New Security Features**
+    - **Replay Protection**: Encrypted password payloads now support `timestamp` field to prevent replay attacks.
+      - Server validates timestamp is within ±60 seconds of server time.
+      - Duplicate `(key_id, iv, timestamp)` combinations are rejected.
+    - **Account Lockout**: After 5 failed login attempts, account is locked for 15 minutes.
+    - **Automatic Key Rotation**: RSA keys are automatically rotated every 24 hours.
+    - **Token Management**: Password reset tokens are automatically invalidated upon successful login.
+    - **Admin Authentication for Key Rotation**: `/auth/rotate-keys` now requires admin Bearer token.
+    
+    **Updated Endpoints**
+    - `POST /auth/login`: Now returns `401` with lockout message if account is locked.
+    - `POST /auth/rotate-keys`: Now requires admin authentication.
+    
+    #### Version 1.2.0 (2026-01-27)
+    
+    **New Features**
+    - **Password Encryption**: New `/auth/public-key` endpoint to fetch RSA key for client-side password encryption (RSA-2048 + AES-256-CBC).
+    - **Key Rotation**: New admin endpoint `/auth/rotate-keys` to rotate encryption keys.
+    
+    **Changes (Breaking)**
+    - **Flexible Security Questions**: Systems now supports 1-5 security questions (previously fixed at 2).
+    - **Strict Verification**: Password recovery now requires all provided answers to be correct.
+    
+    **Frontend Integration Notes**
+    
+    For secure login:
+    1. Fetch RSA public key from `/auth/public-key`.
+    2. Generate ephemeral AES-256 key and IV.
+    3. Encrypt password with AES key.
+    4. Encrypt AES key with RSA public key (OAEP).
+    5. Add current Unix timestamp to payload for replay protection.
+    6. Send encrypted payload (key, data, iv, key_id, timestamp).
+    
+    #### Version 1.1.0 (2026-01-23)
+    - Added security question setup and verification endpoints.
+    - Added forgot password recovery flow.
+    - Added initial setup endpoint for new users.
+    
+    #### Version 1.0.0 (2025-11-15)
+    - Initial release: Login, Logout, Password Change.
+    
+    ### Flows
+    
+    **First Login**: User must change password and setup security questions via `/auth/initial-setup`.
+    
+    **Password Recovery**:
+    1. get questions (`/auth/forgot-password/questions`).
+    2. verify answers (`/auth/forgot-password/verify`).
+    3. reset password (`/auth/forgot-password/reset`).
+    
+    ### Security
+    - Passwords: PBKDF2-HMAC-SHA256 hashed (210K iterations, 16-byte random salt).
+    - Token: 15-minute expiration.
+    - Encryption: RSA-OAEP + AES-256-GCM for password transit (auth_tag required).
+    - Replay Protection: IV/nonce uniqueness + nonce cache.
+    - Account Lockout: 5 failed attempts = 15 minute lockout.
+    - Auto Key Rotation: RSA keys rotate every 24 hours.
+    - Constant-time password comparison to prevent timing attacks.
+    
+  version: 1.5.0
+  contact:
+    name: HON-BA
+    
+tags:
+  - name: Authentication
+    description: Session management
+  - name: Password Management
+    description: Change/Reset password
+  - name: Security Questions
+    description: Recovery question setup
+  - name: Forgot Password
+    description: Recovery flow
+  - name: Encryption
+    description: Key management
+
+paths:
+  /auth/login:
+    post:
+      summary: User Login
+      description: |
+        Authenticate user and create a session token.
+        
+        The response includes flags indicating if initial setup is required:
+        - `password_must_change`: User must change their default/reset password
+        - `security_questions_set`: User has configured security questions for recovery
+        - `requires_initial_setup`: True if either of the above conditions require action
+        
+        **First Login**: When `requires_initial_setup` is true, redirect user to complete
+        the initial setup process using `/auth/initial-setup`.
+      operationId: authLogin
+      tags: [Authentication]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - username
+                - password
+              properties:
+                username:
+                  type: string
+                  description: Username
+                  example: admin
+                password:
+                  $ref: '#/components/schemas/EncryptedPassword'
+            examples:
+              encrypted_login_gcm:
+                summary: Login with AES-256-GCM encrypted password (recommended)
+                value:
+                  username: admin
+                  password:
+                    encrypted_key: "BASE64_RSA_ENCRYPTED_AES_KEY..."
+                    encrypted_data: "BASE64_AES_GCM_CIPHERTEXT..."
+                    iv: "BASE64_12_BYTE_IV..."
+                    key_id: "k_1706359200_abc123"
+                    timestamp: 1738003200
+                    auth_tag: "BASE64_16_BYTE_GCM_TAG..."
+
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+              examples:
+                first_login:
+                  summary: First login (setup required)
+                  value:
+                    status: success
+                    message: Login successful
+                    token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                    user:
+                      id: 1
+                      username: admin
+                      role: admin
+                      password_must_change: true
+                      security_questions_set: false
+                      requires_initial_setup: true
+                    expires_at: 1737763200
+                normal_login:
+                  summary: Normal login (no setup required)
+                  value:
+                    status: success
+                    message: Login successful
+                    token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                    user:
+                      id: 1
+                      username: admin
+                      role: admin
+                      password_must_change: false
+                      security_questions_set: true
+                      requires_initial_setup: false
+                    expires_at: 1737763200
+        '401':
+          description: Invalid credentials or account locked
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                invalid_credentials:
+                  summary: Invalid username or password
+                  value:
+                    status: error
+                    message: Invalid username or password
+                account_locked:
+                  summary: Account locked after failed attempts
+                  value:
+                    status: error
+                    message: Account locked due to too many failed attempts. Try again in 15 minutes
+        '400':
+          description: Bad request (missing fields)
+
+  /auth/logout:
+    post:
+      summary: User Logout
+      description: Invalidate the current session token
+      operationId: authLogout
+      tags: [Authentication]
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Logout successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+              example:
+                status: success
+                message: Logged out successfully
+        '401':
+          description: Not authenticated
+
+  /auth/change-password:
+    post:
+      summary: Change Password
+      description: |
+        Change password for the authenticated user.
+        
+        This clears the `password_must_change` flag if it was set.
+        
+        **Note**: If the user hasn't set up security questions yet, consider using
+        `/auth/initial-setup` instead to complete both operations.
+      operationId: authChangePassword
+      tags: [Password Management]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChangePasswordRequest'
+            example:
+              old_password: Admin@123
+              new_password: MyNewSecurePassword123
+      responses:
+        '200':
+          description: Password changed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+              example:
+                status: success
+                message: Password changed successfully
+        '400':
+          description: Invalid request or password requirements not met
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                short_password:
+                  value:
+                    status: error
+                    message: Password must be at least 6 characters
+                wrong_old:
+                  value:
+                    status: error
+                    message: Current password is incorrect
+        '401':
+          description: Not authenticated
+
+  /auth/initial-setup:
+    post:
+      summary: Complete Initial Setup
+      description: |
+        Complete the initial setup process for a new user or after password reset.
+        
+        This endpoint combines:
+        1. Password change (clears `password_must_change` flag)
+        2. Security questions setup (for future password recovery)
+        
+        **When to use**: After login when `requires_initial_setup` is true.
+        
+        **Requirements**:
+        - Must provide current password and new password
+        - Must answer both security questions
+        - New password must be at least 6 characters
+        - Security question answers must be at least 2 characters each
+        
+        **Security**: Answers are hashed before storage (case-insensitive, trimmed).
+      operationId: authInitialSetup
+      tags: [Password Management, Security Questions]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InitialSetupRequest'
+            example:
+              old_password: Admin@123
+              new_password: MyNewSecurePassword123
+              security_questions:
+                - question_id: 1
+                  answer: Sally
+                - question_id: 2
+                  answer: Pune
+      responses:
+        '200':
+          description: Initial setup completed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InitialSetupResponse'
+              examples:
+                success:
+                  summary: Full success
+                  value:
+                    status: success
+                    message: Initial setup completed successfully
+                    password_changed: true
+                    security_questions_set: true
+                partial:
+                  summary: Partial success (password changed, questions failed)
+                  value:
+                    status: partial_success
+                    message: "Password changed but failed to set security questions: Duplicate question ID"
+                    password_changed: true
+                    security_questions_set: false
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Not authenticated
+
+  /auth/reset-password:
+    post:
+      summary: Reset User Password (Admin Only)
+      description: |
+        Reset password for any user. Requires admin privileges.
+        
+        **Note**: This is for admin-initiated resets. For self-service password
+        recovery, see the Forgot Password endpoints.
+      operationId: authResetPassword
+      tags: [Password Management]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - user_id
+                - new_password
+              properties:
+                user_id:
+                  type: integer
+                  format: int64
+                  description: User ID to reset password for
+                new_password:
+                  $ref: '#/components/schemas/EncryptedPassword'
+            example:
+              user_id: 2
+              new_password:
+                encrypted_key: "BASE64..."
+                encrypted_data: "BASE64..."
+                iv: "BASE64..."
+                key_id: "..."
+      responses:
+        '200':
+          description: Password reset successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+        '400':
+          description: Invalid request
+        '401':
+          description: Not authenticated
+        '403':
+          description: Insufficient permissions (admin required)
+
+  /auth/verify:
+    get:
+      summary: Verify Token
+      description: Verify if the current session token is valid
+      operationId: authVerify
+      tags: [Authentication]
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Token is valid
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  valid:
+                    type: boolean
+                    example: true
+                  user:
+                    $ref: '#/components/schemas/UserInfo'
+                  expires_at:
+                    type: integer
+                    format: int64
+        '401':
+          description: Token is invalid or expired
+
+  /auth/sessions:
+    get:
+      summary: List Active Sessions (Admin Only)
+      description: Get list of all active sessions
+      operationId: authSessions
+      tags: [Authentication]
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Sessions list retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  sessions:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/SessionInfo'
+        '401':
+          description: Not authenticated
+        '403':
+          description: Insufficient permissions
+
+  # ==================== Encryption ====================
+  
+  /auth/public-key:
+    get:
+      summary: Get RSA Public Key for Password Encryption
+      description: |
+        Get the camera's RSA public key for encrypting passwords before transmission.
+        
+        **This is the first step for secure password handling.**
+        
+        The Web UI should:
+        1. Fetch this public key before any login/password operation
+        2. Generate a random 32-byte AES-256 key
+        3. Generate a random **12-byte IV** (96-bit, NIST-recommended for GCM)
+        4. Encrypt the password with AES-256-GCM (produces ciphertext + 16-byte auth tag)
+        5. Encrypt the AES key with this RSA public key (RSA-OAEP)
+        6. Send the encrypted package including `auth_tag` (required)
+        
+        **Key Properties:**
+        - RSA 2048-bit key pair
+        - Uses RSA-OAEP padding (SHA-256) for AES key encryption
+        - AES-256-GCM for password encryption (`auth_tag` required)
+        - `key_id` must be included in encrypted requests for key matching
+        
+        **Note:** Keys may be rotated. Always check `key_id` and refetch if decryption fails.
+      operationId: getPublicKey
+      tags: [Encryption]
+      responses:
+        '200':
+          description: Public key for encryption
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicKeyResponse'
+              example:
+                status: success
+                public_key: "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhki...\n-----END PUBLIC KEY-----\n"
+                key_id: "k_1706359200_abc123"
+                algorithm: "RSA-OAEP"
+                aes_algorithm: "AES-256-GCM"
+                rsa_key_size: 2048
+        '500':
+          description: Encryption system not initialized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                status: error
+                message: "Password crypto not initialized"
+
+  /auth/rotate-keys:
+    post:
+      summary: Rotate RSA Key Pair (Admin Only)
+      description: |
+        Rotate the RSA key pair used for password encryption.
+        
+        **Authentication Required**: Admin Bearer token must be provided.
+        
+        **Note**: Keys are automatically rotated every 24 hours. Use this endpoint
+        only for immediate rotation if key compromise is suspected.
+        
+        **Warning:** After rotation:
+        - Clients with cached old public keys will fail to encrypt
+        - The old `key_id` will be rejected
+        - Clients should refetch `/auth/public-key`
+        - All nonce cache entries are cleared (replay protection reset)
+      operationId: rotateKeys
+      tags: [Encryption]
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Keys rotated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                  new_key_id:
+                    type: string
+                    description: New key ID after rotation
+              example:
+                status: success
+                message: "Keys rotated successfully"
+                new_key_id: "k_1706360000_def456"
+        '401':
+          description: Not authenticated (Bearer token required)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                status: error
+                message: "Authentication required"
+        '403':
+          description: Insufficient permissions (admin required)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                status: error
+                message: "Admin access required"
+        '500':
+          description: Key rotation failed
+
+  # ==================== Security Questions ====================
+  
+  /auth/security-questions/available:
+    get:
+      summary: Get Available Security Questions
+      description: |
+        Get the list of predefined security questions that users can choose from.
+        
+        This endpoint does not require authentication - it's used during setup
+        to show users their options.
+        
+        **v1.2.0 Changes:**
+        - Pool expanded from 2 to 5 questions
+        - New `min_required` and `max_allowed` fields indicate 1-5 questions allowed
+      operationId: getAvailableSecurityQuestions
+      tags: [Security Questions]
+      responses:
+        '200':
+          description: List of available security questions
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  questions:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/SecurityQuestion'
+                  min_required:
+                    type: integer
+                    description: Minimum number of questions user must set up
+                    example: 1
+                  max_allowed:
+                    type: integer
+                    description: Maximum number of questions user can set up
+                    example: 5
+              example:
+                status: success
+                min_required: 1
+                max_allowed: 5
+                questions:
+                  - id: 1
+                    question: "What is the name of your first pet?"
+                  - id: 2
+                    question: "What city were you born in?"
+                  - id: 3
+                    question: "What was your childhood nickname?"
+                  - id: 4
+                    question: "What is the name of your favorite childhood friend?"
+                  - id: 5
+                    question: "What was the make of your first car?"
+
+  /auth/security-questions/setup:
+    post:
+      summary: Set Up Security Questions
+      description: |
+        Set up security questions for the authenticated user.
+        
+        **Requirements**:
+        - Must answer both security questions
+        - Answers must be at least 2 characters
+        
+        **Security**: Answers are normalized (lowercase, trimmed) and hashed
+        using PBKDF2-SHA256 before storage.
+        
+        **Note**: This will replace any existing security questions for the user.
+      operationId: setupSecurityQuestions
+      tags: [Security Questions]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SetupSecurityQuestionsRequest'
+            example:
+              questions:
+                - question_id: 1
+                  answer: "Sally"
+                - question_id: 2
+                  answer: "Pune"
+      responses:
+        '200':
+          description: Security questions set successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+              example:
+                status: success
+                message: Security questions set successfully
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                too_few:
+                  value:
+                    status: error
+                    message: At least 2 security questions are required
+                duplicate:
+                  value:
+                    status: error
+                    message: "Duplicate question ID: 1"
+                invalid_id:
+                  value:
+                    status: error
+                    message: "Invalid question ID: 99"
+                short_answer:
+                  value:
+                    status: error
+                    message: Answer must be at least 2 characters
+        '401':
+          description: Not authenticated
+
+  /auth/security-questions/status:
+    get:
+      summary: Check Security Questions Status
+      description: Check if the authenticated user has security questions configured
+      operationId: getSecurityQuestionsStatus
+      tags: [Security Questions]
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Status retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  security_questions_set:
+                    type: boolean
+                    description: Whether the user has configured security questions
+              examples:
+                configured:
+                  value:
+                    status: success
+                    security_questions_set: true
+                not_configured:
+                  value:
+                    status: success
+                    security_questions_set: false
+        '401':
+          description: Not authenticated
+
+  # ==================== Forgot Password ====================
+
+  /auth/forgot-password/questions:
+    get:
+      summary: Get User's Security Questions
+      description: |
+        Get the security questions configured by a specific user.
+        
+        This is the first step in the password recovery flow. The questions
+        returned must be answered correctly to receive a password reset token.
+        
+        **v1.2.0 Changes:**
+        - New `total_questions` field shows how many questions user has configured
+        - New `verification_note` explains the answer verification rules
+        
+        **Note**: This endpoint intentionally provides a generic error message
+        if the user doesn't exist or hasn't configured questions, to avoid
+        user enumeration attacks.
+      operationId: getForgotPasswordQuestions
+      tags: [Forgot Password]
+      parameters:
+        - name: username
+          in: query
+          required: true
+          schema:
+            type: string
+          description: Username to recover password for
+          example: admin
+      responses:
+        '200':
+          description: Security questions retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  username:
+                    type: string
+                  questions:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/SecurityQuestion'
+                  total_questions:
+                    type: integer
+                    description: Number of security questions configured by user
+                  verification_note:
+                    type: string
+                    description: Instructions for answer verification
+              example:
+                status: success
+                username: admin
+                questions:
+                  - id: 1
+                    question: "What is the name of your first pet?"
+                  - id: 2
+                    question: "What city were you born in?"
+                total_questions: 2
+                verification_note: "You may answer one or more questions. All provided answers must be correct."
+        '400':
+          description: Unable to retrieve questions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                status: error
+                message: "Unable to retrieve security questions. User may not exist or questions not set."
+
+  /auth/forgot-password/verify:
+    post:
+      summary: Verify Security Answers
+      description: |
+        Verify the user's answers to their security questions.
+        
+        If all provided answers are correct, a time-limited password reset token is returned.
+        
+        **v1.2.0 Changes:**
+        - Now accepts single question/answer format OR array format
+        - User can answer 1 or more of their configured questions
+        - ALL provided answers must be correct (not just majority)
+        - Answers for questions user didn't configure are ignored
+        
+        **Token Details**:
+        - Valid for 15 minutes (900 seconds)
+        - Single-use only
+        - Use with `/auth/forgot-password/reset` to set new password
+        
+        **Answer Matching**:
+        - Case-insensitive comparison
+        - Leading/trailing whitespace is trimmed
+        - ALL provided answers must match (new in v1.2.0)
+      operationId: verifyForgotPasswordAnswers
+      tags: [Forgot Password]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              oneOf:
+                - $ref: '#/components/schemas/VerifySecurityAnswersRequest'
+                - $ref: '#/components/schemas/VerifySingleAnswerRequest'
+            examples:
+              multiple_answers:
+                summary: Multiple answers (array format)
+                value:
+                  username: admin
+                  answers:
+                    - question_id: 1
+                      answer: "Sally"
+                    - question_id: 2
+                      answer: "Pune"
+              single_answer:
+                summary: Single answer (simple format)
+                value:
+                  username: admin
+                  question_id: 1
+                  answer: "Sally"
+      responses:
+        '200':
+          description: Answers verified, reset token issued
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: success
+                  message:
+                    type: string
+                  reset_token:
+                    type: string
+                    description: Token to use for password reset
+                  expires_in_seconds:
+                    type: integer
+                    description: Token validity period in seconds
+              example:
+                status: success
+                message: "Security answers verified. Use the reset_token to set a new password."
+                reset_token: "a1b2c3d4e5f6789012345678901234567890abcd"
+                expires_in_seconds: 900
+        '400':
+          description: Verification failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                wrong_answers:
+                  summary: One or more answers incorrect
+                  value:
+                    status: error
+                    message: One or more security answers are incorrect
+                no_valid_answers:
+                  summary: None of provided questions match user's setup
+                  value:
+                    status: error
+                    message: None of the provided questions match your setup
+                user_not_found:
+                  value:
+                    status: error
+                    message: User not found
+                disabled:
+                  value:
+                    status: error
+                    message: User account is disabled
+                no_questions:
+                  value:
+                    status: error
+                    message: No security questions set for this user
+
+  /auth/forgot-password/reset:
+    post:
+      summary: Reset Password with Token
+      description: |
+        Reset the user's password using a valid reset token.
+        
+        **Token Requirements**:
+        - Must be a valid token from `/auth/forgot-password/verify`
+        - Token must not be expired (15 minute validity)
+        - Token must not have been used before
+        
+        **Password Requirements**:
+        - Minimum 6 characters
+        
+        After successful reset, the user can login with their new password.
+      operationId: resetPasswordWithToken
+      tags: [Forgot Password]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - reset_token
+                - new_password
+              properties:
+                reset_token:
+                  type: string
+                  description: Token received from verify endpoint
+                new_password:
+                  $ref: '#/components/schemas/EncryptedPassword'
+            example:
+              reset_token: "a1b2c3d4e5f6789012345678901234567890abcd"
+              new_password:
+                encrypted_key: "BASE64..."
+                encrypted_data: "BASE64..."
+                iv: "BASE64..."
+                key_id: "..."
+      responses:
+        '200':
+          description: Password reset successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+              example:
+                status: success
+                message: "Password reset successfully. You can now login with your new password."
+        '400':
+          description: Reset failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              examples:
+                invalid_token:
+                  value:
+                    status: error
+                    message: Invalid or expired reset token
+                used_token:
+                  value:
+                    status: error
+                    message: Reset token has already been used
+                expired:
+                  value:
+                    status: error
+                    message: Reset token has expired
+                short_password:
+                  value:
+                    status: error
+                    message: Password must be at least 6 characters
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: |
+        Bearer token obtained from `/auth/login`.
+        
+        Include in requests as: `Authorization: Bearer <token>`
+
+  schemas:
+    # ==================== Common Responses ====================
+    
+    SuccessResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        message:
+          type: string
+    
+    ErrorResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: error
+        message:
+          type: string
+          description: Error description
+    
+    # ==================== User & Session ====================
+    
+    UserInfo:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        username:
+          type: string
+        role:
+          type: string
+          enum: [admin, operator, viewer]
+        password_must_change:
+          type: boolean
+          description: User must change password on next action
+        security_questions_set:
+          type: boolean
+          description: User has configured security questions
+        requires_initial_setup:
+          type: boolean
+          description: User needs to complete initial setup (password change or security questions)
+    
+    SessionInfo:
+      type: object
+      properties:
+        token:
+          type: string
+          description: Truncated token (first 16 chars + ...)
+        user_id:
+          type: integer
+          format: int64
+        username:
+          type: string
+        role:
+          type: string
+          enum: [admin, operator, viewer]
+        ip_address:
+          type: string
+        created_at:
+          type: integer
+          format: int64
+          description: Unix timestamp
+        expires_at:
+          type: integer
+          format: int64
+          description: Unix timestamp
+    
+    # ==================== Login ====================
+    
+    LoginResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        message:
+          type: string
+          example: Login successful
+        token:
+          type: string
+          description: Session token for authentication
+        user:
+          $ref: '#/components/schemas/UserInfo'
+        expires_at:
+          type: integer
+          format: int64
+          description: Token expiration timestamp (Unix)
+    
+    # ==================== Password Management ====================
+    
+    ChangePasswordRequest:
+      type: object
+      required:
+        - old_password
+        - new_password
+      properties:
+        old_password:
+          $ref: '#/components/schemas/EncryptedPassword'
+        new_password:
+          $ref: '#/components/schemas/EncryptedPassword'
+    
+    InitialSetupRequest:
+      type: object
+      required:
+        - old_password
+        - new_password
+        - security_questions
+      properties:
+        old_password:
+          $ref: '#/components/schemas/EncryptedPassword'
+        new_password:
+          $ref: '#/components/schemas/EncryptedPassword'
+        security_questions:
+          type: array
+          description: Security questions with answers (1 to 5 questions)
+          minItems: 1
+          maxItems: 5
+          items:
+            $ref: '#/components/schemas/SecurityQuestionAnswer'
+    
+    InitialSetupResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [success, partial_success, error]
+        message:
+          type: string
+        password_changed:
+          type: boolean
+        security_questions_set:
+          type: boolean
+    
+    # ==================== Security Questions ====================
+    
+    SecurityQuestion:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: Question ID (use this when setting up answers)
+        question:
+          type: string
+          description: The security question text
+    
+    SecurityQuestionAnswer:
+      type: object
+      required:
+        - question_id
+        - answer
+      properties:
+        question_id:
+          type: integer
+          description: ID of the security question (from available list)
+        answer:
+          type: string
+          description: User's answer (min 2 characters)
+          minLength: 2
+    
+    SetupSecurityQuestionsRequest:
+      type: object
+      required:
+        - questions
+      properties:
+        questions:
+          type: array
+          description: |
+            Array of question/answer pairs.
+            1 to 5 security questions can be set up.
+          minItems: 1
+          maxItems: 5
+          items:
+            $ref: '#/components/schemas/SecurityQuestionAnswer'
+    
+    VerifySecurityAnswersRequest:
+      type: object
+      required:
+        - username
+        - answers
+      properties:
+        username:
+          type: string
+          description: Username to recover password for
+        answers:
+          type: array
+          description: |
+            Answers to one or more security questions.
+            All provided answers must be correct.
+          items:
+            $ref: '#/components/schemas/SecurityQuestionAnswer'
+    
+    VerifySingleAnswerRequest:
+      type: object
+      description: Alternative single-answer format for verification
+      required:
+        - username
+        - question_id
+        - answer
+      properties:
+        username:
+          type: string
+          description: Username to recover password for
+        question_id:
+          type: integer
+          description: ID of security question being answered
+        answer:
+          type: string
+          description: User's answer
+    
+    # ==================== Encryption ====================
+    
+    EncryptedPassword:
+      type: object
+      description: |
+        Encrypted password object for secure transmission.
+        Used with login, change-password, and forgot-password/reset endpoints.
+        
+        **v1.3.0**: Added optional `timestamp` field for replay protection.
+        **v1.4.0**: Added `auth_tag` field for AES-256-GCM authenticated encryption.
+        **v1.5.0**: `auth_tag` is now **required**. AES-256-CBC fallback removed.
+      required:
+        - encrypted_key
+        - encrypted_data
+        - iv
+        - key_id
+        - auth_tag
+      properties:
+        encrypted_key:
+          type: string
+          format: byte
+          description: |
+            Base64-encoded AES key encrypted with RSA-OAEP.
+            The AES key should be 32 bytes (256-bit) for AES-256.
+        encrypted_data:
+          type: string
+          format: byte
+          description: |
+            Base64-encoded password encrypted with AES-256-GCM.
+            This is the ciphertext **without** the auth tag (tag is sent separately in `auth_tag`).
+        iv:
+          type: string
+          format: byte
+          description: |
+            Base64-encoded 12-byte (96-bit) initialization vector for AES-256-GCM.
+            NIST-recommended size for GCM. Must be generated fresh for each encryption.
+        key_id:
+          type: string
+          description: |
+            Key ID from the public-key endpoint.
+            Used to ensure correct private key is used for decryption.
+          example: "k_1706359200_abc123"
+        timestamp:
+          type: integer
+          format: int64
+          description: |
+            Unix timestamp (seconds since epoch) for replay protection.
+            
+            **Recommended** to include for enhanced security:
+            - Duplicate `(key_id, iv, timestamp)` combinations are rejected.
+            - Helps prevent captured requests from being replayed.
+          example: 1738003200
+        auth_tag:
+          type: string
+          format: byte
+          description: |
+            **Required.** Base64-encoded 16-byte (128-bit) GCM authentication tag.
+            
+            The server uses AES-256-GCM exclusively. Requests without this field
+            are rejected with HTTP 400.
+          example: "BASE64_16_BYTE_GCM_TAG..."
+    
+    PublicKeyResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        public_key:
+          type: string
+          description: |
+            PEM-encoded RSA public key for encrypting AES keys.
+            Use RSA-OAEP padding when encrypting.
+          example: "-----BEGIN PUBLIC KEY-----\nMIIBIjANBgkqhki...\n-----END PUBLIC KEY-----\n"
+        key_id:
+          type: string
+          description: |
+            Unique identifier for this key pair.
+            Must be included in encrypted password objects.
+          example: "k_1706359200_abc123"
+        algorithm:
+          type: string
+          description: RSA encryption algorithm to use
+          example: "RSA-OAEP"
+        aes_algorithm:
+          type: string
+          description: |
+            AES encryption algorithm for password encryption.
+            **v1.4.0**: Changed from `AES-256-CBC` to `AES-256-GCM`.
+            Clients should use this value to select the correct WebCrypto algorithm.
+          example: "AES-256-GCM"
+        rsa_key_size:
+          type: integer
+          description: RSA key size in bits
+          example: 2048

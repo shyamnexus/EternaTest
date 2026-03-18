@@ -1,0 +1,19 @@
+/*
+ * Novatek Ltd. BSP part of dts
+ * 256MB NAND layout with 60MB app partition + 256KB factory partition
+ */
+
+&nand {
+    partition_loader {      label = "loader";       reg = <0x0 0x0000000 0x0 0x0040000>; }; /* Fixed */ /* 0.25 MB */
+    partition_fdt {         label = "fdt";          reg = <0x0 0x0040000 0x0 0x0040000>; }; /* Fixed */ /* 0.25 MB */
+    partition_fdt.restore { label = "fdt.restore";  reg = <0x0 0x0080000 0x0 0x0040000>; }; /* Fixed */ /* 0.25 MB */
+    partition_atf {         label = "atf";          reg = <0x0 0x00C0000 0x0 0x0040000>; }; /* 0.25 MB */
+    partition_uboot {       label = "uboot";        reg = <0x0 0x0100000 0x0 0x00E0000>; }; /* 0.875 MB */
+    partition_uenv {        label = "uenv";         reg = <0x0 0x01E0000 0x0 0x0040000>; }; /* 0.25 MB */
+    partition_kernel {      label = "kernel";       reg = <0x0 0x0220000 0x0 0x0500000>; }; /* 5 MB */
+    partition_rootfs {      label = "rootfs";       reg = <0x0 0x0720000 0x0 0x2000000>; }; /* 32 MB */
+    partition_rootfs1 {     label = "rootfs1";      reg = <0x0 0x2720000 0x0 0x9CE0000>; }; /* 157 MB */
+    partition_app {         label = "app";          reg = <0x0 0xC400000 0x0 0x3BC0000>; }; /* 59.75 MB (reduced by 256KB) */
+    partition_factory {     label = "factory";      reg = <0x0 0xFFC0000 0x0 0x0040000>; }; /* 256 KB - EXCLUDED from firmware upgrades */
+    partition_all {         label = "all";          reg = <0x0 0x0000000 0x0 0x10000000>; }; /* 256 MB */
+};

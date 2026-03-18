@@ -1,0 +1,110 @@
+/*
+ * Novatek Ltd. BSP part of dts
+ */
+
+/ {
+	model = "Novatek NS02302";
+	compatible = "novatek,ns02302", "nvt,ca53";
+	interrupt-parent = <&gic>;
+	#address-cells = <2>;
+	#size-cells = <2>;
+
+        cpu_opp_table: opp_table {
+                compatible = "operating-points-v2";
+                opp-shared;
+
+                opp-400000000 {
+                        opp-hz = /bits/ 64 <400000000>;
+                };
+
+                opp-480000000 {
+                        opp-hz = /bits/ 64 <480000000>;
+                };
+
+                opp-1000000000 {
+                        opp-hz = /bits/ 64 <1000000000>;
+                };
+
+                opp-1100000000 {
+                        opp-hz = /bits/ 64 <1100000000>;
+                };
+
+                opp-1300000000 {
+                        opp-hz = /bits/ 64 <1300000000>;
+                };
+        };
+
+
+	psci {
+		compatible = "arm,psci-0.2";
+		method = "smc";
+	};
+
+	cpus {
+		#address-cells = <2>;
+		#size-cells = <0>;
+
+		cpu0: cpu@0 {
+			device_type = "cpu";
+			compatible = "arm,cortex-a53", "arm,armv8";
+			reg = <0x0 0x0>;
+			next-level-cache = <&A53_L2>;
+			clock-frequency = <1300000000>;
+			enable-method = "psci";
+			operating-points-v2 = <&cpu_opp_table>;
+		};
+
+		cpu1: cpu@1 {
+			device_type = "cpu";
+			compatible = "arm,cortex-a53", "arm,armv8";
+			reg = <0x0 0x1>;
+			next-level-cache = <&A53_L2>;
+			clock-frequency = <1300000000>;
+			enable-method = "psci";
+			operating-points-v2 = <&cpu_opp_table>;
+		};
+
+		A53_L2: l2-cache0 {
+			compatible = "cache";
+		};
+	};
+
+	timer {
+		compatible = "arm,armv8-timer";
+		interrupts = <GIC_PPI 13 (GIC_CPU_MASK_SIMPLE(2) | IRQ_TYPE_LEVEL_LOW)>,
+				<GIC_PPI 14 (GIC_CPU_MASK_SIMPLE(2) | IRQ_TYPE_LEVEL_LOW)>;
+		clock-frequency = <12000000>;
+		always-on;
+	};
+
+	pmu {
+		compatible = "arm,armv8-pmuv3";
+		interrupts = <GIC_SPI 148 4>,
+			   <GIC_SPI 149 4>;
+		interrupt-affinity = <&cpu0>, <&cpu1>;
+	};
+
+	gic: interrupt-controller@2,fff00000 {
+		compatible = "arm,cortex-a7-gic";
+		#interrupt-cells = <3>;
+		#address-cells = <0>;
+		interrupt-controller;
+		reg =	<0x2 0xfff01000 0x0 0x1000>,	/* GIC Dist */
+			<0x2 0xfff02000 0x0 0x2000>,	/* GIC CPU */
+			<0x2 0xfff04000 0x0 0x2000>,    /* GIC VCPU Control */
+			<0x2 0xfff06000 0x0 0x2000>;    /* GIC VCPU */
+		interrupts = <GIC_PPI 9 (GIC_CPU_MASK_SIMPLE(4) | IRQ_TYPE_LEVEL_HIGH)>;	/* GIC Maintenence IRQ */
+	};
+
+	cg@2,f0020000 {
+		compatible = "nvt,core_clk";
+		reg = <0x2 0xf0020000 0x0 0x220000>;
+	};
+
+	firmware {
+		optee {
+			compatible = "linaro,optee-tz";
+			method = "smc";
+		};
+	};
+};

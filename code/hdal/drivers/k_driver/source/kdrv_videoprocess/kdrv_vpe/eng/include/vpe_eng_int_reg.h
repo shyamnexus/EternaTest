@@ -1,0 +1,13995 @@
+#ifndef _VPE_ENG_INT_REGISTER_H_
+#define _VPE_ENG_INT_REGISTER_H_
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#if defined (__LINUX)
+
+#if defined(__aarch64__)
+#include "linux/soc/nvt/rcw_macro.h"
+#else
+#include "rcw_macro.h"
+#endif
+
+#include "plat/top.h"
+#include "kwrap/type.h"
+#include "kwrap/nvt_type.h"
+
+//=========================================================================
+#elif defined (__FREERTOS)
+
+
+#include "rcw_macro.h"
+#include "top.h"
+#include "kwrap/type.h"
+#include "kwrap/nvt_type.h"
+
+#else
+
+
+#endif
+
+/*
+    SW_RST    :    [0x0, 0x1],          bits : 0
+    DMA_SW_RST:    [0x0, 0x1],          bits : 1
+    START     :    [0x0, 0x1],          bits : 30
+    LL_FIRE   :    [0x0, 0x1],          bits : 31
+*/
+#define GLOBAL_CONTROL_REGISTER0_OFS 0x0000
+REGDEF_BEGIN(GLOBAL_CONTROL_REGISTER0)
+	REGDEF_BIT(SW_RST    ,        1)
+	REGDEF_BIT(DMA_SW_RST,        1)
+	REGDEF_BIT(          ,        28)
+	REGDEF_BIT(START     ,        1)
+	REGDEF_BIT(LL_FIRE   ,        1)
+REGDEF_END(GLOBAL_CONTROL_REGISTER0)
+
+
+/*
+    CGOFS_EN               :    [0x0, 0x1],			bits : 0
+    SHP_EN                 :    [0x0, 0x1],			bits : 2
+    DC_EN                  :    [0x0, 0x1],			bits : 3
+    DCTG_EN                :    [0x0, 0x1],			bits : 4
+    RELATIVE_2DLUT_COORD_EN:    [0x0, 0x1],			bits : 5    
+    DC_2D_LUT_LOAD_EN      :    [0x0, 0x1],			bits : 6
+    PTZ_COORD_CAL_EN       :    [0x0, 0x1],			bits : 7
+    PRIVACY_MASK_SET0_EN   :    [0x0, 0x1],			bits : 8
+    PRIVACY_MASK_SET1_EN   :    [0x0, 0x1],			bits : 9
+    PRIVACY_MASK_SET2_EN   :    [0x0, 0x1],			bits : 10
+    PRIVACY_MASK_SET3_EN   :    [0x0, 0x1],			bits : 11
+    PRIVACY_MASK_SET4_EN   :    [0x0, 0x1],			bits : 12
+    PRIVACY_MASK_SET5_EN   :    [0x0, 0x1],			bits : 13
+    PRIVACY_MASK_SET6_EN   :    [0x0, 0x1],			bits : 14
+    PRIVACY_MASK_SET7_EN   :    [0x0, 0x1],			bits : 15
+    ABSOLUTE_2DLUT_PREC_SEL:    [0x0, 0x3],			bits : 17_16
+    RELATIVE_2DLUT_PREC_SEL:    [0x0, 0x3],			bits : 19_18
+    DEBUG_TYPE          :    [0x0, 0xf],			bits : 23_20
+    LL_TERMINATE        :    [0x0, 0x1],			bits : 31
+*/
+#define GLOBAL_CONTROL_REGISTER1_OFS 0x0004
+REGDEF_BEGIN(GLOBAL_CONTROL_REGISTER1)
+	REGDEF_BIT(CGOFS_EN               ,        1)
+	REGDEF_BIT(                       ,        1)
+	REGDEF_BIT(SHARPEN_EN             ,        1)
+	REGDEF_BIT(DC_EN                  ,        1)
+	REGDEF_BIT(DCTG_EN                ,        1)
+	REGDEF_BIT(RELATIVE_2DLUT_COORD_EN,        1)
+	REGDEF_BIT(DC_2D_LUT_LOAD_EN      ,        1)
+	REGDEF_BIT(PTZ_COORD_CAL_EN       ,        1)
+	REGDEF_BIT(PRIVACY_MASK_SET0_EN   ,        1)
+	REGDEF_BIT(PRIVACY_MASK_SET1_EN   ,        1)
+	REGDEF_BIT(PRIVACY_MASK_SET2_EN   ,        1)
+	REGDEF_BIT(PRIVACY_MASK_SET3_EN   ,        1)
+	REGDEF_BIT(PRIVACY_MASK_SET4_EN   ,        1)
+	REGDEF_BIT(PRIVACY_MASK_SET5_EN   ,        1)
+	REGDEF_BIT(PRIVACY_MASK_SET6_EN   ,        1)
+	REGDEF_BIT(PRIVACY_MASK_SET7_EN   ,        1)
+	REGDEF_BIT(ABSOLUTE_2DLUT_PREC_SEL,        2)
+	REGDEF_BIT(RELATIVE_2DLUT_PREC_SEL,        2)	
+	REGDEF_BIT(DEBUG_TYPE             ,        4)
+	REGDEF_BIT(                       ,        5)
+	REGDEF_BIT(DC_PIXEL_MASK_OP       ,        2)
+	REGDEF_BIT(LL_TERMINATE           ,        1)
+REGDEF_END(GLOBAL_CONTROL_REGISTER1)
+
+
+/*
+    SRC_FORMAT     :    [0x0, 0xf],			bits : 13_10
+    SHP_WET_OUT_SEL:    [0x0, 0x1],			bits : 17
+    SRC_DRT        :    [0x0, 0x3],			bits : 21_20
+*/
+#define GLOBAL_CONTROL_REGISTER2_OFS 0x0008
+REGDEF_BEGIN(GLOBAL_CONTROL_REGISTER2)
+	REGDEF_BIT(               ,        10)
+	REGDEF_BIT(SRC_FORMAT     ,        4)
+	REGDEF_BIT(               ,        3)
+	REGDEF_BIT(SHP_WET_OUT_SEL,        1)
+	REGDEF_BIT(               ,        2)
+	REGDEF_BIT(SRC_DRT        ,        2)
+	REGDEF_BIT(               ,             1)
+	REGDEF_BIT(SRC_DRT_PC2TV_WEIGHT,        9)		
+REGDEF_END(GLOBAL_CONTROL_REGISTER2)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_0_OFS 0x000c
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_0)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_0)
+
+
+/*
+    SRC_WIDTH :    [0x0, 0x7fff],			bits : 14_0
+    SRC_HEIGHT:    [0x0, 0x7fff],			bits : 30_16
+*/
+#define GLOBAL_SIZE_REGISTER1_OFS 0x0010
+REGDEF_BEGIN(GLOBAL_SIZE_REGISTER1)
+	REGDEF_BIT(SRC_WIDTH ,        15)
+	REGDEF_BIT(          ,        1)
+	REGDEF_BIT(SRC_HEIGHT,        15)
+REGDEF_END(GLOBAL_SIZE_REGISTER1)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_1_OFS 0x0014
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_1)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_1)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_2_OFS 0x0018
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_2)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_2)
+
+
+/*
+    PROC_HEIGHT       :    [0x0, 0x7fff],			bits : 14_0
+    PRESCA_MERGE_WIDTH:    [0x0, 0x7fff],			bits : 30_16
+*/
+#define GLOBAL_SIZE_REGISTER4_OFS 0x001c
+REGDEF_BEGIN(GLOBAL_SIZE_REGISTER4)
+	REGDEF_BIT(PROC_HEIGHT       ,        15)
+	REGDEF_BIT(                  ,        1)
+	REGDEF_BIT(PRESCA_MERGE_WIDTH,        15)
+REGDEF_END(GLOBAL_SIZE_REGISTER4)
+
+
+/*
+    PROC_Y_START:    [0x0, 0x7fff],			bits : 14_0
+*/
+#define GLOBAL_SIZE_REGISTER5_OFS 0x0020
+REGDEF_BEGIN(GLOBAL_SIZE_REGISTER5)
+	REGDEF_BIT(PROC_Y_START,        15)
+REGDEF_END(GLOBAL_SIZE_REGISTER5)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_3_OFS 0x0024
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_3)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_3)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_4_OFS 0x0028
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_4)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_4)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_5_OFS 0x002c
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_5)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_5)
+
+
+/*
+    DC_WIDTH :    [0x0, 0x7fff],			bits : 14_0
+    DC_HEIGHT:    [0x0, 0x7fff],			bits : 30_16
+*/
+#define GLOBAL_SIZE_REGISTER9_OFS 0x0030
+REGDEF_BEGIN(GLOBAL_SIZE_REGISTER9)
+	REGDEF_BIT(DC_WIDTH ,        15)
+	REGDEF_BIT(         ,        1)
+	REGDEF_BIT(DC_HEIGHT,        15)
+REGDEF_END(GLOBAL_SIZE_REGISTER9)
+
+
+/*
+    SRC_Y_DRAM_OFSI:    [0x0, 0x7ffff],			bits : 18_0
+*/
+#define INPUT_SOURCE_LINEOFFSET_REGISTER0_OFS 0x0034
+REGDEF_BEGIN(INPUT_SOURCE_LINEOFFSET_REGISTER0)
+	REGDEF_BIT(SRC_Y_DRAM_OFSI,        19)
+REGDEF_END(INPUT_SOURCE_LINEOFFSET_REGISTER0)
+
+
+/*
+    SRC_UV_DRAM_OFSI:    [0x0, 0x7ffff],			bits : 18_0
+*/
+#define INPUT_SOURCE_LINEOFFSET_REGISTER1_OFS 0x0038
+REGDEF_BEGIN(INPUT_SOURCE_LINEOFFSET_REGISTER1)
+	REGDEF_BIT(SRC_UV_DRAM_OFSI,        19)
+REGDEF_END(INPUT_SOURCE_LINEOFFSET_REGISTER1)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_6_OFS 0x003c
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_6)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_6)
+
+
+/*
+    CGAIN_Y:    [0x0, 0x1ff],			bits : 8_0
+    COFS_Y :    [0x0, 0x3ff],			bits : 25_16
+*/
+#define COLOR_GAIN_AND_OFFSET_REGISTER0_OFS 0x0040
+REGDEF_BEGIN(COLOR_GAIN_AND_OFFSET_REGISTER0)
+	REGDEF_BIT(CGAIN_Y,        9)
+	REGDEF_BIT(       ,        7)
+	REGDEF_BIT(COFS_Y ,        10)
+REGDEF_END(COLOR_GAIN_AND_OFFSET_REGISTER0)
+
+
+/*
+    CGAIN_U:    [0x0, 0x1ff],			bits : 8_0
+    COFS_U :    [0x0, 0x3ff],			bits : 25_16
+*/
+#define COLOR_GAIN_AND_OFFSET_REGISTER1_OFS 0x0044
+REGDEF_BEGIN(COLOR_GAIN_AND_OFFSET_REGISTER1)
+	REGDEF_BIT(CGAIN_U,        9)
+	REGDEF_BIT(       ,        7)
+	REGDEF_BIT(COFS_U ,        10)
+REGDEF_END(COLOR_GAIN_AND_OFFSET_REGISTER1)
+
+
+/*
+    CGAIN_V:    [0x0, 0x1ff],			bits : 8_0
+    COFS_V :    [0x0, 0x3ff],			bits : 25_16
+    CG_DRNG:    [0x0, 0x1],			bits : 28
+*/
+#define COLOR_GAIN_AND_OFFSET_REGISTER2_OFS 0x0048
+REGDEF_BEGIN(COLOR_GAIN_AND_OFFSET_REGISTER2)
+	REGDEF_BIT(CGAIN_V,        9)
+	REGDEF_BIT(       ,        7)
+	REGDEF_BIT(COFS_V ,        10)
+	REGDEF_BIT(       ,        2)
+	REGDEF_BIT(CG_DRNG,        1)
+REGDEF_END(COLOR_GAIN_AND_OFFSET_REGISTER2)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_7_OFS 0x004c
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_7)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_7)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_8_OFS 0x0050
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_8)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_8)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_9_OFS 0x0054
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_9)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_9)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_10_OFS 0x0058
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_10)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_10)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_11_OFS 0x005c
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_11)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_11)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_12_OFS 0x0060
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_12)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_12)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_13_OFS 0x0064
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_13)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_13)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_14_OFS 0x0068
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_14)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_14)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_15_OFS 0x006c
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_15)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_15)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_16_OFS 0x0070
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_16)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_16)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_17_OFS 0x0074
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_17)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_17)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_18_OFS 0x0078
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_18)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_18)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_19_OFS 0x007c
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_19)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_19)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_20_OFS 0x0080
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_20)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_20)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_21_OFS 0x0084
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_21)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_21)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_22_OFS 0x0088
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_22)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_22)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_23_OFS 0x008c
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_23)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_23)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_24_OFS 0x0090
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_24)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_24)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_25_OFS 0x0094
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_25)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_25)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_26_OFS 0x0098
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_26)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_26)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_27_OFS 0x009c
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_27)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_27)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_28_OFS 0x00a0
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_28)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_28)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_29_OFS 0x00a4
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_29)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_29)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_30_OFS 0x00a8
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_30)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_30)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_31_OFS 0x00ac
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_31)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_31)
+
+
+/*
+    MAP_SIZE:    [0x0, 0xf],			bits : 3_0
+    PFET_EN :    [0x0, 0x1],			bits : 31
+*/
+#define VCACHE_REGISTER1_OFS 0x00b0
+REGDEF_BEGIN(VCACHE_REGISTER1)
+	REGDEF_BIT(MAP_SIZE,        4)
+	REGDEF_BIT(        ,        27)
+	REGDEF_BIT(PFET_EN ,        1)
+REGDEF_END(VCACHE_REGISTER1)
+
+
+/*
+    PFET_HLEN:    [0x0, 0x3fff],			bits : 13_0
+    PFET_VLEN:    [0x0, 0x3fff],			bits : 29_16
+*/
+#define VCACHE_REGISTER2_OFS 0x00b4
+REGDEF_BEGIN(VCACHE_REGISTER2)
+	REGDEF_BIT(PFET_HLEN,        14)
+	REGDEF_BIT(         ,        2)
+	REGDEF_BIT(PFET_VLEN,        14)
+REGDEF_END(VCACHE_REGISTER2)
+
+
+/*
+    PFET_HSTEP:    [0x0, 0x3fff],			bits : 13_0
+    PFET_VSTEP:    [0x0, 0x3fff],			bits : 29_16
+*/
+#define VCACHE_REGISTER3_OFS 0x00b8
+REGDEF_BEGIN(VCACHE_REGISTER3)
+	REGDEF_BIT(PFET_HSTEP,        14)
+	REGDEF_BIT(          ,        2)
+	REGDEF_BIT(PFET_VSTEP,        14)
+REGDEF_END(VCACHE_REGISTER3)
+
+
+/*
+    PFET_HOFT:    [0x0, 0x3fff],			bits : 13_0
+    PFET_VOFT:    [0x0, 0x3fff],			bits : 29_16
+*/
+#define VCACHE_REGISTER4_OFS 0x00bc
+REGDEF_BEGIN(VCACHE_REGISTER4)
+	REGDEF_BIT(PFET_HOFT,        14)
+	REGDEF_BIT(         ,        2)
+	REGDEF_BIT(PFET_VOFT,        14)
+REGDEF_END(VCACHE_REGISTER4)
+
+
+/*
+    DC_MODE    :    [0x0, 0x3],			bits : 1_0
+    DC_LSB_RAND:    [0x0, 0x1],			bits : 5
+*/
+#define DISTORTION_CORRECTION_REGISTER1_OFS 0x00c0
+REGDEF_BEGIN(DISTORTION_CORRECTION_REGISTER1)
+	REGDEF_BIT(DC_MODE    ,        2)
+	REGDEF_BIT(           ,        3)
+	REGDEF_BIT(DC_LSB_RAND,        1)
+REGDEF_END(DISTORTION_CORRECTION_REGISTER1)
+
+
+/*
+    DC_FOV_BOUND:    [0x0, 0x1],			bits : 0
+    DC_BOUND_Y  :    [0x0, 0xff],			bits : 23_16
+*/
+#define DISTORTION_CORRECTION_REGISTER2_OFS 0x00c4
+REGDEF_BEGIN(DISTORTION_CORRECTION_REGISTER2)
+	REGDEF_BIT(DC_FOV_BOUND,        2)
+	REGDEF_BIT(            ,        14)
+	REGDEF_BIT(DC_BOUND_Y  ,        8)
+REGDEF_END(DISTORTION_CORRECTION_REGISTER2)
+
+
+/*
+    DC_BOUND_U:    [0x0, 0xff],			bits : 7_0
+    DC_BOUND_V:    [0x0, 0xff],			bits : 23_16
+*/
+#define DISTORTION_CORRECTION_REGISTER3_OFS 0x00c8
+REGDEF_BEGIN(DISTORTION_CORRECTION_REGISTER3)
+	REGDEF_BIT(DC_BOUND_U,        8)
+	REGDEF_BIT(          ,        8)
+	REGDEF_BIT(DC_BOUND_V,        8)
+REGDEF_END(DISTORTION_CORRECTION_REGISTER3)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+
+*/
+#define DISTORTION_CORRECTION_REGISTER4_OFS 0x00cc
+REGDEF_BEGIN(DISTORTION_CORRECTION_REGISTER4)
+	REGDEF_BIT(DC_PIXEL_MASK_SEG_POS0,        14)
+
+REGDEF_END(DISTORTION_CORRECTION_REGISTER4)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+
+*/
+#define DISTORTION_CORRECTION_REGISTER5_OFS 0x00d0
+REGDEF_BEGIN(DISTORTION_CORRECTION_REGISTER5)
+	REGDEF_BIT(DC_PIXEL_MASK_SEG_POS1   ,        14)
+	REGDEF_BIT(                         ,        15)
+	REGDEF_BIT(DC_PIXEL_MASK_SEG0_OUT_EN,        1)
+	REGDEF_BIT(DC_PIXEL_MASK_SEG1_OUT_EN,        1)
+	REGDEF_BIT(DC_PIXEL_MASK_SEG2_OUT_EN,        1)
+REGDEF_END(DISTORTION_CORRECTION_REGISTER5)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+
+*/
+#define DISTORTION_CORRECTION_REGISTER6_OFS 0x00d4
+REGDEF_BEGIN(DISTORTION_CORRECTION_REGISTER6)
+	REGDEF_BIT(Reserved,        32)
+
+REGDEF_END(DISTORTION_CORRECTION_REGISTER6)
+
+
+/*
+    DC_HFACT:    [0x0, 0xffffff],			bits : 23_0
+*/
+#define DISTORTION_CORRECTION_REGISTER7_OFS 0x00d8
+REGDEF_BEGIN(DISTORTION_CORRECTION_REGISTER7)
+	REGDEF_BIT(DC_HFACT,        24)
+REGDEF_END(DISTORTION_CORRECTION_REGISTER7)
+
+
+/*
+    DC_VFACT:    [0x0, 0xffffff],			bits : 23_0
+*/
+#define DISTORTION_CORRECTION_REGISTER8_OFS 0x00dc
+REGDEF_BEGIN(DISTORTION_CORRECTION_REGISTER8)
+	REGDEF_BIT(DC_VFACT,        24)
+REGDEF_END(DISTORTION_CORRECTION_REGISTER8)
+
+
+/*
+    DC_XOFS_INT:    [0x0, 0x1ff],			bits : 8_0
+    DC_YOFS_INT:    [0x0, 0xff],			bits : 23_16
+*/
+#define DISTORTION_CORRECTION_REGISTER9_OFS 0x00e0
+REGDEF_BEGIN(DISTORTION_CORRECTION_REGISTER9)
+	REGDEF_BIT(DC_XOFS_INT,        9)
+	REGDEF_BIT(           ,        7)
+	REGDEF_BIT(DC_YOFS_INT,        8)
+REGDEF_END(DISTORTION_CORRECTION_REGISTER9)
+
+
+/*
+    DC_XOFS_FRC:    [0x0, 0xffffff],			bits : 23_0
+*/
+#define DISTORTION_CORRECTION_REGISTER10_OFS 0x00e4
+REGDEF_BEGIN(DISTORTION_CORRECTION_REGISTER10)
+	REGDEF_BIT(DC_XOFS_FRC,        24)
+REGDEF_END(DISTORTION_CORRECTION_REGISTER10)
+
+
+/*
+    DC_YOFS_FRC:    [0x0, 0xffffff],			bits : 23_0
+*/
+#define DISTORTION_CORRECTION_REGISTER11_OFS 0x00e8
+REGDEF_BEGIN(DISTORTION_CORRECTION_REGISTER11)
+	REGDEF_BIT(DC_YOFS_FRC,        24)
+REGDEF_END(DISTORTION_CORRECTION_REGISTER11)
+
+
+/*
+    DC_2DLUT_WIDTH :    [0x0, 0x3ff],			bits : 9_0
+    DC_2DLUT_HEIGHT:    [0x0, 0x3ff],			bits : 25_16
+*/
+#define DISTORTION_CORRECTION_REGISTER12_OFS 0x00ec
+REGDEF_BEGIN(DISTORTION_CORRECTION_REGISTER12)
+	REGDEF_BIT(DC_2DLUT_WIDTH ,        10)
+	REGDEF_BIT(               ,        6)
+	REGDEF_BIT(DC_2DLUT_HEIGHT,        10)
+REGDEF_END(DISTORTION_CORRECTION_REGISTER12)
+
+
+/*
+    DC_2DLUT_COL_START_INT:    [0x0, 0x7ff],   bits : 10_0
+*/
+#define DISTORTION_CORRECTION_REGISTER13_OFS 0x00f0
+REGDEF_BEGIN(DISTORTION_CORRECTION_REGISTER13)
+	REGDEF_BIT(DC_2DLUT_COL_START_INT,        11)
+REGDEF_END(DISTORTION_CORRECTION_REGISTER13)
+
+
+/*
+    DC_2DLUT_COL_START_FRAC:    [0x0, 0xffffff],bits : 23_0
+*/
+#define DISTORTION_CORRECTION_REGISTER14_OFS 0x00f4
+REGDEF_BEGIN(DISTORTION_CORRECTION_REGISTER14)
+	REGDEF_BIT(DC_2DLUT_COL_START_FRAC,        24)
+REGDEF_END(DISTORTION_CORRECTION_REGISTER14)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_35_OFS 0x00f8
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_35)
+	REGDEF_BIT(DC_PIXEL_MASK0_DRAM_OFSO,        19)
+REGDEF_END(VPE_RESERVED_REGISTER_35)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_36_OFS 0x00fc
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_36)
+	REGDEF_BIT(DC_PIXEL_MASK1_DRAM_OFSO,        19)
+REGDEF_END(VPE_RESERVED_REGISTER_36)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_37_OFS 0x0100
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_37)
+	REGDEF_BIT(DC_PIXEL_MASK2_DRAM_OFSO,        19)
+REGDEF_END(VPE_RESERVED_REGISTER_37)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_38_OFS 0x0104
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_38)
+	REGDEF_BIT(DC_PIXEL_MASK0_ADDR,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_38)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_39_OFS 0x0108
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_39)
+	REGDEF_BIT(DC_PIXEL_MASK0_MSB_ADDR,        4)
+REGDEF_END(VPE_RESERVED_REGISTER_39)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_40_OFS 0x010c
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_40)
+	REGDEF_BIT(DC_PIXEL_MASK1_ADDR,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_40)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_41_OFS 0x0110
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_41)
+	REGDEF_BIT(DC_PIXEL_MASK1_MSB_ADDR,        4)
+REGDEF_END(VPE_RESERVED_REGISTER_41)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_42_OFS 0x0114
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_42)
+	REGDEF_BIT(DC_PIXEL_MASK2_ADDR,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_42)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_43_OFS 0x0118
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_43)
+	REGDEF_BIT(DC_PIXEL_MASK2_MSB_ADDR,        4)
+REGDEF_END(VPE_RESERVED_REGISTER_43)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_44_OFS 0x011c
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_44)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_44)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_45_OFS 0x0120
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_45)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_45)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_46_OFS 0x0124
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_46)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_46)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_47_OFS 0x0128
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_47)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_47)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_48_OFS 0x012c
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_48)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_48)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_49_OFS 0x0130
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_49)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_49)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_50_OFS 0x0134
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_50)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_50)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_51_OFS 0x0138
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_51)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_51)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_52_OFS 0x013c
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_52)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_52)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_53_OFS 0x0140
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_53)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_53)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_54_OFS 0x0144
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_54)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_54)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_55_OFS 0x0148
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_55)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_55)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_56_OFS 0x014c
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_56)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_56)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_57_OFS 0x0150
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_57)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_57)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_58_OFS 0x0154
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_58)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_58)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_59_OFS 0x0158
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_59)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_59)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_60_OFS 0x015c
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_60)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_60)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_61_OFS 0x0160
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_61)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_61)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_62_OFS 0x0164
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_62)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_62)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_63_OFS 0x0168
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_63)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_63)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_64_OFS 0x016c
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_64)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_64)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_65_OFS 0x0170
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_65)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_65)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_66_OFS 0x0174
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_66)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_66)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_67_OFS 0x0178
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_67)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_67)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_68_OFS 0x017c
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_68)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_68)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_69_OFS 0x0180
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_69)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_69)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_70_OFS 0x0184
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_70)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_70)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_71_OFS 0x0188
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_71)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_71)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_72_OFS 0x018c
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_72)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_72)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_73_OFS 0x0190
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_73)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_73)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_74_OFS 0x0194
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_74)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_74)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_75_OFS 0x0198
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_75)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_75)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_76_OFS 0x019c
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_76)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_76)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_77_OFS 0x01a0
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_77)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_77)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_78_OFS 0x01a4
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_78)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_78)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_79_OFS 0x01a8
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_79)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_79)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_80_OFS 0x01ac
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_80)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_80)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_81_OFS 0x01b0
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_81)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_81)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_82_OFS 0x01b4
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_82)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_82)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_83_OFS 0x01b8
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_83)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_83)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_84_OFS 0x01bc
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_84)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_84)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_85_OFS 0x01c0
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_85)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_85)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_86_OFS 0x01c4
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_86)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_86)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_87_OFS 0x01c8
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_87)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_87)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_88_OFS 0x01cc
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_88)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_88)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_89_OFS 0x01d0
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_89)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_89)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_90_OFS 0x01d4
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_90)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_90)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_91_OFS 0x01d8
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_91)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_91)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_92_OFS 0x01dc
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_92)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_92)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_93_OFS 0x01e0
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_93)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_93)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_94_OFS 0x01e4
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_94)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_94)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_95_OFS 0x01e8
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_95)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_95)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_96_OFS 0x01ec
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_96)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_96)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_97_OFS 0x01f0
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_97)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_97)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_98_OFS 0x01f4
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_98)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_98)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_99_OFS 0x01f8
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_99)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_99)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_100_OFS 0x01fc
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_100)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_100)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_101_OFS 0x0200
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_101)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_101)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_102_OFS 0x0204
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_102)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_102)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_103_OFS 0x0208
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_103)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_103)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_104_OFS 0x020c
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_104)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_104)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_105_OFS 0x0210
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_105)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_105)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_106_OFS 0x0214
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_106)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_106)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_107_OFS 0x0218
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_107)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_107)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_108_OFS 0x021c
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_108)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_108)
+
+
+/*
+    DBS_GAIN_0:    [0x0, 0xff],			bits : 7_0
+    DBS_GAIN_1:    [0x0, 0xff],			bits : 15_8
+    DBS_GAIN_2:    [0x0, 0xff],			bits : 23_16
+    DBS_GAIN_3:    [0x0, 0xff],			bits : 31_24
+*/
+#define DBS_REGISTER_0_OFS 0x0220
+REGDEF_BEGIN(DBS_REGISTER_0)
+	REGDEF_BIT(DBS_GAIN_0,        8)
+	REGDEF_BIT(DBS_GAIN_1,        8)
+	REGDEF_BIT(DBS_GAIN_2,        8)
+	REGDEF_BIT(DBS_GAIN_3,        8)
+REGDEF_END(DBS_REGISTER_0)
+
+
+/*
+    DBS_GAIN_4:    [0x0, 0xff],			bits : 7_0
+    DBS_GAIN_5:    [0x0, 0xff],			bits : 15_8
+    DBS_GAIN_6:    [0x0, 0xff],			bits : 23_16
+    DBS_GAIN_7:    [0x0, 0xff],			bits : 31_24
+*/
+#define DBS_REGISTER_1_OFS 0x0224
+REGDEF_BEGIN(DBS_REGISTER_1)
+	REGDEF_BIT(DBS_GAIN_4,        8)
+	REGDEF_BIT(DBS_GAIN_5,        8)
+	REGDEF_BIT(DBS_GAIN_6,        8)
+	REGDEF_BIT(DBS_GAIN_7,        8)
+REGDEF_END(DBS_REGISTER_1)
+
+
+/*
+    DBS_GAIN_8 :    [0x0, 0xff],			bits : 7_0
+    DBS_GAIN_9 :    [0x0, 0xff],			bits : 15_8
+    DBS_GAIN_10:    [0x0, 0xff],			bits : 23_16
+    DBS_GAIN_11:    [0x0, 0xff],			bits : 31_24
+*/
+#define DBS_REGISTER_2_OFS 0x0228
+REGDEF_BEGIN(DBS_REGISTER_2)
+	REGDEF_BIT(DBS_GAIN_8 ,        8)
+	REGDEF_BIT(DBS_GAIN_9 ,        8)
+	REGDEF_BIT(DBS_GAIN_10,        8)
+	REGDEF_BIT(DBS_GAIN_11,        8)
+REGDEF_END(DBS_REGISTER_2)
+
+
+/*
+    DBS_GAIN_12:    [0x0, 0xff],			bits : 7_0
+    DBS_GAIN_13:    [0x0, 0xff],			bits : 15_8
+    DBS_GAIN_14:    [0x0, 0xff],			bits : 23_16
+    DBS_GAIN_15:    [0x0, 0xff],			bits : 31_24
+*/
+#define DBS_REGISTER_3_OFS 0x022c
+REGDEF_BEGIN(DBS_REGISTER_3)
+	REGDEF_BIT(DBS_GAIN_12,        8)
+	REGDEF_BIT(DBS_GAIN_13,        8)
+	REGDEF_BIT(DBS_GAIN_14,        8)
+	REGDEF_BIT(DBS_GAIN_15,        8)
+REGDEF_END(DBS_REGISTER_3)
+
+
+/*
+    DBS_GAIN_16       :    [0x0, 0xff],			bits : 7_0
+    QUAD_AREA_CLAMPING:    [0x0, 0xffff],			bits : 23_8
+*/
+#define DBS_REGISTER_4_OFS 0x0230
+REGDEF_BEGIN(DBS_REGISTER_4)
+	REGDEF_BIT(DBS_GAIN_16       ,        8)
+	REGDEF_BIT(QUAD_AREA_CLAMPING,        16)
+REGDEF_END(DBS_REGISTER_4)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_109_OFS 0x0234
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_109)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_109)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_110_OFS 0x0238
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_110)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_110)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_111_OFS 0x023c
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_111)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_111)
+
+
+/*
+    EDGE_WET_SRC_SEL:    [0x0, 0x1],			bits : 0
+    DBS_GAIN_EN     :    [0x0, 0x1],			bits : 1
+    EDGE_WEIGHT_TH  :    [0x0, 0xff],			bits : 15_8
+    EDGE_WEIGHT_GAIN:    [0x0, 0xff],			bits : 23_16
+    NOISE_LEVEL     :    [0x0, 0xff],			bits : 31_24
+*/
+#define SHARPEN_REGISTER1_OFS 0x0240
+REGDEF_BEGIN(SHARPEN_REGISTER1)
+	REGDEF_BIT(EDGE_WET_SRC_SEL,        1)
+	REGDEF_BIT(DBS_GAIN_EN     ,        1)
+	REGDEF_BIT(                ,        6)
+	REGDEF_BIT(EDGE_WEIGHT_TH  ,        8)
+	REGDEF_BIT(EDGE_WEIGHT_GAIN,        8)
+	REGDEF_BIT(NOISE_LEVEL     ,        8)
+REGDEF_END(SHARPEN_REGISTER1)
+
+
+/*
+    EDGE_SHARP_STR1:    [0x0, 0xff],			bits : 7_0
+    EDGE_SHARP_STR2:    [0x0, 0xff],			bits : 15_8
+    FLAT_SHARP_STR :    [0x0, 0xff],			bits : 23_16
+*/
+#define SHARPEN_REGISTER2_OFS 0x0244
+REGDEF_BEGIN(SHARPEN_REGISTER2)
+	REGDEF_BIT(EDGE_SHARP_STR1,        8)
+	REGDEF_BIT(EDGE_SHARP_STR2,        8)
+	REGDEF_BIT(FLAT_SHARP_STR ,        8)
+REGDEF_END(SHARPEN_REGISTER2)
+
+
+/*
+    CORING_TH       :    [0x0, 0xff],			bits : 7_0
+    BLEND_INV_GAMMA :    [0x0, 0xff],			bits : 15_8
+    BRIGHT_HALO_CLIP:    [0x0, 0xff],			bits : 23_16
+    DARK_HALO_CLIP  :    [0x0, 0xff],			bits : 31_24
+*/
+#define SHARPEN_REGISTER3_OFS 0x0248
+REGDEF_BEGIN(SHARPEN_REGISTER3)
+	REGDEF_BIT(CORING_TH       ,        8)
+	REGDEF_BIT(BLEND_INV_GAMMA ,        8)
+	REGDEF_BIT(BRIGHT_HALO_CLIP,        8)
+	REGDEF_BIT(DARK_HALO_CLIP  ,        8)
+REGDEF_END(SHARPEN_REGISTER3)
+
+
+/*
+    NOISE_CURVE0:    [0x0, 0xff],			bits : 7_0
+    NOISE_CURVE1:    [0x0, 0xff],			bits : 15_8
+    NOISE_CURVE2:    [0x0, 0xff],			bits : 23_16
+    NOISE_CURVE3:    [0x0, 0xff],			bits : 31_24
+*/
+#define SHARPEN_REGISTER4_OFS 0x024c
+REGDEF_BEGIN(SHARPEN_REGISTER4)
+	REGDEF_BIT(NOISE_CURVE0,        8)
+	REGDEF_BIT(NOISE_CURVE1,        8)
+	REGDEF_BIT(NOISE_CURVE2,        8)
+	REGDEF_BIT(NOISE_CURVE3,        8)
+REGDEF_END(SHARPEN_REGISTER4)
+
+
+/*
+    NOISE_CURVE4:    [0x0, 0xff],			bits : 7_0
+    NOISE_CURVE5:    [0x0, 0xff],			bits : 15_8
+    NOISE_CURVE6:    [0x0, 0xff],			bits : 23_16
+    NOISE_CURVE7:    [0x0, 0xff],			bits : 31_24
+*/
+#define SHARPEN_REGISTER5_OFS 0x0250
+REGDEF_BEGIN(SHARPEN_REGISTER5)
+	REGDEF_BIT(NOISE_CURVE4,        8)
+	REGDEF_BIT(NOISE_CURVE5,        8)
+	REGDEF_BIT(NOISE_CURVE6,        8)
+	REGDEF_BIT(NOISE_CURVE7,        8)
+REGDEF_END(SHARPEN_REGISTER5)
+
+
+/*
+    NOISE_CURVE8 :    [0x0, 0xff],			bits : 7_0
+    NOISE_CURVE9 :    [0x0, 0xff],			bits : 15_8
+    NOISE_CURVE10:    [0x0, 0xff],			bits : 23_16
+    NOISE_CURVE11:    [0x0, 0xff],			bits : 31_24
+*/
+#define SHARPEN_REGISTER6_OFS 0x0254
+REGDEF_BEGIN(SHARPEN_REGISTER6)
+	REGDEF_BIT(NOISE_CURVE8 ,        8)
+	REGDEF_BIT(NOISE_CURVE9 ,        8)
+	REGDEF_BIT(NOISE_CURVE10,        8)
+	REGDEF_BIT(NOISE_CURVE11,        8)
+REGDEF_END(SHARPEN_REGISTER6)
+
+
+/*
+    NOISE_CURVE12:    [0x0, 0xff],			bits : 7_0
+    NOISE_CURVE13:    [0x0, 0xff],			bits : 15_8
+    NOISE_CURVE14:    [0x0, 0xff],			bits : 23_16
+    NOISE_CURVE15:    [0x0, 0xff],			bits : 31_24
+*/
+#define SHARPEN_REGISTER7_OFS 0x0258
+REGDEF_BEGIN(SHARPEN_REGISTER7)
+	REGDEF_BIT(NOISE_CURVE12,        8)
+	REGDEF_BIT(NOISE_CURVE13,        8)
+	REGDEF_BIT(NOISE_CURVE14,        8)
+	REGDEF_BIT(NOISE_CURVE15,        8)
+REGDEF_END(SHARPEN_REGISTER7)
+
+
+/*
+    NOISE_CURVE16:    [0x0, 0xff],			bits : 7_0
+*/
+#define SHARPEN_REGISTER8_OFS 0x025c
+REGDEF_BEGIN(SHARPEN_REGISTER8)
+	REGDEF_BIT(NOISE_CURVE16,        8)
+REGDEF_END(SHARPEN_REGISTER8)
+
+
+/*
+    PAL0_Y :    [0x0, 0xff],			bits : 7_0
+    PAL0_CB:    [0x0, 0xff],			bits : 15_8
+    PAL0_CR:    [0x0, 0xff],			bits : 23_16
+*/
+#define PALETTE_REGISTER1_OFS 0x0260
+REGDEF_BEGIN(PALETTE_REGISTER1)
+	REGDEF_BIT(PAL0_Y ,        8)
+	REGDEF_BIT(PAL0_CB,        8)
+	REGDEF_BIT(PAL0_CR,        8)
+REGDEF_END(PALETTE_REGISTER1)
+
+
+/*
+    PAL1_Y :    [0x0, 0xff],			bits : 7_0
+    PAL1_CB:    [0x0, 0xff],			bits : 15_8
+    PAL1_CR:    [0x0, 0xff],			bits : 23_16
+*/
+#define PALETTE_REGISTER2_OFS 0x0264
+REGDEF_BEGIN(PALETTE_REGISTER2)
+	REGDEF_BIT(PAL1_Y ,        8)
+	REGDEF_BIT(PAL1_CB,        8)
+	REGDEF_BIT(PAL1_CR,        8)
+REGDEF_END(PALETTE_REGISTER2)
+
+
+/*
+    PAL2_Y :    [0x0, 0xff],			bits : 7_0
+    PAL2_CB:    [0x0, 0xff],			bits : 15_8
+    PAL2_CR:    [0x0, 0xff],			bits : 23_16
+*/
+#define PALETTE_REGISTER3_OFS 0x0268
+REGDEF_BEGIN(PALETTE_REGISTER3)
+	REGDEF_BIT(PAL2_Y ,        8)
+	REGDEF_BIT(PAL2_CB,        8)
+	REGDEF_BIT(PAL2_CR,        8)
+REGDEF_END(PALETTE_REGISTER3)
+
+
+/*
+    PAL3_Y :    [0x0, 0xff],			bits : 7_0
+    PAL3_CB:    [0x0, 0xff],			bits : 15_8
+    PAL3_CR:    [0x0, 0xff],			bits : 23_16
+*/
+#define PALETTE_REGISTER4_OFS 0x026c
+REGDEF_BEGIN(PALETTE_REGISTER4)
+	REGDEF_BIT(PAL3_Y ,        8)
+	REGDEF_BIT(PAL3_CB,        8)
+	REGDEF_BIT(PAL3_CR,        8)
+REGDEF_END(PALETTE_REGISTER4)
+
+
+/*
+    PAL4_Y :    [0x0, 0xff],			bits : 7_0
+    PAL4_CB:    [0x0, 0xff],			bits : 15_8
+    PAL4_CR:    [0x0, 0xff],			bits : 23_16
+*/
+#define PALETTE_REGISTER5_OFS 0x0270
+REGDEF_BEGIN(PALETTE_REGISTER5)
+	REGDEF_BIT(PAL4_Y ,        8)
+	REGDEF_BIT(PAL4_CB,        8)
+	REGDEF_BIT(PAL4_CR,        8)
+REGDEF_END(PALETTE_REGISTER5)
+
+
+/*
+    PAL5_Y :    [0x0, 0xff],			bits : 7_0
+    PAL5_CB:    [0x0, 0xff],			bits : 15_8
+    PAL5_CR:    [0x0, 0xff],			bits : 23_16
+*/
+#define PALETTE_REGISTER6_OFS 0x0274
+REGDEF_BEGIN(PALETTE_REGISTER6)
+	REGDEF_BIT(PAL5_Y ,        8)
+	REGDEF_BIT(PAL5_CB,        8)
+	REGDEF_BIT(PAL5_CR,        8)
+REGDEF_END(PALETTE_REGISTER6)
+
+
+/*
+    PAL6_Y :    [0x0, 0xff],			bits : 7_0
+    PAL6_CB:    [0x0, 0xff],			bits : 15_8
+    PAL6_CR:    [0x0, 0xff],			bits : 23_16
+*/
+#define PALETTE_REGISTER7_OFS 0x0278
+REGDEF_BEGIN(PALETTE_REGISTER7)
+	REGDEF_BIT(PAL6_Y ,        8)
+	REGDEF_BIT(PAL6_CB,        8)
+	REGDEF_BIT(PAL6_CR,        8)
+REGDEF_END(PALETTE_REGISTER7)
+
+
+/*
+    PAL7_Y :    [0x0, 0xff],			bits : 7_0
+    PAL7_CB:    [0x0, 0xff],			bits : 15_8
+    PAL7_CR:    [0x0, 0xff],			bits : 23_16
+*/
+#define PALETTE_REGISTER8_OFS 0x027c
+REGDEF_BEGIN(PALETTE_REGISTER8)
+	REGDEF_BIT(PAL7_Y ,        8)
+	REGDEF_BIT(PAL7_CB,        8)
+	REGDEF_BIT(PAL7_CR,        8)
+REGDEF_END(PALETTE_REGISTER8)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_112_OFS 0x0280
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_112)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_112)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_113_OFS 0x0284
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_113)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_113)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_114_OFS 0x0288
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_114)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_114)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_115_OFS 0x028c
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_115)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_115)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_116_OFS 0x0290
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_116)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_116)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_117_OFS 0x0294
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_117)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_117)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_118_OFS 0x0298
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_118)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_118)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_119_OFS 0x029c
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_119)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_119)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_120_OFS 0x02a0
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_120)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_120)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_121_OFS 0x02a4
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_121)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_121)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_122_OFS 0x02a8
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_122)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_122)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_123_OFS 0x02ac
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_123)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_123)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_124_OFS 0x02b0
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_124)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_124)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_125_OFS 0x02b4
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_125)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_125)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_126_OFS 0x02b8
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_126)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_126)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_127_OFS 0x02bc
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_127)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_127)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_128_OFS 0x02c0
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_128)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_128)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_129_OFS 0x02c4
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_129)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_129)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_130_OFS 0x02c8
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_130)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_130)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_131_OFS 0x02cc
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_131)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_131)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_132_OFS 0x02d0
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_132)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_132)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_133_OFS 0x02d4
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_133)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_133)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_134_OFS 0x02d8
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_134)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_134)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_135_OFS 0x02dc
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_135)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_135)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_136_OFS 0x02e0
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_136)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_136)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_137_OFS 0x02e4
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_137)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_137)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_138_OFS 0x02e8
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_138)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_138)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_139_OFS 0x02ec
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_139)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_139)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_140_OFS 0x02f0
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_140)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_140)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_141_OFS 0x02f4
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_141)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_141)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_142_OFS 0x02f8
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_142)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_142)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_143_OFS 0x02fc
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_143)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_143)
+
+
+/*
+    LINKED_LIST_CMD_ADDR:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define DMA_1_REGISTER_OFS 0x0300
+REGDEF_BEGIN(DMA_1_REGISTER)
+	REGDEF_BIT(LINKED_LIST_CMD_ADDR,        32)
+REGDEF_END(DMA_1_REGISTER)
+
+
+/*
+    LINKED_LIST_CMD_ADDR_MSB:    [0x0, 0xf],			bits : 3_0
+*/
+#define DMA_2_REGISTER_OFS 0x0304
+REGDEF_BEGIN(DMA_2_REGISTER)
+	REGDEF_BIT(LINKED_LIST_CMD_ADDR_MSB,        4)
+REGDEF_END(DMA_2_REGISTER)
+
+
+/*
+    SRC_Y_DMA_ADDR:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define DMA_3_REGISTER_OFS 0x0308
+REGDEF_BEGIN(DMA_3_REGISTER)
+	REGDEF_BIT(SRC_Y_DMA_ADDR,        32)
+REGDEF_END(DMA_3_REGISTER)
+
+
+/*
+    SRC_Y_DMA_ADDR_MSB:    [0x0, 0xf],			bits : 3_0
+*/
+#define DMA_4_REGISTER_OFS 0x030c
+REGDEF_BEGIN(DMA_4_REGISTER)
+	REGDEF_BIT(SRC_Y_DMA_ADDR_MSB,        4)
+REGDEF_END(DMA_4_REGISTER)
+
+
+/*
+    SRC_UV_DMA_ADDR:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define DMA_5_REGISTER_OFS 0x0310
+REGDEF_BEGIN(DMA_5_REGISTER)
+	REGDEF_BIT(SRC_UV_DMA_ADDR,        32)
+REGDEF_END(DMA_5_REGISTER)
+
+
+/*
+    SRC_UV_DMA_ADDR_MSB:    [0x0, 0xf],			bits : 3_0
+*/
+#define DMA_6_REGISTER_OFS 0x0314
+REGDEF_BEGIN(DMA_6_REGISTER)
+	REGDEF_BIT(SRC_UV_DMA_ADDR_MSB,        4)
+REGDEF_END(DMA_6_REGISTER)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define DMA_7_REGISTER_OFS 0x0318
+REGDEF_BEGIN(DMA_7_REGISTER)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(DMA_7_REGISTER)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define DMA_8_REGISTER_OFS 0x031c
+REGDEF_BEGIN(DMA_8_REGISTER)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(DMA_8_REGISTER)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define DMA_9_REGISTER_OFS 0x0320
+REGDEF_BEGIN(DMA_9_REGISTER)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(DMA_9_REGISTER)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define DMA_10_REGISTER_OFS 0x0324
+REGDEF_BEGIN(DMA_10_REGISTER)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(DMA_10_REGISTER)
+
+
+/*
+    DC_2DLUT_DMA_ADDR:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define DMA_11_REGISTER_OFS 0x0328
+REGDEF_BEGIN(DMA_11_REGISTER)
+	REGDEF_BIT(DC_2DLUT_DMA_ADDR,        32)
+REGDEF_END(DMA_11_REGISTER)
+
+
+/*
+    DC_2DLUT_DMA_ADDR_MSB:    [0x0, 0xf],			bits : 3_0
+*/
+#define DMA_12_REGISTER_OFS 0x032c
+REGDEF_BEGIN(DMA_12_REGISTER)
+	REGDEF_BIT(DC_2DLUT_DMA_ADDR_MSB,        4)
+REGDEF_END(DMA_12_REGISTER)
+
+
+/*
+    RES0_DES_Y0_DMA_ADDR:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define DMA_13_REGISTER_OFS 0x0330
+REGDEF_BEGIN(DMA_13_REGISTER)
+	REGDEF_BIT(RES0_DES_Y0_DMA_ADDR,        32)
+REGDEF_END(DMA_13_REGISTER)
+	
+
+
+/*
+    RES0_DES_Y0_DMA_ADDR_MSB:    [0x0, 0x0000000f],			bits : 31_0
+*/
+#define DMA_14_REGISTER_OFS 0x0334
+REGDEF_BEGIN(DMA_14_REGISTER)
+	REGDEF_BIT(RES0_DES_Y0_DMA_ADDR_MSB,        4)
+REGDEF_END(DMA_14_REGISTER)
+
+
+/*
+    RES0_DES_UV0_DMA_ADDR:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define DMA_15_REGISTER_OFS 0x0338
+REGDEF_BEGIN(DMA_15_REGISTER)
+	REGDEF_BIT(RES0_DES_UV0_DMA_ADDR,        32)
+REGDEF_END(DMA_15_REGISTER)
+	
+
+
+/*
+    RES0_DES_UV0_DMA_ADDR_MSB:    [0x0, 0x0000000f],			bits : 31_0
+*/
+#define DMA_16_REGISTER_OFS 0x033C
+REGDEF_BEGIN(DMA_16_REGISTER)
+	REGDEF_BIT(RES0_DES_UV0_DMA_ADDR_MSB,        4)
+REGDEF_END(DMA_16_REGISTER)
+
+
+
+/*
+    DES_RES0_Y1_DMA_ADDR:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define DMA_17_REGISTER_OFS 0x0340
+REGDEF_BEGIN(DMA_17_REGISTER)
+	REGDEF_BIT(DES_RES0_Y1_DMA_ADDR,        32)
+REGDEF_END(DMA_17_REGISTER)
+
+
+/*
+    DES_RES0_Y1_DMA_ADDR_MSB:    [0x0, 0xf],			bits : 3_0
+*/
+#define DMA_18_REGISTER_OFS 0x0344
+REGDEF_BEGIN(DMA_18_REGISTER)
+	REGDEF_BIT(DES_RES0_Y1_DMA_ADDR_MSB,        4)
+REGDEF_END(DMA_18_REGISTER)
+
+
+/*
+    DES_RES0_UV1_DMA_ADDR:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define DMA_19_REGISTER_OFS 0x0348
+REGDEF_BEGIN(DMA_19_REGISTER)
+	REGDEF_BIT(DES_RES0_UV1_DMA_ADDR,        32)
+REGDEF_END(DMA_19_REGISTER)
+
+
+/*
+    DES_RES0_UV1_DMA_ADDR_MSB:    [0x0, 0xf],			bits : 3_0
+*/
+#define DMA_20_REGISTER_OFS 0x034c
+REGDEF_BEGIN(DMA_20_REGISTER)
+	REGDEF_BIT(DES_RES0_UV1_DMA_ADDR_MSB,        4)
+REGDEF_END(DMA_20_REGISTER)
+
+
+
+/*
+    RES1_DES_Y0_DMA_ADDR:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define DMA_21_REGISTER_OFS 0x0350
+REGDEF_BEGIN(DMA_21_REGISTER)
+	REGDEF_BIT(RES1_DES_Y0_DMA_ADDR,        32)
+REGDEF_END(DMA_21_REGISTER)
+	
+
+
+/*
+    RES1_DES_Y0_DMA_ADDR_MSB:    [0x0, 0x0000000f],			bits : 31_0
+*/
+#define DMA_22_REGISTER_OFS 0x0354
+REGDEF_BEGIN(DMA_22_REGISTER)
+	REGDEF_BIT(RES1_DES_Y0_DMA_ADDR_MSB,        4)
+REGDEF_END(DMA_22_REGISTER)
+
+
+/*
+    RES1_DES_UV0_DMA_ADDR:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define DMA_23_REGISTER_OFS 0x0358
+REGDEF_BEGIN(DMA_23_REGISTER)
+	REGDEF_BIT(RES1_DES_UV0_DMA_ADDR,        32)
+REGDEF_END(DMA_23_REGISTER)
+	
+
+
+/*
+    RES1_DES_UV0_DMA_ADDR_MSB:    [0x0, 0x0000000f],			bits : 31_0
+*/
+#define DMA_24_REGISTER_OFS 0x035C
+REGDEF_BEGIN(DMA_24_REGISTER)
+	REGDEF_BIT(RES1_DES_UV0_DMA_ADDR_MSB,        4)
+REGDEF_END(DMA_24_REGISTER)
+
+
+
+/*
+    DES_RES1_Y1_DMA_ADDR:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define DMA_25_REGISTER_OFS 0x0360
+REGDEF_BEGIN(DMA_25_REGISTER)
+	REGDEF_BIT(DES_RES1_Y1_DMA_ADDR,        32)
+REGDEF_END(DMA_25_REGISTER)
+
+
+/*
+    DES_RES1_Y1_DMA_ADDR_MSB:    [0x0, 0xf],			bits : 3_0
+*/
+#define DMA_26_REGISTER_OFS 0x0364
+REGDEF_BEGIN(DMA_26_REGISTER)
+	REGDEF_BIT(DES_RES1_Y1_DMA_ADDR_MSB,        4)
+REGDEF_END(DMA_26_REGISTER)
+
+
+/*
+    DES_RES1_UV1_DMA_ADDR:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define DMA_27_REGISTER_OFS 0x0368
+REGDEF_BEGIN(DMA_27_REGISTER)
+	REGDEF_BIT(DES_RES1_UV1_DMA_ADDR,        32)
+REGDEF_END(DMA_27_REGISTER)
+
+
+/*
+    DES_RES1_UV1_DMA_ADDR_MSB:    [0x0, 0xf],			bits : 3_0
+*/
+#define DMA_28_REGISTER_OFS 0x036c
+REGDEF_BEGIN(DMA_28_REGISTER)
+	REGDEF_BIT(DES_RES1_UV1_DMA_ADDR_MSB,        4)
+REGDEF_END(DMA_28_REGISTER)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define DMA_29_REGISTER_OFS 0x0370
+REGDEF_BEGIN(DMA_29_REGISTER)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(DMA_29_REGISTER)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define DMA_30_REGISTER_OFS 0x0374
+REGDEF_BEGIN(DMA_30_REGISTER)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(DMA_30_REGISTER)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define DMA_31_REGISTER_OFS 0x0378
+REGDEF_BEGIN(DMA_31_REGISTER)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(DMA_31_REGISTER)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define DMA_32_REGISTER_OFS 0x037c
+REGDEF_BEGIN(DMA_32_REGISTER)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(DMA_32_REGISTER)
+
+
+/*
+    DMA0_WCMD_WAIT_VALUE:    [0x0, 0xffff],			bits : 15_0
+    DMA0_RCMD_WAIT_VALUE:    [0x0, 0xffff],			bits : 31_16
+*/
+#define DMA_33_REGISTER_OFS 0x0380
+REGDEF_BEGIN(DMA_33_REGISTER)
+	REGDEF_BIT(DMA0_WCMD_WAIT_VALUE,        16)
+	REGDEF_BIT(DMA0_RCMD_WAIT_VALUE,        16)
+REGDEF_END(DMA_33_REGISTER)
+
+
+/*
+    DMA1_WCMD_WAIT_VALUE:    [0x0, 0xffff],			bits : 15_0
+    DMA1_RCMD_WAIT_VALUE:    [0x0, 0xffff],			bits : 31_16
+*/
+#define DMA_34_REGISTER_OFS 0x0384
+REGDEF_BEGIN(DMA_34_REGISTER)
+	REGDEF_BIT(DMA1_WCMD_WAIT_VALUE,        16)
+	REGDEF_BIT(DMA1_RCMD_WAIT_VALUE,        16)
+REGDEF_END(DMA_34_REGISTER)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_148_OFS 0x0388
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_148)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_148)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_149_OFS 0x038c
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_149)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_149)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_150_OFS 0x0390
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_150)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_150)
+
+
+/*
+    ZOOM_RATE_LUT_0 :    [0x0, 0xfff],          bits : 11_0
+    ZOOM_RATE_LUT_1 :    [0x0, 0xfff],          bits : 27_16
+*/
+#define PTZ_REGISTER_11_OFS 0x0390
+REGDEF_BEGIN(PTZ_REGISTER_11)
+REGDEF_BIT(ZOOM_RATE_LUT_0,        12)
+REGDEF_BIT(,        4)
+REGDEF_BIT(ZOOM_RATE_LUT_1,        12)
+REGDEF_END(PTZ_REGISTER_11)
+
+
+/*
+    ZOOM_RATE_LUT_2 :    [0x0, 0xfff],          bits : 11_0
+    ZOOM_RATE_LUT_3 :    [0x0, 0xfff],          bits : 27_16
+*/
+#define PTZ_REGISTER_12_OFS 0x0394
+REGDEF_BEGIN(PTZ_REGISTER_12)
+REGDEF_BIT(ZOOM_RATE_LUT_2,        12)
+REGDEF_BIT(,        4)
+REGDEF_BIT(ZOOM_RATE_LUT_3,        12)
+REGDEF_END(PTZ_REGISTER_12)
+
+
+/*
+    ZOOM_RATE_LUT_4 :    [0x0, 0xfff],          bits : 11_0
+    ZOOM_RATE_LUT_5 :    [0x0, 0xfff],          bits : 27_16
+*/
+#define PTZ_REGISTER_13_OFS 0x0398
+REGDEF_BEGIN(PTZ_REGISTER_13)
+REGDEF_BIT(ZOOM_RATE_LUT_4,        12)
+REGDEF_BIT(,        4)
+REGDEF_BIT(ZOOM_RATE_LUT_5,        12)
+REGDEF_END(PTZ_REGISTER_13)
+
+
+/*
+    ZOOM_RATE_LUT_6 :    [0x0, 0xfff],          bits : 11_0
+    ZOOM_RATE_LUT_7 :    [0x0, 0xfff],          bits : 27_16
+*/
+#define PTZ_REGISTER_14_OFS 0x039c
+REGDEF_BEGIN(PTZ_REGISTER_14)
+REGDEF_BIT(ZOOM_RATE_LUT_6,        12)
+REGDEF_BIT(,        4)
+REGDEF_BIT(ZOOM_RATE_LUT_7,        12)
+REGDEF_END(PTZ_REGISTER_14)
+
+
+/*
+    ZOOM_RATE_LUT_8 :    [0x0, 0xfff],          bits : 11_0
+    ZOOM_RATE_LUT_9 :    [0x0, 0xfff],          bits : 27_16
+*/
+#define PTZ_REGISTER_15_OFS 0x03a0
+REGDEF_BEGIN(PTZ_REGISTER_15)
+REGDEF_BIT(ZOOM_RATE_LUT_8,        12)
+REGDEF_BIT(,        4)
+REGDEF_BIT(ZOOM_RATE_LUT_9,        12)
+REGDEF_END(PTZ_REGISTER_15)
+
+
+/*
+    ZOOM_RATE_LUT_10:    [0x0, 0xfff],          bits : 11_0
+    ZOOM_RATE_LUT_11:    [0x0, 0xfff],          bits : 27_16
+*/
+#define PTZ_REGISTER_16_OFS 0x03a4
+REGDEF_BEGIN(PTZ_REGISTER_16)
+REGDEF_BIT(ZOOM_RATE_LUT_10,        12)
+REGDEF_BIT(,        4)
+REGDEF_BIT(ZOOM_RATE_LUT_11,        12)
+REGDEF_END(PTZ_REGISTER_16)
+
+
+/*
+    ZOOM_RATE_LUT_12:    [0x0, 0xfff],          bits : 11_0
+    ZOOM_RATE_LUT_13:    [0x0, 0xfff],          bits : 27_16
+*/
+#define PTZ_REGISTER_17_OFS 0x03a8
+REGDEF_BEGIN(PTZ_REGISTER_17)
+REGDEF_BIT(ZOOM_RATE_LUT_12,        12)
+REGDEF_BIT(,        4)
+REGDEF_BIT(ZOOM_RATE_LUT_13,        12)
+REGDEF_END(PTZ_REGISTER_17)
+
+
+/*
+    ZOOM_RATE_LUT_14:    [0x0, 0xfff],          bits : 11_0
+    ZOOM_RATE_LUT_15:    [0x0, 0xfff],          bits : 27_16
+*/
+#define PTZ_REGISTER_18_OFS 0x03ac
+REGDEF_BEGIN(PTZ_REGISTER_18)
+REGDEF_BIT(ZOOM_RATE_LUT_14,        12)
+REGDEF_BIT(,        4)
+REGDEF_BIT(ZOOM_RATE_LUT_15,        12)
+REGDEF_END(PTZ_REGISTER_18)
+
+
+/*
+    ZOOM_RATE_LUT_16:    [0x0, 0xfff],          bits : 11_0
+*/
+#define PTZ_REGISTER_19_OFS 0x03b0
+REGDEF_BEGIN(PTZ_REGISTER_19)
+REGDEF_BIT(ZOOM_RATE_LUT_16,        12)
+REGDEF_END(PTZ_REGISTER_19)
+
+
+/*
+    LUT_MAX_INCI_ANGLE_DEG_DENOM:    [0x0, 0x3ffff],			bits : 17_0
+*/
+#define DCTG_LUT_MAX_INCI_ANGLE_DEM_REGISTER_OFS 0x03b4
+REGDEF_BEGIN(DCTG_LUT_MAX_INCI_ANGLE_DEM_REGISTER)
+	REGDEF_BIT(LUT_MAX_INCI_ANGLE_DEG_DENOM,        18)
+REGDEF_END(DCTG_LUT_MAX_INCI_ANGLE_DEM_REGISTER)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_160_OFS 0x03b8
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_160)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_160)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_161_OFS 0x03bc
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_161)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_161)
+
+
+/*
+    SHP_PPI_IDX:    [0x0, 0xf],			bits : 3_0
+    SHP_PPO_IDX:    [0x0, 0xf],			bits : 7_4
+*/
+#define PIPE_REGISTER1_OFS 0x03c0
+REGDEF_BEGIN(PIPE_REGISTER1)
+	REGDEF_BIT(SHP_PPI_IDX,        4)
+	REGDEF_BIT(SHP_PPO_IDX,        4)
+REGDEF_END(PIPE_REGISTER1)
+
+
+/*
+    SRC_PPO_IDX:    [0x0, 0xf],			bits : 3_0
+    SCA_PPI_IDX:    [0x0, 0xf],			bits : 7_4
+*/
+#define PIPE_REGISTER2_OFS 0x03c4
+REGDEF_BEGIN(PIPE_REGISTER2)
+	REGDEF_BIT(SRC_PPO_IDX,        4)
+	REGDEF_BIT(SCA_PPI_IDX,        4)
+REGDEF_END(PIPE_REGISTER2)
+
+
+/*
+    PTZ_LONG_AOV:    [0x0, 0x3ffff],			bits : 17_0
+    PROJ_TYPE   :    [0x0, 0x1],			bits : 28
+*/
+#define PTZ_REGISTER_0_OFS 0x03c8
+REGDEF_BEGIN(PTZ_REGISTER_0)
+	REGDEF_BIT(PTZ_LONG_AOV,        18)
+	REGDEF_BIT(            ,        10)
+	REGDEF_BIT(PROJ_TYPE   ,        1)
+REGDEF_END(PTZ_REGISTER_0)
+
+
+/*
+    PTZ_LATI_AOV:    [0x0, 0x3ffff],			bits : 17_0
+*/
+#define PTZ_REGISTER_1_OFS 0x03cc
+REGDEF_BEGIN(PTZ_REGISTER_1)
+	REGDEF_BIT(PTZ_LATI_AOV,        18)
+REGDEF_END(PTZ_REGISTER_1)
+
+
+/*
+    PAN_ANGLE:    [0x0, 0x7ffff],			bits : 18_0
+*/
+#define PTZ_REGISTER_2_OFS 0x03d0
+REGDEF_BEGIN(PTZ_REGISTER_2)
+	REGDEF_BIT(PAN_ANGLE,        19)
+REGDEF_END(PTZ_REGISTER_2)
+
+
+/*
+    TILT_ANGLE:    [0x0, 0x7ffff],			bits : 18_0
+*/
+#define PTZ_REGISTER_3_OFS 0x03d4
+REGDEF_BEGIN(PTZ_REGISTER_3)
+	REGDEF_BIT(TILT_ANGLE,        19)
+REGDEF_END(PTZ_REGISTER_3)
+
+
+/*
+    ROTATE_ANGLE:    [0x0, 0x7ffff],			bits : 18_0
+*/
+#define PTZ_REGISTER_4_OFS 0x03d8
+REGDEF_BEGIN(PTZ_REGISTER_4)
+	REGDEF_BIT(ROTATE_ANGLE,        19)
+REGDEF_END(PTZ_REGISTER_4)
+
+
+/*
+    ZOOM_IN_STEP:    [0x0, 0x3ff],			bits : 9_0
+*/
+#define PTZ_REGISTER_5_OFS 0x03dc
+REGDEF_BEGIN(PTZ_REGISTER_5)
+	REGDEF_BIT(ZOOM_IN_STEP     ,        10)
+	REGDEF_BIT(                 ,        6)
+	REGDEF_BIT(MAX_DIAG_DISTANCE,        16)
+REGDEF_END(PTZ_REGISTER_5)
+
+
+/*
+    DCTG_MOUNT_TYPE       :    [0x0, 0x3],				bits : 1_0
+    DCTG_DISTOR_LUT_EN    :    [0x0, 0x1],				bits : 2
+    DCTG_LENS_R           :    [0x0, 0x3fff],				bits : 29_16
+*/
+#define DCTG_1_REGISTER_OFS 0x03e0
+REGDEF_BEGIN(DCTG_1_REGISTER)
+	REGDEF_BIT(DCTG_MOUNT_TYPE,             2)
+	REGDEF_BIT(DCTG_DISTOR_LUT_EN,          1)
+	REGDEF_BIT(DCTG_CORRECT_FOV_ASPECT_RATIO_EN,          1)
+	REGDEF_BIT(				  ,                          12)
+	REGDEF_BIT(DCTG_LENS_R    ,        14)
+REGDEF_END(DCTG_1_REGISTER)
+
+
+/*
+    DCTG_LENS_CENT_X:    [0x0, 0x1fff],			bits : 12_0
+    DCTG_LENS_CENT_Y:    [0x0, 0x1fff],			bits : 28_16
+*/
+#define DCTG_2_REGISTER_OFS 0x03e4
+REGDEF_BEGIN(DCTG_2_REGISTER)
+	REGDEF_BIT(DCTG_LENS_CENT_X,        13)
+	REGDEF_BIT(                ,        3)
+	REGDEF_BIT(DCTG_LENS_CENT_Y,        13)
+REGDEF_END(DCTG_2_REGISTER)
+
+
+/*
+    DCTG_LONG_AOV:    [0x0, 0xfffff],			bits : 19_0
+*/
+#define DCTG_3_REGISTER_OFS 0x03e8
+REGDEF_BEGIN(DCTG_3_REGISTER)
+	REGDEF_BIT(DCTG_LONG_AOV,        20)
+REGDEF_END(DCTG_3_REGISTER)
+
+
+/*
+    DCTG_LATI_AOV:    [0x0, 0xfffff],			bits : 19_0
+*/
+#define DCTG_4_REGISTER_OFS 0x03ec
+REGDEF_BEGIN(DCTG_4_REGISTER)
+	REGDEF_BIT(DCTG_LATI_AOV,        20)
+REGDEF_END(DCTG_4_REGISTER)
+
+
+/*
+    DCTG_PAN:    [0x0, 0xfffff],			bits : 19_0
+*/
+#define DCTG_5_REGISTER_OFS 0x03f0
+REGDEF_BEGIN(DCTG_5_REGISTER)
+	REGDEF_BIT(DCTG_PAN,        20)
+REGDEF_END(DCTG_5_REGISTER)
+
+
+/*
+    DCTG_TILT:    [0x0, 0xfffff],			bits : 19_0
+*/
+#define DCTG_6_REGISTER_OFS 0x03f4
+REGDEF_BEGIN(DCTG_6_REGISTER)
+	REGDEF_BIT(DCTG_TILT,        20)
+REGDEF_END(DCTG_6_REGISTER)
+
+
+/*
+    DCTG_ROLL:    [0x0, 0xfffff],			bits : 19_0
+*/
+#define DCTG_7_REGISTER_OFS 0x03f8
+REGDEF_BEGIN(DCTG_7_REGISTER)
+	REGDEF_BIT(DCTG_ROLL,        20)
+REGDEF_END(DCTG_7_REGISTER)
+
+
+/*
+    DCTG_V_PERSPECT:    [0x0, 0xfffff],			bits : 19_0
+*/
+#define DCTG_8_REGISTER_OFS 0x03fc
+REGDEF_BEGIN(DCTG_8_REGISTER)
+	REGDEF_BIT(DCTG_V_PERSPECT,        20)
+REGDEF_END(DCTG_8_REGISTER)
+
+
+/*
+    VPE_INTS_FRAME_DONE       :    [0x0, 0x1],			bits : 0
+    VPE_INTS_LL_ERR           :    [0x0, 0x1],			bits : 1
+    VPE_INTS_LL_DONE          :    [0x0, 0x1],			bits : 2
+    VPE_INTS_IN_YCC_DEC_ERR   :    [0x0, 0x1],			bits : 3
+    VPE_INTS_RES0_YCC_ENC_OVFL:    [0x0, 0x1],			bits : 4
+    VPE_INTS_RES1_YCC_ENC_OVFL:    [0x0, 0x1],			bits : 5
+
+*/
+#define VPE_INTERRUPT_STATUS_1_REGISTER_OFS 0x0400
+REGDEF_BEGIN(VPE_INTERRUPT_STATUS_1_REGISTER)
+	REGDEF_BIT(VPE_INTS_FRAME_DONE       ,        1)
+	REGDEF_BIT(VPE_INTS_LL_ERR           ,        1)
+	REGDEF_BIT(VPE_INTS_LL_DONE          ,        1)
+	REGDEF_BIT(VPE_INTS_IN_YCC_DEC_ERR   ,        1)
+	REGDEF_BIT(VPE_INTS_RES0_YCC_ENC_OVFL,        1)
+	REGDEF_BIT(VPE_INTS_RES1_YCC_ENC_OVFL,        1)
+REGDEF_END(VPE_INTERRUPT_STATUS_1_REGISTER)
+
+
+/*
+    VPE_INTE_FRAME_DONE       :    [0x0, 0x1],			bits : 0
+    VPE_INTE_LL_ERR           :    [0x0, 0x1],			bits : 1
+    VPE_INTE_LL_DONE          :    [0x0, 0x1],			bits : 2
+    VPE_INTE_IN_YCC_DEC_ERR   :    [0x0, 0x1],			bits : 3
+    VPE_INTE_RES0_YCC_ENC_OVFL:    [0x0, 0x1],			bits : 4
+    VPE_INTE_RES1_YCC_ENC_OVFL:    [0x0, 0x1],			bits : 5
+
+*/
+#define VPE_INTERRUPT_ENABLE_2_REGISTER_OFS 0x0404
+REGDEF_BEGIN(VPE_INTERRUPT_ENABLE_2_REGISTER)
+	REGDEF_BIT(VPE_INTE_FRAME_DONE       ,        1)
+	REGDEF_BIT(VPE_INTE_LL_ERR           ,        1)
+	REGDEF_BIT(VPE_INTE_LL_DONE          ,        1)
+	REGDEF_BIT(VPE_INTE_IN_YCC_DEC_ERR   ,        1)
+	REGDEF_BIT(VPE_INTE_RES0_YCC_ENC_OVFL,        1)
+	REGDEF_BIT(VPE_INTE_RES1_YCC_ENC_OVFL,        1)
+REGDEF_END(VPE_INTERRUPT_ENABLE_2_REGISTER)
+
+
+/*
+    Reserved:    [0x0, 0xffffff],			bits : 31_0
+*/
+#define DCTG_9_REGISTER_OFS 0x0408
+REGDEF_BEGIN(DCTG_9_REGISTER)
+	REGDEF_BIT(DCTG_HFACT,        24)
+REGDEF_END(DCTG_9_REGISTER)
+
+
+/*
+    Reserved:    [0x0, 0xffffff],			bits : 31_0
+*/
+#define DCTG_10_REGISTER_OFS 0x040c
+REGDEF_BEGIN(DCTG_10_REGISTER)
+	REGDEF_BIT(DCTG_VFACT,        24)
+REGDEF_END(DCTG_10_REGISTER)
+
+
+/*
+    VPE_MODE           :    [0x0, 0x1],			bits : 0
+    DMA0_SHUT_DOWN_DONE:    [0x0, 0x1],			bits : 1
+    HW_IDLE            :    [0x0, 0x1],			bits : 3
+*/
+#define STATUS_3_REGISTER_OFS 0x0410
+REGDEF_BEGIN(STATUS_3_REGISTER)
+	REGDEF_BIT(VPE_MODE           ,        1)
+	REGDEF_BIT(DMA0_SHUT_DOWN_DONE,        1)
+	REGDEF_BIT(                   ,        1)
+	REGDEF_BIT(HW_IDLE            ,        1)
+REGDEF_END(STATUS_3_REGISTER)
+
+
+/*
+    IP_VERSION:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define STATUS_4_REGISTER_OFS 0x0414
+REGDEF_BEGIN(STATUS_4_REGISTER)
+	REGDEF_BIT(IP_VERSION,        32)
+REGDEF_END(STATUS_4_REGISTER)
+
+
+/*
+    IP_INFO:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define STATUS_5_REGISTER_OFS 0x0418
+REGDEF_BEGIN(STATUS_5_REGISTER)
+	REGDEF_BIT(IP_INFO,        32)
+REGDEF_END(STATUS_5_REGISTER)
+
+
+/*
+    SINGLE_CAM_LONG_AOV:    [0x0, 0x3ffff],			bits : 17_0
+*/
+#define PTZ_REGISTER_6_OFS 0x041c
+REGDEF_BEGIN(PTZ_REGISTER_6)
+	REGDEF_BIT(SINGLE_CAM_LONG_AOV,        18)
+REGDEF_END(PTZ_REGISTER_6)
+
+
+/*
+    SINGLE_CAM_LATI_AOV:    [0x0, 0x3ffff],			bits : 17_0
+*/
+#define PTZ_REGISTER_7_OFS 0x0420
+REGDEF_BEGIN(PTZ_REGISTER_7)
+	REGDEF_BIT(SINGLE_CAM_LATI_AOV,        18)
+REGDEF_END(PTZ_REGISTER_7)
+
+
+/*
+    SINGLE_CAM_IMG_WIDTH :    [0x0, 0x7fff],			bits : 14_0
+    SINGLE_CAM_IMG_HEIGHT:    [0x0, 0x7fff],			bits : 30_16
+*/
+#define PTZ_REGISTER_8_OFS 0x0424
+REGDEF_BEGIN(PTZ_REGISTER_8)
+	REGDEF_BIT(SINGLE_CAM_IMG_WIDTH ,        15)
+	REGDEF_BIT(                     ,        1)
+	REGDEF_BIT(SINGLE_CAM_IMG_HEIGHT,        15)
+REGDEF_END(PTZ_REGISTER_8)
+
+
+/*
+    STITCH_SHIFT_OVERLAP_ANGLE:    [0x0, 0xfffff],			bits : 19_0
+*/
+#define PTZ_REGISTER_9_OFS 0x0428
+REGDEF_BEGIN(PTZ_REGISTER_9)
+	REGDEF_BIT(STITCH_SHIFT_OVERLAP_ANGLE,        20)
+REGDEF_END(PTZ_REGISTER_9)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_155_OFS 0x042c
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_155)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_155)
+
+
+
+/*
+    FIRE_CNT      :    [0x0, 0xff],			bits : 7_0
+    DONE_CNT      :    [0x0, 0xff],			bits : 15_8
+    SYS_CS        :    [0x0, 0xf],			bits : 19_16
+    DMA_R_SRC_DONE:    [0x0, 0x1],			bits : 20
+    DMA_R_LUT_DONE:    [0x0, 0x1],			bits : 24
+    DMA_W_DES_DONE:    [0x0, 0x1],			bits : 25
+    COL_CNT       :    [0x0, 0x3],			bits : 31_30
+*/
+#define STATUS_7_REGISTER_OFS 0x0430
+REGDEF_BEGIN(STATUS_7_REGISTER)
+	REGDEF_BIT(FIRE_CNT      ,        8)
+	REGDEF_BIT(DONE_CNT      ,        8)
+	REGDEF_BIT(SYS_CS        ,        4)
+	REGDEF_BIT(DMA_R_SRC_DONE,        1)
+	REGDEF_BIT(              ,        3)
+	REGDEF_BIT(DMA_R_LUT_DONE,        1)
+	REGDEF_BIT(DMA_W_DES_DONE,        1)
+	REGDEF_BIT(              ,        4)
+	REGDEF_BIT(COL_CNT       ,        2)
+REGDEF_END(STATUS_7_REGISTER)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_151_OFS 0x0434
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_151)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_151)
+
+
+/*
+    RES0_YVD       :    [0x0, 0x1],			bits : 0
+    RES0_Y_BLOCK   :    [0x0, 0x1],			bits : 1
+    RES0_Y_LINE_NUM:    [0x0, 0x7ff],			bits : 12_2
+    RES0_CVD       :    [0x0, 0x1],			bits : 16
+    RES0_C_BLOCK   :    [0x0, 0x1],			bits : 17
+    RES0_C_LINE_NUM:    [0x0, 0x7ff],			bits : 28_18
+*/
+#define STATUS_9_REGISTER_OFS 0x0438
+REGDEF_BEGIN(STATUS_9_REGISTER)
+	REGDEF_BIT(RES0_YVD       ,        1)
+	REGDEF_BIT(RES0_Y_BLOCK   ,        1)
+	REGDEF_BIT(RES0_Y_LINE_NUM,        11)
+	REGDEF_BIT(               ,        3)
+	REGDEF_BIT(RES0_CVD       ,        1)
+	REGDEF_BIT(RES0_C_BLOCK   ,        1)
+	REGDEF_BIT(RES0_C_LINE_NUM,        11)
+REGDEF_END(STATUS_9_REGISTER)
+
+
+/*
+    RES1_YVD       :    [0x0, 0x1],			bits : 0
+    RES1_Y_BLOCK   :    [0x0, 0x1],			bits : 1
+    RES1_Y_LINE_NUM:    [0x0, 0x7ff],			bits : 12_2
+    RES1_CVD       :    [0x0, 0x1],			bits : 16
+    RES1_C_BLOCK   :    [0x0, 0x1],			bits : 17
+    RES1_C_LINE_NUM:    [0x0, 0x7ff],			bits : 28_18
+*/
+#define STATUS_10_REGISTER_OFS 0x043c
+REGDEF_BEGIN(STATUS_10_REGISTER)
+	REGDEF_BIT(RES1_YVD       ,        1)
+	REGDEF_BIT(RES1_Y_BLOCK   ,        1)
+	REGDEF_BIT(RES1_Y_LINE_NUM,        11)
+	REGDEF_BIT(               ,        3)
+	REGDEF_BIT(RES1_CVD       ,        1)
+	REGDEF_BIT(RES1_C_BLOCK   ,        1)
+	REGDEF_BIT(RES1_C_LINE_NUM,        11)
+REGDEF_END(STATUS_10_REGISTER)
+
+
+/*
+    RES2_YVD       :    [0x0, 0x1],			bits : 0
+    RES2_Y_BLOCK   :    [0x0, 0x1],			bits : 1
+    RES2_Y_LINE_NUM:    [0x0, 0x7ff],			bits : 12_2
+    RES2_CVD       :    [0x0, 0x1],			bits : 16
+    RES2_C_BLOCK   :    [0x0, 0x1],			bits : 17
+    RES2_C_LINE_NUM:    [0x0, 0x7ff],			bits : 28_18
+*/
+#define STATUS_11_REGISTER_OFS 0x0440
+REGDEF_BEGIN(STATUS_11_REGISTER)
+	REGDEF_BIT(RES2_YVD       ,        1)
+	REGDEF_BIT(RES2_Y_BLOCK   ,        1)
+	REGDEF_BIT(RES2_Y_LINE_NUM,        11)
+	REGDEF_BIT(               ,        3)
+	REGDEF_BIT(RES2_CVD       ,        1)
+	REGDEF_BIT(RES2_C_BLOCK   ,        1)
+	REGDEF_BIT(RES2_C_LINE_NUM,        11)
+REGDEF_END(STATUS_11_REGISTER)
+
+
+/*
+    RES3_YVD       :    [0x0, 0x1],			bits : 0
+    RES3_Y_BLOCK   :    [0x0, 0x1],			bits : 1
+    RES3_Y_LINE_NUM:    [0x0, 0x7ff],			bits : 12_2
+    RES3_CVD       :    [0x0, 0x1],			bits : 16
+    RES3_C_BLOCK   :    [0x0, 0x1],			bits : 17
+    RES3_C_LINE_NUM:    [0x0, 0x7ff],			bits : 28_18
+*/
+#define STATUS_12_REGISTER_OFS 0x0444
+REGDEF_BEGIN(STATUS_12_REGISTER)
+	REGDEF_BIT(RES3_YVD       ,        1)
+	REGDEF_BIT(RES3_Y_BLOCK   ,        1)
+	REGDEF_BIT(RES3_Y_LINE_NUM,        11)
+	REGDEF_BIT(               ,        3)
+	REGDEF_BIT(RES3_CVD       ,        1)
+	REGDEF_BIT(RES3_C_BLOCK   ,        1)
+	REGDEF_BIT(RES3_C_LINE_NUM,        11)
+REGDEF_END(STATUS_12_REGISTER)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_152_OFS 0x0448
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_152)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_152)
+
+
+/*
+    WBUF_CNT    :    [0x0, 0x1f],			bits : 4_0
+    DES0_FRM_END:    [0x0, 0x1],			bits : 8
+    DES1_FRM_END:    [0x0, 0x1],			bits : 9
+    DES2_FRM_END:    [0x0, 0x1],			bits : 10
+    DES3_FRM_END:    [0x0, 0x1],			bits : 11
+*/
+#define STATUS_14_REGISTER_OFS 0x044c
+REGDEF_BEGIN(STATUS_14_REGISTER)
+	REGDEF_BIT(WBUF_CNT    ,        5)
+	REGDEF_BIT(            ,        3)
+	REGDEF_BIT(DES0_FRM_END,        1)
+	REGDEF_BIT(DES1_FRM_END,        1)
+	REGDEF_BIT(DES2_FRM_END,        1)
+	REGDEF_BIT(DES3_FRM_END,        1)
+REGDEF_END(STATUS_14_REGISTER)
+
+
+/*
+    MISS_CNT:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define STATUS_15_REGISTER_OFS 0x0450
+REGDEF_BEGIN(STATUS_15_REGISTER)
+	REGDEF_BIT(MISS_CNT,        32)
+REGDEF_END(STATUS_15_REGISTER)
+
+
+/*
+    CONFLICT_CNT:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define STATUS_16_REGISTER_OFS 0x0454
+REGDEF_BEGIN(STATUS_16_REGISTER)
+	REGDEF_BIT(CONFLICT_CNT,        32)
+REGDEF_END(STATUS_16_REGISTER)
+
+
+/*
+    VC_CS    :    [0x0, 0x7],         bits : 2_0
+    PC_CS    :    [0x0, 0x7],         bits : 6_4
+    MISS_CS  :    [0x0, 0x7],         bits : 10_8
+    MISS_TYPE:    [0x0, 0x1], 	  bits : 11
+    PHIT_CS  :	  [0x0, 0x7],	  bits : 14_12
+
+    
+*/
+#define STATUS_17_REGISTER_OFS 0x0450
+REGDEF_BEGIN(STATUS_17_REGISTER)
+REGDEF_BIT(VC_CS,        3)
+REGDEF_BIT(,             1)
+REGDEF_BIT(PC_CS,		 3)
+REGDEF_BIT(,		     1)
+REGDEF_BIT(MISS_CS,		 3)
+REGDEF_BIT(MISS_TYPE,	 1)
+REGDEF_BIT(PHIT_CS,       3)
+REGDEF_END(STATUS_17_REGISTER)
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_162_OFS 0x045c
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_162)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_162)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_163_OFS 0x0460
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_163)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_163)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_164_OFS 0x0464
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_164)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_164)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_165_OFS 0x0468
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_165)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_165)
+
+
+/*
+    JOB_EMPT    :    [0x0, 0x1],			bits : 0
+    JOB_TYPE    :    [0x0, 0x1],			bits : 1
+    SD_SYS_FSM  :    [0x0, 0x7f],			bits : 8_2
+    TC_ENG_RFY  :    [0x0, 0x1],			bits : 9
+    SD0_HSAC_FSM:    [0x0, 0x1f],			bits : 16_12
+    SD1_HSAC_FSM:    [0x0, 0x1f],			bits : 21_17
+    SD2_HSAC_FSM:    [0x0, 0x1f],			bits : 26_22
+    SD3_HSAC_FSM:    [0x0, 0x1f],			bits : 31_27
+*/
+#define STATUS_21_REGISTER_OFS 0x046c
+REGDEF_BEGIN(STATUS_21_REGISTER)
+	REGDEF_BIT(JOB_EMPT    ,        1)
+	REGDEF_BIT(JOB_TYPE    ,        1)
+	REGDEF_BIT(SD_SYS_FSM  ,        7)
+	REGDEF_BIT(TC_ENG_RFY  ,        1)
+	REGDEF_BIT(            ,        2)
+	REGDEF_BIT(SD0_HSAC_FSM,        5)
+	REGDEF_BIT(SD1_HSAC_FSM,        5)
+	REGDEF_BIT(SD2_HSAC_FSM,        5)
+	REGDEF_BIT(SD3_HSAC_FSM,        5)
+REGDEF_END(STATUS_21_REGISTER)
+
+
+/*
+    SD_SRC_FRM_SCAN_FIN:    [0x0, 0x1],			bits : 0
+    SM_SCAN_DONE       :    [0x0, 0x1],			bits : 1
+*/
+#define STATUS_22_REGISTER_OFS 0x0470
+REGDEF_BEGIN(STATUS_22_REGISTER)
+	REGDEF_BIT(SD_SRC_FRM_SCAN_FIN,        1)
+	REGDEF_BIT(SM_SCAN_DONE       ,        1)
+REGDEF_END(STATUS_22_REGISTER)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_352_OFS 0x0474
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_352)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_352)
+
+
+/*
+    RES0_FSM_DONE_KEEP:    [0x0, 0x1],			bits : 0
+    RES1_FSM_DONE_KEEP:    [0x0, 0x1],			bits : 1
+    RES2_FSM_DONE_KEEP:    [0x0, 0x1],			bits : 2
+    RES3_FSM_DONE_KEEP:    [0x0, 0x1],			bits : 3
+    TC0_PROC_JOB      :    [0x0, 0x1],			bits : 4
+    TC1_PROC_JOB      :    [0x0, 0x1],			bits : 5
+    TC2_PROC_JOB      :    [0x0, 0x1],			bits : 6
+    TC3_PROC_JOB      :    [0x0, 0x1],			bits : 7
+    OUT0_FULL         :    [0x0, 0x1],			bits : 8
+    OUT1_FULL         :    [0x0, 0x1],			bits : 9
+    OUT2_FULL         :    [0x0, 0x1],			bits : 10
+    OUT3_FULL         :    [0x0, 0x1],			bits : 11
+    MAS_FSM           :    [0x0, 0x7],			bits : 15_13
+*/
+#define STATUS_24_REGISTER_OFS 0x0478
+REGDEF_BEGIN(STATUS_24_REGISTER)
+	REGDEF_BIT(RES0_FSM_DONE_KEEP,        1)
+	REGDEF_BIT(RES1_FSM_DONE_KEEP,        1)
+	REGDEF_BIT(RES2_FSM_DONE_KEEP,        1)
+	REGDEF_BIT(RES3_FSM_DONE_KEEP,        1)
+	REGDEF_BIT(TC0_PROC_JOB      ,        1)
+	REGDEF_BIT(TC1_PROC_JOB      ,        1)
+	REGDEF_BIT(TC2_PROC_JOB      ,        1)
+	REGDEF_BIT(TC3_PROC_JOB      ,        1)
+	REGDEF_BIT(OUT0_FULL         ,        1)
+	REGDEF_BIT(OUT1_FULL         ,        1)
+	REGDEF_BIT(OUT2_FULL         ,        1)
+	REGDEF_BIT(OUT3_FULL         ,        1)
+	REGDEF_BIT(                  ,        1)
+	REGDEF_BIT(MAS_FSM           ,        3)
+REGDEF_END(STATUS_24_REGISTER)
+
+
+/*
+    RA_DONE  :    [0x0, 0x1],			bits : 0
+    DCTG_DONE:    [0x0, 0x1],			bits : 1
+    L2D_DONE :    [0x0, 0x1],			bits : 2
+    DP_STALL :    [0x0, 0x1],			bits : 3
+    VMR_FSM  :    [0x0, 0x7],			bits : 6_4
+    VMR_CNT  :    [0x0, 0x7],			bits : 10_8
+    HMR_CNT  :    [0x0, 0x3],			bits : 13_12
+    HFRAC    :    [0x0, 0x7f],			bits : 22_16
+    VFRAC    :    [0x0, 0x7f],			bits : 30_24
+*/
+#define STATUS_25_REGISTER_OFS 0x047c
+REGDEF_BEGIN(STATUS_25_REGISTER)
+	REGDEF_BIT(RA_DONE  ,        1)
+	REGDEF_BIT(DCTG_DONE,        1)
+	REGDEF_BIT(L2D_DONE ,        1)
+	REGDEF_BIT(DP_STALL ,        1)
+	REGDEF_BIT(VMR_FSM  ,        3)
+	REGDEF_BIT(         ,        1)
+	REGDEF_BIT(VMR_CNT  ,        3)
+	REGDEF_BIT(         ,        1)
+	REGDEF_BIT(HMR_CNT  ,        2)
+	REGDEF_BIT(         ,        2)
+	REGDEF_BIT(HFRAC    ,        7)
+	REGDEF_BIT(         ,        1)
+	REGDEF_BIT(VFRAC    ,        7)
+REGDEF_END(STATUS_25_REGISTER)
+
+
+/*
+    COL_CNT:    [0x0, 0x7f],			bits : 14_8
+    ROW_CNT:    [0x0, 0x7f],			bits : 22_16
+*/
+#define STATUS_26_REGISTER_OFS 0x0480
+REGDEF_BEGIN(STATUS_26_REGISTER)
+	REGDEF_BIT(       ,        8)
+	REGDEF_BIT(COL_CNT,        7)
+	REGDEF_BIT(       ,        1)
+	REGDEF_BIT(ROW_CNT,        7)
+REGDEF_END(STATUS_26_REGISTER)
+
+
+/*
+    L2D_DONE  :    [0x0, 0x1],			bits : 0
+    DPPM_FULL :    [0x0, 0x1],			bits : 1
+    DC_FM_DONE:    [0x0, 0x1],			bits : 2
+    PHASE     :    [0x0, 0x1],			bits : 3
+    SCAN_DONE :    [0x0, 0x1],			bits : 4
+    DWC_DONE  :    [0x0, 0x1],			bits : 5
+    DC_FSM    :    [0x0, 0x7],			bits : 10_8
+    DST_X     :    [0x0, 0xffff],			bits : 31_16
+*/
+#define STATUS_27_REGISTER_OFS 0x0484
+REGDEF_BEGIN(STATUS_27_REGISTER)
+	REGDEF_BIT(L2D_DONE  ,        1)
+	REGDEF_BIT(DPPM_FULL ,        1)
+	REGDEF_BIT(DC_FM_DONE,        1)
+	REGDEF_BIT(PHASE     ,        1)
+	REGDEF_BIT(SCAN_DONE ,        1)
+	REGDEF_BIT(DWC_DONE  ,        1)
+	REGDEF_BIT(          ,        2)
+	REGDEF_BIT(DC_FSM    ,        3)
+	REGDEF_BIT(          ,        5)
+	REGDEF_BIT(DST_X     ,        16)
+REGDEF_END(STATUS_27_REGISTER)
+
+
+/*
+    DST_Y  :    [0x0, 0xffff],			bits : 15_0
+    CC_RDY :    [0x0, 0x1],			bits : 16
+    REUSE  :    [0x0, 0x1],			bits : 17
+    HMAP_EQ:    [0x0, 0x1],			bits : 18
+    BUF_IDX:    [0x0, 0x7f],			bits : 30_24
+*/
+#define STATUS_28_REGISTER_OFS 0x0488
+REGDEF_BEGIN(STATUS_28_REGISTER)
+	REGDEF_BIT(DST_Y  ,        16)
+	REGDEF_BIT(CC_RDY ,        1)
+	REGDEF_BIT(REUSE  ,        1)
+	REGDEF_BIT(HMAP_EQ,        1)
+	REGDEF_BIT(       ,        5)
+	REGDEF_BIT(BUF_IDX,        7)
+REGDEF_END(STATUS_28_REGISTER)
+
+
+/*
+    VPOS:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define STATUS_29_REGISTER_OFS 0x048c
+REGDEF_BEGIN(STATUS_29_REGISTER)
+	REGDEF_BIT(VPOS,        32)
+REGDEF_END(STATUS_29_REGISTER)
+
+
+/*
+    LL_TAB_STATUS00:    [0x0, 0xf],			bits : 3_0
+    LL_TAB_STATUS01:    [0x0, 0xf],			bits : 7_4
+    LL_TAB_STATUS02:    [0x0, 0xf],			bits : 11_8
+    LL_TAB_STATUS03:    [0x0, 0xf],			bits : 15_12
+    LL_TAB_STATUS04:    [0x0, 0xf],			bits : 19_16
+    LL_TAB_STATUS05:    [0x0, 0xf],			bits : 23_20
+    LL_TAB_STATUS06:    [0x0, 0xf],			bits : 27_24
+    LL_TAB_STATUS07:    [0x0, 0xf],			bits : 31_28
+*/
+#define STATUS_30_REGISTER_OFS 0x0490
+REGDEF_BEGIN(STATUS_30_REGISTER)
+	REGDEF_BIT(LL_TAB_STATUS00,        4)
+	REGDEF_BIT(LL_TAB_STATUS01,        4)
+	REGDEF_BIT(LL_TAB_STATUS02,        4)
+	REGDEF_BIT(LL_TAB_STATUS03,        4)
+	REGDEF_BIT(LL_TAB_STATUS04,        4)
+	REGDEF_BIT(LL_TAB_STATUS05,        4)
+	REGDEF_BIT(LL_TAB_STATUS06,        4)
+	REGDEF_BIT(LL_TAB_STATUS07,        4)
+REGDEF_END(STATUS_30_REGISTER)
+
+
+/*
+    LL_TAB_STATUS08:    [0x0, 0xf],			bits : 3_0
+    LL_TAB_STATUS09:    [0x0, 0xf],			bits : 7_4
+    LL_TAB_STATUS10:    [0x0, 0xf],			bits : 11_8
+    LL_TAB_STATUS11:    [0x0, 0xf],			bits : 15_12
+    LL_TAB_STATUS12:    [0x0, 0xf],			bits : 19_16
+    LL_TAB_STATUS13:    [0x0, 0xf],			bits : 23_20
+    LL_TAB_STATUS14:    [0x0, 0xf],			bits : 27_24
+    LL_TAB_STATUS15:    [0x0, 0xf],			bits : 31_28
+*/
+#define STATUS_31_REGISTER_OFS 0x0494
+REGDEF_BEGIN(STATUS_31_REGISTER)
+	REGDEF_BIT(LL_TAB_STATUS08,        4)
+	REGDEF_BIT(LL_TAB_STATUS09,        4)
+	REGDEF_BIT(LL_TAB_STATUS10,        4)
+	REGDEF_BIT(LL_TAB_STATUS11,        4)
+	REGDEF_BIT(LL_TAB_STATUS12,        4)
+	REGDEF_BIT(LL_TAB_STATUS13,        4)
+	REGDEF_BIT(LL_TAB_STATUS14,        4)
+	REGDEF_BIT(LL_TAB_STATUS15,        4)
+REGDEF_END(STATUS_31_REGISTER)
+
+
+/*
+    LL_TAB_STATUS16:    [0x0, 0xf],			bits : 3_0
+    LL_TAB_STATUS17:    [0x0, 0xf],			bits : 7_4
+    LL_TAB_STATUS18:    [0x0, 0xf],			bits : 11_8
+    LL_TAB_STATUS19:    [0x0, 0xf],			bits : 15_12
+    LL_TAB_STATUS20:    [0x0, 0xf],			bits : 19_16
+    LL_TAB_STATUS21:    [0x0, 0xf],			bits : 23_20
+    LL_TAB_STATUS22:    [0x0, 0xf],			bits : 27_24
+    LL_TAB_STATUS23:    [0x0, 0xf],			bits : 31_28
+*/
+#define STATUS_32_REGISTER_OFS 0x0498
+REGDEF_BEGIN(STATUS_32_REGISTER)
+	REGDEF_BIT(LL_TAB_STATUS16,        4)
+	REGDEF_BIT(LL_TAB_STATUS17,        4)
+	REGDEF_BIT(LL_TAB_STATUS18,        4)
+	REGDEF_BIT(LL_TAB_STATUS19,        4)
+	REGDEF_BIT(LL_TAB_STATUS20,        4)
+	REGDEF_BIT(LL_TAB_STATUS21,        4)
+	REGDEF_BIT(LL_TAB_STATUS22,        4)
+	REGDEF_BIT(LL_TAB_STATUS23,        4)
+REGDEF_END(STATUS_32_REGISTER)
+
+
+/*
+    LL_TAB_STATUS24:    [0x0, 0xf],			bits : 3_0
+    LL_TAB_STATUS25:    [0x0, 0xf],			bits : 7_4
+    LL_TAB_STATUS26:    [0x0, 0xf],			bits : 11_8
+    LL_TAB_STATUS27:    [0x0, 0xf],			bits : 15_12
+    LL_TAB_STATUS28:    [0x0, 0xf],			bits : 19_16
+    LL_TAB_STATUS29:    [0x0, 0xf],			bits : 23_20
+    LL_TAB_STATUS30:    [0x0, 0xf],			bits : 27_24
+    LL_TAB_STATUS31:    [0x0, 0xf],			bits : 31_28
+*/
+#define STATUS_33_REGISTER_OFS 0x049c
+REGDEF_BEGIN(STATUS_33_REGISTER)
+	REGDEF_BIT(LL_TAB_STATUS24,        4)
+	REGDEF_BIT(LL_TAB_STATUS25,        4)
+	REGDEF_BIT(LL_TAB_STATUS26,        4)
+	REGDEF_BIT(LL_TAB_STATUS27,        4)
+	REGDEF_BIT(LL_TAB_STATUS28,        4)
+	REGDEF_BIT(LL_TAB_STATUS29,        4)
+	REGDEF_BIT(LL_TAB_STATUS30,        4)
+	REGDEF_BIT(LL_TAB_STATUS31,        4)
+REGDEF_END(STATUS_33_REGISTER)
+
+
+/*
+    LL_TAB_STATUS32:    [0x0, 0xf],			bits : 3_0
+    LL_TAB_STATUS33:    [0x0, 0xf],			bits : 7_4
+    LL_TAB_STATUS34:    [0x0, 0xf],			bits : 11_8
+    LL_TAB_STATUS35:    [0x0, 0xf],			bits : 15_12
+    LL_TAB_STATUS36:    [0x0, 0xf],			bits : 19_16
+    LL_TAB_STATUS37:    [0x0, 0xf],			bits : 23_20
+    LL_TAB_STATUS38:    [0x0, 0xf],			bits : 27_24
+    LL_TAB_STATUS39:    [0x0, 0xf],			bits : 31_28
+*/
+#define STATUS_34_REGISTER_OFS 0x04a0
+REGDEF_BEGIN(STATUS_34_REGISTER)
+	REGDEF_BIT(LL_TAB_STATUS32,        4)
+	REGDEF_BIT(LL_TAB_STATUS33,        4)
+	REGDEF_BIT(LL_TAB_STATUS34,        4)
+	REGDEF_BIT(LL_TAB_STATUS35,        4)
+	REGDEF_BIT(LL_TAB_STATUS36,        4)
+	REGDEF_BIT(LL_TAB_STATUS37,        4)
+	REGDEF_BIT(LL_TAB_STATUS38,        4)
+	REGDEF_BIT(LL_TAB_STATUS39,        4)
+REGDEF_END(STATUS_34_REGISTER)
+
+
+/*
+    LL_TAB_STATUS40:    [0x0, 0xf],			bits : 3_0
+    LL_TAB_STATUS41:    [0x0, 0xf],			bits : 7_4
+    LL_TAB_STATUS42:    [0x0, 0xf],			bits : 11_8
+    LL_TAB_STATUS43:    [0x0, 0xf],			bits : 15_12
+    LL_TAB_STATUS44:    [0x0, 0xf],			bits : 19_16
+    LL_TAB_STATUS45:    [0x0, 0xf],			bits : 23_20
+    LL_TAB_STATUS46:    [0x0, 0xf],			bits : 27_24
+    LL_TAB_STATUS47:    [0x0, 0xf],			bits : 31_28
+*/
+#define STATUS_35_REGISTER_OFS 0x04a4
+REGDEF_BEGIN(STATUS_35_REGISTER)
+	REGDEF_BIT(LL_TAB_STATUS40,        4)
+	REGDEF_BIT(LL_TAB_STATUS41,        4)
+	REGDEF_BIT(LL_TAB_STATUS42,        4)
+	REGDEF_BIT(LL_TAB_STATUS43,        4)
+	REGDEF_BIT(LL_TAB_STATUS44,        4)
+	REGDEF_BIT(LL_TAB_STATUS45,        4)
+	REGDEF_BIT(LL_TAB_STATUS46,        4)
+	REGDEF_BIT(LL_TAB_STATUS47,        4)
+REGDEF_END(STATUS_35_REGISTER)
+
+
+/*
+    LL_TAB_STATUS48:    [0x0, 0xf],			bits : 3_0
+    LL_TAB_STATUS49:    [0x0, 0xf],			bits : 7_4
+    LL_TAB_STATUS50:    [0x0, 0xf],			bits : 11_8
+    LL_TAB_STATUS51:    [0x0, 0xf],			bits : 15_12
+    LL_TAB_STATUS52:    [0x0, 0xf],			bits : 19_16
+    LL_TAB_STATUS53:    [0x0, 0xf],			bits : 23_20
+    LL_TAB_STATUS54:    [0x0, 0xf],			bits : 27_24
+    LL_TAB_STATUS55:    [0x0, 0xf],			bits : 31_28
+*/
+#define STATUS_36_REGISTER_OFS 0x04a8
+REGDEF_BEGIN(STATUS_36_REGISTER)
+	REGDEF_BIT(LL_TAB_STATUS48,        4)
+	REGDEF_BIT(LL_TAB_STATUS49,        4)
+	REGDEF_BIT(LL_TAB_STATUS50,        4)
+	REGDEF_BIT(LL_TAB_STATUS51,        4)
+	REGDEF_BIT(LL_TAB_STATUS52,        4)
+	REGDEF_BIT(LL_TAB_STATUS53,        4)
+	REGDEF_BIT(LL_TAB_STATUS54,        4)
+	REGDEF_BIT(LL_TAB_STATUS55,        4)
+REGDEF_END(STATUS_36_REGISTER)
+
+
+/*
+    LL_TAB_STATUS56:    [0x0, 0xf],			bits : 3_0
+    LL_TAB_STATUS57:    [0x0, 0xf],			bits : 7_4
+    LL_TAB_STATUS58:    [0x0, 0xf],			bits : 11_8
+    LL_TAB_STATUS59:    [0x0, 0xf],			bits : 15_12
+    LL_TAB_STATUS60:    [0x0, 0xf],			bits : 19_16
+    LL_TAB_STATUS61:    [0x0, 0xf],			bits : 23_20
+    LL_TAB_STATUS62:    [0x0, 0xf],			bits : 27_24
+    LL_TAB_STATUS63:    [0x0, 0xf],			bits : 31_28
+*/
+#define STATUS_37_REGISTER_OFS 0x04ac
+REGDEF_BEGIN(STATUS_37_REGISTER)
+	REGDEF_BIT(LL_TAB_STATUS56,        4)
+	REGDEF_BIT(LL_TAB_STATUS57,        4)
+	REGDEF_BIT(LL_TAB_STATUS58,        4)
+	REGDEF_BIT(LL_TAB_STATUS59,        4)
+	REGDEF_BIT(LL_TAB_STATUS60,        4)
+	REGDEF_BIT(LL_TAB_STATUS61,        4)
+	REGDEF_BIT(LL_TAB_STATUS62,        4)
+	REGDEF_BIT(LL_TAB_STATUS63,        4)
+REGDEF_END(STATUS_37_REGISTER)
+
+
+/*
+    RES0_OUT_CHECKSUM:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define CHECKSUM_0_OFS 0x04b0
+REGDEF_BEGIN(CHECKSUM_0)
+	REGDEF_BIT(RES0_OUT_CHECKSUM,        32)
+REGDEF_END(CHECKSUM_0)
+
+
+/*
+    RES1_OUT_CHECKSUM:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define CHECKSUM_1_OFS 0x04b4
+REGDEF_BEGIN(CHECKSUM_1)
+	REGDEF_BIT(RES1_OUT_CHECKSUM,        32)
+REGDEF_END(CHECKSUM_1)
+
+
+/*
+    RES2_OUT_CHECKSUM:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define CHECKSUM_2_OFS 0x04b8
+REGDEF_BEGIN(CHECKSUM_2)
+	REGDEF_BIT(RES2_OUT_CHECKSUM,        32)
+REGDEF_END(CHECKSUM_2)
+
+
+/*
+    RES3_OUT_CHECKSUM:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define CHECKSUM_3_OFS 0x04bc
+REGDEF_BEGIN(CHECKSUM_3)
+	REGDEF_BIT(RES3_OUT_CHECKSUM,        32)
+REGDEF_END(CHECKSUM_3)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_166_OFS 0x04c0
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_166)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_166)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_167_OFS 0x04c4
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_167)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_167)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_168_OFS 0x04c8
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_168)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_168)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_169_OFS 0x04cc
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_169)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_169)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_170_OFS 0x04d0
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_170)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_170)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_171_OFS 0x04d4
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_171)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_171)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_172_OFS 0x04d8
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_172)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_172)
+
+
+/*
+    BST_CHECKSUM:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define CHECKSUM_10_OFS 0x04dc
+REGDEF_BEGIN(CHECKSUM_10)
+	REGDEF_BIT(BST_CHECKSUM,        32)
+REGDEF_END(CHECKSUM_10)
+
+
+/*
+    BST_CHECKSUM:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define CHECKSUM_11_OFS 0x04e0
+REGDEF_BEGIN(CHECKSUM_11)
+	REGDEF_BIT(BST_CHECKSUM,        32)
+REGDEF_END(CHECKSUM_11)
+
+
+/*
+    CYCLE_CNT:    [0x0, 0xffffffff],            bits : 31_0
+*/
+#define PERFORMANCE_0_OFS 0x04e4
+REGDEF_BEGIN(PERFORMANCE_0)
+REGDEF_BIT(CYCLE_CNT,        32)
+REGDEF_END(PERFORMANCE_0)
+
+
+/*
+    LL_CYCLE_CNT:    [0x0, 0xffffffff],         bits : 31_0
+*/
+#define PERFORMANCE_1_OFS 0x04e8
+REGDEF_BEGIN(PERFORMANCE_1)
+REGDEF_BIT(LL_CYCLE_CNT,        32)
+REGDEF_END(PERFORMANCE_1)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_173_OFS 0x04ec
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_173)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_173)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_174_OFS 0x04f0
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_174)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_174)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_175_OFS 0x04f4
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_175)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_175)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_176_OFS 0x04f8
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_176)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_176)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_177_OFS 0x04fc
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_177)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_177)
+
+
+/*
+    RES0_SCA_EN     :    [0x0, 0x1],			bits : 0
+    RES0_SCA_CROP_EN:    [0x0, 0x1],			bits : 2
+    RES0_TC_EN      :    [0x0, 0x1],			bits : 3
+    RES0_SEG_OP      :    [0x0, 0x3],			bits : 5_4
+    RES0_DES_DRT    :    [0x0, 0x3],			bits : 9_8
+    RES0_DES_FORMAT :    [0x0, 0x7],			bits : 13_11
+    RES0_OUT_BG_SEL :    [0x0, 0x7],			bits : 18_16
+    RES0_SCL_METHOD :    [0x0, 0x1],			bits : 20
+*/
+#define RES0_CONTROL_1_REGISTER_OFS 0x0500
+REGDEF_BEGIN(RES0_CONTROL_1_REGISTER)
+	REGDEF_BIT(RES0_SCA_EN     ,        1)
+	REGDEF_BIT(                ,        1)
+	REGDEF_BIT(RES0_SCA_CROP_EN,        1)
+	REGDEF_BIT(RES0_TC_EN      ,        1)
+	REGDEF_BIT(RES0_SEG_OP      ,       2)
+	REGDEF_BIT(                ,        2)
+	REGDEF_BIT(RES0_DES_DRT    ,        2)
+	REGDEF_BIT(                ,        1)
+	REGDEF_BIT(RES0_DES_FORMAT ,        3)
+	REGDEF_BIT(                ,        2)
+	REGDEF_BIT(RES0_OUT_BG_SEL ,        3)
+	REGDEF_BIT(                ,        1)
+	REGDEF_BIT(RES0_SCL_METHOD ,        1)
+	REGDEF_BIT(                         ,        2)
+	REGDEF_BIT(RES0_DES_DRT_PC2TV_WEIGHT,        9)
+REGDEF_END(RES0_CONTROL_1_REGISTER)
+
+
+/*
+    RES0_DES_YCC_ENC_EN:    [0x0, 0x1],			bits : 0
+    RES0_DES_CHRW      :    [0x0, 0x1],			bits : 4
+*/
+#define RES0_CONTROL_2_REGISTER_OFS 0x0504
+REGDEF_BEGIN(RES0_CONTROL_2_REGISTER)
+	REGDEF_BIT(RES0_DES_YCC_ENC_EN,        1)
+	REGDEF_BIT(                   ,        3)
+	REGDEF_BIT(RES0_DES_CHRW      ,        1)
+REGDEF_END(RES0_CONTROL_2_REGISTER)
+
+
+/*
+    RES0_SCA_HEIGHT:    [0x0, 0x7fff],			bits : 14_0
+*/
+#define RES0_SIZE_1_REGISTER_OFS 0x0508
+REGDEF_BEGIN(RES0_SIZE_1_REGISTER)
+	REGDEF_BIT(RES0_SCA_HEIGHT,        15)
+REGDEF_END(RES0_SIZE_1_REGISTER)
+
+
+/*
+    RES0_SEG_POS : [0x0, 0x3fff],          bits : 13_0
+    RES0_DES_HEIGHT:    [0x0, 0x3fff],          bits : 29_16
+*/
+#define RES0_SIZE_2_REGISTER_OFS 0x050c
+REGDEF_BEGIN(RES0_SIZE_2_REGISTER)
+	REGDEF_BIT(RES0_SEG_POS0  ,        14)
+	REGDEF_BIT(                   ,        2)	
+	REGDEF_BIT(RES0_DES_HEIGHT   ,        15)
+REGDEF_END(RES0_SIZE_2_REGISTER)
+
+
+/*
+    RES0_OUT_Y_START:    [0x0, 0x7fff],			bits : 14_0
+    RES0_OUT_HEIGHT :    [0x0, 0x7fff],			bits : 30_16
+*/
+#define RES0_SIZE_3_REGISTER_OFS 0x0510
+REGDEF_BEGIN(RES0_SIZE_3_REGISTER)
+	REGDEF_BIT(RES0_OUT_Y_START,        15)
+	REGDEF_BIT(                ,        1)
+	REGDEF_BIT(RES0_OUT_HEIGHT ,        15)
+REGDEF_END(RES0_SIZE_3_REGISTER)
+
+
+/*
+    RES0_RLT_Y_START:    [0x0, 0x7fff],			bits : 14_0
+    RES0_RLT_HEIGHT :    [0x0, 0x7fff],			bits : 30_16
+*/
+#define RES0_SIZE_4_REGISTER_OFS 0x0514
+REGDEF_BEGIN(RES0_SIZE_4_REGISTER)
+	REGDEF_BIT(RES0_RLT_Y_START,        15)
+	REGDEF_BIT(                ,        1)
+	REGDEF_BIT(RES0_RLT_HEIGHT ,        15)
+REGDEF_END(RES0_SIZE_4_REGISTER)
+
+
+/*
+    RES0_PIP_Y_START:    [0x0, 0x7fff],			bits : 14_0
+    RES0_PIP_HEIGHT :    [0x0, 0x7fff],			bits : 30_16
+*/
+#define RES0_SIZE_5_REGISTER_OFS 0x0518
+REGDEF_BEGIN(RES0_SIZE_5_REGISTER)
+	REGDEF_BIT(RES0_PIP_Y_START,        15)
+	REGDEF_BIT(                ,        1)
+	REGDEF_BIT(RES0_PIP_HEIGHT ,        15)
+REGDEF_END(RES0_SIZE_5_REGISTER)
+
+
+/*
+    RES0_SCA_CROP_Y_START:    [0x0, 0x7fff],			bits : 14_0
+    RES0_SCA_CROP_HEIGHT :    [0x0, 0x7fff],			bits : 30_16
+*/
+#define RES0_SCA_CROP_REGISTER_OFS 0x051c
+REGDEF_BEGIN(RES0_SCA_CROP_REGISTER)
+	REGDEF_BIT(RES0_SCA_CROP_Y_START,        15)
+	REGDEF_BIT(                     ,        1)
+	REGDEF_BIT(RES0_SCA_CROP_HEIGHT ,        15)
+REGDEF_END(RES0_SCA_CROP_REGISTER)
+
+
+/*
+    RES0_SCA_DRATE_H:    [0x0, 0xf],			bits : 15_12
+    RES0_SCA_DRATE_V:    [0x0, 0xf],			bits : 23_20
+*/
+#define RES0_SCA_1_REGISTER_OFS 0x0520
+REGDEF_BEGIN(RES0_SCA_1_REGISTER)
+	REGDEF_BIT(                ,        12)
+	REGDEF_BIT(RES0_SCA_DRATE_H,        4)
+	REGDEF_BIT(                ,        4)
+	REGDEF_BIT(RES0_SCA_DRATE_V,        4)
+REGDEF_END(RES0_SCA_1_REGISTER)
+
+
+/*
+    RES0_SCA_FACTOR_H:    [0x0, 0xffff],			bits : 15_0
+    RES0_SCA_FACTOR_V:    [0x0, 0xffff],			bits : 31_16
+*/
+#define RES0_SCA_2_REGISTER_OFS 0x0524
+REGDEF_BEGIN(RES0_SCA_2_REGISTER)
+	REGDEF_BIT(RES0_SCA_FACTOR_H,        16)
+	REGDEF_BIT(RES0_SCA_FACTOR_V,        16)
+REGDEF_END(RES0_SCA_2_REGISTER)
+
+
+/*
+    RES0_DES_Y0_DRAM_OFSO:    [0x0, 0x7ffff],			bits : 18_0
+*/
+#define RES0_OUTPUT_DRAM_BUFFER_LINEOFFSET_REGISTER0_OFS 0x0528
+REGDEF_BEGIN(RES0_OUTPUT_DRAM_BUFFER_LINEOFFSET_REGISTER0)
+	REGDEF_BIT(RES0_DES_Y0_DRAM_OFSO,        19)
+REGDEF_END(RES0_OUTPUT_DRAM_BUFFER_LINEOFFSET_REGISTER0)
+
+
+/*
+    RES0_DES_UV0_DRAM_OFSO:    [0x0, 0x7ffff],			bits : 18_0
+*/
+#define RES0_OUTPUT_DRAM_BUFFER_LINEOFFSET_REGISTER1_OFS 0x052c
+REGDEF_BEGIN(RES0_OUTPUT_DRAM_BUFFER_LINEOFFSET_REGISTER1)
+	REGDEF_BIT(RES0_DES_UV0_DRAM_OFSO,        19)
+REGDEF_END(RES0_OUTPUT_DRAM_BUFFER_LINEOFFSET_REGISTER1)
+
+
+/*
+    RES0_DES_Y1_DRAM_OFSO:    [0x0, 0x7ffff],			bits : 18_0
+*/
+#define RES0_OUTPUT_DRAM_BUFFER_LINEOFFSET_REGISTER2_OFS 0x0530
+REGDEF_BEGIN(RES0_OUTPUT_DRAM_BUFFER_LINEOFFSET_REGISTER2)
+	REGDEF_BIT(RES0_DES_Y1_DRAM_OFSO,        19)
+REGDEF_END(RES0_OUTPUT_DRAM_BUFFER_LINEOFFSET_REGISTER2)
+
+
+/*
+    RES0_DES_UV1_DRAM_OFSO:    [0x0, 0x7ffff],			bits : 18_0
+*/
+#define RES0_OUTPUT_DRAM_BUFFER_LINEOFFSET_REGISTER3_OFS 0x0534
+REGDEF_BEGIN(RES0_OUTPUT_DRAM_BUFFER_LINEOFFSET_REGISTER3)
+	REGDEF_BIT(RES0_DES_UV1_DRAM_OFSO,        19)
+REGDEF_END(RES0_OUTPUT_DRAM_BUFFER_LINEOFFSET_REGISTER3)
+
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define RES0_OUTPUT_DRAM_BUFFER_LINEOFFSET_REGISTER4_OFS 0x0538
+REGDEF_BEGIN(RES0_OUTPUT_DRAM_BUFFER_LINEOFFSET_REGISTER4)
+	REGDEF_BIT(RES0_DES_Y2_DRAM_OFSO,        19)
+REGDEF_END(RES0_OUTPUT_DRAM_BUFFER_LINEOFFSET_REGISTER4)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define RES0_OUTPUT_DRAM_BUFFER_LINEOFFSET_REGISTER5_OFS 0x053c
+REGDEF_BEGIN(RES0_OUTPUT_DRAM_BUFFER_LINEOFFSET_REGISTER5)
+	REGDEF_BIT(RES0_DES_UV2_DRAM_OFSO,        19)
+REGDEF_END(RES0_OUTPUT_DRAM_BUFFER_LINEOFFSET_REGISTER5)
+
+
+/*
+    RES0_TC_CROP_Y_START:    [0x0, 0x7fff],			bits : 14_0
+    RES0_TC_CROP_HEIGHT :    [0x0, 0x7fff],			bits : 30_16
+*/
+#define RES0_TC_REGISTER_OFS 0x0540
+REGDEF_BEGIN(RES0_TC_REGISTER)
+	REGDEF_BIT(RES0_TC_CROP_Y_START,        15)
+	REGDEF_BIT(                    ,        1)
+	REGDEF_BIT(RES0_TC_CROP_HEIGHT ,        15)
+REGDEF_END(RES0_TC_REGISTER)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define RES0_IMG_SEG_REGISTER_OFS 0x0544
+REGDEF_BEGIN(RES0_IMG_SEG_REGISTER)
+	REGDEF_BIT(RES0_SEG_POS1        ,        14)
+	REGDEF_BIT(RES0_CL0_OUT_X2_START,        15)
+	REGDEF_BIT(RES0_SEG0_OUT_EN     ,        1)
+	REGDEF_BIT(RES0_SEG1_OUT_EN     ,        1)
+	REGDEF_BIT(RES0_SEG2_OUT_EN     ,        1)
+REGDEF_END(RES0_IMG_SEG_REGISTER)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define RES0_SIZE_6_REGISTER_OFS 0x0548
+REGDEF_BEGIN(RES0_SIZE_6_REGISTER)
+	REGDEF_BIT(RES0_OUT_Y1_START,        15)
+	REGDEF_BIT(                 ,        1)
+	REGDEF_BIT(RES0_OUT_Y2_START,        15)
+REGDEF_END(RES0_SIZE_6_REGISTER)
+
+
+/*
+    RES0_CL0_MIN_Y:    [0x0, 0xff],			bits : 7_0
+    RES0_CL0_MAX_Y:    [0x0, 0xff], 		bits : 15_8
+    RES0_CL0_MIN_UV:    [0x0, 0xff], 		bits : 23_16
+    RES0_CL0_MAX_UV:    [0x0, 0xff], 		bits : 31_24  
+*/
+#define RES0_COL0_OUT_CLAMP_REGISTER_OFS 0x054c
+REGDEF_BEGIN(RES0_COL0_OUT_CLAMP_REGISTER)
+	REGDEF_BIT(RES0_CL0_MIN_Y,        8)
+	REGDEF_BIT(RES0_CL0_MAX_Y,        8)
+	REGDEF_BIT(RES0_CL0_MIN_UV,        8)
+	REGDEF_BIT(RES0_CL0_MAX_UV,        8)
+REGDEF_END(RES0_COL0_OUT_CLAMP_REGISTER)
+
+
+/*
+    RES0_CL0_SCA_WIDTH:    [0x0, 0xfff],			bits : 11_0
+   RES0_CL0_OUT_X1_START:  [0x0, 0x7fff],			bits : 30_16
+    
+*/
+#define RES0_COL0_SIZE_1_REGISTER_OFS 0x0550
+REGDEF_BEGIN(RES0_COL0_SIZE_1_REGISTER)
+	REGDEF_BIT(RES0_CL0_SCA_WIDTH,        12)
+	REGDEF_BIT(                  ,        4)
+    REGDEF_BIT(RES0_CL0_OUT_X1_START,	 15)
+REGDEF_END(RES0_COL0_SIZE_1_REGISTER)
+
+
+/*
+    RES0_CL0_OUT_X_START:    [0x0, 0x7fff],			bits : 14_0
+    RES0_CL0_OUT_WIDTH  :    [0x0, 0xfff],			bits : 27_16
+*/
+#define RES0_COL0_SIZE_2_REGISTER_OFS 0x0554
+REGDEF_BEGIN(RES0_COL0_SIZE_2_REGISTER)
+	REGDEF_BIT(RES0_CL0_OUT_X0_START,        15)
+	REGDEF_BIT(                    ,        1)
+	REGDEF_BIT(RES0_CL0_OUT_WIDTH  ,        12)
+REGDEF_END(RES0_COL0_SIZE_2_REGISTER)
+
+
+/*
+    RES0_CL0_RLT_X_START:    [0x0, 0x7ff],			bits : 10_0
+    RES0_CL0_RLT_WIDTH  :    [0x0, 0xfff],			bits : 27_16
+*/
+#define RES0_COL0_SIZE_3_REGISTER_OFS 0x0558
+REGDEF_BEGIN(RES0_COL0_SIZE_3_REGISTER)
+	REGDEF_BIT(RES0_CL0_RLT_X_START,        11)
+	REGDEF_BIT(                    ,        5)
+	REGDEF_BIT(RES0_CL0_RLT_WIDTH  ,        12)
+REGDEF_END(RES0_COL0_SIZE_3_REGISTER)
+
+
+/*
+    RES0_CL0_PIP_X_START:    [0x0, 0x7ff],			bits : 10_0
+    RES0_CL0_PIP_WIDTH  :    [0x0, 0xfff],			bits : 27_16
+*/
+#define RES0_COL0_SIZE_4_REGISTER_OFS 0x055c
+REGDEF_BEGIN(RES0_COL0_SIZE_4_REGISTER)
+	REGDEF_BIT(RES0_CL0_PIP_X_START,        11)
+	REGDEF_BIT(                    ,        5)
+	REGDEF_BIT(RES0_CL0_PIP_WIDTH  ,        12)
+REGDEF_END(RES0_COL0_SIZE_4_REGISTER)
+
+
+/*
+    RES0_CL0_SCA_CROP_X_START:    [0x0, 0x7ff],			bits : 10_0
+    RES0_CL0_SCA_CROP_WIDTH  :    [0x0, 0xfff],			bits : 27_16
+*/
+#define RES0_COL0_SIZE_5_REGISTER_OFS 0x0560
+REGDEF_BEGIN(RES0_COL0_SIZE_5_REGISTER)
+	REGDEF_BIT(RES0_CL0_SCA_CROP_X_START,        11)
+	REGDEF_BIT(                         ,        5)
+	REGDEF_BIT(RES0_CL0_SCA_CROP_WIDTH  ,        12)
+REGDEF_END(RES0_COL0_SIZE_5_REGISTER)
+
+
+/*
+    RES0_CL0_TC_CROP_X_START:    [0x0, 0x7ff],			bits : 10_0
+    RES0_CL0_TC_CROP_WIDTH  :    [0x0, 0xfff],			bits : 27_16
+    RES0_CL0_TC_CROP_SKIP   :    [0x0, 0x1],			bits : 31
+*/
+#define RES0_COL0_SIZE_6_REGISTER_OFS 0x0564
+REGDEF_BEGIN(RES0_COL0_SIZE_6_REGISTER)
+	REGDEF_BIT(RES0_CL0_TC_CROP_X_START,        11)
+	REGDEF_BIT(                        ,        5)
+	REGDEF_BIT(RES0_CL0_TC_CROP_WIDTH  ,        12)
+	REGDEF_BIT(                        ,        3)
+	REGDEF_BIT(RES0_CL0_TC_CROP_SKIP   ,        1)
+REGDEF_END(RES0_COL0_SIZE_6_REGISTER)
+
+
+/*
+    RES0_CL0_SCA_FACTOR_H_INIT_OFS:    [0x0, 0x1ffffff],			bits : 24_0
+*/
+#define RES0_COL0_SIZE_7_REGISTER_OFS 0x0568
+REGDEF_BEGIN(RES0_COL0_SIZE_7_REGISTER)
+	REGDEF_BIT(RES0_CL0_SCA_FACTOR_H_INIT_OFS,        25)
+REGDEF_END(RES0_COL0_SIZE_7_REGISTER)
+
+
+/*
+    RES0_SCA_COEF_H0:    [0x0, 0x3ff],          bits : 9_0
+    RES0_SCA_COEF_H1:    [0x0, 0x3ff],          bits : 25_16
+*/
+#define RES0_SCA_FILTER_COEF_0_REGISTER_OFS 0x056C
+REGDEF_BEGIN(RES0_SCA_FILTER_COEF_0_REGISTER)
+REGDEF_BIT(RES0_SCA_COEF_H0,        10)
+REGDEF_BIT(,        6)
+REGDEF_BIT(RES0_SCA_COEF_H1,        10)
+REGDEF_END(RES0_SCA_FILTER_COEF_0_REGISTER)
+
+
+/*
+    RES0_SCA_COEF_H2:    [0x0, 0x3ff],          bits : 9_0
+    RES0_SCA_COEF_H3:    [0x0, 0x3ff],          bits : 25_16
+*/
+#define RES0_SCA_FILTER_COEF_1_REGISTER_OFS 0x0570
+REGDEF_BEGIN(RES0_SCA_FILTER_COEF_1_REGISTER)
+REGDEF_BIT(RES0_SCA_COEF_H2,        10)
+REGDEF_BIT(,        6)
+REGDEF_BIT(RES0_SCA_COEF_H3,        10)
+REGDEF_END(RES0_SCA_FILTER_COEF_1_REGISTER)
+
+
+/*
+    RES0_SCA_COEF_V0:    [0x0, 0x3ff],          bits : 9_0
+    RES0_SCA_COEF_V1:    [0x0, 0x3ff],          bits : 25_16
+*/
+#define RES0_SCA_FILTER_COEF_2_REGISTER_OFS 0x0574
+REGDEF_BEGIN(RES0_SCA_FILTER_COEF_2_REGISTER)
+REGDEF_BIT(RES0_SCA_COEF_V0,        10)
+REGDEF_BIT(,        6)
+REGDEF_BIT(RES0_SCA_COEF_V1,        10)
+REGDEF_END(RES0_SCA_FILTER_COEF_2_REGISTER)
+
+
+/*
+    RES0_SCA_COEF_V2:    [0x0, 0x3ff],          bits : 9_0
+    RES0_SCA_COEF_V3:    [0x0, 0x3ff],          bits : 25_16
+*/
+#define RES0_SCA_FILTER_COEF_3_REGISTER_OFS 0x0578
+REGDEF_BEGIN(RES0_SCA_FILTER_COEF_3_REGISTER)
+REGDEF_BIT(RES0_SCA_COEF_V2,        10)
+REGDEF_BIT(,        6)
+REGDEF_BIT(RES0_SCA_COEF_V3,        10)
+REGDEF_END(RES0_SCA_FILTER_COEF_3_REGISTER)
+
+/*
+    RES0_SCA_LUMA_WET   :    [0x0, 0x1f],           bits : 4_0
+    RES0_SCA_CHROMA_WET :    [0x0, 0x1f],           bits : 12_8
+    RES0_SCA_CHROMA_HLPF:    [0x0, 0x3],            bits : 17_16
+    RES0_SCA_CHROMA_VLPF:    [0x0, 0x3],            bits : 21_20
+*/
+#define RES0_SCA_FILTER_COEF_4_REGISTER_OFS 0x057C
+REGDEF_BEGIN(RES0_SCA_FILTER_COEF_4_REGISTER)
+REGDEF_BIT(RES0_SCA_LUMA_WET,        5)
+REGDEF_BIT(,        3)
+REGDEF_BIT(RES0_SCA_CHROMA_WET,        5)
+REGDEF_BIT(,        3)
+REGDEF_BIT(RES0_SCA_CHROMA_HLPF,        2)
+REGDEF_BIT(,        2)
+REGDEF_BIT(RES0_SCA_CHROMA_VLPF,        2)
+REGDEF_END(RES0_SCA_FILTER_COEF_4_REGISTER)
+
+
+/*
+    RES1_SCA_EN     :    [0x0, 0x1],			bits : 0
+    RES1_SCA_CROP_EN:    [0x0, 0x1],			bits : 2
+    RES1_TC_EN      :    [0x0, 0x1],			bits : 3
+    RES1_SEG_OP     :    [0x0, 0x3],			bits : 5_4
+    RES1_DES_DRT    :    [0x0, 0x3],			bits : 9_8
+    RES1_DES_FORMAT :    [0x0, 0x7],			bits : 13_11
+    RES1_OUT_BG_SEL :    [0x0, 0x7],			bits : 18_16
+    RES1_SCL_METHOD :    [0x0, 0x1],			bits : 20
+*/
+#define RES1_CONTROL_1_REGISTER_OFS 0x0580
+REGDEF_BEGIN(RES1_CONTROL_1_REGISTER)
+	REGDEF_BIT(RES1_SCA_EN     ,        1)
+	REGDEF_BIT(                ,        1)
+	REGDEF_BIT(RES1_SCA_CROP_EN,        1)
+	REGDEF_BIT(RES1_TC_EN      ,        1)
+	REGDEF_BIT(RES1_SEG_OP      ,       2)
+	REGDEF_BIT(                ,        2)
+	REGDEF_BIT(RES1_DES_DRT    ,        2)
+	REGDEF_BIT(                ,        1)
+	REGDEF_BIT(RES1_DES_FORMAT ,        3)
+	REGDEF_BIT(                ,        2)
+	REGDEF_BIT(RES1_OUT_BG_SEL ,        3)
+	REGDEF_BIT(                ,        1)
+	REGDEF_BIT(RES1_SCL_METHOD ,        1)
+	REGDEF_BIT(                         ,        2)
+	REGDEF_BIT(RES1_DES_DRT_PC2TV_WEIGHT,        9)	
+REGDEF_END(RES1_CONTROL_1_REGISTER)
+
+
+/*
+    RES1_DES_YCC_ENC_EN:    [0x0, 0x1],			bits : 0
+    RES1_DES_CHRW      :    [0x0, 0x1],			bits : 4
+*/
+#define RES1_CONTROL_2_REGISTER_OFS 0x0584
+REGDEF_BEGIN(RES1_CONTROL_2_REGISTER)
+	REGDEF_BIT(RES1_DES_YCC_ENC_EN,        1)
+	REGDEF_BIT(                   ,        3)
+	REGDEF_BIT(RES1_DES_CHRW      ,        1)
+REGDEF_END(RES1_CONTROL_2_REGISTER)
+
+
+/*
+    RES1_SCA_HEIGHT:    [0x0, 0x7fff],			bits : 14_0
+*/
+#define RES1_SIZE_1_REGISTER_OFS 0x0588
+REGDEF_BEGIN(RES1_SIZE_1_REGISTER)
+	REGDEF_BIT(RES1_SCA_HEIGHT,        15)
+REGDEF_END(RES1_SIZE_1_REGISTER)
+
+
+/*
+    RES1_SEG_POS : [0x0, 0x3fff],          bits : 13_0
+    RES1_DES_HEIGHT   :    [0x0, 0x7fff],			bits : 30_16
+*/
+#define RES1_SIZE_2_REGISTER_OFS 0x058c
+REGDEF_BEGIN(RES1_SIZE_2_REGISTER)
+	REGDEF_BIT(RES1_SEG_POS0   ,        14)
+	REGDEF_BIT(                   ,        2)	
+	REGDEF_BIT(RES1_DES_HEIGHT   ,        15)
+REGDEF_END(RES1_SIZE_2_REGISTER)
+
+
+/*
+    RES1_OUT_Y_START:    [0x0, 0x7fff],			bits : 14_0
+    RES1_OUT_HEIGHT :    [0x0, 0x7fff],			bits : 30_16
+*/
+#define RES1_SIZE_3_REGISTER_OFS 0x0590
+REGDEF_BEGIN(RES1_SIZE_3_REGISTER)
+	REGDEF_BIT(RES1_OUT_Y_START,        15)
+	REGDEF_BIT(                ,        1)
+	REGDEF_BIT(RES1_OUT_HEIGHT ,        15)
+REGDEF_END(RES1_SIZE_3_REGISTER)
+
+
+/*
+    RES1_RLT_Y_START:    [0x0, 0x7fff],			bits : 14_0
+    RES1_RLT_HEIGHT :    [0x0, 0x7fff],			bits : 30_16
+*/
+#define RES1_SIZE_4_REGISTER_OFS 0x0594
+REGDEF_BEGIN(RES1_SIZE_4_REGISTER)
+	REGDEF_BIT(RES1_RLT_Y_START,        15)
+	REGDEF_BIT(                ,        1)
+	REGDEF_BIT(RES1_RLT_HEIGHT ,        15)
+REGDEF_END(RES1_SIZE_4_REGISTER)
+
+
+/*
+    RES1_PIP_Y_START:    [0x0, 0x7fff],			bits : 14_0
+    RES1_PIP_HEIGHT :    [0x0, 0x7fff],			bits : 30_16
+*/
+#define RES1_SIZE_5_REGISTER_OFS 0x0598
+REGDEF_BEGIN(RES1_SIZE_5_REGISTER)
+	REGDEF_BIT(RES1_PIP_Y_START,        15)
+	REGDEF_BIT(                ,        1)
+	REGDEF_BIT(RES1_PIP_HEIGHT ,        15)
+REGDEF_END(RES1_SIZE_5_REGISTER)
+
+
+/*
+    RES1_SCA_CROP_Y_START:    [0x0, 0x7fff],			bits : 14_0
+    RES1_SCA_CROP_HEIGHT :    [0x0, 0x7fff],			bits : 30_16
+*/
+#define RES1_SCA_CROP_REGISTER_OFS 0x059c
+REGDEF_BEGIN(RES1_SCA_CROP_REGISTER)
+	REGDEF_BIT(RES1_SCA_CROP_Y_START,        15)
+	REGDEF_BIT(                     ,        1)
+	REGDEF_BIT(RES1_SCA_CROP_HEIGHT ,        15)
+REGDEF_END(RES1_SCA_CROP_REGISTER)
+
+
+/*
+    RES1_SCA_DRATE_H:    [0x0, 0xf],			bits : 15_12
+    RES1_SCA_DRATE_V:    [0x0, 0xf],			bits : 23_20
+*/
+#define RES1_SCA_1_REGISTER_OFS 0x05a0
+REGDEF_BEGIN(RES1_SCA_1_REGISTER)
+	REGDEF_BIT(                ,        12)
+	REGDEF_BIT(RES1_SCA_DRATE_H,        4)
+	REGDEF_BIT(                ,        4)
+	REGDEF_BIT(RES1_SCA_DRATE_V,        4)
+REGDEF_END(RES1_SCA_1_REGISTER)
+
+
+/*
+    RES1_SCA_FACTOR_H:    [0x0, 0xffff],			bits : 15_0
+    RES1_SCA_FACTOR_V:    [0x0, 0xffff],			bits : 31_16
+*/
+#define RES1_SCA_2_REGISTER_OFS 0x05a4
+REGDEF_BEGIN(RES1_SCA_2_REGISTER)
+	REGDEF_BIT(RES1_SCA_FACTOR_H,        16)
+	REGDEF_BIT(RES1_SCA_FACTOR_V,        16)
+REGDEF_END(RES1_SCA_2_REGISTER)
+
+
+/*
+    RES1_DES_Y0_DRAM_OFSO:    [0x0, 0x7ffff],			bits : 18_0
+*/
+#define RES1_OUTPUT_DRAM_BUFFER_LINEOFFSET_REGISTER0_OFS 0x05a8
+REGDEF_BEGIN(RES1_OUTPUT_DRAM_BUFFER_LINEOFFSET_REGISTER0)
+	REGDEF_BIT(RES1_DES_Y0_DRAM_OFSO,        19)
+REGDEF_END(RES1_OUTPUT_DRAM_BUFFER_LINEOFFSET_REGISTER0)
+
+
+/*
+    RES1_DES_UV0_DRAM_OFSO:    [0x0, 0x7ffff],			bits : 18_0
+*/
+#define RES1_OUTPUT_DRAM_BUFFER_LINEOFFSET_REGISTER1_OFS 0x05ac
+REGDEF_BEGIN(RES1_OUTPUT_DRAM_BUFFER_LINEOFFSET_REGISTER1)
+	REGDEF_BIT(RES1_DES_UV0_DRAM_OFSO,        19)
+REGDEF_END(RES1_OUTPUT_DRAM_BUFFER_LINEOFFSET_REGISTER1)
+
+
+
+/*
+    RES1_DES_Y1_DRAM_OFSO:    [0x0, 0x7ffff],			bits : 18_0
+*/
+#define RES1_OUTPUT_DRAM_BUFFER_LINEOFFSET_REGISTER2_OFS 0x05b0
+REGDEF_BEGIN(RES1_OUTPUT_DRAM_BUFFER_LINEOFFSET_REGISTER2)
+	REGDEF_BIT(RES1_DES_Y1_DRAM_OFSO,        19)
+REGDEF_END(RES1_OUTPUT_DRAM_BUFFER_LINEOFFSET_REGISTER2)
+
+
+/*
+    RES1_DES_UV1_DRAM_OFSO:    [0x0, 0x7ffff],			bits : 18_0
+*/
+#define RES1_OUTPUT_DRAM_BUFFER_LINEOFFSET_REGISTER3_OFS 0x05b4
+REGDEF_BEGIN(RES1_OUTPUT_DRAM_BUFFER_LINEOFFSET_REGISTER3)
+	REGDEF_BIT(RES1_DES_UV1_DRAM_OFSO,        19)
+REGDEF_END(RES1_OUTPUT_DRAM_BUFFER_LINEOFFSET_REGISTER3)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_192_OFS 0x05b8
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_192)
+	REGDEF_BIT(RES1_DES_Y2_DRAM_OFSO,        19)
+REGDEF_END(VPE_RESERVED_REGISTER_192)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_193_OFS 0x05bc
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_193)
+	REGDEF_BIT(RES1_DES_UV2_DRAM_OFSO,        19)
+REGDEF_END(VPE_RESERVED_REGISTER_193)
+
+
+/*
+    RES1_TC_CROP_Y_START:    [0x0, 0x7fff],			bits : 14_0
+    RES1_TC_CROP_HEIGHT :    [0x0, 0x7fff],			bits : 30_16
+*/
+#define RES1_TC_REGISTER_OFS 0x05c0
+REGDEF_BEGIN(RES1_TC_REGISTER)
+	REGDEF_BIT(RES1_TC_CROP_Y_START,        15)
+	REGDEF_BIT(                    ,        1)
+	REGDEF_BIT(RES1_TC_CROP_HEIGHT ,        15)
+REGDEF_END(RES1_TC_REGISTER)
+
+
+/*
+    Reserved:    [0x0, 0xfffffff],			bits : 31_0
+
+*/
+#define RES1_IMG_SEG_REGISTER_OFS 0x05c4
+REGDEF_BEGIN(RES1_IMG_SEG_REGISTER)
+	REGDEF_BIT(RES1_SEG_POS1        ,        14)
+	REGDEF_BIT(RES1_CL0_OUT_X2_START,        15)
+	REGDEF_BIT(RES1_SEG0_OUT_EN     ,        1)
+	REGDEF_BIT(RES1_SEG1_OUT_EN     ,        1)
+	REGDEF_BIT(RES1_SEG2_OUT_EN     ,        1)
+
+REGDEF_END(RES1_IMG_SEG_REGISTER)
+
+
+/*
+    Reserved:    [0x0, 0xfffffff],			bits : 31_0
+*/
+#define RES1_SIZE_6_REGISTER_OFS 0x05c8
+REGDEF_BEGIN(RES1_SIZE_6_REGISTER)
+	REGDEF_BIT(RES1_OUT_Y1_START,        15)
+	REGDEF_BIT(                 ,        1)
+	REGDEF_BIT(RES1_OUT_Y2_START,        15)
+REGDEF_END(RES1_SIZE_6_REGISTER)
+
+
+/*
+    RES1_CL0_MIN_Y:    [0x0, 0xff],			bits : 7_0
+    RES1_CL0_MAX_Y:    [0x0, 0xff], 		bits : 15_8
+    RES1_CL0_MIN_UV:    [0x0, 0xff], 		bits : 23_16
+    RES1_CL0_MAX_UV:    [0x0, 0xff], 		bits : 31_24  
+*/
+#define RES1_COL0_OUT_CLAMP_REGISTER_OFS 0x05cc
+REGDEF_BEGIN(RES1_COL0_OUT_CLAMP_REGISTER)
+	REGDEF_BIT(RES1_CL0_MIN_Y,        8)
+	REGDEF_BIT(RES1_CL0_MAX_Y,        8)
+	REGDEF_BIT(RES1_CL0_MIN_UV,        8)
+	REGDEF_BIT(RES1_CL0_MAX_UV,        8)
+REGDEF_END(RES1_COL0_OUT_CLAMP_REGISTER)
+
+
+/*
+    RES1_CL0_SCA_WIDTH:    [0x0, 0xfff],			bits : 11_0
+    RES1_CL0_OUT_X1_START:    [0x0, 0x3fff],		bits : 30_16
+    
+*/
+#define RES1_COL0_SIZE_1_REGISTER_OFS 0x05d0
+REGDEF_BEGIN(RES1_COL0_SIZE_1_REGISTER)
+	REGDEF_BIT(RES1_CL0_SCA_WIDTH,        12)
+	REGDEF_BIT(                    ,      4)
+	REGDEF_BIT(RES1_CL0_OUT_X1_START ,      15)
+REGDEF_END(RES1_COL0_SIZE_1_REGISTER)
+
+
+/*
+    RES1_CL0_OUT_X0_START:    [0x0, 0x7fff],			bits : 14_0
+    RES1_CL0_OUT_WIDTH  :    [0x0, 0xfff],			bits : 27_16
+*/
+#define RES1_COL0_SIZE_2_REGISTER_OFS 0x05d4
+REGDEF_BEGIN(RES1_COL0_SIZE_2_REGISTER)
+	REGDEF_BIT(RES1_CL0_OUT_X0_START,        15)
+	REGDEF_BIT(                    ,        1)
+	REGDEF_BIT(RES1_CL0_OUT_WIDTH  ,        12)
+REGDEF_END(RES1_COL0_SIZE_2_REGISTER)
+
+
+/*
+    RES1_CL0_RLT_X_START:    [0x0, 0x7ff],			bits : 10_0
+    RES1_CL0_RLT_WIDTH  :    [0x0, 0xfff],			bits : 27_16
+*/
+#define RES1_COL0_SIZE_3_REGISTER_OFS 0x05d8
+REGDEF_BEGIN(RES1_COL0_SIZE_3_REGISTER)
+	REGDEF_BIT(RES1_CL0_RLT_X_START,        11)
+	REGDEF_BIT(                    ,        5)
+	REGDEF_BIT(RES1_CL0_RLT_WIDTH  ,        12)
+REGDEF_END(RES1_COL0_SIZE_3_REGISTER)
+
+
+/*
+    RES1_CL0_PIP_X_START:    [0x0, 0x7ff],			bits : 10_0
+    RES1_CL0_PIP_WIDTH  :    [0x0, 0xfff],			bits : 27_16
+*/
+#define RES1_COL0_SIZE_4_REGISTER_OFS 0x05dc
+REGDEF_BEGIN(RES1_COL0_SIZE_4_REGISTER)
+	REGDEF_BIT(RES1_CL0_PIP_X_START,        11)
+	REGDEF_BIT(                    ,        5)
+	REGDEF_BIT(RES1_CL0_PIP_WIDTH  ,        12)
+REGDEF_END(RES1_COL0_SIZE_4_REGISTER)
+
+
+/*
+    RES1_CL0_SCA_CROP_X_START:    [0x0, 0x7ff],			bits : 10_0
+    RES1_CL0_SCA_CROP_WIDTH  :    [0x0, 0x1fff],			bits : 28_16
+*/
+#define RES1_COL0_SIZE_5_REGISTER_OFS 0x05e0
+REGDEF_BEGIN(RES1_COL0_SIZE_5_REGISTER)
+	REGDEF_BIT(RES1_CL0_SCA_CROP_X_START,        11)
+	REGDEF_BIT(                         ,        5)
+	REGDEF_BIT(RES1_CL0_SCA_CROP_WIDTH  ,        13)
+REGDEF_END(RES1_COL0_SIZE_5_REGISTER)
+
+
+/*
+    RES1_CL0_TC_CROP_X_START:    [0x0, 0x7ff],			bits : 10_0
+    RES1_CL0_TC_CROP_WIDTH  :    [0x0, 0xfff],			bits : 27_16
+    RES1_CL0_TC_CROP_SKIP   :    [0x0, 0x1],			bits : 31
+*/
+#define RES1_COL0_SIZE_6_REGISTER_OFS 0x05e4
+REGDEF_BEGIN(RES1_COL0_SIZE_6_REGISTER)
+	REGDEF_BIT(RES1_CL0_TC_CROP_X_START,        11)
+	REGDEF_BIT(                        ,        5)
+	REGDEF_BIT(RES1_CL0_TC_CROP_WIDTH  ,        12)
+	REGDEF_BIT(                        ,        3)
+	REGDEF_BIT(RES1_CL0_TC_CROP_SKIP   ,        1)
+REGDEF_END(RES1_COL0_SIZE_6_REGISTER)
+
+
+/*
+    RES1_CL0_SCA_FACTOR_H_INIT_OFS:    [0x0, 0x1ffffff],			bits : 24_0
+*/
+#define RES1_COL0_SIZE_7_REGISTER_OFS 0x05e8
+REGDEF_BEGIN(RES1_COL0_SIZE_7_REGISTER)
+	REGDEF_BIT(RES1_CL0_SCA_FACTOR_H_INIT_OFS,        25)
+REGDEF_END(RES1_COL0_SIZE_7_REGISTER)
+
+
+
+/*
+    RES1_SCA_COEF_H0:    [0x0, 0x3ff],          bits : 9_0
+    RES1_SCA_COEF_H1:    [0x0, 0x3ff],          bits : 25_16
+*/
+#define RES1_SCA_FILTER_COEF_0_REGISTER_OFS 0x05EC
+REGDEF_BEGIN(RES1_SCA_FILTER_COEF_0_REGISTER)
+REGDEF_BIT(RES1_SCA_COEF_H0,        10)
+REGDEF_BIT(,        6)
+REGDEF_BIT(RES1_SCA_COEF_H1,        10)
+REGDEF_END(RES1_SCA_FILTER_COEF_0_REGISTER)
+
+
+/*
+    RES1_SCA_COEF_H2:    [0x0, 0x3ff],          bits : 9_0
+    RES1_SCA_COEF_H3:    [0x0, 0x3ff],          bits : 25_16
+*/
+#define RES1_SCA_FILTER_COEF_1_REGISTER_OFS 0x05F0
+REGDEF_BEGIN(RES1_SCA_FILTER_COEF_1_REGISTER)
+REGDEF_BIT(RES1_SCA_COEF_H2,        10)
+REGDEF_BIT(,        6)
+REGDEF_BIT(RES1_SCA_COEF_H3,        10)
+REGDEF_END(RES1_SCA_FILTER_COEF_1_REGISTER)
+
+
+/*
+    RES1_SCA_COEF_V0:    [0x0, 0x3ff],          bits : 9_0
+    RES1_SCA_COEF_V1:    [0x0, 0x3ff],          bits : 25_16
+*/
+#define RES1_SCA_FILTER_COEF_2_REGISTER_OFS 0x05F4
+REGDEF_BEGIN(RES1_SCA_FILTER_COEF_2_REGISTER)
+REGDEF_BIT(RES1_SCA_COEF_V0,        10)
+REGDEF_BIT(,        6)
+REGDEF_BIT(RES1_SCA_COEF_V1,        10)
+REGDEF_END(RES1_SCA_FILTER_COEF_2_REGISTER)
+
+
+/*
+    RES1_SCA_COEF_V2:    [0x0, 0x3ff],          bits : 9_0
+    RES1_SCA_COEF_V3:    [0x0, 0x3ff],          bits : 25_16
+*/
+#define RES1_SCA_FILTER_COEF_3_REGISTER_OFS 0x05F8
+REGDEF_BEGIN(RES1_SCA_FILTER_COEF_3_REGISTER)
+REGDEF_BIT(RES1_SCA_COEF_V2,        10)
+REGDEF_BIT(,        6)
+REGDEF_BIT(RES1_SCA_COEF_V3,        10)
+REGDEF_END(RES1_SCA_FILTER_COEF_3_REGISTER)
+
+/*
+    RES1_SCA_LUMA_WET   :    [0x0, 0x1f],           bits : 4_0
+    RES1_SCA_CHROMA_WET :    [0x0, 0x1f],           bits : 12_8
+    RES1_SCA_CHROMA_HLPF:    [0x0, 0x3],            bits : 17_16
+    RES1_SCA_CHROMA_VLPF:    [0x0, 0x3],            bits : 21_20
+*/
+#define RES1_SCA_FILTER_COEF_4_REGISTER_OFS 0x05FC
+REGDEF_BEGIN(RES1_SCA_FILTER_COEF_4_REGISTER)
+REGDEF_BIT(RES1_SCA_LUMA_WET,        5)
+REGDEF_BIT(,        3)
+REGDEF_BIT(RES1_SCA_CHROMA_WET,        5)
+REGDEF_BIT(,        3)
+REGDEF_BIT(RES1_SCA_CHROMA_HLPF,        2)
+REGDEF_BIT(,        2)
+REGDEF_BIT(RES1_SCA_CHROMA_VLPF,        2)
+REGDEF_END(RES1_SCA_FILTER_COEF_4_REGISTER)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define RES2_CONTROL_1_REGISTER_OFS 0x0600
+REGDEF_BEGIN(RES2_CONTROL_1_REGISTER)
+	REGDEF_BIT(RES2_SCA_EN              ,        1)
+	REGDEF_BIT(                         ,        1)
+	REGDEF_BIT(RES2_SCA_CROP_EN         ,        1)
+	REGDEF_BIT(RES2_TC_EN               ,        1)
+	REGDEF_BIT(RES2_SEG_OP              ,        2)
+	REGDEF_BIT(                         ,        2)
+	REGDEF_BIT(RES2_DES_DRT             ,        2)
+	REGDEF_BIT(                         ,        1)
+	REGDEF_BIT(RES2_DES_FORMAT          ,        3)
+	REGDEF_BIT(                         ,        2)
+	REGDEF_BIT(RES2_OUT_BG_SEL          ,        3)
+	REGDEF_BIT(                         ,        1)
+	REGDEF_BIT(RES2_SCL_METHOD          ,        1)
+	REGDEF_BIT(                         ,        2)
+	REGDEF_BIT(RES2_DES_DRT_PC2TV_WEIGHT,        9)
+REGDEF_END(RES2_CONTROL_1_REGISTER)
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define RES2_CONTROL_2_REGISTER_OFS 0x0604
+REGDEF_BEGIN(RES2_CONTROL_2_REGISTER)
+	REGDEF_BIT(RES2_DES_YCC_ENC_EN,        1)
+	REGDEF_BIT(                   ,        3)
+	REGDEF_BIT(RES2_DES_CHRW      ,        1)
+REGDEF_END(RES2_CONTROL_2_REGISTER)
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define RES2_SIZE_1_REGISTER_OFS 0x0608
+REGDEF_BEGIN(RES2_SIZE_1_REGISTER)
+	REGDEF_BIT(RES2_SCA_HEIGHT,        15)
+REGDEF_END(RES2_SIZE_1_REGISTER)
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define RES2_SIZE_2_REGISTER_OFS 0x060c
+REGDEF_BEGIN(RES2_SIZE_2_REGISTER)
+	REGDEF_BIT(RES2_SEG_POS0  ,        14)
+	REGDEF_BIT(               ,        2)	
+	REGDEF_BIT(RES2_DES_HEIGHT,        15)
+REGDEF_END(RES2_SIZE_2_REGISTER)
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define RES2_SIZE_3_REGISTER_OFS 0x0610
+REGDEF_BEGIN(RES2_SIZE_3_REGISTER)
+	REGDEF_BIT(RES2_OUT_Y_START,        15)
+	REGDEF_BIT(                ,        1)
+	REGDEF_BIT(RES2_OUT_HEIGHT ,        15)
+REGDEF_END(RES2_SIZE_3_REGISTER)
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define RES2_SIZE_4_REGISTER_OFS 0x0614
+REGDEF_BEGIN(RES2_SIZE_4_REGISTER)
+	REGDEF_BIT(RES2_RLT_Y_START,        15)
+	REGDEF_BIT(                ,        1)
+	REGDEF_BIT(RES2_RLT_HEIGHT ,        15)
+REGDEF_END(RES2_SIZE_4_REGISTER)
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define RES2_SIZE_5_REGISTER_OFS 0x0618
+REGDEF_BEGIN(RES2_SIZE_5_REGISTER)
+	REGDEF_BIT(RES2_PIP_Y_START,        15)
+	REGDEF_BIT(                ,        1)
+	REGDEF_BIT(RES2_PIP_HEIGHT ,        15)
+REGDEF_END(RES2_SIZE_5_REGISTER)
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define RES2_SCA_CROP_REGISTER_OFS 0x061c
+REGDEF_BEGIN(RES2_SCA_CROP_REGISTER)
+	REGDEF_BIT(RES2_SCA_CROP_Y_START,        15)
+	REGDEF_BIT(                     ,        1)
+	REGDEF_BIT(RES2_SCA_CROP_HEIGHT ,        15)
+REGDEF_END(RES2_SCA_CROP_REGISTER)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define RES2_SCA_1_REGISTER_OFS 0x0620
+REGDEF_BEGIN(RES2_SCA_1_REGISTER)
+	REGDEF_BIT(                ,        12)
+	REGDEF_BIT(RES2_SCA_DRATE_H,        4)
+	REGDEF_BIT(                ,        4)
+	REGDEF_BIT(RES2_SCA_DRATE_V,        4)
+REGDEF_END(RES2_SCA_1_REGISTER)
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define RES2_SCA_2_REGISTER_OFS 0x0624
+REGDEF_BEGIN(RES2_SCA_2_REGISTER)
+	REGDEF_BIT(RES2_SCA_FACTOR_H,        16)
+	REGDEF_BIT(RES2_SCA_FACTOR_V,        16)
+REGDEF_END(RES2_SCA_2_REGISTER)
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define RES2_OUTPUT_DRAM_BUFFER_LINEOFFSET_REGISTER0_OFS 0x0628
+REGDEF_BEGIN(RES2_OUTPUT_DRAM_BUFFER_LINEOFFSET_REGISTER0)
+	REGDEF_BIT(RES2_DES_Y0_DRAM_OFSO,        19)
+REGDEF_END(RES2_OUTPUT_DRAM_BUFFER_LINEOFFSET_REGISTER0)
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define RES2_OUTPUT_DRAM_BUFFER_LINEOFFSET_REGISTER1_OFS 0x062c
+REGDEF_BEGIN(RES2_OUTPUT_DRAM_BUFFER_LINEOFFSET_REGISTER1)
+	REGDEF_BIT(RES2_DES_UV0_DRAM_OFSO,        19)
+REGDEF_END(RES2_OUTPUT_DRAM_BUFFER_LINEOFFSET_REGISTER1)
+
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define RES2_OUTPUT_DRAM_BUFFER_LINEOFFSET_REGISTER2_OFS 0x0630
+REGDEF_BEGIN(RES2_OUTPUT_DRAM_BUFFER_LINEOFFSET_REGISTER2)
+	REGDEF_BIT(RES2_DES_Y1_DRAM_OFSO,        19)
+REGDEF_END(RES2_OUTPUT_DRAM_BUFFER_LINEOFFSET_REGISTER2)
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define RES2_OUTPUT_DRAM_BUFFER_LINEOFFSET_REGISTER3_OFS 0x0634
+REGDEF_BEGIN(RES2_OUTPUT_DRAM_BUFFER_LINEOFFSET_REGISTER3)
+	REGDEF_BIT(RES2_DES_UV1_DRAM_OFSO,        19)
+REGDEF_END(RES2_OUTPUT_DRAM_BUFFER_LINEOFFSET_REGISTER3)
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define RES2_OUTPUT_DRAM_BUFFER_LINEOFFSET_REGISTER4_OFS 0x0638
+REGDEF_BEGIN(RES2_OUTPUT_DRAM_BUFFER_LINEOFFSET_REGISTER4)
+	REGDEF_BIT(RES2_DES_Y2_DRAM_OFSO,        19)
+REGDEF_END(RES2_OUTPUT_DRAM_BUFFER_LINEOFFSET_REGISTER4)
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define RES2_OUTPUT_DRAM_BUFFER_LINEOFFSET_REGISTER5_OFS 0x063c
+REGDEF_BEGIN(RES2_OUTPUT_DRAM_BUFFER_LINEOFFSET_REGISTER5)
+	REGDEF_BIT(RES2_DES_UV2_DRAM_OFSO,        19)
+REGDEF_END(RES2_OUTPUT_DRAM_BUFFER_LINEOFFSET_REGISTER5)
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define RES2_TC_REGISTER_OFS 0x0640
+REGDEF_BEGIN(RES2_TC_REGISTER)
+	REGDEF_BIT(RES2_TC_CROP_Y_START,        15)
+	REGDEF_BIT(                    ,        1)
+	REGDEF_BIT(RES2_TC_CROP_HEIGHT ,        15)
+REGDEF_END(RES2_TC_REGISTER)
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define RES2_IMG_SEG_REGISTER_OFS 0x0644
+REGDEF_BEGIN(RES2_IMG_SEG_REGISTER)
+	REGDEF_BIT(RES2_SEG_POS1        ,        14)
+	REGDEF_BIT(RES2_CL0_OUT_X2_START,        15)
+	REGDEF_BIT(RES2_SEG0_OUT_EN     ,        1)
+	REGDEF_BIT(RES2_SEG1_OUT_EN     ,        1)
+	REGDEF_BIT(RES2_SEG2_OUT_EN     ,        1)
+REGDEF_END(RES2_IMG_SEG_REGISTER)
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define RES2_SIZE_6_REGISTER_OFS 0x0648
+REGDEF_BEGIN(RES2_SIZE_6_REGISTER)
+	REGDEF_BIT(RES2_OUT_Y1_START,        15)
+	REGDEF_BIT(                 ,        1)
+	REGDEF_BIT(RES2_OUT_Y2_START,        15)
+REGDEF_END(RES2_SIZE_6_REGISTER)
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define RES2_COL0_OUT_CLAMP_REGISTER_OFS 0x064c
+REGDEF_BEGIN(RES2_COL0_OUT_CLAMP_REGISTER)
+	REGDEF_BIT(RES2_CL0_MIN_Y,        8)
+	REGDEF_BIT(RES2_CL0_MAX_Y,        8)
+	REGDEF_BIT(RES2_CL0_MIN_UV,        8)
+	REGDEF_BIT(RES2_CL0_MAX_UV,        8)
+REGDEF_END(RES2_COL0_OUT_CLAMP_REGISTER)
+
+/*
+    RES2_CL0_SCA_WIDTH:    [0x0, 0xfff],			bits : 11_0
+    RES2_CL0_OUT_X1_START:    [0x0, 0x3fff],		bits : 30_16
+    
+*/
+#define RES2_COL0_SIZE_1_REGISTER_OFS 0x0650
+REGDEF_BEGIN(RES2_COL0_SIZE_1_REGISTER)
+	REGDEF_BIT(RES2_CL0_SCA_WIDTH,        12)
+	REGDEF_BIT(                    ,      4)
+	REGDEF_BIT(RES2_CL0_OUT_X1_START ,      15)
+REGDEF_END(RES2_COL0_SIZE_1_REGISTER)
+
+
+/*
+    RES2_CL0_OUT_X_START:    [0x0, 0x7fff],			bits : 14_0
+    RES2_CL0_OUT_WIDTH  :    [0x0, 0xfff],			bits : 27_16
+*/
+#define RES2_COL0_SIZE_2_REGISTER_OFS 0x0654
+REGDEF_BEGIN(RES2_COL0_SIZE_2_REGISTER)
+	REGDEF_BIT(RES2_CL0_OUT_X0_START,        15)
+	REGDEF_BIT(                    ,        1)
+	REGDEF_BIT(RES2_CL0_OUT_WIDTH  ,        12)
+REGDEF_END(RES2_COL0_SIZE_2_REGISTER)
+
+
+/*
+    RES2_CL0_RLT_X_START:    [0x0, 0x7ff],			bits : 10_0
+    RES2_CL0_RLT_WIDTH  :    [0x0, 0xfff],			bits : 27_16
+*/
+#define RES2_COL0_SIZE_3_REGISTER_OFS 0x0658
+REGDEF_BEGIN(RES2_COL0_SIZE_3_REGISTER)
+	REGDEF_BIT(RES2_CL0_RLT_X_START,        11)
+	REGDEF_BIT(                    ,        5)
+	REGDEF_BIT(RES2_CL0_RLT_WIDTH  ,        12)
+REGDEF_END(RES2_COL0_SIZE_3_REGISTER)
+
+/*
+    RES2_CL0_PIP_X_START:    [0x0, 0x7ff],			bits : 10_0
+    RES2_CL0_PIP_WIDTH  :    [0x0, 0xfff],			bits : 27_16
+*/
+#define RES2_COL0_SIZE_4_REGISTER_OFS 0x065c
+REGDEF_BEGIN(RES2_COL0_SIZE_4_REGISTER)
+	REGDEF_BIT(RES2_CL0_PIP_X_START,        11)
+	REGDEF_BIT(                    ,        5)
+	REGDEF_BIT(RES2_CL0_PIP_WIDTH  ,        12)
+REGDEF_END(RES2_COL0_SIZE_4_REGISTER)
+
+
+/*
+    RES2_CL0_SCA_CROP_X_START:    [0x0, 0x7ff],			bits : 10_0
+    RES2_CL0_SCA_CROP_WIDTH  :    [0x0, 0xfff],			bits : 27_16
+*/
+#define RES2_COL0_SIZE_5_REGISTER_OFS 0x0660
+REGDEF_BEGIN(RES2_COL0_SIZE_5_REGISTER)
+	REGDEF_BIT(RES2_CL0_SCA_CROP_X_START,        11)
+	REGDEF_BIT(                         ,        5)
+	REGDEF_BIT(RES2_CL0_SCA_CROP_WIDTH  ,        12)
+REGDEF_END(RES2_COL0_SIZE_5_REGISTER)
+
+
+/*
+    RES2_CL0_TC_CROP_X_START:    [0x0, 0x7ff],			bits : 10_0
+    RES2_CL0_TC_CROP_WIDTH  :    [0x0, 0xfff],			bits : 27_16
+    RES2_CL0_TC_CROP_SKIP   :    [0x0, 0x1],			bits : 31
+*/
+#define RES2_COL0_SIZE_6_REGISTER_OFS 0x0664
+REGDEF_BEGIN(RES2_COL0_SIZE_6_REGISTER)
+	REGDEF_BIT(RES2_CL0_TC_CROP_X_START,        11)
+	REGDEF_BIT(                        ,        5)
+	REGDEF_BIT(RES2_CL0_TC_CROP_WIDTH  ,        12)
+	REGDEF_BIT(                        ,        3)
+	REGDEF_BIT(RES2_CL0_TC_CROP_SKIP   ,        1)
+REGDEF_END(RES2_COL0_SIZE_6_REGISTER)
+
+
+/*
+    RES2_CL0_SCA_FACTOR_H_INIT_OFS:    [0x0, 0x1ffffff],			bits : 24_0
+*/
+#define RES2_COL0_SIZE_7_REGISTER_OFS 0x0668
+REGDEF_BEGIN(RES2_COL0_SIZE_7_REGISTER)
+	REGDEF_BIT(RES2_CL0_SCA_FACTOR_H_INIT_OFS,        25)
+REGDEF_END(RES2_COL0_SIZE_7_REGISTER)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define RES2_SCA_FILTER_COEF_0_REGISTER_OFS 0x066C
+REGDEF_BEGIN(RES2_SCA_FILTER_COEF_0_REGISTER)
+REGDEF_BIT(RES2_SCA_COEF_H0,        10)
+REGDEF_BIT(,        6)
+REGDEF_BIT(RES2_SCA_COEF_H1,        10)
+REGDEF_END(RES2_SCA_FILTER_COEF_0_REGISTER)
+
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define RES2_SCA_FILTER_COEF_1_REGISTER_OFS 0x0670
+REGDEF_BEGIN(RES2_SCA_FILTER_COEF_1_REGISTER)
+REGDEF_BIT(RES2_SCA_COEF_H2,        10)
+REGDEF_BIT(,        6)
+REGDEF_BIT(RES2_SCA_COEF_H3,        10)
+REGDEF_END(RES2_SCA_FILTER_COEF_1_REGISTER)
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define RES2_SCA_FILTER_COEF_2_REGISTER_OFS 0x0674
+REGDEF_BEGIN(RES2_SCA_FILTER_COEF_2_REGISTER)
+REGDEF_BIT(RES2_SCA_COEF_V0,        10)
+REGDEF_BIT(,        6)
+REGDEF_BIT(RES2_SCA_COEF_V1,        10)
+REGDEF_END(RES2_SCA_FILTER_COEF_2_REGISTER)
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define RES2_SCA_FILTER_COEF_3_REGISTER_OFS 0x0678
+REGDEF_BEGIN(RES2_SCA_FILTER_COEF_3_REGISTER)
+REGDEF_BIT(RES2_SCA_COEF_V2,        10)
+REGDEF_BIT(,        6)
+REGDEF_BIT(RES2_SCA_COEF_V3,        10)
+REGDEF_END(RES2_SCA_FILTER_COEF_3_REGISTER)
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define RES2_SCA_FILTER_COEF_4_REGISTER_OFS 0x067C
+REGDEF_BEGIN(RES2_SCA_FILTER_COEF_4_REGISTER)
+REGDEF_BIT(RES2_SCA_LUMA_WET,        5)
+REGDEF_BIT(,        3)
+REGDEF_BIT(RES2_SCA_CHROMA_WET,        5)
+REGDEF_BIT(,        3)
+REGDEF_BIT(RES2_SCA_CHROMA_HLPF,        2)
+REGDEF_BIT(,        2)
+REGDEF_BIT(RES2_SCA_CHROMA_VLPF,        2)
+REGDEF_END(RES2_SCA_FILTER_COEF_4_REGISTER)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define RES3_CONTROL_1_REGISTER_OFS 0x0680
+REGDEF_BEGIN(RES3_CONTROL_1_REGISTER)
+	REGDEF_BIT(RES3_SCA_EN              ,        1)
+	REGDEF_BIT(                         ,        1)
+	REGDEF_BIT(RES3_SCA_CROP_EN         ,        1)
+	REGDEF_BIT(RES3_TC_EN               ,        1)
+	REGDEF_BIT(RES3_SEG_OP              ,       2)
+	REGDEF_BIT(                         ,        2)
+	REGDEF_BIT(RES3_DES_DRT             ,        2)
+	REGDEF_BIT(                         ,        1)
+	REGDEF_BIT(RES3_DES_FORMAT          ,        3)
+	REGDEF_BIT(                         ,        2)
+	REGDEF_BIT(RES3_OUT_BG_SEL          ,        3)
+	REGDEF_BIT(                         ,        1)
+	REGDEF_BIT(RES3_SCL_METHOD          ,        1)
+	REGDEF_BIT(                         ,        2)
+	REGDEF_BIT(RES3_DES_DRT_PC2TV_WEIGHT,        9)	
+REGDEF_END(RES3_CONTROL_1_REGISTER)
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define RES3_CONTROL_2_REGISTER_OFS 0x0684
+REGDEF_BEGIN(RES3_CONTROL_2_REGISTER)
+	REGDEF_BIT(RES3_DES_YCC_ENC_EN,        1)
+	REGDEF_BIT(                   ,        3)
+	REGDEF_BIT(RES3_DES_CHRW      ,        1)
+REGDEF_END(RES3_CONTROL_2_REGISTER)
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define RES3_SIZE_1_REGISTER_OFS 0x0688
+REGDEF_BEGIN(RES3_SIZE_1_REGISTER)
+	REGDEF_BIT(RES3_SCA_HEIGHT,        15)
+REGDEF_END(RES3_SIZE_1_REGISTER)
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define RES3_SIZE_2_REGISTER_OFS 0x068c
+REGDEF_BEGIN(RES3_SIZE_2_REGISTER)
+	REGDEF_BIT(RES3_SEG_POS0  ,        14)
+	REGDEF_BIT(               ,        2)	
+	REGDEF_BIT(RES3_DES_HEIGHT,        15)
+REGDEF_END(RES3_SIZE_2_REGISTER)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define RES3_SIZE_3_REGISTER_OFS 0x0690
+REGDEF_BEGIN(RES3_SIZE_3_REGISTER)
+	REGDEF_BIT(RES3_OUT_Y_START,        15)
+	REGDEF_BIT(                ,        1)
+	REGDEF_BIT(RES3_OUT_HEIGHT ,        15)
+REGDEF_END(RES3_SIZE_3_REGISTER)
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define RES3_SIZE_4_REGISTER_OFS 0x0694
+REGDEF_BEGIN(RES3_SIZE_4_REGISTER)
+	REGDEF_BIT(RES3_RLT_Y_START,        15)
+	REGDEF_BIT(                ,        1)
+	REGDEF_BIT(RES3_RLT_HEIGHT ,        15)
+REGDEF_END(RES3_SIZE_4_REGISTER)
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define RES3_SIZE_5_REGISTER_OFS 0x0698
+REGDEF_BEGIN(RES3_SIZE_5_REGISTER)
+	REGDEF_BIT(RES3_PIP_Y_START,        15)
+	REGDEF_BIT(                ,        1)
+	REGDEF_BIT(RES3_PIP_HEIGHT ,        15)
+REGDEF_END(RES3_SIZE_5_REGISTER)
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define RES3_SCA_CROP_REGISTER_OFS 0x069c
+REGDEF_BEGIN(RES3_SCA_CROP_REGISTER)
+	REGDEF_BIT(RES3_SCA_CROP_Y_START,        15)
+	REGDEF_BIT(                     ,        1)
+	REGDEF_BIT(RES3_SCA_CROP_HEIGHT ,        15)
+REGDEF_END(RES3_SCA_CROP_REGISTER)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define RES3_SCA_1_REGISTER_OFS 0x06a0
+REGDEF_BEGIN(RES3_SCA_1_REGISTER)
+	REGDEF_BIT(                ,        12)
+	REGDEF_BIT(RES3_SCA_DRATE_H,        4)
+	REGDEF_BIT(                ,        4)
+	REGDEF_BIT(RES3_SCA_DRATE_V,        4)
+REGDEF_END(RES3_SCA_1_REGISTER)
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define RES3_SCA_2_REGISTER_OFS 0x06a4
+REGDEF_BEGIN(RES3_SCA_2_REGISTER)
+	REGDEF_BIT(RES3_SCA_FACTOR_H,        16)
+	REGDEF_BIT(RES3_SCA_FACTOR_V,        16)
+REGDEF_END(RES3_SCA_2_REGISTER)
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define RES3_OUTPUT_DRAM_BUFFER_LINEOFFSET_REGISTER0_OFS 0x06a8
+REGDEF_BEGIN(RES3_OUTPUT_DRAM_BUFFER_LINEOFFSET_REGISTER0)
+	REGDEF_BIT(RES3_DES_Y0_DRAM_OFSO,        19)
+REGDEF_END(RES3_OUTPUT_DRAM_BUFFER_LINEOFFSET_REGISTER0)
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define RES3_OUTPUT_DRAM_BUFFER_LINEOFFSET_REGISTER1_OFS 0x06ac
+REGDEF_BEGIN(RES3_OUTPUT_DRAM_BUFFER_LINEOFFSET_REGISTER1)
+	REGDEF_BIT(RES3_DES_UV0_DRAM_OFSO,        19)
+REGDEF_END(RES3_OUTPUT_DRAM_BUFFER_LINEOFFSET_REGISTER1)
+
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define RES3_OUTPUT_DRAM_BUFFER_LINEOFFSET_REGISTER2_OFS 0x06b0
+REGDEF_BEGIN(RES3_OUTPUT_DRAM_BUFFER_LINEOFFSET_REGISTER2)
+	REGDEF_BIT(RES3_DES_Y1_DRAM_OFSO,        19)
+REGDEF_END(RES3_OUTPUT_DRAM_BUFFER_LINEOFFSET_REGISTER2)
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define RES3_OUTPUT_DRAM_BUFFER_LINEOFFSET_REGISTER3_OFS 0x06b4
+REGDEF_BEGIN(RES3_OUTPUT_DRAM_BUFFER_LINEOFFSET_REGISTER3)
+	REGDEF_BIT(RES3_DES_UV1_DRAM_OFSO,        19)
+REGDEF_END(RES3_OUTPUT_DRAM_BUFFER_LINEOFFSET_REGISTER3)
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define RES3_OUTPUT_DRAM_BUFFER_LINEOFFSET_REGISTER4_OFS 0x06b8
+REGDEF_BEGIN(RES3_OUTPUT_DRAM_BUFFER_LINEOFFSET_REGISTER4)
+	REGDEF_BIT(RES3_DES_Y2_DRAM_OFSO,        19)
+REGDEF_END(RES3_OUTPUT_DRAM_BUFFER_LINEOFFSET_REGISTER4)
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define RES3_OUTPUT_DRAM_BUFFER_LINEOFFSET_REGISTER5_OFS 0x06bc
+REGDEF_BEGIN(RES3_OUTPUT_DRAM_BUFFER_LINEOFFSET_REGISTER5)
+	REGDEF_BIT(RES3_DES_UV2_DRAM_OFSO,        19)
+REGDEF_END(RES3_OUTPUT_DRAM_BUFFER_LINEOFFSET_REGISTER5)
+
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define RES3_TC_REGISTER_OFS 0x06c0
+REGDEF_BEGIN(RES3_TC_REGISTER)
+	REGDEF_BIT(RES3_TC_CROP_Y_START,        15)
+	REGDEF_BIT(                    ,        1)
+	REGDEF_BIT(RES3_TC_CROP_HEIGHT ,        15)
+REGDEF_END(RES3_TC_REGISTER)
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define RES3_IMG_SEG_REGISTER_OFS 0x06c4
+REGDEF_BEGIN(RES3_IMG_SEG_REGISTER)
+	REGDEF_BIT(RES3_SEG_POS1        ,        14)
+	REGDEF_BIT(RES3_CL0_OUT_X2_START,        15)
+	REGDEF_BIT(RES3_SEG0_OUT_EN     ,        1)
+	REGDEF_BIT(RES3_SEG1_OUT_EN     ,        1)
+	REGDEF_BIT(RES3_SEG2_OUT_EN     ,        1)
+REGDEF_END(RES3_IMG_SEG_REGISTER)
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define RES3_SIZE_6_REGISTER_OFS 0x06c8
+REGDEF_BEGIN(RES3_SIZE_6_REGISTER)
+	REGDEF_BIT(RES3_OUT_Y1_START,        15)
+	REGDEF_BIT(                 ,        1)
+	REGDEF_BIT(RES3_OUT_Y2_START,        15)
+REGDEF_END(RES3_SIZE_6_REGISTER)
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define RES3_COL0_OUT_CLAMP_REGISTER_OFS 0x06cc
+REGDEF_BEGIN(RES3_COL0_OUT_CLAMP_REGISTER)
+	REGDEF_BIT(RES3_CL0_MIN_Y,        8)
+	REGDEF_BIT(RES3_CL0_MAX_Y,        8)
+	REGDEF_BIT(RES3_CL0_MIN_UV,        8)
+	REGDEF_BIT(RES3_CL0_MAX_UV,        8)
+REGDEF_END(RES3_COL0_OUT_CLAMP_REGISTER)
+
+
+/*
+    RES3_CL0_SCA_WIDTH:    [0x0, 0xfff],			bits : 11_0
+    RES3_CL0_OUT_X1_START:    [0x0, 0x3fff],		bits : 30_16
+    
+*/
+#define RES3_COL0_SIZE_1_REGISTER_OFS 0x06d0
+REGDEF_BEGIN(RES3_COL0_SIZE_1_REGISTER)
+	REGDEF_BIT(RES3_CL0_SCA_WIDTH,        12)
+	REGDEF_BIT(                    ,      4)
+	REGDEF_BIT(RES3_CL0_OUT_X1_START ,      15)
+REGDEF_END(RES3_COL0_SIZE_1_REGISTER)
+
+/*
+    RES3_CL0_OUT_X_START:    [0x0, 0x7fff],			bits : 14_0
+    RES3_CL0_OUT_WIDTH  :    [0x0, 0xfff],			bits : 27_16
+*/
+#define RES3_COL0_SIZE_2_REGISTER_OFS 0x06d4
+REGDEF_BEGIN(RES3_COL0_SIZE_2_REGISTER)
+	REGDEF_BIT(RES3_CL0_OUT_X0_START,        15)
+	REGDEF_BIT(                    ,        1)
+	REGDEF_BIT(RES3_CL0_OUT_WIDTH  ,        12)
+REGDEF_END(RES3_COL0_SIZE_2_REGISTER)
+
+
+/*
+    RES3_CL0_RLT_X_START:    [0x0, 0x7ff],			bits : 10_0
+    RES3_CL0_RLT_WIDTH  :    [0x0, 0xfff],			bits : 27_16
+*/
+#define RES3_COL0_SIZE_3_REGISTER_OFS 0x06d8
+REGDEF_BEGIN(RES3_COL0_SIZE_3_REGISTER)
+	REGDEF_BIT(RES3_CL0_RLT_X_START,        11)
+	REGDEF_BIT(                    ,        5)
+	REGDEF_BIT(RES3_CL0_RLT_WIDTH  ,        12)
+REGDEF_END(RES3_COL0_SIZE_3_REGISTER)
+
+
+/*
+    RES3_CL0_PIP_X_START:    [0x0, 0x7ff],			bits : 10_0
+    RES3_CL0_PIP_WIDTH  :    [0x0, 0xfff],			bits : 27_16
+*/
+#define RES3_COL0_SIZE_4_REGISTER_OFS 0x06dc
+REGDEF_BEGIN(RES3_COL0_SIZE_4_REGISTER)
+	REGDEF_BIT(RES3_CL0_PIP_X_START,        11)
+	REGDEF_BIT(                    ,        5)
+	REGDEF_BIT(RES3_CL0_PIP_WIDTH  ,        12)
+REGDEF_END(RES3_COL0_SIZE_4_REGISTER)
+
+
+/*
+    RES3_CL0_SCA_CROP_X_START:    [0x0, 0x7ff],			bits : 10_0
+    RES3_CL0_SCA_CROP_WIDTH  :    [0x0, 0xfff],			bits : 27_16
+*/
+#define RES3_COL0_SIZE_5_REGISTER_OFS 0x06e0
+REGDEF_BEGIN(RES3_COL0_SIZE_5_REGISTER)
+	REGDEF_BIT(RES3_CL0_SCA_CROP_X_START,        11)
+	REGDEF_BIT(                         ,        5)
+	REGDEF_BIT(RES3_CL0_SCA_CROP_WIDTH  ,        13)
+REGDEF_END(RES3_COL0_SIZE_5_REGISTER)
+
+
+/*
+    RES3_CL0_TC_CROP_X_START:    [0x0, 0x7ff],			bits : 10_0
+    RES3_CL0_TC_CROP_WIDTH  :    [0x0, 0xfff],			bits : 27_16
+    RES3_CL0_TC_CROP_SKIP   :    [0x0, 0x1],			bits : 31
+*/
+#define RES3_COL0_SIZE_6_REGISTER_OFS 0x06e4
+REGDEF_BEGIN(RES3_COL0_SIZE_6_REGISTER)
+	REGDEF_BIT(RES3_CL0_TC_CROP_X_START,        11)
+	REGDEF_BIT(                        ,        5)
+	REGDEF_BIT(RES3_CL0_TC_CROP_WIDTH  ,        12)
+	REGDEF_BIT(                        ,        3)
+	REGDEF_BIT(RES3_CL0_TC_CROP_SKIP   ,        1)
+REGDEF_END(RES3_COL0_SIZE_6_REGISTER)
+
+
+/*
+    RES3_CL0_SCA_FACTOR_H_INIT_OFS:    [0x0, 0x1ffffff],			bits : 24_0
+*/
+#define RES3_COL0_SIZE_7_REGISTER_OFS 0x06e8
+REGDEF_BEGIN(RES3_COL0_SIZE_7_REGISTER)
+	REGDEF_BIT(RES3_CL0_SCA_FACTOR_H_INIT_OFS,        25)
+REGDEF_END(RES3_COL0_SIZE_7_REGISTER)
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define RES3_SCA_FILTER_COEF_0_REGISTER_OFS 0x06EC
+REGDEF_BEGIN(RES3_SCA_FILTER_COEF_0_REGISTER)
+REGDEF_BIT(RES3_SCA_COEF_H0,        10)
+REGDEF_BIT(,        6)
+REGDEF_BIT(RES3_SCA_COEF_H1,        10)
+REGDEF_END(RES3_SCA_FILTER_COEF_0_REGISTER)
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define RES3_SCA_FILTER_COEF_1_REGISTER_OFS 0x06F0
+REGDEF_BEGIN(RES3_SCA_FILTER_COEF_1_REGISTER)
+REGDEF_BIT(RES3_SCA_COEF_H2,        10)
+REGDEF_BIT(,        6)
+REGDEF_BIT(RES3_SCA_COEF_H3,        10)
+REGDEF_END(RES3_SCA_FILTER_COEF_1_REGISTER)
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define RES3_SCA_FILTER_COEF_2_REGISTER_OFS 0x06F4
+REGDEF_BEGIN(RES3_SCA_FILTER_COEF_2_REGISTER)
+REGDEF_BIT(RES3_SCA_COEF_V0,        10)
+REGDEF_BIT(,        6)
+REGDEF_BIT(RES3_SCA_COEF_V1,        10)
+REGDEF_END(RES3_SCA_FILTER_COEF_2_REGISTER)
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define RES3_SCA_FILTER_COEF_3_REGISTER_OFS 0x06F8
+REGDEF_BEGIN(RES3_SCA_FILTER_COEF_3_REGISTER)
+REGDEF_BIT(RES3_SCA_COEF_V2,        10)
+REGDEF_BIT(,        6)
+REGDEF_BIT(RES3_SCA_COEF_V3,        10)
+REGDEF_END(RES3_SCA_FILTER_COEF_3_REGISTER)
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define RES3_SCA_FILTER_COEF_4_REGISTER_OFS 0x06FC
+REGDEF_BEGIN(RES3_SCA_FILTER_COEF_4_REGISTER)
+REGDEF_BIT(RES3_SCA_LUMA_WET,        5)
+REGDEF_BIT(,        3)
+REGDEF_BIT(RES3_SCA_CHROMA_WET,        5)
+REGDEF_BIT(,        3)
+REGDEF_BIT(RES3_SCA_CHROMA_HLPF,        2)
+REGDEF_BIT(,        2)
+REGDEF_BIT(RES3_SCA_CHROMA_VLPF,        2)
+REGDEF_END(RES3_SCA_FILTER_COEF_4_REGISTER)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define DMA_35_REGISTER_OFS  0x0700
+REGDEF_BEGIN(DMA_35_REGISTER)
+	REGDEF_BIT(DES_RES0_Y2_DMA_ADDR,        32)
+REGDEF_END(DMA_35_REGISTER)
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define DMA_36_REGISTER_OFS 0x0704
+REGDEF_BEGIN(DMA_36_REGISTER)
+	REGDEF_BIT(DES_RES0_Y2_DMA_MSB_ADDR,        4)
+REGDEF_END(DMA_36_REGISTER)
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define DMA_37_REGISTER_OFS 0x0708
+REGDEF_BEGIN(DMA_37_REGISTER)
+	REGDEF_BIT(DES_RES0_UV2_DMA_ADDR,        32)
+REGDEF_END(DMA_37_REGISTER)
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define DMA_38_REGISTER_OFS 0x070C
+REGDEF_BEGIN(DMA_38_REGISTER)
+	REGDEF_BIT(DES_RES0_UV2_DMA_MSB_ADDR,        4)
+REGDEF_END(DMA_38_REGISTER)
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define DMA_39_REGISTER_OFS  0x0710
+REGDEF_BEGIN(DMA_39_REGISTER)
+	REGDEF_BIT(DES_RES1_Y2_DMA_ADDR,        32)
+REGDEF_END(DMA_39_REGISTER)
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define DMA_40_REGISTER_OFS 0x0714
+REGDEF_BEGIN(DMA_40_REGISTER)
+	REGDEF_BIT(DES_RES1_Y2_DMA_MSB_ADDR,        4)
+REGDEF_END(DMA_40_REGISTER)
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define DMA_41_REGISTER_OFS 0x0718
+REGDEF_BEGIN(DMA_41_REGISTER)
+	REGDEF_BIT(DES_RES1_UV2_DMA_ADDR,        32)
+REGDEF_END(DMA_41_REGISTER)
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define DMA_42_REGISTER_OFS 0x071C
+REGDEF_BEGIN(DMA_42_REGISTER)
+	REGDEF_BIT(DES_RES1_UV2_DMA_MSB_ADDR,        4)
+REGDEF_END(DMA_42_REGISTER)
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define DMA_43_REGISTER_OFS  0x0720
+REGDEF_BEGIN(DMA_43_REGISTER)
+	REGDEF_BIT(DES_RES2_Y2_DMA_ADDR,        32)
+REGDEF_END(DMA_43_REGISTER)
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define DMA_44_REGISTER_OFS 0x0724
+REGDEF_BEGIN(DMA_44_REGISTER)
+	REGDEF_BIT(DES_RES2_Y2_DMA_MSB_ADDR,        4)
+REGDEF_END(DMA_44_REGISTER)
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define DMA_45_REGISTER_OFS 0x0728
+REGDEF_BEGIN(DMA_45_REGISTER)
+	REGDEF_BIT(DES_RES2_UV2_DMA_ADDR,        32)
+REGDEF_END(DMA_45_REGISTER)
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define DMA_46_REGISTER_OFS 0x072C
+REGDEF_BEGIN(DMA_46_REGISTER)
+	REGDEF_BIT(DES_RES2_UV2_DMA_MSB_ADDR,        4)
+REGDEF_END(DMA_46_REGISTER)
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define DMA_47_REGISTER_OFS  0x0730
+REGDEF_BEGIN(DMA_47_REGISTER)
+	REGDEF_BIT(DES_RES3_Y2_DMA_ADDR,        32)
+REGDEF_END(DMA_47_REGISTER)
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define DMA_48_REGISTER_OFS 0x0734
+REGDEF_BEGIN(DMA_48_REGISTER)
+	REGDEF_BIT(DES_RES3_Y2_DMA_MSB_ADDR,        4)
+REGDEF_END(DMA_48_REGISTER)
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define DMA_49_REGISTER_OFS 0x0738
+REGDEF_BEGIN(DMA_49_REGISTER)
+	REGDEF_BIT(DES_RES3_UV2_DMA_ADDR,        32)
+REGDEF_END(DMA_49_REGISTER)
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define DMA_50_REGISTER_OFS 0x073C
+REGDEF_BEGIN(DMA_50_REGISTER)
+	REGDEF_BIT(DES_RES3_UV2_DMA_MSB_ADDR,        4)
+REGDEF_END(DMA_50_REGISTER)
+
+/*
+    CL0_PROC_WIDTH  :    [0x0, 0xfff],			bits : 11_0
+    CL0_PROC_X_START:    [0x0, 0x1fff],			bits : 28_16
+*/
+#define COL0_SIZE_1_REGISTER_OFS 0x0740
+REGDEF_BEGIN(COL0_SIZE_1_REGISTER)
+	REGDEF_BIT(CL0_PROC_WIDTH  ,        12)
+	REGDEF_BIT(                ,        4)
+	REGDEF_BIT(CL0_PROC_X_START,        13)
+REGDEF_END(COL0_SIZE_1_REGISTER)
+
+
+/*
+    CL0_COL_X_START:    [0x0, 0x7fff],			bits : 14_0
+*/
+#define COL0_SIZE_2_REGISTER_OFS 0x0744
+REGDEF_BEGIN(COL0_SIZE_2_REGISTER)
+	REGDEF_BIT(CL0_COL_X_START,        15)
+REGDEF_END(COL0_SIZE_2_REGISTER)
+
+
+/*
+    CL0_PROC_WIDTH2:    [0x0, 0xfff],			bits : 11_0
+*/
+#define COL0_SIZE_3_REGISTER_OFS 0x0748
+REGDEF_BEGIN(COL0_SIZE_3_REGISTER)
+	REGDEF_BIT(CL0_PROC_WIDTH2,        12)
+REGDEF_END(COL0_SIZE_3_REGISTER)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_424_OFS 0x074c
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_424)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_424)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_425_OFS 0x0750
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_425)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_425)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_426_OFS 0x0754
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_426)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_426)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_427_OFS 0x0758
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_427)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_427)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_428_OFS 0x075c
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_428)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_428)
+
+
+/*
+    GEO_LUT0:    [0x0, 0xffff],         bits : 15_0
+    GEO_LUT1:    [0x0, 0xffff],         bits : 31_16
+*/
+#define GDC_GEO_REGISTER0_OFS 0x0760
+REGDEF_BEGIN(GDC_GEO_REGISTER0)
+REGDEF_BIT(GEO_LUT0,        16)
+REGDEF_BIT(GEO_LUT1,        16)
+REGDEF_END(GDC_GEO_REGISTER0)
+
+
+/*
+    GEO_LUT2:    [0x0, 0xffff],         bits : 15_0
+    GEO_LUT3:    [0x0, 0xffff],         bits : 31_16
+*/
+#define GDC_GEO_REGISTER1_OFS 0x0764
+REGDEF_BEGIN(GDC_GEO_REGISTER1)
+REGDEF_BIT(GEO_LUT2,        16)
+REGDEF_BIT(GEO_LUT3,        16)
+REGDEF_END(GDC_GEO_REGISTER1)
+
+
+/*
+    GEO_LUT4:    [0x0, 0xffff],         bits : 15_0
+    GEO_LUT5:    [0x0, 0xffff],         bits : 31_16
+*/
+#define GDC_GEO_REGISTER2_OFS 0x0768
+REGDEF_BEGIN(GDC_GEO_REGISTER2)
+REGDEF_BIT(GEO_LUT4,        16)
+REGDEF_BIT(GEO_LUT5,        16)
+REGDEF_END(GDC_GEO_REGISTER2)
+
+
+/*
+    GEO_LUT6:    [0x0, 0xffff],         bits : 15_0
+    GEO_LUT7:    [0x0, 0xffff],         bits : 31_16
+*/
+#define GDC_GEO_REGISTER3_OFS 0x076c
+REGDEF_BEGIN(GDC_GEO_REGISTER3)
+REGDEF_BIT(GEO_LUT6,        16)
+REGDEF_BIT(GEO_LUT7,        16)
+REGDEF_END(GDC_GEO_REGISTER3)
+
+
+/*
+    GEO_LUT8:    [0x0, 0xffff],         bits : 15_0
+    GEO_LUT9:    [0x0, 0xffff],         bits : 31_16
+*/
+#define GDC_GEO_REGISTER4_OFS 0x0770
+REGDEF_BEGIN(GDC_GEO_REGISTER4)
+REGDEF_BIT(GEO_LUT8,        16)
+REGDEF_BIT(GEO_LUT9,        16)
+REGDEF_END(GDC_GEO_REGISTER4)
+
+
+/*
+    GEO_LUT10:    [0x0, 0xffff],            bits : 15_0
+    GEO_LUT11:    [0x0, 0xffff],            bits : 31_16
+*/
+#define GDC_GEO_REGISTER5_OFS 0x0774
+REGDEF_BEGIN(GDC_GEO_REGISTER5)
+REGDEF_BIT(GEO_LUT10,        16)
+REGDEF_BIT(GEO_LUT11,        16)
+REGDEF_END(GDC_GEO_REGISTER5)
+
+
+/*
+    GEO_LUT12:    [0x0, 0xffff],            bits : 15_0
+    GEO_LUT13:    [0x0, 0xffff],            bits : 31_16
+*/
+#define GDC_GEO_REGISTER6_OFS 0x0778
+REGDEF_BEGIN(GDC_GEO_REGISTER6)
+REGDEF_BIT(GEO_LUT12,        16)
+REGDEF_BIT(GEO_LUT13,        16)
+REGDEF_END(GDC_GEO_REGISTER6)
+
+
+/*
+    GEO_LUT14:    [0x0, 0xffff],            bits : 15_0
+    GEO_LUT15:    [0x0, 0xffff],            bits : 31_16
+*/
+#define GDC_GEO_REGISTER7_OFS 0x077c
+REGDEF_BEGIN(GDC_GEO_REGISTER7)
+REGDEF_BIT(GEO_LUT14,        16)
+REGDEF_BIT(GEO_LUT15,        16)
+REGDEF_END(GDC_GEO_REGISTER7)
+
+
+/*
+    GEO_LUT16:    [0x0, 0xffff],            bits : 15_0
+    GEO_LUT17:    [0x0, 0xffff],            bits : 31_16
+*/
+#define GDC_GEO_REGISTER8_OFS 0x0780
+REGDEF_BEGIN(GDC_GEO_REGISTER8)
+REGDEF_BIT(GEO_LUT16,        16)
+REGDEF_BIT(GEO_LUT17,        16)
+REGDEF_END(GDC_GEO_REGISTER8)
+
+
+/*
+    GEO_LUT18:    [0x0, 0xffff],            bits : 15_0
+    GEO_LUT19:    [0x0, 0xffff],            bits : 31_16
+*/
+#define GDC_GEO_REGISTER9_OFS 0x0784
+REGDEF_BEGIN(GDC_GEO_REGISTER9)
+REGDEF_BIT(GEO_LUT18,        16)
+REGDEF_BIT(GEO_LUT19,        16)
+REGDEF_END(GDC_GEO_REGISTER9)
+
+
+/*
+    GEO_LUT20:    [0x0, 0xffff],            bits : 15_0
+    GEO_LUT21:    [0x0, 0xffff],            bits : 31_16
+*/
+#define GDC_GEO_REGISTER10_OFS 0x0788
+REGDEF_BEGIN(GDC_GEO_REGISTER10)
+REGDEF_BIT(GEO_LUT20,        16)
+REGDEF_BIT(GEO_LUT21,        16)
+REGDEF_END(GDC_GEO_REGISTER10)
+
+
+/*
+    GEO_LUT22:    [0x0, 0xffff],            bits : 15_0
+    GEO_LUT23:    [0x0, 0xffff],            bits : 31_16
+*/
+#define GDC_GEO_REGISTER11_OFS 0x078c
+REGDEF_BEGIN(GDC_GEO_REGISTER11)
+REGDEF_BIT(GEO_LUT22,        16)
+REGDEF_BIT(GEO_LUT23,        16)
+REGDEF_END(GDC_GEO_REGISTER11)
+
+
+/*
+    GEO_LUT24:    [0x0, 0xffff],            bits : 15_0
+    GEO_LUT25:    [0x0, 0xffff],            bits : 31_16
+*/
+#define GDC_GEO_REGISTER12_OFS 0x0790
+REGDEF_BEGIN(GDC_GEO_REGISTER12)
+REGDEF_BIT(GEO_LUT24,        16)
+REGDEF_BIT(GEO_LUT25,        16)
+REGDEF_END(GDC_GEO_REGISTER12)
+
+
+/*
+    GEO_LUT26:    [0x0, 0xffff],            bits : 15_0
+    GEO_LUT27:    [0x0, 0xffff],            bits : 31_16
+*/
+#define GDC_GEO_REGISTER13_OFS 0x0794
+REGDEF_BEGIN(GDC_GEO_REGISTER13)
+REGDEF_BIT(GEO_LUT26,        16)
+REGDEF_BIT(GEO_LUT27,        16)
+REGDEF_END(GDC_GEO_REGISTER13)
+
+
+/*
+    GEO_LUT28:    [0x0, 0xffff],            bits : 15_0
+    GEO_LUT29:    [0x0, 0xffff],            bits : 31_16
+*/
+#define GDC_GEO_REGISTER14_OFS 0x0798
+REGDEF_BEGIN(GDC_GEO_REGISTER14)
+REGDEF_BIT(GEO_LUT28,        16)
+REGDEF_BIT(GEO_LUT29,        16)
+REGDEF_END(GDC_GEO_REGISTER14)
+
+
+/*
+    GEO_LUT30:    [0x0, 0xffff],            bits : 15_0
+    GEO_LUT31:    [0x0, 0xffff],            bits : 31_16
+*/
+#define GDC_GEO_REGISTER15_OFS 0x079c
+REGDEF_BEGIN(GDC_GEO_REGISTER15)
+REGDEF_BIT(GEO_LUT30,        16)
+REGDEF_BIT(GEO_LUT31,        16)
+REGDEF_END(GDC_GEO_REGISTER15)
+
+
+/*
+    GEO_LUT32:    [0x0, 0xffff],            bits : 15_0
+    GEO_LUT33:    [0x0, 0xffff],            bits : 31_16
+*/
+#define GDC_GEO_REGISTER16_OFS 0x07a0
+REGDEF_BEGIN(GDC_GEO_REGISTER16)
+REGDEF_BIT(GEO_LUT32,        16)
+REGDEF_BIT(GEO_LUT33,        16)
+REGDEF_END(GDC_GEO_REGISTER16)
+
+
+/*
+    GEO_LUT34:    [0x0, 0xffff],            bits : 15_0
+    GEO_LUT35:    [0x0, 0xffff],            bits : 31_16
+*/
+#define GDC_GEO_REGISTER17_OFS 0x07a4
+REGDEF_BEGIN(GDC_GEO_REGISTER17)
+REGDEF_BIT(GEO_LUT34,        16)
+REGDEF_BIT(GEO_LUT35,        16)
+REGDEF_END(GDC_GEO_REGISTER17)
+
+
+/*
+    GEO_LUT36:    [0x0, 0xffff],            bits : 15_0
+    GEO_LUT37:    [0x0, 0xffff],            bits : 31_16
+*/
+#define GDC_GEO_REGISTER18_OFS 0x07a8
+REGDEF_BEGIN(GDC_GEO_REGISTER18)
+REGDEF_BIT(GEO_LUT36,        16)
+REGDEF_BIT(GEO_LUT37,        16)
+REGDEF_END(GDC_GEO_REGISTER18)
+
+
+/*
+    GEO_LUT38:    [0x0, 0xffff],            bits : 15_0
+    GEO_LUT39:    [0x0, 0xffff],            bits : 31_16
+*/
+#define GDC_GEO_REGISTER19_OFS 0x07ac
+REGDEF_BEGIN(GDC_GEO_REGISTER19)
+REGDEF_BIT(GEO_LUT38,        16)
+REGDEF_BIT(GEO_LUT39,        16)
+REGDEF_END(GDC_GEO_REGISTER19)
+
+
+/*
+    GEO_LUT40:    [0x0, 0xffff],            bits : 15_0
+    GEO_LUT41:    [0x0, 0xffff],            bits : 31_16
+*/
+#define GDC_GEO_REGISTER20_OFS 0x07b0
+REGDEF_BEGIN(GDC_GEO_REGISTER20)
+REGDEF_BIT(GEO_LUT40,        16)
+REGDEF_BIT(GEO_LUT41,        16)
+REGDEF_END(GDC_GEO_REGISTER20)
+
+
+/*
+    GEO_LUT42:    [0x0, 0xffff],            bits : 15_0
+    GEO_LUT43:    [0x0, 0xffff],            bits : 31_16
+*/
+#define GDC_GEO_REGISTER21_OFS 0x07b4
+REGDEF_BEGIN(GDC_GEO_REGISTER21)
+REGDEF_BIT(GEO_LUT42,        16)
+REGDEF_BIT(GEO_LUT43,        16)
+REGDEF_END(GDC_GEO_REGISTER21)
+
+
+/*
+    GEO_LUT44:    [0x0, 0xffff],            bits : 15_0
+    GEO_LUT45:    [0x0, 0xffff],            bits : 31_16
+*/
+#define GDC_GEO_REGISTER22_OFS 0x07b8
+REGDEF_BEGIN(GDC_GEO_REGISTER22)
+REGDEF_BIT(GEO_LUT44,        16)
+REGDEF_BIT(GEO_LUT45,        16)
+REGDEF_END(GDC_GEO_REGISTER22)
+
+
+/*
+    GEO_LUT46:    [0x0, 0xffff],            bits : 15_0
+    GEO_LUT47:    [0x0, 0xffff],            bits : 31_16
+*/
+#define GDC_GEO_REGISTER23_OFS 0x07bc
+REGDEF_BEGIN(GDC_GEO_REGISTER23)
+REGDEF_BIT(GEO_LUT46,        16)
+REGDEF_BIT(GEO_LUT47,        16)
+REGDEF_END(GDC_GEO_REGISTER23)
+
+
+/*
+    GEO_LUT48:    [0x0, 0xffff],            bits : 15_0
+    GEO_LUT49:    [0x0, 0xffff],            bits : 31_16
+*/
+#define GDC_GEO_REGISTER24_OFS 0x07c0
+REGDEF_BEGIN(GDC_GEO_REGISTER24)
+REGDEF_BIT(GEO_LUT48,        16)
+REGDEF_BIT(GEO_LUT49,        16)
+REGDEF_END(GDC_GEO_REGISTER24)
+
+
+/*
+    GEO_LUT50:    [0x0, 0xffff],            bits : 15_0
+    GEO_LUT51:    [0x0, 0xffff],            bits : 31_16
+*/
+#define GDC_GEO_REGISTER25_OFS 0x07c4
+REGDEF_BEGIN(GDC_GEO_REGISTER25)
+REGDEF_BIT(GEO_LUT50,        16)
+REGDEF_BIT(GEO_LUT51,        16)
+REGDEF_END(GDC_GEO_REGISTER25)
+
+
+/*
+    GEO_LUT52:    [0x0, 0xffff],            bits : 15_0
+    GEO_LUT53:    [0x0, 0xffff],            bits : 31_16
+*/
+#define GDC_GEO_REGISTER26_OFS 0x07c8
+REGDEF_BEGIN(GDC_GEO_REGISTER26)
+REGDEF_BIT(GEO_LUT52,        16)
+REGDEF_BIT(GEO_LUT53,        16)
+REGDEF_END(GDC_GEO_REGISTER26)
+
+
+/*
+    GEO_LUT54:    [0x0, 0xffff],            bits : 15_0
+    GEO_LUT55:    [0x0, 0xffff],            bits : 31_16
+*/
+#define GDC_GEO_REGISTER27_OFS 0x07cc
+REGDEF_BEGIN(GDC_GEO_REGISTER27)
+REGDEF_BIT(GEO_LUT54,        16)
+REGDEF_BIT(GEO_LUT55,        16)
+REGDEF_END(GDC_GEO_REGISTER27)
+
+
+/*
+    GEO_LUT56:    [0x0, 0xffff],            bits : 15_0
+    GEO_LUT57:    [0x0, 0xffff],            bits : 31_16
+*/
+#define GDC_GEO_REGISTER28_OFS 0x07d0
+REGDEF_BEGIN(GDC_GEO_REGISTER28)
+REGDEF_BIT(GEO_LUT56,        16)
+REGDEF_BIT(GEO_LUT57,        16)
+REGDEF_END(GDC_GEO_REGISTER28)
+
+
+/*
+    GEO_LUT58:    [0x0, 0xffff],            bits : 15_0
+    GEO_LUT59:    [0x0, 0xffff],            bits : 31_16
+*/
+#define GDC_GEO_REGISTER29_OFS 0x07d4
+REGDEF_BEGIN(GDC_GEO_REGISTER29)
+REGDEF_BIT(GEO_LUT58,        16)
+REGDEF_BIT(GEO_LUT59,        16)
+REGDEF_END(GDC_GEO_REGISTER29)
+
+
+/*
+    GEO_LUT60:    [0x0, 0xffff],            bits : 15_0
+    GEO_LUT61:    [0x0, 0xffff],            bits : 31_16
+*/
+#define GDC_GEO_REGISTER30_OFS 0x07d8
+REGDEF_BEGIN(GDC_GEO_REGISTER30)
+REGDEF_BIT(GEO_LUT60,        16)
+REGDEF_BIT(GEO_LUT61,        16)
+REGDEF_END(GDC_GEO_REGISTER30)
+
+
+/*
+    GEO_LUT62:    [0x0, 0xffff],            bits : 15_0
+    GEO_LUT63:    [0x0, 0xffff],            bits : 31_16
+*/
+#define GDC_GEO_REGISTER31_OFS 0x07dc
+REGDEF_BEGIN(GDC_GEO_REGISTER31)
+REGDEF_BIT(GEO_LUT62,        16)
+REGDEF_BIT(GEO_LUT63,        16)
+REGDEF_END(GDC_GEO_REGISTER31)
+
+
+/*
+    GEO_LUT64:    [0x0, 0xffff],            bits : 15_0
+*/
+#define GDC_GEO_REGISTER32_OFS 0x07e0
+REGDEF_BEGIN(GDC_GEO_REGISTER32)
+REGDEF_BIT(GEO_LUT64,        16)
+REGDEF_END(GDC_GEO_REGISTER32)
+
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_529_OFS 0x07e4
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_529)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_529)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_530_OFS 0x07e8
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_530)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_530)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_531_OFS 0x07ec
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_531)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_531)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_532_OFS 0x07f0
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_532)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_532)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_533_OFS 0x07f4
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_533)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_533)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_534_OFS 0x07f8
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_534)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_534)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_535_OFS 0x07fc
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_535)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_535)
+
+
+/*
+    IN_DEC_SMODE_EN    :    [0x0, 0x1],			bits : 0
+    IN_DEC_DITHER_EN   :    [0x0, 0x1],			bits : 2
+    IN_DEC_DITHER_RESET:    [0x0, 0x1],			bits : 3
+    RES0_ENC_SMODE_EN  :    [0x0, 0x1],			bits : 4
+    RES1_ENC_SMODE_EN  :    [0x0, 0x1],			bits : 5
+    IN_DEC_DITHER_SEED0:    [0x0, 0x7fff],			bits : 30_16
+*/
+#define RES_COMPRESSION_CONTROL_REGISTER0_OFS 0x0800
+REGDEF_BEGIN(RES_COMPRESSION_CONTROL_REGISTER0)
+	REGDEF_BIT(IN_DEC_SMODE_EN    ,        1)
+	REGDEF_BIT(                   ,        1)
+	REGDEF_BIT(IN_DEC_DITHER_EN   ,        1)
+	REGDEF_BIT(IN_DEC_DITHER_RESET,        1)
+	REGDEF_BIT(RES0_ENC_SMODE_EN  ,        1)
+	REGDEF_BIT(RES1_ENC_SMODE_EN  ,        1)
+	REGDEF_BIT(                   ,        10)
+	REGDEF_BIT(IN_DEC_DITHER_SEED0,        15)
+REGDEF_END(RES_COMPRESSION_CONTROL_REGISTER0)
+
+
+/*
+    IN_DEC_DITHER_SEED1:    [0x0, 0xf],			bits : 3_0
+*/
+#define RES_COMPRESSION_CONTROL_REGISTER1_OFS 0x0804
+REGDEF_BEGIN(RES_COMPRESSION_CONTROL_REGISTER1)
+	REGDEF_BIT(IN_DEC_DITHER_SEED1,        4)
+REGDEF_END(RES_COMPRESSION_CONTROL_REGISTER1)
+
+
+/*
+    DCT_LEVEL_TH0:    [0x0, 0xff],			bits : 7_0
+    DCT_LEVEL_TH1:    [0x0, 0xff],			bits : 15_8
+    DCT_LEVEL_TH2:    [0x0, 0xff],			bits : 23_16
+    DCT_LEVEL_TH3:    [0x0, 0xff],			bits : 31_24
+*/
+#define VPE_ENCODER_QUALITY_THRESHOLD_REGISTER0_OFS 0x0808
+REGDEF_BEGIN(VPE_ENCODER_QUALITY_THRESHOLD_REGISTER0)
+	REGDEF_BIT(DCT_LEVEL_TH0,        8)
+	REGDEF_BIT(DCT_LEVEL_TH1,        8)
+	REGDEF_BIT(DCT_LEVEL_TH2,        8)
+	REGDEF_BIT(DCT_LEVEL_TH3,        8)
+REGDEF_END(VPE_ENCODER_QUALITY_THRESHOLD_REGISTER0)
+
+
+/*
+    DCT_LEVEL_TH4_:    [0x0, 0xff],			bits : 7_0
+    DCT_LEVEL_TH5 :    [0x0, 0xff],			bits : 15_8
+    DCT_LEVEL_TH6 :    [0x0, 0xff],			bits : 23_16
+    DCT_LEVEL_TH7 :    [0x0, 0xff],			bits : 31_24
+*/
+#define VPE_ENCODER_QUALITY_THRESHOLD_REGISTER1_OFS 0x080c
+REGDEF_BEGIN(VPE_ENCODER_QUALITY_THRESHOLD_REGISTER1)
+	REGDEF_BIT(DCT_LEVEL_TH4_,        8)
+	REGDEF_BIT(DCT_LEVEL_TH5 ,        8)
+	REGDEF_BIT(DCT_LEVEL_TH6 ,        8)
+	REGDEF_BIT(DCT_LEVEL_TH7 ,        8)
+REGDEF_END(VPE_ENCODER_QUALITY_THRESHOLD_REGISTER1)
+
+
+/*
+    DCT_QTBL0_IDX:    [0x0, 0x1f],			bits : 4_0
+    DCT_QTBL1_IDX:    [0x0, 0x1f],			bits : 12_8
+    DCT_QTBL2_IDX:    [0x0, 0x1f],			bits : 20_16
+    DCT_QTBL3_IDX:    [0x0, 0x1f],			bits : 28_24
+*/
+#define VPE_ENCODER_QUALITY_TABLE_INDEX_REGISTER0_OFS 0x0810
+REGDEF_BEGIN(VPE_ENCODER_QUALITY_TABLE_INDEX_REGISTER0)
+	REGDEF_BIT(DCT_QTBL0_IDX,        5)
+	REGDEF_BIT(             ,        3)
+	REGDEF_BIT(DCT_QTBL1_IDX,        5)
+	REGDEF_BIT(             ,        3)
+	REGDEF_BIT(DCT_QTBL2_IDX,        5)
+	REGDEF_BIT(             ,        3)
+	REGDEF_BIT(DCT_QTBL3_IDX,        5)
+REGDEF_END(VPE_ENCODER_QUALITY_TABLE_INDEX_REGISTER0)
+
+
+/*
+    DCT_QTBL4_IDX:    [0x0, 0x1f],			bits : 4_0
+    DCT_QTBL5_IDX:    [0x0, 0x1f],			bits : 12_8
+    DCT_QTBL6_IDX:    [0x0, 0x1f],			bits : 20_16
+    DCT_QTBL7_IDX:    [0x0, 0x1f],			bits : 28_24
+*/
+#define VPE_ENCODER_QUALITY_TABLE_INDEX_REGISTER1_OFS 0x0814
+REGDEF_BEGIN(VPE_ENCODER_QUALITY_TABLE_INDEX_REGISTER1)
+	REGDEF_BIT(DCT_QTBL4_IDX,        5)
+	REGDEF_BIT(             ,        3)
+	REGDEF_BIT(DCT_QTBL5_IDX,        5)
+	REGDEF_BIT(             ,        3)
+	REGDEF_BIT(DCT_QTBL6_IDX,        5)
+	REGDEF_BIT(             ,        3)
+	REGDEF_BIT(DCT_QTBL7_IDX,        5)
+REGDEF_END(VPE_ENCODER_QUALITY_TABLE_INDEX_REGISTER1)
+
+
+/*
+    DCT_QTBL8_IDX :    [0x0, 0x1f],			bits : 4_0
+    DCT_QTBL9_IDX :    [0x0, 0x1f],			bits : 12_8
+    DCT_QTBL10_IDX:    [0x0, 0x1f],			bits : 20_16
+    DCT_QTBL11_IDX:    [0x0, 0x1f],			bits : 28_24
+*/
+#define VPE_ENCODER_QUALITY_TABLE_INDEX_REGISTER2_OFS 0x0818
+REGDEF_BEGIN(VPE_ENCODER_QUALITY_TABLE_INDEX_REGISTER2)
+	REGDEF_BIT(DCT_QTBL8_IDX ,        5)
+	REGDEF_BIT(              ,        3)
+	REGDEF_BIT(DCT_QTBL9_IDX ,        5)
+	REGDEF_BIT(              ,        3)
+	REGDEF_BIT(DCT_QTBL10_IDX,        5)
+	REGDEF_BIT(              ,        3)
+	REGDEF_BIT(DCT_QTBL11_IDX,        5)
+REGDEF_END(VPE_ENCODER_QUALITY_TABLE_INDEX_REGISTER2)
+
+
+/*
+    DCT_QTBL12_IDX:    [0x0, 0x1f],			bits : 4_0
+    DCT_QTBL13_IDX:    [0x0, 0x1f],			bits : 12_8
+    DCT_QTBL14_IDX:    [0x0, 0x1f],			bits : 20_16
+    DCT_QTBL15_IDX:    [0x0, 0x1f],			bits : 28_24
+*/
+#define VPE_ENCODER_QUALITY_TABLE_INDEX_REGISTER3_OFS 0x081c
+REGDEF_BEGIN(VPE_ENCODER_QUALITY_TABLE_INDEX_REGISTER3)
+	REGDEF_BIT(DCT_QTBL12_IDX,        5)
+	REGDEF_BIT(              ,        3)
+	REGDEF_BIT(DCT_QTBL13_IDX,        5)
+	REGDEF_BIT(              ,        3)
+	REGDEF_BIT(DCT_QTBL14_IDX,        5)
+	REGDEF_BIT(              ,        3)
+	REGDEF_BIT(DCT_QTBL15_IDX,        5)
+REGDEF_END(VPE_ENCODER_QUALITY_TABLE_INDEX_REGISTER3)
+
+
+/*
+    YRC_LNCNT_LFN0:    [0x0, 0x1fff],			bits : 12_0
+    YRC_LNCNT_LFN1:    [0x0, 0xfff],			bits : 27_16
+*/
+#define VPE_ENCODER_QUALITY_TABLE_CHECK_REGISTER0_OFS 0x0820
+REGDEF_BEGIN(VPE_ENCODER_QUALITY_TABLE_CHECK_REGISTER0)
+	REGDEF_BIT(YRC_LNCNT_LFN0,        13)
+	REGDEF_BIT(              ,        3)
+	REGDEF_BIT(YRC_LNCNT_LFN1,        12)
+REGDEF_END(VPE_ENCODER_QUALITY_TABLE_CHECK_REGISTER0)
+
+
+/*
+    YRC_LNCNT_LFN2:    [0x0, 0x1fff],			bits : 12_0
+    YRC_LNCNT_LFN3:    [0x0, 0xfff],			bits : 27_16
+*/
+#define VPE_ENCODER_QUALITY_TABLE_CHECK_REGISTER1_OFS 0x0824
+REGDEF_BEGIN(VPE_ENCODER_QUALITY_TABLE_CHECK_REGISTER1)
+	REGDEF_BIT(YRC_LNCNT_LFN2,        13)
+	REGDEF_BIT(              ,        3)
+	REGDEF_BIT(YRC_LNCNT_LFN3,        12)
+REGDEF_END(VPE_ENCODER_QUALITY_TABLE_CHECK_REGISTER1)
+
+
+/*
+    YRC_LNCNT_LFN4:    [0x0, 0x1fff],           bits : 12_0
+    YRC_LNCNT_LFN5:    [0x0, 0xfff],            bits : 27_16
+*/
+#define VPE_ENCODER_QUALITY_TABLE_CHECK_REGISTER2_OFS 0x0828
+REGDEF_BEGIN(VPE_ENCODER_QUALITY_TABLE_CHECK_REGISTER2)
+REGDEF_BIT(YRC_LNCNT_LFN4,        13)
+REGDEF_BIT(,        3)
+REGDEF_BIT(YRC_LNCNT_LFN5,        12)
+REGDEF_END(VPE_ENCODER_QUALITY_TABLE_CHECK_REGISTER2)
+
+
+/*
+    DCT_MAXDIST:    [0x0, 0xff],            bits : 7_0
+*/
+#define VPE_ENCODER_MAX_ERROR_FOR_DCT_REGISTER_OFS 0x082c
+REGDEF_BEGIN(VPE_ENCODER_MAX_ERROR_FOR_DCT_REGISTER)
+REGDEF_BIT(DCT_MAXDIST,        8)
+REGDEF_END(VPE_ENCODER_MAX_ERROR_FOR_DCT_REGISTER)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_536_OFS 0x0830
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_536)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_536)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_537_OFS 0x0834
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_537)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_537)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_538_OFS 0x0838
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_538)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_538)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_539_OFS 0x083c
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_539)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_539)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_540_OFS 0x0840
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_540)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_540)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_541_OFS 0x0844
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_541)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_541)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_542_OFS 0x0848
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_542)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_542)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_543_OFS 0x084c
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_543)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_543)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_544_OFS 0x0850
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_544)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_544)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_545_OFS 0x0854
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_545)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_545)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_546_OFS 0x0858
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_546)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_546)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_547_OFS 0x085c
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_547)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_547)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_548_OFS 0x0860
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_548)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_548)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_549_OFS 0x0864
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_549)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_549)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_550_OFS 0x0868
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_550)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_550)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_551_OFS 0x086c
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_551)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_551)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_552_OFS 0x0870
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_552)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_552)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_553_OFS 0x0874
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_553)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_553)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_554_OFS 0x0878
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_554)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_554)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_555_OFS 0x087c
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_555)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_555)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_556_OFS 0x0880
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_556)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_556)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_557_OFS 0x0884
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_557)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_557)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_558_OFS 0x0888
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_558)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_558)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_559_OFS 0x088c
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_559)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_559)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_560_OFS 0x0890
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_560)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_560)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_561_OFS 0x0894
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_561)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_561)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_562_OFS 0x0898
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_562)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_562)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_563_OFS 0x089c
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_563)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_563)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_564_OFS 0x08a0
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_564)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_564)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_565_OFS 0x08a4
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_565)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_565)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_566_OFS 0x08a8
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_566)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_566)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_567_OFS 0x08ac
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_567)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_567)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_568_OFS 0x08b0
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_568)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_568)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_569_OFS 0x08b4
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_569)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_569)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_570_OFS 0x08b8
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_570)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_570)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_571_OFS 0x08bc
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_571)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_571)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_572_OFS 0x08c0
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_572)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_572)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_573_OFS 0x08c4
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_573)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_573)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_574_OFS 0x08c8
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_574)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_574)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_575_OFS 0x08cc
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_575)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_575)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_576_OFS 0x08d0
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_576)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_576)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_577_OFS 0x08d4
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_577)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_577)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_578_OFS 0x08d8
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_578)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_578)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_579_OFS 0x08dc
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_579)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_579)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_580_OFS 0x08e0
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_580)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_580)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_581_OFS 0x08e4
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_581)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_581)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_582_OFS 0x08e8
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_582)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_582)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_583_OFS 0x08ec
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_583)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_583)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_584_OFS 0x08f0
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_584)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_584)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_585_OFS 0x08f4
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_585)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_585)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_586_OFS 0x08f8
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_586)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_586)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_587_OFS 0x08fc
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_587)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_587)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_AXI_CTRL_REGISTER0_OFS 0x0900
+REGDEF_BEGIN(VPE_AXI_CTRL_REGISTER0)
+	REGDEF_BIT(AXI0_R_WRAP_EN,        1)
+	REGDEF_BIT(	,       1)		
+	REGDEF_BIT(AXI0_R_LOCK_DIS,       1)
+	REGDEF_BIT(	,       1)	
+	REGDEF_BIT(AXI0_RCH_DIS,       1)
+	REGDEF_BIT(	,       11)	
+	REGDEF_BIT(AXI0_ROSTD_NUM,       8)
+	REGDEF_BIT(AXI0_WOSTD_NUM,       8)
+REGDEF_END(VPE_AXI_CTRL_REGISTER0)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_AXI_CTRL_REGISTER1_OFS 0x0904
+	REGDEF_BEGIN(VPE_AXI_CTRL_REGISTER1)
+		REGDEF_BIT(AXI1_R_WRAP_EN,		  1)
+		REGDEF_BIT(AXI1_W_WRAP_EN,		1)		
+		REGDEF_BIT(AXI1_R_LOCK_DIS, 	  1)
+		REGDEF_BIT(AXI1_W_LOCK_DIS,		1)	
+		REGDEF_BIT(AXI1_RCH_DI,		1)
+	    REGDEF_BIT(AXI1_WCH_DIS, 	1)
+		REGDEF_BIT( ,		10) 
+		REGDEF_BIT(AXI1_ROSTD_NUM	,		8)
+		REGDEF_BIT(AXI1_WOSTD_NUM	,		8)
+	REGDEF_END(VPE_AXI_CTRL_REGISTER1)
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_590_OFS 0x0908
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_590)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_590)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_591_OFS 0x090c
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_591)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_591)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_592_OFS 0x0910
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_592)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_592)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_593_OFS 0x0914
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_593)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_593)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_594_OFS 0x0918
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_594)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_594)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_595_OFS 0x091c
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_595)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_595)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_596_OFS 0x0920
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_596)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_596)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_597_OFS 0x0924
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_597)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_597)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_598_OFS 0x0928
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_598)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_598)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_599_OFS 0x092c
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_599)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_599)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_300_OFS 0x0930
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_300)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_300)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_301_OFS 0x0934
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_301)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_301)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_302_OFS 0x0938
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_302)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_302)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_303_OFS 0x093c
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_303)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_303)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_304_OFS 0x0940
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_304)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_304)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_305_OFS 0x0944
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_305)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_305)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_306_OFS 0x0948
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_306)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_306)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_307_OFS 0x094c
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_307)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_307)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_308_OFS 0x0950
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_308)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_308)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_309_OFS 0x0954
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_309)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_309)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_310_OFS 0x0958
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_310)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_310)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_311_OFS 0x095c
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_311)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_311)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_312_OFS 0x0960
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_312)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_312)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_313_OFS 0x0964
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_313)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_313)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_314_OFS 0x0968
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_314)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_314)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_315_OFS 0x096c
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_315)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_315)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_316_OFS 0x0970
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_316)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_316)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_317_OFS 0x0974
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_317)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_317)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_318_OFS 0x0978
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_318)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_318)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_319_OFS 0x097c
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_319)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_319)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_320_OFS 0x0980
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_320)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_320)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_321_OFS 0x0984
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_321)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_321)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_322_OFS 0x0988
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_322)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_322)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_323_OFS 0x098c
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_323)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_323)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_324_OFS 0x0990
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_324)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_324)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_325_OFS 0x0994
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_325)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_325)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_326_OFS 0x0998
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_326)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_326)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_327_OFS 0x099c
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_327)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_327)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_328_OFS 0x09a0
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_328)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_328)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_329_OFS 0x09a4
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_329)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_329)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_330_OFS 0x09a8
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_330)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_330)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_331_OFS 0x09ac
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_331)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_331)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_332_OFS 0x09b0
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_332)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_332)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_333_OFS 0x09b4
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_333)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_333)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_334_OFS 0x09b8
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_334)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_334)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_335_OFS 0x09bc
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_335)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_335)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_336_OFS 0x09c0
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_336)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_336)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_337_OFS 0x09c4
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_337)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_337)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_338_OFS 0x09c8
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_338)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_338)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_339_OFS 0x09cc
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_339)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_339)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_340_OFS 0x09d0
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_340)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_340)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_341_OFS 0x09d4
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_341)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_341)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_342_OFS 0x09d8
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_342)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_342)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_343_OFS 0x09dc
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_343)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_343)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_344_OFS 0x09e0
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_344)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_344)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_345_OFS 0x09e4
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_345)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_345)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_346_OFS 0x09e8
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_346)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_346)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_347_OFS 0x09ec
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_347)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_347)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_348_OFS 0x09f0
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_348)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_348)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_349_OFS 0x09f4
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_349)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_349)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_350_OFS 0x09f8
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_350)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_350)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define VPE_RESERVED_REGISTER_351_OFS 0x09fc
+REGDEF_BEGIN(VPE_RESERVED_REGISTER_351)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(VPE_RESERVED_REGISTER_351)
+
+
+/*
+    MOSAIC_BLK_SIZE:    [0x0, 0x3],			bits : 1_0
+*/
+#define MASK_1_REGISTER_OFS 0x0a00
+REGDEF_BEGIN(MASK_1_REGISTER)
+	REGDEF_BIT(MOSAIC_BLK_SIZE,        2)
+REGDEF_END(MASK_1_REGISTER)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define MASK_2_REGISTER_OFS 0x0a04
+REGDEF_BEGIN(MASK_2_REGISTER)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(MASK_2_REGISTER)
+
+
+/*
+    MASK0_DID        :    [0x0, 0x3],			bits : 1_0
+    MASK0_PAL_SEL    :    [0x0, 0x7],			bits : 6_4
+    MASK0_LINE_HIT_OP:    [0x0, 0x3],			bits : 9_8
+    MASK0_ALPHA      :    [0x0, 0x1ff],			bits : 24_16
+    MASK0_SHAPE 	 :	  [0x0, 0x3], 		      bits : 26_25
+*/
+#define MASK_3_REGISTER_OFS 0x0a08
+REGDEF_BEGIN(MASK_3_REGISTER)
+	REGDEF_BIT(MASK0_DID        ,        2)
+	REGDEF_BIT(                 ,        2)
+	REGDEF_BIT(MASK0_PAL_SEL    ,        3)
+	REGDEF_BIT(                 ,        1)
+	REGDEF_BIT(MASK0_LINE_HIT_OP,        2)
+	REGDEF_BIT(                 ,        6)
+	REGDEF_BIT(MASK0_ALPHA      ,        9)
+	REGDEF_BIT(MASK0_SHAPE      ,        2)	
+REGDEF_END(MASK_3_REGISTER)
+
+
+/*
+    MASK0_LINE0_COEFFA:    [0x0, 0xffff],			bits : 15_0
+    MASK0_LINE0_COEFFB:    [0x0, 0xffff],			bits : 31_16
+*/
+#define MASK_4_REGISTER_OFS 0x0a0c
+REGDEF_BEGIN(MASK_4_REGISTER)
+	REGDEF_BIT(MASK0_LINE0_COEFFA,        16)
+	REGDEF_BIT(MASK0_LINE0_COEFFB,        16)
+REGDEF_END(MASK_4_REGISTER)
+
+
+/*
+    MASK0_LINE0_COEFFC:    [0x0, 0x3fffffff],			bits : 29_0
+    MASK0_LINE0_COMP  :    [0x0, 0x3],			bits : 31_30
+*/
+#define MASK_5_REGISTER_OFS 0x0a10
+REGDEF_BEGIN(MASK_5_REGISTER)
+	REGDEF_BIT(MASK0_LINE0_COEFFC,        30)
+	REGDEF_BIT(MASK0_LINE0_COMP  ,        2)
+REGDEF_END(MASK_5_REGISTER)
+
+
+/*
+    MASK0_LINE1_COEFFA:    [0x0, 0xffff],			bits : 15_0
+    MASK0_LINE1_COEFFB:    [0x0, 0xffff],			bits : 31_16
+*/
+#define MASK_6_REGISTER_OFS 0x0a14
+REGDEF_BEGIN(MASK_6_REGISTER)
+	REGDEF_BIT(MASK0_LINE1_COEFFA,        16)
+	REGDEF_BIT(MASK0_LINE1_COEFFB,        16)
+REGDEF_END(MASK_6_REGISTER)
+
+
+/*
+    MASK0_LINE1_COEFFC:    [0x0, 0x3fffffff],			bits : 29_0
+    MASK0_LINE1_COMP  :    [0x0, 0x3],			bits : 31_30
+*/
+#define MASK_7_REGISTER_OFS 0x0a18
+REGDEF_BEGIN(MASK_7_REGISTER)
+	REGDEF_BIT(MASK0_LINE1_COEFFC,        30)
+	REGDEF_BIT(MASK0_LINE1_COMP  ,        2)
+REGDEF_END(MASK_7_REGISTER)
+
+
+/*
+    MASK0_LINE2_COEFFA:    [0x0, 0xffff],			bits : 15_0
+    MASK0_LINE2_COEFFB:    [0x0, 0xffff],			bits : 31_16
+*/
+#define MASK_8_REGISTER_OFS 0x0a1c
+REGDEF_BEGIN(MASK_8_REGISTER)
+	REGDEF_BIT(MASK0_LINE2_COEFFA,        16)
+	REGDEF_BIT(MASK0_LINE2_COEFFB,        16)
+REGDEF_END(MASK_8_REGISTER)
+
+
+/*
+    MASK0_LINE2_COEFFC:    [0x0, 0x3fffffff],			bits : 29_0
+    MASK0_LINE2_COMP  :    [0x0, 0x3],			bits : 31_30
+*/
+#define MASK_9_REGISTER_OFS 0x0a20
+REGDEF_BEGIN(MASK_9_REGISTER)
+	REGDEF_BIT(MASK0_LINE2_COEFFC,        30)
+	REGDEF_BIT(MASK0_LINE2_COMP  ,        2)
+REGDEF_END(MASK_9_REGISTER)
+
+
+/*
+    MASK0_LINE3_COEFFA:    [0x0, 0xffff],			bits : 15_0
+    MASK0_LINE3_COEFFB:    [0x0, 0xffff],			bits : 31_16
+*/
+#define MASK_10_REGISTER_OFS 0x0a24
+REGDEF_BEGIN(MASK_10_REGISTER)
+	REGDEF_BIT(MASK0_LINE3_COEFFA,        16)
+	REGDEF_BIT(MASK0_LINE3_COEFFB,        16)
+REGDEF_END(MASK_10_REGISTER)
+
+
+/*
+    MASK0_LINE3_COEFFC:    [0x0, 0x3fffffff],			bits : 29_0
+    MASK0_LINE3_COMP  :    [0x0, 0x3],			bits : 31_30
+*/
+#define MASK_11_REGISTER_OFS 0x0a28
+REGDEF_BEGIN(MASK_11_REGISTER)
+	REGDEF_BIT(MASK0_LINE3_COEFFC,        30)
+	REGDEF_BIT(MASK0_LINE3_COMP  ,        2)
+REGDEF_END(MASK_11_REGISTER)
+
+
+/*
+    MASK1_DID        :    [0x0, 0x3],			bits : 1_0
+    MASK1_PAL_SEL    :    [0x0, 0x7],			bits : 6_4
+    MASK1_LINE_HIT_OP:    [0x0, 0x3],			bits : 9_8
+    MASK1_ALPHA      :    [0x0, 0x1ff],			bits : 24_16
+*/
+#define MASK_12_REGISTER_OFS 0x0a2c
+REGDEF_BEGIN(MASK_12_REGISTER)
+	REGDEF_BIT(MASK1_DID        ,        2)
+	REGDEF_BIT(                 ,        2)
+	REGDEF_BIT(MASK1_PAL_SEL    ,        3)
+	REGDEF_BIT(                 ,        1)
+	REGDEF_BIT(MASK1_LINE_HIT_OP,        2)
+	REGDEF_BIT(                 ,        6)
+	REGDEF_BIT(MASK1_ALPHA      ,        9)
+REGDEF_END(MASK_12_REGISTER)
+
+
+/*
+    MASK1_LINE0_COEFFA:    [0x0, 0xffff],			bits : 15_0
+    MASK1_LINE0_COEFFB:    [0x0, 0xffff],			bits : 31_16
+*/
+#define MASK_13_REGISTER_OFS 0x0a30
+REGDEF_BEGIN(MASK_13_REGISTER)
+	REGDEF_BIT(MASK1_LINE0_COEFFA,        16)
+	REGDEF_BIT(MASK1_LINE0_COEFFB,        16)
+REGDEF_END(MASK_13_REGISTER)
+
+
+/*
+    MASK1_LINE0_COEFFC:    [0x0, 0x3fffffff],			bits : 29_0
+    MASK1_LINE0_COMP  :    [0x0, 0x3],			bits : 31_30
+*/
+#define MASK_14_REGISTER_OFS 0x0a34
+REGDEF_BEGIN(MASK_14_REGISTER)
+	REGDEF_BIT(MASK1_LINE0_COEFFC,        30)
+	REGDEF_BIT(MASK1_LINE0_COMP  ,        2)
+REGDEF_END(MASK_14_REGISTER)
+
+
+/*
+    MASK1_LINE1_COEFFA:    [0x0, 0xffff],			bits : 15_0
+    MASK1_LINE1_COEFFB:    [0x0, 0xffff],			bits : 31_16
+*/
+#define MASK_15_REGISTER_OFS 0x0a38
+REGDEF_BEGIN(MASK_15_REGISTER)
+	REGDEF_BIT(MASK1_LINE1_COEFFA,        16)
+	REGDEF_BIT(MASK1_LINE1_COEFFB,        16)
+REGDEF_END(MASK_15_REGISTER)
+
+
+/*
+    MASK1_LINE1_COEFFC:    [0x0, 0x3fffffff],			bits : 29_0
+    MASK1_LINE1_COMP  :    [0x0, 0x3],			bits : 31_30
+*/
+#define MASK_16_REGISTER_OFS 0x0a3c
+REGDEF_BEGIN(MASK_16_REGISTER)
+	REGDEF_BIT(MASK1_LINE1_COEFFC,        30)
+	REGDEF_BIT(MASK1_LINE1_COMP  ,        2)
+REGDEF_END(MASK_16_REGISTER)
+
+
+/*
+    MASK1_LINE2_COEFFA:    [0x0, 0xffff],			bits : 15_0
+    MASK1_LINE2_COEFFB:    [0x0, 0xffff],			bits : 31_16
+*/
+#define MASK_17_REGISTER_OFS 0x0a40
+REGDEF_BEGIN(MASK_17_REGISTER)
+	REGDEF_BIT(MASK1_LINE2_COEFFA,        16)
+	REGDEF_BIT(MASK1_LINE2_COEFFB,        16)
+REGDEF_END(MASK_17_REGISTER)
+
+
+/*
+    MASK1_LINE2_COEFFC:    [0x0, 0x3fffffff],			bits : 29_0
+    MASK1_LINE2_COMP  :    [0x0, 0x3],			bits : 31_30
+*/
+#define MASK_18_REGISTER_OFS 0x0a44
+REGDEF_BEGIN(MASK_18_REGISTER)
+	REGDEF_BIT(MASK1_LINE2_COEFFC,        30)
+	REGDEF_BIT(MASK1_LINE2_COMP  ,        2)
+REGDEF_END(MASK_18_REGISTER)
+
+
+/*
+    MASK1_LINE3_COEFFA:    [0x0, 0xffff],			bits : 15_0
+    MASK1_LINE3_COEFFB:    [0x0, 0xffff],			bits : 31_16
+*/
+#define MASK_19_REGISTER_OFS 0x0a48
+REGDEF_BEGIN(MASK_19_REGISTER)
+	REGDEF_BIT(MASK1_LINE3_COEFFA,        16)
+	REGDEF_BIT(MASK1_LINE3_COEFFB,        16)
+REGDEF_END(MASK_19_REGISTER)
+
+
+/*
+    MASK1_LINE3_COEFFC:    [0x0, 0x3fffffff],			bits : 29_0
+    MASK1_LINE3_COMP  :    [0x0, 0x3],			bits : 31_30
+*/
+#define MASK_20_REGISTER_OFS 0x0a4c
+REGDEF_BEGIN(MASK_20_REGISTER)
+	REGDEF_BIT(MASK1_LINE3_COEFFC,        30)
+	REGDEF_BIT(MASK1_LINE3_COMP  ,        2)
+REGDEF_END(MASK_20_REGISTER)
+
+
+/*
+    MASK2_DID        :    [0x0, 0x3],			bits : 1_0
+    MASK2_PAL_SEL    :    [0x0, 0x7],			bits : 6_4
+    MASK2_LINE_HIT_OP:    [0x0, 0x3],			bits : 9_8
+    MASK2_ALPHA      :    [0x0, 0x1ff],			bits : 24_16
+    MASK2_SHAPE 	 :	  [0x0, 0x3], 		bits : 26_25
+*/
+#define MASK_21_REGISTER_OFS 0x0a50
+REGDEF_BEGIN(MASK_21_REGISTER)
+	REGDEF_BIT(MASK2_DID        ,        2)
+	REGDEF_BIT(                 ,        2)
+	REGDEF_BIT(MASK2_PAL_SEL    ,        3)
+	REGDEF_BIT(                 ,        1)
+	REGDEF_BIT(MASK2_LINE_HIT_OP,        2)
+	REGDEF_BIT(                 ,        6)
+	REGDEF_BIT(MASK2_ALPHA      ,        9)
+	REGDEF_BIT(MASK2_SHAPE      ,        2)	
+	
+REGDEF_END(MASK_21_REGISTER)
+
+
+/*
+    MASK2_LINE0_COEFFA:    [0x0, 0xffff],			bits : 15_0
+    MASK2_LINE0_COEFFB:    [0x0, 0xffff],			bits : 31_16
+*/
+#define MASK_22_REGISTER_OFS 0x0a54
+REGDEF_BEGIN(MASK_22_REGISTER)
+	REGDEF_BIT(MASK2_LINE0_COEFFA,        16)
+	REGDEF_BIT(MASK2_LINE0_COEFFB,        16)
+REGDEF_END(MASK_22_REGISTER)
+
+
+/*
+    MASK2_LINE0_COEFFC:    [0x0, 0x3fffffff],			bits : 29_0
+    MASK2_LINE0_COMP  :    [0x0, 0x3],			bits : 31_30
+*/
+#define MASK_23_REGISTER_OFS 0x0a58
+REGDEF_BEGIN(MASK_23_REGISTER)
+	REGDEF_BIT(MASK2_LINE0_COEFFC,        30)
+	REGDEF_BIT(MASK2_LINE0_COMP  ,        2)
+REGDEF_END(MASK_23_REGISTER)
+
+
+/*
+    MASK2_LINE1_COEFFA:    [0x0, 0xffff],			bits : 15_0
+    MASK2_LINE1_COEFFB:    [0x0, 0xffff],			bits : 31_16
+*/
+#define MASK_24_REGISTER_OFS 0x0a5c
+REGDEF_BEGIN(MASK_24_REGISTER)
+	REGDEF_BIT(MASK2_LINE1_COEFFA,        16)
+	REGDEF_BIT(MASK2_LINE1_COEFFB,        16)
+REGDEF_END(MASK_24_REGISTER)
+
+
+/*
+    MASK2_LINE1_COEFFC:    [0x0, 0x3fffffff],			bits : 29_0
+    MASK2_LINE1_COMP  :    [0x0, 0x3],			bits : 31_30
+*/
+#define MASK_25_REGISTER_OFS 0x0a60
+REGDEF_BEGIN(MASK_25_REGISTER)
+	REGDEF_BIT(MASK2_LINE1_COEFFC,        30)
+	REGDEF_BIT(MASK2_LINE1_COMP  ,        2)
+REGDEF_END(MASK_25_REGISTER)
+
+
+/*
+    MASK2_LINE2_COEFFA:    [0x0, 0xffff],			bits : 15_0
+    MASK2_LINE2_COEFFB:    [0x0, 0xffff],			bits : 31_16
+*/
+#define MASK_26_REGISTER_OFS 0x0a64
+REGDEF_BEGIN(MASK_26_REGISTER)
+	REGDEF_BIT(MASK2_LINE2_COEFFA,        16)
+	REGDEF_BIT(MASK2_LINE2_COEFFB,        16)
+REGDEF_END(MASK_26_REGISTER)
+
+
+/*
+    MASK2_LINE2_COEFFC:    [0x0, 0x3fffffff],			bits : 29_0
+    MASK2_LINE2_COMP  :    [0x0, 0x3],			bits : 31_30
+*/
+#define MASK_27_REGISTER_OFS 0x0a68
+REGDEF_BEGIN(MASK_27_REGISTER)
+	REGDEF_BIT(MASK2_LINE2_COEFFC,        30)
+	REGDEF_BIT(MASK2_LINE2_COMP  ,        2)
+REGDEF_END(MASK_27_REGISTER)
+
+
+/*
+    MASK2_LINE3_COEFFA:    [0x0, 0xffff],			bits : 15_0
+    MASK2_LINE3_COEFFB:    [0x0, 0xffff],			bits : 31_16
+*/
+#define MASK_28_REGISTER_OFS 0x0a6c
+REGDEF_BEGIN(MASK_28_REGISTER)
+	REGDEF_BIT(MASK2_LINE3_COEFFA,        16)
+	REGDEF_BIT(MASK2_LINE3_COEFFB,        16)
+REGDEF_END(MASK_28_REGISTER)
+
+
+/*
+    MASK2_LINE3_COEFFC:    [0x0, 0x3fffffff],			bits : 29_0
+    MASK2_LINE3_COMP  :    [0x0, 0x3],			bits : 31_30
+*/
+#define MASK_29_REGISTER_OFS 0x0a70
+REGDEF_BEGIN(MASK_29_REGISTER)
+	REGDEF_BIT(MASK2_LINE3_COEFFC,        30)
+	REGDEF_BIT(MASK2_LINE3_COMP  ,        2)
+REGDEF_END(MASK_29_REGISTER)
+
+
+/*
+    MASK3_DID        :    [0x0, 0x3],			bits : 1_0
+    Rreserved        :    [0x0, 0x3],			bits : 3_2
+    MASK3_PAL_SEL    :    [0x0, 0x7],			bits : 6_4
+    MASK3_LINE_HIT_OP:    [0x0, 0x3],			bits : 9_8
+    MASK3_ALPHA      :    [0x0, 0x1ff],			bits : 24_16
+*/
+#define MASK_30_REGISTER_OFS 0x0a74
+REGDEF_BEGIN(MASK_30_REGISTER)
+	REGDEF_BIT(MASK3_DID        ,        2)
+	REGDEF_BIT(Rreserved        ,        2)
+	REGDEF_BIT(MASK3_PAL_SEL    ,        3)
+	REGDEF_BIT(                 ,        1)
+	REGDEF_BIT(MASK3_LINE_HIT_OP,        2)
+	REGDEF_BIT(                 ,        6)
+	REGDEF_BIT(MASK3_ALPHA      ,        9)
+REGDEF_END(MASK_30_REGISTER)
+
+
+/*
+    MASK3_LINE0_COEFFA:    [0x0, 0xffff],			bits : 15_0
+    MASK3_LINE0_COEFFB:    [0x0, 0xffff],			bits : 31_16
+*/
+#define MASK_31_REGISTER_OFS 0x0a78
+REGDEF_BEGIN(MASK_31_REGISTER)
+	REGDEF_BIT(MASK3_LINE0_COEFFA,        16)
+	REGDEF_BIT(MASK3_LINE0_COEFFB,        16)
+REGDEF_END(MASK_31_REGISTER)
+
+
+/*
+    MASK3_LINE0_COEFFC:    [0x0, 0x3fffffff],			bits : 29_0
+    MASK3_LINE0_COMP  :    [0x0, 0x3],			bits : 31_30
+*/
+#define MASK_32_REGISTER_OFS 0x0a7c
+REGDEF_BEGIN(MASK_32_REGISTER)
+	REGDEF_BIT(MASK3_LINE0_COEFFC,        30)
+	REGDEF_BIT(MASK3_LINE0_COMP  ,        2)
+REGDEF_END(MASK_32_REGISTER)
+
+
+/*
+    MASK3_LINE1_COEFFA:    [0x0, 0xffff],			bits : 15_0
+    MASK3_LINE1_COEFFB:    [0x0, 0xffff],			bits : 31_16
+*/
+#define MASK_33_REGISTER_OFS 0x0a80
+REGDEF_BEGIN(MASK_33_REGISTER)
+	REGDEF_BIT(MASK3_LINE1_COEFFA,        16)
+	REGDEF_BIT(MASK3_LINE1_COEFFB,        16)
+REGDEF_END(MASK_33_REGISTER)
+
+
+/*
+    MASK3_LINE1_COEFFC:    [0x0, 0x3fffffff],			bits : 29_0
+    MASK3_LINE1_COMP  :    [0x0, 0x3],			bits : 31_30
+*/
+#define MASK_34_REGISTER_OFS 0x0a84
+REGDEF_BEGIN(MASK_34_REGISTER)
+	REGDEF_BIT(MASK3_LINE1_COEFFC,        30)
+	REGDEF_BIT(MASK3_LINE1_COMP  ,        2)
+REGDEF_END(MASK_34_REGISTER)
+
+
+/*
+    MASK3_LINE2_COEFFA:    [0x0, 0xffff],			bits : 15_0
+    MASK3_LINE2_COEFFB:    [0x0, 0xffff],			bits : 31_16
+*/
+#define MASK_35_REGISTER_OFS 0x0a88
+REGDEF_BEGIN(MASK_35_REGISTER)
+	REGDEF_BIT(MASK3_LINE2_COEFFA,        16)
+	REGDEF_BIT(MASK3_LINE2_COEFFB,        16)
+REGDEF_END(MASK_35_REGISTER)
+
+
+/*
+    MASK3_LINE2_COEFFC:    [0x0, 0x3fffffff],			bits : 29_0
+    MASK3_LINE2_COMP  :    [0x0, 0x3],			bits : 31_30
+*/
+#define MASK_36_REGISTER_OFS 0x0a8c
+REGDEF_BEGIN(MASK_36_REGISTER)
+	REGDEF_BIT(MASK3_LINE2_COEFFC,        30)
+	REGDEF_BIT(MASK3_LINE2_COMP  ,        2)
+REGDEF_END(MASK_36_REGISTER)
+
+
+/*
+    MASK3_LINE3_COEFFA:    [0x0, 0xffff],			bits : 15_0
+    MASK3_LINE3_COEFFB:    [0x0, 0xffff],			bits : 31_16
+*/
+#define MASK_37_REGISTER_OFS 0x0a90
+REGDEF_BEGIN(MASK_37_REGISTER)
+	REGDEF_BIT(MASK3_LINE3_COEFFA,        16)
+	REGDEF_BIT(MASK3_LINE3_COEFFB,        16)
+REGDEF_END(MASK_37_REGISTER)
+
+
+/*
+    MASK3_LINE3_COEFFC:    [0x0, 0x3fffffff],			bits : 29_0
+    MASK3_LINE3_COMP  :    [0x0, 0x3],			bits : 31_30
+*/
+#define MASK_38_REGISTER_OFS 0x0a94
+REGDEF_BEGIN(MASK_38_REGISTER)
+	REGDEF_BIT(MASK3_LINE3_COEFFC,        30)
+	REGDEF_BIT(MASK3_LINE3_COMP  ,        2)
+REGDEF_END(MASK_38_REGISTER)
+
+
+/*
+    MASK4_DID        :    [0x0, 0x3],			bits : 1_0
+    MASK4_PAL_SEL    :    [0x0, 0x7],			bits : 6_4
+    MASK4_LINE_HIT_OP:    [0x0, 0x3],			bits : 9_8
+    MASK4_ALPHA      :    [0x0, 0x1ff],			bits : 24_16
+    MASK4_SHAPE 	 :	  [0x0, 0x3], 		      bits : 26_25
+*/
+#define MASK_39_REGISTER_OFS 0x0a98
+REGDEF_BEGIN(MASK_39_REGISTER)
+	REGDEF_BIT(MASK4_DID        ,        2)
+	REGDEF_BIT(                 ,        2)
+	REGDEF_BIT(MASK4_PAL_SEL    ,        3)
+	REGDEF_BIT(                 ,        1)
+	REGDEF_BIT(MASK4_LINE_HIT_OP,        2)
+	REGDEF_BIT(                 ,        6)
+	REGDEF_BIT(MASK4_ALPHA      ,        9)
+	REGDEF_BIT(MASK4_SHAPE      ,        2)	
+REGDEF_END(MASK_39_REGISTER)
+
+
+/*
+    MASK4_LINE0_COEFFA:    [0x0, 0xffff],			bits : 15_0
+    MASK4_LINE0_COEFFB:    [0x0, 0xffff],			bits : 31_16
+*/
+#define MASK_40_REGISTER_OFS 0x0a9c
+REGDEF_BEGIN(MASK_40_REGISTER)
+	REGDEF_BIT(MASK4_LINE0_COEFFA,        16)
+	REGDEF_BIT(MASK4_LINE0_COEFFB,        16)
+REGDEF_END(MASK_40_REGISTER)
+
+
+/*
+    MASK4_LINE0_COEFFC:    [0x0, 0x3fffffff],			bits : 29_0
+    MASK4_LINE0_COMP  :    [0x0, 0x3],			bits : 31_30
+*/
+#define MASK_41_REGISTER_OFS 0x0aa0
+REGDEF_BEGIN(MASK_41_REGISTER)
+	REGDEF_BIT(MASK4_LINE0_COEFFC,        30)
+	REGDEF_BIT(MASK4_LINE0_COMP  ,        2)
+REGDEF_END(MASK_41_REGISTER)
+
+
+/*
+    MASK4_LINE1_COEFFA:    [0x0, 0xffff],			bits : 15_0
+    MASK4_LINE1_COEFFB:    [0x0, 0xffff],			bits : 31_16
+*/
+#define MASK_42_REGISTER_OFS 0x0aa4
+REGDEF_BEGIN(MASK_42_REGISTER)
+	REGDEF_BIT(MASK4_LINE1_COEFFA,        16)
+	REGDEF_BIT(MASK4_LINE1_COEFFB,        16)
+REGDEF_END(MASK_42_REGISTER)
+
+
+/*
+    MASK4_LINE1_COEFFC:    [0x0, 0x3fffffff],			bits : 29_0
+    MASK4_LINE1_COMP  :    [0x0, 0x3],			bits : 31_30
+*/
+#define MASK_43_REGISTER_OFS 0x0aa8
+REGDEF_BEGIN(MASK_43_REGISTER)
+	REGDEF_BIT(MASK4_LINE1_COEFFC,        30)
+	REGDEF_BIT(MASK4_LINE1_COMP  ,        2)
+REGDEF_END(MASK_43_REGISTER)
+
+
+/*
+    MASK4_LINE2_COEFFA:    [0x0, 0xffff],			bits : 15_0
+    MASK4_LINE2_COEFFB:    [0x0, 0xffff],			bits : 31_16
+*/
+#define MASK_44_REGISTER_OFS 0x0aac
+REGDEF_BEGIN(MASK_44_REGISTER)
+	REGDEF_BIT(MASK4_LINE2_COEFFA,        16)
+	REGDEF_BIT(MASK4_LINE2_COEFFB,        16)
+REGDEF_END(MASK_44_REGISTER)
+
+
+/*
+    MASK4_LINE2_COEFFC:    [0x0, 0x3fffffff],			bits : 29_0
+    MASK4_LINE2_COMP  :    [0x0, 0x3],			bits : 31_30
+*/
+#define MASK_45_REGISTER_OFS 0x0ab0
+REGDEF_BEGIN(MASK_45_REGISTER)
+	REGDEF_BIT(MASK4_LINE2_COEFFC,        30)
+	REGDEF_BIT(MASK4_LINE2_COMP  ,        2)
+REGDEF_END(MASK_45_REGISTER)
+
+
+/*
+    MASK4_LINE3_COEFFA:    [0x0, 0xffff],			bits : 15_0
+    MASK4_LINE3_COEFFB:    [0x0, 0xffff],			bits : 31_16
+*/
+#define MASK_46_REGISTER_OFS 0x0ab4
+REGDEF_BEGIN(MASK_46_REGISTER)
+	REGDEF_BIT(MASK4_LINE3_COEFFA,        16)
+	REGDEF_BIT(MASK4_LINE3_COEFFB,        16)
+REGDEF_END(MASK_46_REGISTER)
+
+
+/*
+    MASK4_LINE3_COEFFC:    [0x0, 0x3fffffff],			bits : 29_0
+    MASK4_LINE3_COMP  :    [0x0, 0x3],			bits : 31_30
+*/
+#define MASK_47_REGISTER_OFS 0x0ab8
+REGDEF_BEGIN(MASK_47_REGISTER)
+	REGDEF_BIT(MASK4_LINE3_COEFFC,        30)
+	REGDEF_BIT(MASK4_LINE3_COMP  ,        2)
+REGDEF_END(MASK_47_REGISTER)
+
+
+/*
+    MASK5_DID        :    [0x0, 0x3],			bits : 1_0
+    MASK5_PAL_SEL    :    [0x0, 0x7],			bits : 6_4
+    MASK5_LINE_HIT_OP:    [0x0, 0x3],			bits : 9_8
+    MASK5_ALPHA      :    [0x0, 0x1ff],			bits : 24_16
+*/
+#define MASK_48_REGISTER_OFS 0x0abc
+REGDEF_BEGIN(MASK_48_REGISTER)
+	REGDEF_BIT(MASK5_DID        ,        2)
+	REGDEF_BIT(                 ,        2)
+	REGDEF_BIT(MASK5_PAL_SEL    ,        3)
+	REGDEF_BIT(                 ,        1)
+	REGDEF_BIT(MASK5_LINE_HIT_OP,        2)
+	REGDEF_BIT(                 ,        6)
+	REGDEF_BIT(MASK5_ALPHA      ,        9)
+REGDEF_END(MASK_48_REGISTER)
+
+
+/*
+    MASK5_LINE0_COEFFA:    [0x0, 0xffff],			bits : 15_0
+    MASK5_LINE0_COEFFB:    [0x0, 0xffff],			bits : 31_16
+*/
+#define MASK_49_REGISTER_OFS 0x0ac0
+REGDEF_BEGIN(MASK_49_REGISTER)
+	REGDEF_BIT(MASK5_LINE0_COEFFA,        16)
+	REGDEF_BIT(MASK5_LINE0_COEFFB,        16)
+REGDEF_END(MASK_49_REGISTER)
+
+
+/*
+    MASK5_LINE0_COEFFC:    [0x0, 0x3fffffff],			bits : 29_0
+    MASK5_LINE0_COMP  :    [0x0, 0x3],			bits : 31_30
+*/
+#define MASK_50_REGISTER_OFS 0x0ac4
+REGDEF_BEGIN(MASK_50_REGISTER)
+	REGDEF_BIT(MASK5_LINE0_COEFFC,        30)
+	REGDEF_BIT(MASK5_LINE0_COMP  ,        2)
+REGDEF_END(MASK_50_REGISTER)
+
+
+/*
+    MASK5_LINE1_COEFFA:    [0x0, 0xffff],			bits : 15_0
+    MASK5_LINE1_COEFFB:    [0x0, 0xffff],			bits : 31_16
+*/
+#define MASK_51_REGISTER_OFS 0x0ac8
+REGDEF_BEGIN(MASK_51_REGISTER)
+	REGDEF_BIT(MASK5_LINE1_COEFFA,        16)
+	REGDEF_BIT(MASK5_LINE1_COEFFB,        16)
+REGDEF_END(MASK_51_REGISTER)
+
+
+/*
+    MASK5_LINE1_COEFFC:    [0x0, 0x3fffffff],			bits : 29_0
+    MASK5_LINE1_COMP  :    [0x0, 0x3],			bits : 31_30
+*/
+#define MASK_52_REGISTER_OFS 0x0acc
+REGDEF_BEGIN(MASK_52_REGISTER)
+	REGDEF_BIT(MASK5_LINE1_COEFFC,        30)
+	REGDEF_BIT(MASK5_LINE1_COMP  ,        2)
+REGDEF_END(MASK_52_REGISTER)
+
+
+/*
+    MASK5_LINE2_COEFFA:    [0x0, 0xffff],			bits : 15_0
+    MASK5_LINE2_COEFFB:    [0x0, 0xffff],			bits : 31_16
+*/
+#define MASK_53_REGISTER_OFS 0x0ad0
+REGDEF_BEGIN(MASK_53_REGISTER)
+	REGDEF_BIT(MASK5_LINE2_COEFFA,        16)
+	REGDEF_BIT(MASK5_LINE2_COEFFB,        16)
+REGDEF_END(MASK_53_REGISTER)
+
+
+/*
+    MASK5_LINE2_COEFFC:    [0x0, 0x3fffffff],			bits : 29_0
+    MASK5_LINE2_COMP  :    [0x0, 0x3],			bits : 31_30
+*/
+#define MASK_54_REGISTER_OFS 0x0ad4
+REGDEF_BEGIN(MASK_54_REGISTER)
+	REGDEF_BIT(MASK5_LINE2_COEFFC,        30)
+	REGDEF_BIT(MASK5_LINE2_COMP  ,        2)
+REGDEF_END(MASK_54_REGISTER)
+
+
+/*
+    MASK5_LINE3_COEFFA:    [0x0, 0xffff],			bits : 15_0
+    MASK5_LINE3_COEFFB:    [0x0, 0xffff],			bits : 31_16
+*/
+#define MASK_55_REGISTER_OFS 0x0ad8
+REGDEF_BEGIN(MASK_55_REGISTER)
+	REGDEF_BIT(MASK5_LINE3_COEFFA,        16)
+	REGDEF_BIT(MASK5_LINE3_COEFFB,        16)
+REGDEF_END(MASK_55_REGISTER)
+
+
+/*
+    MASK5_LINE3_COEFFC:    [0x0, 0x3fffffff],			bits : 29_0
+    MASK5_LINE3_COMP  :    [0x0, 0x3],			bits : 31_30
+*/
+#define MASK_56_REGISTER_OFS 0x0adc
+REGDEF_BEGIN(MASK_56_REGISTER)
+	REGDEF_BIT(MASK5_LINE3_COEFFC,        30)
+	REGDEF_BIT(MASK5_LINE3_COMP  ,        2)
+REGDEF_END(MASK_56_REGISTER)
+
+
+/*
+    MASK6_DID        :    [0x0, 0x3],			bits : 1_0
+    MASK6_PAL_SEL    :    [0x0, 0x7],			bits : 6_4
+    MASK6_LINE_HIT_OP:    [0x0, 0x3],			bits : 9_8
+    MASK6_ALPHA      :    [0x0, 0x1ff],			bits : 24_16
+*/
+#define MASK_57_REGISTER_OFS 0x0ae0
+REGDEF_BEGIN(MASK_57_REGISTER)
+	REGDEF_BIT(MASK6_DID        ,        2)
+	REGDEF_BIT(                 ,        2)
+	REGDEF_BIT(MASK6_PAL_SEL    ,        3)
+	REGDEF_BIT(                 ,        1)
+	REGDEF_BIT(MASK6_LINE_HIT_OP,        2)
+	REGDEF_BIT(                 ,        6)
+	REGDEF_BIT(MASK6_ALPHA      ,        9)
+REGDEF_END(MASK_57_REGISTER)
+
+
+/*
+    MASK6_LINE0_COEFFA:    [0x0, 0xffff],			bits : 15_0
+    MASK6_LINE0_COEFFB:    [0x0, 0xffff],			bits : 31_16
+*/
+#define MASK_58_REGISTER_OFS 0x0ae4
+REGDEF_BEGIN(MASK_58_REGISTER)
+	REGDEF_BIT(MASK6_LINE0_COEFFA,        16)
+	REGDEF_BIT(MASK6_LINE0_COEFFB,        16)
+REGDEF_END(MASK_58_REGISTER)
+
+
+/*
+    MASK6_LINE0_COEFFC:    [0x0, 0x3fffffff],			bits : 29_0
+    MASK6_LINE0_COMP  :    [0x0, 0x3],			bits : 31_30
+*/
+#define MASK_59_REGISTER_OFS 0x0ae8
+REGDEF_BEGIN(MASK_59_REGISTER)
+	REGDEF_BIT(MASK6_LINE0_COEFFC,        30)
+	REGDEF_BIT(MASK6_LINE0_COMP  ,        2)
+REGDEF_END(MASK_59_REGISTER)
+
+
+/*
+    MASK6_LINE1_COEFFA:    [0x0, 0xffff],			bits : 15_0
+    MASK6_LINE1_COEFFB:    [0x0, 0xffff],			bits : 31_16
+*/
+#define MASK_60_REGISTER_OFS 0x0aec
+REGDEF_BEGIN(MASK_60_REGISTER)
+	REGDEF_BIT(MASK6_LINE1_COEFFA,        16)
+	REGDEF_BIT(MASK6_LINE1_COEFFB,        16)
+REGDEF_END(MASK_60_REGISTER)
+
+
+/*
+    MASK6_LINE1_COEFFC:    [0x0, 0x3fffffff],			bits : 29_0
+    MASK6_LINE1_COMP  :    [0x0, 0x3],			bits : 31_30
+*/
+#define MASK_61_REGISTER_OFS 0x0af0
+REGDEF_BEGIN(MASK_61_REGISTER)
+	REGDEF_BIT(MASK6_LINE1_COEFFC,        30)
+	REGDEF_BIT(MASK6_LINE1_COMP  ,        2)
+REGDEF_END(MASK_61_REGISTER)
+
+
+/*
+    MASK6_LINE2_COEFFA:    [0x0, 0xffff],			bits : 15_0
+    MASK6_LINE2_COEFFB:    [0x0, 0xffff],			bits : 31_16
+*/
+#define MASK_62_REGISTER_OFS 0x0af4
+REGDEF_BEGIN(MASK_62_REGISTER)
+	REGDEF_BIT(MASK6_LINE2_COEFFA,        16)
+	REGDEF_BIT(MASK6_LINE2_COEFFB,        16)
+REGDEF_END(MASK_62_REGISTER)
+
+
+/*
+    MASK6_LINE2_COEFFC:    [0x0, 0x3fffffff],			bits : 29_0
+    MASK6_LINE2_COMP  :    [0x0, 0x3],			bits : 31_30
+*/
+#define MASK_63_REGISTER_OFS 0x0af8
+REGDEF_BEGIN(MASK_63_REGISTER)
+	REGDEF_BIT(MASK6_LINE2_COEFFC,        30)
+	REGDEF_BIT(MASK6_LINE2_COMP  ,        2)
+REGDEF_END(MASK_63_REGISTER)
+
+
+/*
+    MASK6_LINE3_COEFFA:    [0x0, 0xffff],			bits : 15_0
+    MASK6_LINE3_COEFFB:    [0x0, 0xffff],			bits : 31_16
+*/
+#define MASK_64_REGISTER_OFS 0x0afc
+REGDEF_BEGIN(MASK_64_REGISTER)
+	REGDEF_BIT(MASK6_LINE3_COEFFA,        16)
+	REGDEF_BIT(MASK6_LINE3_COEFFB,        16)
+REGDEF_END(MASK_64_REGISTER)
+
+
+/*
+    MASK6_LINE3_COEFFC:    [0x0, 0x3fffffff],			bits : 29_0
+    MASK6_LINE3_COMP  :    [0x0, 0x3],			bits : 31_30
+*/
+#define MASK_65_REGISTER_OFS 0x0b00
+REGDEF_BEGIN(MASK_65_REGISTER)
+	REGDEF_BIT(MASK6_LINE3_COEFFC,        30)
+	REGDEF_BIT(MASK6_LINE3_COMP  ,        2)
+REGDEF_END(MASK_65_REGISTER)
+
+
+/*
+    MASK7_DID        :    [0x0, 0x3],			bits : 1_0
+    MASK7_PAL_SEL    :    [0x0, 0x7],			bits : 6_4
+    MASK7_LINE_HIT_OP:    [0x0, 0x3],			bits : 9_8
+    MASK7_ALPHA      :    [0x0, 0x1ff],			bits : 24_16
+*/
+#define MASK_66_REGISTER_OFS 0x0b04
+REGDEF_BEGIN(MASK_66_REGISTER)
+	REGDEF_BIT(MASK7_DID        ,        2)
+	REGDEF_BIT(                 ,        2)
+	REGDEF_BIT(MASK7_PAL_SEL    ,        3)
+	REGDEF_BIT(                 ,        1)
+	REGDEF_BIT(MASK7_LINE_HIT_OP,        2)
+	REGDEF_BIT(                 ,        6)
+	REGDEF_BIT(MASK7_ALPHA      ,        9)
+REGDEF_END(MASK_66_REGISTER)
+
+
+/*
+    MASK7_LINE0_COEFFA:    [0x0, 0xffff],			bits : 15_0
+    MASK7_LINE0_COEFFB:    [0x0, 0xffff],			bits : 31_16
+*/
+#define MASK_67_REGISTER_OFS 0x0b08
+REGDEF_BEGIN(MASK_67_REGISTER)
+	REGDEF_BIT(MASK7_LINE0_COEFFA,        16)
+	REGDEF_BIT(MASK7_LINE0_COEFFB,        16)
+REGDEF_END(MASK_67_REGISTER)
+
+
+/*
+    MASK7_LINE0_COEFFC:    [0x0, 0x3fffffff],			bits : 29_0
+    MASK7_LINE0_COMP  :    [0x0, 0x3],			bits : 31_30
+*/
+#define MASK_68_REGISTER_OFS 0x0b0c
+REGDEF_BEGIN(MASK_68_REGISTER)
+	REGDEF_BIT(MASK7_LINE0_COEFFC,        30)
+	REGDEF_BIT(MASK7_LINE0_COMP  ,        2)
+REGDEF_END(MASK_68_REGISTER)
+
+
+/*
+    MASK7_LINE1_COEFFA:    [0x0, 0xffff],			bits : 15_0
+    MASK7_LINE1_COEFFB:    [0x0, 0xffff],			bits : 31_16
+*/
+#define MASK_69_REGISTER_OFS 0x0b10
+REGDEF_BEGIN(MASK_69_REGISTER)
+	REGDEF_BIT(MASK7_LINE1_COEFFA,        16)
+	REGDEF_BIT(MASK7_LINE1_COEFFB,        16)
+REGDEF_END(MASK_69_REGISTER)
+
+
+/*
+    MASK7_LINE1_COEFFC:    [0x0, 0x3fffffff],			bits : 29_0
+    MASK7_LINE1_COMP  :    [0x0, 0x3],			bits : 31_30
+*/
+#define MASK_70_REGISTER_OFS 0x0b14
+REGDEF_BEGIN(MASK_70_REGISTER)
+	REGDEF_BIT(MASK7_LINE1_COEFFC,        30)
+	REGDEF_BIT(MASK7_LINE1_COMP  ,        2)
+REGDEF_END(MASK_70_REGISTER)
+
+
+/*
+    MASK7_LINE2_COEFFA:    [0x0, 0xffff],			bits : 15_0
+    MASK7_LINE2_COEFFB:    [0x0, 0xffff],			bits : 31_16
+*/
+#define MASK_71_REGISTER_OFS 0x0b18
+REGDEF_BEGIN(MASK_71_REGISTER)
+	REGDEF_BIT(MASK7_LINE2_COEFFA,        16)
+	REGDEF_BIT(MASK7_LINE2_COEFFB,        16)
+REGDEF_END(MASK_71_REGISTER)
+
+
+/*
+    MASK7_LINE2_COEFFC:    [0x0, 0x3fffffff],			bits : 29_0
+    MASK7_LINE2_COMP  :    [0x0, 0x3],			bits : 31_30
+*/
+#define MASK_72_REGISTER_OFS 0x0b1c
+REGDEF_BEGIN(MASK_72_REGISTER)
+	REGDEF_BIT(MASK7_LINE2_COEFFC,        30)
+	REGDEF_BIT(MASK7_LINE2_COMP  ,        2)
+REGDEF_END(MASK_72_REGISTER)
+
+
+/*
+    MASK7_LINE3_COEFFA:    [0x0, 0xffff],			bits : 15_0
+    MASK7_LINE3_COEFFB:    [0x0, 0xffff],			bits : 31_16
+*/
+#define MASK_73_REGISTER_OFS 0x0b20
+REGDEF_BEGIN(MASK_73_REGISTER)
+	REGDEF_BIT(MASK7_LINE3_COEFFA,        16)
+	REGDEF_BIT(MASK7_LINE3_COEFFB,        16)
+REGDEF_END(MASK_73_REGISTER)
+
+
+/*
+    MASK7_LINE3_COEFFC:    [0x0, 0x3fffffff],			bits : 29_0
+    MASK7_LINE3_COMP  :    [0x0, 0x3],			bits : 31_30
+*/
+#define MASK_74_REGISTER_OFS 0x0b24
+REGDEF_BEGIN(MASK_74_REGISTER)
+	REGDEF_BIT(MASK7_LINE3_COEFFC,        30)
+	REGDEF_BIT(MASK7_LINE3_COMP  ,        2)
+REGDEF_END(MASK_74_REGISTER)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define MASK_75_REGISTER_OFS 0x0b28
+REGDEF_BEGIN(MASK_75_REGISTER)
+	REGDEF_BIT(Reserved,        32)
+REGDEF_END(MASK_75_REGISTER)
+
+
+/*
+    Reserved:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define MASK_76_REGISTER_OFS 0x0b2C
+REGDEF_BEGIN(MASK_76_REGISTER)
+	REGDEF_BIT(Reserved  ,        32)
+REGDEF_END(MASK_76_REGISTER)
+
+/*
+    MASK0_LINE4_COEFFA:    [0x0, 0xffff],			bits : 15_0
+    MASK0_LINE4_COEFFB:    [0x0, 0xffff],			bits : 31_16
+*/
+#define MASK_77_REGISTER_OFS 0x0b30
+REGDEF_BEGIN(MASK_77_REGISTER)
+	REGDEF_BIT(MASK0_LINE4_COEFFA,        16)
+	REGDEF_BIT(MASK0_LINE4_COEFFB,        16)
+REGDEF_END(MASK_77_REGISTER)
+
+
+/*
+    MASK0_LINE4_COEFFC:    [0x0, 0x3fffffff],			bits : 29_0
+    MASK0_LINE4_COMP  :    [0x0, 0x3],			bits : 31_30
+*/
+#define MASK_78_REGISTER_OFS 0x0b34
+REGDEF_BEGIN(MASK_78_REGISTER)
+	REGDEF_BIT(MASK0_LINE4_COEFFC,        30)
+	REGDEF_BIT(MASK0_LINE4_COMP  ,        2)
+REGDEF_END(MASK_78_REGISTER)
+
+
+/*
+    MASK0_LINE5_COEFFA:    [0x0, 0xffff],			bits : 15_0
+    MASK0_LINE5_COEFFB:    [0x0, 0xffff],			bits : 31_16
+*/
+#define MASK_79_REGISTER_OFS 0x0b38
+REGDEF_BEGIN(MASK_79_REGISTER)
+	REGDEF_BIT(MASK0_LINE5_COEFFA,        16)
+	REGDEF_BIT(MASK0_LINE5_COEFFB,        16)
+REGDEF_END(MASK_79_REGISTER)
+
+
+/*
+    MASK0_LINE5_COEFFC:    [0x0, 0x3fffffff],			bits : 29_0
+    MASK0_LINE5_COMP  :    [0x0, 0x3],			bits : 31_30
+*/
+#define MASK_80_REGISTER_OFS 0x0b3c
+REGDEF_BEGIN(MASK_80_REGISTER)
+	REGDEF_BIT(MASK0_LINE5_COEFFC,        30)
+	REGDEF_BIT(MASK0_LINE5_COMP  ,        2)
+REGDEF_END(MASK_80_REGISTER)
+
+
+/*
+    MASK2_LINE4_COEFFA:    [0x0, 0xffff],			bits : 15_0
+    MASK2_LINE4_COEFFB:    [0x0, 0xffff],			bits : 31_16
+*/
+#define MASK_81_REGISTER_OFS 0x0b40
+REGDEF_BEGIN(MASK_81_REGISTER)
+	REGDEF_BIT(MASK2_LINE4_COEFFA,        16)
+	REGDEF_BIT(MASK2_LINE4_COEFFB,        16)
+REGDEF_END(MASK_81_REGISTER)
+
+
+/*
+    MASK2_LINE4_COEFFC:    [0x0, 0x3fffffff],			bits : 29_0
+    MASK2_LINE4_COMP  :    [0x0, 0x3],			bits : 31_30
+*/
+#define MASK_82_REGISTER_OFS 0x0b44
+REGDEF_BEGIN(MASK_82_REGISTER)
+	REGDEF_BIT(MASK2_LINE4_COEFFC,        30)
+	REGDEF_BIT(MASK2_LINE4_COMP  ,        2)
+REGDEF_END(MASK_82_REGISTER)
+
+
+/*
+    MASK2_LINE5_COEFFA:    [0x0, 0xffff],			bits : 15_0
+    MASK2_LINE5_COEFFB:    [0x0, 0xffff],			bits : 31_16
+*/
+#define MASK_83_REGISTER_OFS 0x0b48
+REGDEF_BEGIN(MASK_83_REGISTER)
+	REGDEF_BIT(MASK2_LINE5_COEFFA,        16)
+	REGDEF_BIT(MASK2_LINE5_COEFFB,        16)
+REGDEF_END(MASK_83_REGISTER)
+
+
+/*
+    MASK2_LINE5_COEFFC:    [0x0, 0x3fffffff],			bits : 29_0
+    MASK2_LINE5_COMP  :    [0x0, 0x3],			bits : 31_30
+*/
+#define MASK_84_REGISTER_OFS 0x0b4c
+REGDEF_BEGIN(MASK_84_REGISTER)
+	REGDEF_BIT(MASK2_LINE5_COEFFC,        30)
+	REGDEF_BIT(MASK2_LINE5_COMP  ,        2)
+REGDEF_END(MASK_84_REGISTER)
+
+/*
+    MASK4_LINE4_COEFFA:    [0x0, 0xffff],			bits : 15_0
+    MASK4_LINE4_COEFFB:    [0x0, 0xffff],			bits : 31_16
+*/
+#define MASK_85_REGISTER_OFS 0x0b50
+REGDEF_BEGIN(MASK_85_REGISTER)
+	REGDEF_BIT(MASK4_LINE4_COEFFA,        16)
+	REGDEF_BIT(MASK4_LINE4_COEFFB,        16)
+REGDEF_END(MASK_85_REGISTER)
+
+
+/*
+    MASK4_LINE4_COEFFC:    [0x0, 0x3fffffff],			bits : 29_0
+    MASK4_LINE4_COMP  :    [0x0, 0x3],			bits : 31_30
+*/
+#define MASK_86_REGISTER_OFS 0x0b54
+REGDEF_BEGIN(MASK_86_REGISTER)
+	REGDEF_BIT(MASK4_LINE4_COEFFC,        30)
+	REGDEF_BIT(MASK4_LINE4_COMP  ,        2)
+REGDEF_END(MASK_86_REGISTER)
+
+
+/*
+    MASK4_LINE5_COEFFA:    [0x0, 0xffff],			bits : 15_0
+    MASK4_LINE5_COEFFB:    [0x0, 0xffff],			bits : 31_16
+*/
+#define MASK_87_REGISTER_OFS 0x0b58
+REGDEF_BEGIN(MASK_87_REGISTER)
+	REGDEF_BIT(MASK4_LINE5_COEFFA,        16)
+	REGDEF_BIT(MASK4_LINE5_COEFFB,        16)
+REGDEF_END(MASK_87_REGISTER)
+
+
+/*
+    MASK4_LINE5_COEFFC:    [0x0, 0x3fffffff],			bits : 29_0
+    MASK4_LINE5_COMP  :    [0x0, 0x3],			bits : 31_30
+*/
+#define MASK_88_REGISTER_OFS 0x0b5c
+REGDEF_BEGIN(MASK_88_REGISTER)
+	REGDEF_BIT(MASK4_LINE5_COEFFC,        30)
+	REGDEF_BIT(MASK4_LINE5_COMP  ,        2)
+REGDEF_END(MASK_88_REGISTER)
+
+
+/*
+    MASK6_LINE4_COEFFA:    [0x0, 0xffff],			bits : 15_0
+    MASK6_LINE4_COEFFB:    [0x0, 0xffff],			bits : 31_16
+*/
+#define MASK_89_REGISTER_OFS 0x0b60
+REGDEF_BEGIN(MASK_89_REGISTER)
+	REGDEF_BIT(MASK6_LINE4_COEFFA,        16)
+	REGDEF_BIT(MASK6_LINE4_COEFFB,        16)
+REGDEF_END(MASK_89_REGISTER)
+
+
+/*
+    MASK6_LINE4_COEFFC:    [0x0, 0x3fffffff],			bits : 29_0
+    MASK6_LINE4_COMP  :    [0x0, 0x3],			bits : 31_30
+*/
+#define MASK_90_REGISTER_OFS 0x0b64
+REGDEF_BEGIN(MASK_90_REGISTER)
+	REGDEF_BIT(MASK6_LINE4_COEFFC,        30)
+	REGDEF_BIT(MASK6_LINE4_COMP  ,        2)
+REGDEF_END(MASK_90_REGISTER)
+
+
+/*
+    MASK6_LINE5_COEFFA:    [0x0, 0xffff],			bits : 15_0
+    MASK6_LINE5_COEFFB:    [0x0, 0xffff],			bits : 31_16
+*/
+#define MASK_91_REGISTER_OFS 0x0b68
+REGDEF_BEGIN(MASK_91_REGISTER)
+	REGDEF_BIT(MASK6_LINE5_COEFFA,        16)
+	REGDEF_BIT(MASK6_LINE5_COEFFB,        16)
+REGDEF_END(MASK_91_REGISTER)
+
+
+/*
+    MASK6_LINE5_COEFFC:    [0x0, 0x3fffffff],			bits : 29_0
+    MASK6_LINE5_COMP  :    [0x0, 0x3],			bits : 31_30
+*/
+#define MASK_92_REGISTER_OFS 0x0b6c
+REGDEF_BEGIN(MASK_92_REGISTER)
+	REGDEF_BIT(MASK6_LINE5_COEFFC,        30)
+	REGDEF_BIT(MASK6_LINE5_COMP  ,        2)
+REGDEF_END(MASK_92_REGISTER)
+
+
+
+
+typedef struct {
+	union {
+			struct {
+				unsigned sw_rst 		   : 1; 	// bits : 0
+				unsigned dma_sw_rst 	   : 1; 	// bits : 1
+				unsigned				   : 28;
+				unsigned start			   : 1; 	// bits : 30
+				unsigned ll_fire		   : 1; 	// bits : 31
+			} bit;
+			UINT32 word;
+		} reg_0; // 0x0000
+	
+	union {
+		struct {
+			unsigned cgofs_en				 : 1;		// bits : 0
+			unsigned						 : 1;		// bits : 1
+			unsigned sharpen_en 			 : 1;		// bits : 2
+			unsigned dc_en					 : 1;		// bits : 3
+			unsigned dctg_en				 : 1;		// bits : 4
+			unsigned relative_2dlut_coord_en : 1;       // bits : 5
+			unsigned dc_2d_lut_load_en		 : 1;		// bits : 6
+			unsigned ptz_coord_cal_en		 : 1;		// bits : 7
+			unsigned privacy_mask_en	     : 8;		// bits : 15~8
+			unsigned absolute_2dlut_prec_sel : 2;		// Bits : 17_16
+			unsigned relative_2dlut_prec_sel : 2;		// Bits : 19_18
+			unsigned debug_type 			 : 4;		// bits : 23_20
+			unsigned col_num				 : 3;		// bits : 26_24
+			unsigned                         : 2;		// Bits : 28_27
+			unsigned dc_pixel_mask_op        : 2;		// Bits : 30_29			
+			unsigned ll_terminate			 : 1;		// bits : 31
+		} bit;
+		UINT32 word;
+	} reg_1; // 0x0004
+
+	union {
+		struct {
+			unsigned						  : 10; 	// Bits : 9_0
+			unsigned src_format 			  : 4;		// bits : 13_10
+			unsigned						  : 3;		// Bits : 16_14
+			unsigned shp_wet_out_sel		  : 1;		// bits : 17
+			unsigned						  : 2;		// Bits : 19_18
+			unsigned src_drt				  : 2;		// bits : 21_20
+			unsigned         				  : 1;		// Bits : 22
+			unsigned src_drt_pc2tv_weight	  : 9;		// Bits : 31_23			
+		} bit;
+		UINT32 word;
+	} reg_2; // 0x0008
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_3; // 0x000c
+
+	union {
+		struct {
+			unsigned src_width		   : 15;		// bits : 14_0
+			unsigned				   : 1; 		// Bits : 15
+			unsigned src_height 	   : 15;		// bits : 30_16
+		} bit;
+		UINT32 word;
+	} reg_4; // 0x0010
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_5; // 0x0014
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_6; // 0x0018
+
+	union {
+		struct {
+			unsigned proc_height			   : 15;		// bits : 14_0
+			unsigned						   : 1;
+			unsigned presca_merge_width 	   : 15;		// Bits : 30_16
+		} bit;
+		UINT32 word;
+	} reg_7; // 0x001c
+
+	union {
+		struct {
+			unsigned proc_y_start		 : 15;		// bits : 13_0
+		} bit;
+		UINT32 word;
+	} reg_8; // 0x0020
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_9; // 0x0024
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_10; // 0x0028
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_11; // 0x002c
+
+	union {
+		struct {
+			unsigned dc_width		  : 15; 	// Bits : 14_0
+			unsigned				  : 1;
+			unsigned dc_height		  : 15; 	// Bits : 30_16
+		} bit;
+		UINT32 word;
+	} reg_12; // 0x0030
+
+	union {
+		struct {
+			unsigned src_y_dram_ofsi		: 19;		// Bits : 18_0
+		} bit;
+		UINT32 word;
+	} reg_13; // 0x0034
+
+	union {
+		struct {
+			unsigned src_uv_dram_ofsi		 : 19;		// bits : 18_0
+		} bit;
+		UINT32 word;
+	} reg_14; // 0x0038
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_15; // 0x003c
+
+	union {
+		struct {
+			unsigned cgain_y		: 9;		// bits : 8_0
+			unsigned				: 7;
+			unsigned cofs_y 		: 10;		// bits : 25_16
+		} bit;
+		UINT32 word;
+	} reg_16; // 0x0040
+
+	union {
+		struct {
+			unsigned cgain_u		: 9;		// bits : 8_0
+			unsigned				: 7;
+			unsigned cofs_u 		: 10;		// bits : 25_16
+		} bit;
+		UINT32 word;
+	} reg_17; // 0x0044
+
+	union {
+		struct {
+			unsigned cgain_v		: 9;		// bits : 8_0
+			unsigned				: 7;
+			unsigned cofs_v 		: 10;		// bits : 25_16
+			unsigned				: 2;
+			unsigned cg_drng		: 1;		// bits : 28
+		} bit;
+		UINT32 word;
+	} reg_18; // 0x0048
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_19; // 0x004c
+
+	union {
+		struct {
+			unsigned reserved        : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_20; // 0x0050
+
+	union {
+		struct {
+			unsigned reserved        : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_21; // 0x0054
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_22; // 0x0058
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_23; // 0x005c
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_24; // 0x0060
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_25; // 0x0064
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_26; // 0x0068
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_27; // 0x006c
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_28; // 0x0070
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_29; // 0x0074
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_30; // 0x0078
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_31; // 0x007c
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_32; // 0x0080
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_33; // 0x0084
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_34; // 0x0088
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_35; // 0x008c
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_36; // 0x0090
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_37; // 0x0094
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_38; // 0x0098
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_39; // 0x009c
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_40; // 0x00a0
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_41; // 0x00a4
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_42; // 0x00a8
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_43; // 0x00ac
+
+	union {
+		struct {
+			unsigned map_size			: 4;		// bits : 3_0
+			unsigned					: 27;
+			unsigned pfet_en			: 1;		// bits : 31
+		} bit;
+		UINT32 word;
+	} reg_44; // 0x00b0
+
+	union {
+		struct {
+			unsigned pfet_hlen		  : 14; 	  // bits : 13_0
+			unsigned				  : 2;
+			unsigned pfet_vlen		  : 14; 	  // bits : 29_16
+		} bit;
+		UINT32 word;
+	} reg_45; // 0x00b4
+
+	union {
+		struct {
+			unsigned pfet_hstep 	   : 14;		// bits : 13_0
+			unsigned				   : 2; 	// bits : 15_14
+			unsigned pfet_vstep 	   : 14;		// bits : 29_16
+		} bit;
+		UINT32 word;
+	} reg_46; // 0x00b8
+
+	union {
+		struct {
+			unsigned pfet_hoft		  : 14; 	// bits : 13_0
+			unsigned				  : 2;		// bits : 15_14
+			unsigned pfet_voft		  : 14; 	// bits : 29_16
+		} bit;
+		UINT32 word;
+	} reg_47; // 0x00bc
+
+	union {
+		struct {
+			unsigned dc_mode			:  2;		// bits : 1_0
+			unsigned					:  3;		// bits : 4_2
+			unsigned dc_lsb_rand		:  1;		// bits : 5_5
+		} bit;
+		UINT32 word;
+	} reg_48; // 0x00c0
+
+	union {
+		struct {
+			unsigned dc_fov_bound         : 2;  // Bits : 1_0
+			unsigned                      : 14;
+			unsigned dc_bound_y 		  : 8; // bits : 23_16
+		} bit;
+		UINT32 word;
+	} reg_49; // 0x00c4
+
+	union {
+		struct {
+			unsigned dc_bound_u 	   : 8;		// bits : 7_0
+			unsigned				   : 8; 		// bits : 15_8
+			unsigned dc_bound_v 	   : 8;		// bits : 25_16
+		} bit;
+		UINT32 word;
+	} reg_50; // 0x00c8
+
+	union {
+		struct {
+			unsigned dc_pixel_mask_seg_pos0 : 14;		// bits : 13_0			
+
+		} bit;
+		UINT32 word;
+	} reg_51; // 0x00cc
+
+	union {
+		struct {
+			unsigned dc_pixel_mask_seg_pos1    : 14;	// bits : 13_0			
+			unsigned                           : 15;	// bits : 28_14			
+			unsigned dc_pixel_mask_seg0_out_en : 1;		// bits : 29			
+			unsigned dc_pixel_mask_seg1_out_en : 1;		// bits : 30			
+			unsigned dc_pixel_mask_seg2_out_en : 1;		// bits : 31	
+		} bit;
+		UINT32 word;
+	} reg_52; // 0x00d0
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0			
+
+		} bit;
+		UINT32 word;
+	} reg_53; // 0x00d4
+
+	union {
+		struct {
+			unsigned dc_hfact		 : 24;		// bits : 23_0
+		} bit;
+		UINT32 word;
+	} reg_54; // 0x00d8
+
+	union {
+		struct {
+			unsigned dc_vfact		 : 24;		// bits : 23_0
+		} bit;
+		UINT32 word;
+	} reg_55; // 0x00dc
+
+	union {
+		struct {
+			unsigned dc_xofs_int		: 11;		// bits : 10_0
+			unsigned					: 5;
+			unsigned dc_yofs_int		: 11;		// bits : 26_16
+		} bit;
+		UINT32 word;
+	} reg_56; // 0x00e0
+
+	union {
+		struct {
+			unsigned dc_xofs_frc		: 24;		// bits : 23_0
+		} bit;
+		UINT32 word;
+	} reg_57; // 0x00e4
+
+	union {
+		struct {
+			unsigned dc_yofs_frc		: 24;		// bits : 23_0
+		} bit;
+		UINT32 word;
+	} reg_58; // 0x00e8
+
+	union {
+		struct {
+			unsigned dc_2dlut_width 	 : 11;		// Bits : 10_0
+			unsigned					 : 5;		// Bits : 15_11
+			unsigned dc_2dlut_height	 : 11;		// Bits : 26_16
+		} bit;
+		UINT32 word;
+	} reg_59; // 0x00ec
+
+	union {
+		struct {
+			unsigned dc_2dlut_col_start 	   : 11;	  // bits : 10_0
+		} bit;
+		UINT32 word;
+	} reg_60; // 0x00f0
+
+	union {
+		struct {
+			unsigned dc_2dlut_col_start_frac		: 24;	   // bits : 23_0
+		} bit;
+		UINT32 word;
+	} reg_61; // 0x00f4
+
+	union {
+		struct {
+			unsigned dc_pixel_mask0_dram_ofso        : 19;      // bits : 18_0
+		} bit;
+		UINT32 word;
+	} reg_62; // 0x00f8
+
+	union {
+		struct {
+			unsigned dc_pixel_mask1_dram_ofso        : 19;      // bits : 18_0
+		} bit;
+		UINT32 word;
+	} reg_63; // 0x00fc
+
+	union {
+		struct {
+			unsigned dc_pixel_mask2_dram_ofso        : 19;      // bits : 18_0
+		} bit;
+		UINT32 word;
+	} reg_64; // 0x0100
+
+	union {
+		struct {
+			unsigned dc_pixel_mask0_addr        : 32;      // bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_65; // 0x0104
+
+	union {
+		struct {
+			unsigned dc_pixel_mask0_addr_msb        : 4;      // bits : 3_0
+		} bit;
+		UINT32 word;
+	} reg_66; // 0x0108
+
+	union {
+		struct {
+			unsigned dc_pixel_mask1_addr        : 32;      // bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_67; // 0x010c
+
+	union {
+		struct {
+			unsigned dc_pixel_mask1_addr_msb        : 4;      // bits : 3_0
+		} bit;
+		UINT32 word;
+	} reg_68; // 0x0110
+
+	union {
+		struct {
+			unsigned dc_pixel_mask2_addr        : 32;      // bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_69; // 0x0114
+
+	union {
+		struct {
+			unsigned dc_pixel_mask2_addr_msb        : 4;      // bits : 3_0
+		} bit;
+		UINT32 word;
+	} reg_70; // 0x0118
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_71; // 0x011c
+
+	union {
+		struct {
+			unsigned dc_pixel_mask0_out_x_start        : 14;	// bits : 12_0
+			unsigned reserved		 				   : 2;		// bits : 15_13
+			unsigned dc_pixel_mask0_out_y_start        : 14;	// bits : 18_16			
+		} bit;
+		UINT32 word;
+	} reg_72; // 0x0120
+
+	union {
+		struct {
+			unsigned dc_pixel_mask1_out_x_start        : 14;	// bits : 12_0
+			unsigned reserved		 				   : 2;		// bits : 15_13
+			unsigned dc_pixel_mask1_out_y_start        : 14;	// bits : 18_16			
+		} bit;
+		UINT32 word;
+	} reg_73; // 0x0124
+
+	union {
+		struct {
+			unsigned dc_pixel_mask2_out_x_start        : 14;	// bits : 12_0
+			unsigned reserved		 				   : 2;		// bits : 15_13
+			unsigned dc_pixel_mask2_out_y_start        : 14;	// bits : 18_16			
+		} bit;
+		UINT32 word;
+	} reg_74; // 0x0128
+
+	union {
+		struct {
+			unsigned dc_pixel_mask_des_height        : 16;	// bits : 15_0
+		} bit;
+		UINT32 word;
+	} reg_75; // 0x012c
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_76; // 0x0130
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_77; // 0x0134
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_78; // 0x0138
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_79; // 0x013c
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_80; // 0x0140
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_81; // 0x0144
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_82; // 0x0148
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_83; // 0x014c
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_84; // 0x0150
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_85; // 0x0154
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_86; // 0x0158
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_87; // 0x015c
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_88; // 0x0160
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_89; // 0x0164
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_90; // 0x0168
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_91; // 0x016c
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_92; // 0x0170
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_93; // 0x0174
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_94; // 0x0178
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_95; // 0x017c
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_96; // 0x0180
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_97; // 0x0184
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_98; // 0x0188
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_99; // 0x018c
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_100; // 0x0190
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_101; // 0x0194
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_102; // 0x0198
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_103; // 0x019c
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_104; // 0x01a0
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_105; // 0x01a4
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_106; // 0x01a8
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_107; // 0x01ac
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_108; // 0x01b0
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_109; // 0x01b4
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_110; // 0x01b8
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_111; // 0x01bc
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_112; // 0x01c0
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_113; // 0x01c4
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_114; // 0x01c8
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_115; // 0x01cc
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_116; // 0x01d0
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_117; // 0x01d4
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_118; // 0x01d8
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_119; // 0x01dc
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_120; // 0x01e0
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_121; // 0x01e4
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_122; // 0x01e8
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_123; // 0x01ec
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_124; // 0x01f0
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_125; // 0x01f4
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_126; // 0x01f8
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_127; // 0x01fc
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_128; // 0x0200
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_129; // 0x0204
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_130; // 0x0208
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_131; // 0x020c
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_132; // 0x0210
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_133; // 0x0214
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_134; // 0x0218
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_135; // 0x021c
+
+	union {
+		struct {
+			unsigned dbs_gain_0 	   : 8; 	// bits : 7_0
+			unsigned dbs_gain_1 	   : 8; 	// bits : 15_8
+			unsigned dbs_gain_2 	   : 8; 	// bits : 23_16
+			unsigned dbs_gain_3 	   : 8; 	// bits : 31_24
+		} bit;
+		UINT32 word;
+	} reg_136; // 0x0220
+
+	union {
+		struct {
+			unsigned dbs_gain_4 	   : 8; 	// bits : 7_0
+			unsigned dbs_gain_5 	   : 8; 	// bits : 15_8
+			unsigned dbs_gain_6 	   : 8; 	// bits : 23_16
+			unsigned dbs_gain_7 	   : 8; 	// bits : 31_24
+		} bit;
+		UINT32 word;
+	} reg_137; // 0x0224
+
+	union {
+		struct {
+			unsigned dbs_gain_8 		: 8;		// bits : 7_0
+			unsigned dbs_gain_9 		: 8;		// bits : 15_8
+			unsigned dbs_gain_10		: 8;		// bits : 23_16
+			unsigned dbs_gain_11		: 8;		// bits : 31_24
+		} bit;
+		UINT32 word;
+	} reg_138; // 0x0228
+
+	union {
+		struct {
+			unsigned dbs_gain_12		: 8;		// bits : 7_0
+			unsigned dbs_gain_13		: 8;		// bits : 15_8
+			unsigned dbs_gain_14		: 8;		// bits : 23_16
+			unsigned dbs_gain_15		: 8;		// bits : 31_24
+		} bit;
+		UINT32 word;
+	} reg_139; // 0x022c
+
+	union {
+		struct {
+			unsigned dbs_gain_16			   : 8; 	// bits : 7_0
+			unsigned quad_area_clamping 	   : 16;		// bits : 23_8
+		} bit;
+		UINT32 word;
+	} reg_140; // 0x0230
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_141; // 0x0234
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_142; // 0x0238
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_143; // 0x023c
+
+	union {
+		struct {
+			unsigned edge_wet_src_sel		 : 1;		// bits : 0
+			unsigned dbs_gain_en			 : 1;		// bits : 1
+			unsigned						 : 6;
+			unsigned edge_weight_th 		 : 8;		// bits : 15_8
+			unsigned edge_weight_gain		 : 8;		// bits : 23_16
+			unsigned noise_level			 : 8;		// bits : 31_24
+		} bit;
+		UINT32 word;
+	} reg_144; // 0x0240
+
+	union {
+		struct {
+			unsigned edge_sharp_str1		: 8;		// bits : 7_0
+			unsigned edge_sharp_str2		: 8;		// bits : 15_8
+			unsigned flat_sharp_str 		: 8;		// bits : 23_16
+		} bit;
+		UINT32 word;
+	} reg_145; // 0x0244
+
+	union {
+		struct {
+			unsigned coring_th				 : 8;		// bits : 7_0
+			unsigned blend_inv_gamma		 : 8;		// bits : 15_8
+			unsigned bright_halo_clip		 : 8;		// bits : 23_16
+			unsigned dark_halo_clip 		 : 8;		// bits : 31_24
+		} bit;
+		UINT32 word;
+	} reg_146; // 0x0248
+
+	union {
+		struct {
+			unsigned noise_curve0		 : 8;		// bits : 7_0
+			unsigned noise_curve1		 : 8;		// bits : 15_8
+			unsigned noise_curve2		 : 8;		// bits : 23_16
+			unsigned noise_curve3		 : 8;		// bits : 31_24
+		} bit;
+		UINT32 word;
+	} reg_147; // 0x024c
+
+	union {
+		struct {
+			unsigned noise_curve4		 : 8;		// bits : 7_0
+			unsigned noise_curve5		 : 8;		// bits : 15_8
+			unsigned noise_curve6		 : 8;		// bits : 23_16
+			unsigned noise_curve7		 : 8;		// bits : 31_24
+		} bit;
+		UINT32 word;
+	} reg_148; // 0x0250
+
+	union {
+		struct {
+			unsigned noise_curve8		  : 8;		// bits : 7_0
+			unsigned noise_curve9		  : 8;		// bits : 15_8
+			unsigned noise_curve10		  : 8;		// bits : 23_16
+			unsigned noise_curve11		  : 8;		// bits : 31_24
+		} bit;
+		UINT32 word;
+	} reg_149; // 0x0254
+
+	union {
+		struct {
+			unsigned noise_curve12		  : 8;		// bits : 7_0
+			unsigned noise_curve13		  : 8;		// bits : 15_8
+			unsigned noise_curve14		  : 8;		// bits : 23_16
+			unsigned noise_curve15		  : 8;		// bits : 31_24
+		} bit;
+		UINT32 word;
+	} reg_150; // 0x0258
+
+	union {
+		struct {
+			unsigned noise_curve16		  : 8;		// bits : 7_0
+		} bit;
+		UINT32 word;
+	} reg_151; // 0x025c
+
+	union {
+		struct {
+			unsigned pal0_y 		: 8;		// bits : 7_0
+			unsigned pal0_cb		: 8;		// bits : 15_8
+			unsigned pal0_cr		: 8;		// bits : 23_16
+		} bit;
+		UINT32 word;
+	} reg_152; // 0x0260
+
+	union {
+		struct {
+			unsigned pal1_y 		: 8;		// bits : 7_0
+			unsigned pal1_cb		: 8;		// bits : 15_8
+			unsigned pal1_cr		: 8;		// bits : 23_16
+		} bit;
+		UINT32 word;
+	} reg_153; // 0x0264
+
+	union {
+		struct {
+			unsigned pal2_y 		: 8;		// bits : 7_0
+			unsigned pal2_cb		: 8;		// bits : 15_8
+			unsigned pal2_cr		: 8;		// bits : 23_16
+		} bit;
+		UINT32 word;
+	} reg_154; // 0x0268
+
+	union {
+		struct {
+			unsigned pal3_y 		: 8;		// bits : 7_0
+			unsigned pal3_cb		: 8;		// bits : 15_8
+			unsigned pal3_cr		: 8;		// bits : 23_16
+		} bit;
+		UINT32 word;
+	} reg_155; // 0x026c
+
+	union {
+		struct {
+			unsigned pal4_y 		: 8;		// bits : 7_0
+			unsigned pal4_cb		: 8;		// bits : 15_8
+			unsigned pal4_cr		: 8;		// bits : 23_16
+		} bit;
+		UINT32 word;
+	} reg_156; // 0x0270
+
+	union {
+		struct {
+			unsigned pal5_y 		: 8;		// bits : 7_0
+			unsigned pal5_cb		: 8;		// bits : 15_8
+			unsigned pal5_cr		: 8;		// bits : 23_16
+		} bit;
+		UINT32 word;
+	} reg_157; // 0x0274
+
+	union {
+		struct {
+			unsigned pal6_y 		: 8;		// bits : 7_0
+			unsigned pal6_cb		: 8;		// bits : 15_8
+			unsigned pal6_cr		: 8;		// bits : 23_16
+		} bit;
+		UINT32 word;
+	} reg_158; // 0x0278
+
+	union {
+		struct {
+			unsigned pal7_y 		: 8;		// bits : 7_0
+			unsigned pal7_cb		: 8;		// bits : 15_8
+			unsigned pal7_cr		: 8;		// bits : 23_16
+		} bit;
+		UINT32 word;
+	} reg_159; // 0x027c
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_160; // 0x0280
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_161; // 0x0284
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_162; // 0x0288
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_163; // 0x028c
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_164; // 0x0290
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_165; // 0x0294
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_166; // 0x0298
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_167; // 0x029c
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_168; // 0x02a0
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_169; // 0x02a4
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_170; // 0x02a8
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_171; // 0x02ac
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_172; // 0x02b0
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_173; // 0x02b4
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_174; // 0x02b8
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_175; // 0x02bc
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_176; // 0x02c0
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_177; // 0x02c4
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_178; // 0x02c8
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_179; // 0x02cc
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_180; // 0x02d0
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_181; // 0x02d4
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_182; // 0x02d8
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_183; // 0x02dc
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_184; // 0x02e0
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_185; // 0x02e4
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_186; // 0x02e8
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_187; // 0x02ec
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_188; // 0x02f0
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_189; // 0x02f4
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_190; // 0x02f8
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_191; // 0x02fc
+
+	union {
+		struct {
+			unsigned llc_addr		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_192; // 0x0300
+
+	union {
+		struct {
+			unsigned llc_addr_msb	  : 4;		// Bits : 3_0
+		} bit;
+		UINT32 word;
+	} reg_193; // 0x0304
+
+	union {
+		struct {
+			unsigned src_y_addr 	   : 32;		// Bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_194; // 0x0308
+
+	union {
+		struct {
+			unsigned src_y_addr_msb 	   : 4; 	// Bits : 3_0
+		} bit;
+		UINT32 word;
+	} reg_195; // 0x030c
+
+	union {
+		struct {
+			unsigned src_uv_addr		 : 32;		// Bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_196; // 0x0310
+
+	union {
+		struct {
+			unsigned src_uv_addr_msb	: 4;		// Bits : 3_0
+		} bit;
+		UINT32 word;
+	} reg_197; // 0x0314
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_198; // 0x0318
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_199; // 0x031c
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_200; // 0x0320
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_201; // 0x0324
+
+	union {
+		struct {
+			unsigned dc_2dlut_addr		  : 32; 	// Bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_202; // 0x0328
+
+	union {
+		struct {
+			unsigned dc_2dlut_addr_msb		  : 4;		// Bits : 3_0
+		} bit;
+		UINT32 word;
+	} reg_203; // 0x032c
+
+	union {
+		struct {
+			unsigned des_res0_y0_addr		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_204; // 0x0330
+
+	union {
+		struct {
+			unsigned des_res0_y0_addr_msb		 : 4;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_205; // 0x0334
+
+	union {
+		struct {
+			unsigned des_res0_uv0_addr		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_206; // 0x0338
+
+	union {
+		struct {
+			unsigned des_res0_uv0_addr_msb		 : 4;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_207; // 0x033c
+
+	union {
+		struct {
+			unsigned des_res0_y1_addr		: 32;	  // bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_208; // 0x0340
+
+	union {
+		struct {
+			unsigned des_res0_y1_addr_msb		: 4;		// Bits : 3_0
+		} bit;
+		UINT32 word;
+	} reg_209; // 0x0344
+
+	union {
+		struct {
+			unsigned des_res0_uv1_addr		 : 32;		// Bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_210; // 0x0348
+
+	union {
+		struct {
+			unsigned des_res0_uv1_addr_msb		 : 4;	  // bits : 3_0
+		} bit;
+		UINT32 word;
+	} reg_211; // 0x034c
+
+	union {
+		struct {
+			unsigned des_res1_y0_addr		: 32;		// Bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_212; // 0x0350
+
+	union {
+		struct {
+			unsigned des_res1_y0_addr_msb		: 4;		// Bits : 3_0
+		} bit;
+		UINT32 word;
+	} reg_213; // 0x0354
+
+	union {
+		struct {
+			unsigned des_res1_uv0_addr		 : 32;	   // bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_214; // 0x0358
+
+	union {
+		struct {
+			unsigned des_res1_uv0_addr_msb	  : 4;		// Bits : 3_0
+		} bit;
+		UINT32 word;
+	} reg_215; // 0x035c
+
+	union {
+		struct {
+			unsigned des_res1_y1_addr		: 32;		// Bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_216; // 0x0360
+
+	union {
+		struct {
+			unsigned des_res1_y1_addr_msb		: 4;	 // bits : 3_0
+		} bit;
+		UINT32 word;
+	} reg_217; // 0x0364
+
+	union {
+		struct {
+			unsigned des_res1_uv1_addr		 : 32;		// Bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_218; // 0x0368
+
+	union {
+		struct {
+			unsigned des_res1_uv1_addr_msb		 : 4;		// Bits : 3_0
+		} bit;
+		UINT32 word;
+	} reg_219; // 0x036c
+
+	union {
+		struct {
+			unsigned reserved        : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_220; // 0x0370
+
+	union {
+		struct {
+			unsigned reserved        : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_221; // 0x0374
+
+	union {
+		struct {
+			unsigned reserved        : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_222; // 0x0378
+
+	union {
+		struct {
+			unsigned reserved        : 32;		// bits : 31_0
+
+		} bit;
+		UINT32 word;
+	} reg_223; // 0x037c
+
+	union {
+		struct {
+			unsigned dma0_wcmd_wait_value		 : 16;		// bits : 15_0
+			unsigned dma0_rcmd_wait_value		 : 16;		// bits : 31_16
+
+		} bit;
+		UINT32 word;
+	} reg_224; // 0x0380
+
+	union {
+		struct {
+			unsigned dma1_wcmd_wait_value		 : 16;		// bits : 15_0
+			unsigned dma1_rcmd_wait_value		 : 16;		// bits : 31_16
+		} bit;
+		UINT32 word;
+	} reg_225; // 0x0384
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_226; // 0x0388
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_227; // 0x038c
+
+	union {
+		struct {
+			unsigned zoom_rate_lut0 	   : 12;	 // bits : 11_0
+			unsigned						: 4;
+			unsigned zoom_rate_lut1 		: 12;	  // bits : 27_16
+		} bit;
+		UINT32 word;
+	} reg_228; // 0x0390
+
+	union {
+		struct {
+			unsigned zoom_rate_lut2 		: 12;	  // bits : 11_0
+			unsigned						: 4;
+			unsigned zoom_rate_lut3 		: 12;	  // bits : 27_16
+		} bit;
+		UINT32 word;
+	} reg_229; // 0x0394
+
+	union {
+		struct {
+			unsigned zoom_rate_lut4 		: 12;	  // bits : 11_0
+			unsigned						: 4;
+			unsigned zoom_rate_lut5 		: 12;	  // bits : 27_16
+		} bit;
+		UINT32 word;
+	} reg_230; // 0x0398
+
+	union {
+		struct {
+			unsigned zoom_rate_lut6 		: 12;	  // bits : 11_0
+			unsigned						: 4;
+			unsigned zoom_rate_lut7 		: 12;	  // bits : 27_16
+		} bit;
+		UINT32 word;
+	} reg_231; // 0x039c
+
+	union {
+		struct {
+			unsigned zoom_rate_lut8 		: 12;	  // bits : 11_0
+			unsigned						: 4;
+			unsigned zoom_rate_lut9 		: 12;	  // bits : 27_16
+		} bit;
+		UINT32 word;
+	} reg_232; // 0x03a0
+
+	union {
+		struct {
+			unsigned zoom_rate_lut10		: 12;	  // bits : 11_0
+			unsigned						: 4;
+			unsigned zoom_rate_lut11		: 12;	  // bits : 27_16
+		} bit;
+		UINT32 word;
+	} reg_233; // 0x03a4
+
+	union {
+		struct {
+			unsigned zoom_rate_lut12		: 12;	  // bits : 11_0
+			unsigned						: 4;
+			unsigned zoom_rate_lut13		: 12;	  // bits : 27_16
+		} bit;
+		UINT32 word;
+	} reg_234; // 0x03a8
+
+	union {
+		struct {
+			unsigned zoom_rate_lut14		: 12;	  // bits : 11_0
+			unsigned						: 4;
+			unsigned zoom_rate_lut15		: 12;	  // bits : 27_16
+		} bit;
+		UINT32 word;
+	} reg_235; // 0x03ac
+
+	union {
+		struct {
+			unsigned zoom_rate_lut16		: 12;	  // bits : 11_0
+		} bit;
+		UINT32 word;
+	} reg_236; // 0x03b0
+
+	union {
+		struct {
+			unsigned lut_max_inci_angle_deg_denom		 : 18;		// bits : 17_0
+		} bit;
+		UINT32 word;
+	} reg_237; // 0x03b4
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_238; // 0x03b8
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_239; // 0x03bc
+
+	union {
+		struct {
+			unsigned shp_ppi_idx		: 4;		// bits : 3_0
+			unsigned shp_ppo_idx		: 4;		// bits : 7_4
+		} bit;
+		UINT32 word;
+	} reg_240; // 0x03c0
+
+	union {
+		struct {
+			unsigned src_ppo_idx		: 4;		// bits : 3_0
+			unsigned sca_ppi_idx		: 4;		// bits : 7_4
+		} bit;
+		UINT32 word;
+	} reg_241; // 0x03c4
+
+	union {
+		struct {
+			unsigned ptz_long_aov		 : 18;		// bits : 17_0
+			unsigned					 : 10;
+			unsigned proj_type			 : 1;		// bits : 28
+		} bit;
+		UINT32 word;
+	} reg_242; // 0x03c8
+
+	union {
+		struct {
+			unsigned ptz_lati_aov		 : 18;		// bits : 17_0
+		} bit;
+		UINT32 word;
+	} reg_243; // 0x03cc
+
+	union {
+		struct {
+			unsigned pan_angle			  : 19; 	// bits : 18_0
+		} bit;
+		UINT32 word;
+	} reg_244; // 0x03d0
+
+	union {
+		struct {
+			unsigned tilt_angle 	   : 19;		// bits : 18_0
+		} bit;
+		UINT32 word;
+	} reg_245; // 0x03d4
+
+	union {
+		struct {
+			unsigned roll_angle		: 19;		// bits : 18_0
+		} bit;
+		UINT32 word;
+	} reg_246; // 0x03d8
+
+	union {
+		struct {
+			unsigned zoom_in_step		 : 10;		// bits : 9_0
+			unsigned					 : 6;		// bits : 15_10
+			unsigned max_diag_distance	: 16;		// bits : 31_16
+		} bit;
+		UINT32 word;
+	} reg_247; // 0x03dc
+
+	union {
+		struct {
+			unsigned dctg_mount_type		: 2;		// Bits : 1_0
+			unsigned dctg_distor_lut_en 	: 1;		// Bits : 2
+			unsigned dctg_correct_fov_aspect_ratio_en     : 1;        // Bits : 2
+			unsigned                                      :12;        // Bits : 15_3
+			unsigned dctg_lens_r			:14;		// Bits : 29_16
+		} bit;
+		UINT32 word;
+	} reg_248; // 0x03e0
+
+	union {
+		struct {
+			unsigned dctg_lens_cent_x		 : 13;		// bits : 12_0
+			unsigned						 : 3;
+			unsigned dctg_lens_cent_y		 : 13;		// bits : 28_16
+		} bit;
+		UINT32 word;
+	} reg_249; // 0x03e4
+
+	union {
+		struct {
+			unsigned dctg_long_aov		  : 20; 	// Bits : 19_0
+		} bit;
+		UINT32 word;
+	} reg_250; // 0x03e8
+
+	union {
+		struct {
+			unsigned dctg_lati_aov		  : 20; 	// Bits : 19_0
+		} bit;
+		UINT32 word;
+	} reg_251; // 0x03ec
+
+	union {
+		struct {
+			unsigned dctg_pan		 : 20;		// Bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_252; // 0x03f0
+
+	union {
+		struct {
+			unsigned dctg_tilt		  : 20; 	// Bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_253; // 0x03f4
+
+	union {
+		struct {
+			unsigned dctg_roll		  : 20; 	// Bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_254; // 0x03f8
+
+	union {
+		struct {
+			unsigned dctg_v_perspect	  : 21; 	// Bits : 20_0
+		} bit;
+		UINT32 word;
+	} reg_255; // 0x03fc
+
+	union {
+		struct {
+			unsigned vpe_ints_frame_done			   : 1; 	// bits : 0
+			unsigned vpe_ints_ll_err				   : 1; 	// bits : 1
+			unsigned vpe_ints_ll_done				   : 1; 	// bits : 2
+			unsigned vpe_ints_in_ycc_dec_err		   : 1; 	// bits : 3
+			unsigned vpe_ints_res0_ycc_enc_ovfl 	   : 1; 	// bits : 4
+			unsigned vpe_ints_res1_ycc_enc_ovfl 	   : 1; 	// bits : 5
+			unsigned vpe_ints_res2_ycc_enc_ovfl 	   : 1; 	// bits : 6
+			unsigned vpe_ints_res3_ycc_enc_ovfl 	   : 1; 	// bits : 7
+
+			
+		} bit;
+		UINT32 word;
+	} reg_256; // 0x0400
+
+	union {
+		struct {
+			unsigned vpe_inte_frame_done			   : 1; 	// bits : 0
+			unsigned vpe_inte_ll_err				   : 1; 	// bits : 1
+			unsigned vpe_inte_ll_done				   : 1; 	// bits : 2
+			unsigned vpe_inte_in_ycc_dec_err		   : 1; 	// bits : 3
+			unsigned vpe_inte_res0_ycc_enc_ovfl 	   : 1; 	// bits : 4
+			unsigned vpe_inte_res1_ycc_enc_ovfl 	   : 1; 	// bits : 5
+			unsigned vpe_inte_res2_ycc_enc_ovfl 	   : 1; 	// bits : 6
+			unsigned vpe_inte_res3_ycc_enc_ovfl 	   : 1; 	// bits : 7
+
+			
+		} bit;
+		UINT32 word;
+	} reg_257; // 0x0404
+
+	union {
+		struct {
+			unsigned dctg_hfact 	   : 24;		// Bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_258; // 0x0408
+
+	union {
+		struct {
+			unsigned dctg_vfact 	   : 24;		// Bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_259; // 0x040c
+
+	union {
+		struct {
+			unsigned vpe_mode					: 1;		// bits : 0
+			unsigned dma0_shut_down_done		: 1;		// bits : 1
+			unsigned							: 1;
+			unsigned hw_idle					: 1;		// bits : 3
+		} bit;
+		UINT32 word;
+	} reg_260; // 0x0410
+
+	union {
+		struct {
+			unsigned ip_version 	   : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_261; // 0x0414
+
+	union {
+		struct {
+			unsigned ip_info		: 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_262; // 0x0418
+
+	union {
+		struct {
+			unsigned single_cam_long_aov		: 18;		// bits : 17_0
+		} bit;
+		UINT32 word;
+	} reg_263; // 0x041c
+
+	union {
+		struct {
+			unsigned single_cam_lati_aov		: 18;		// bits : 17_0
+		} bit;
+		UINT32 word;
+	} reg_264; // 0x0420
+
+	union {
+		struct {
+			unsigned single_cam_img_width		 : 15;		// Bits : 14_0
+			unsigned							 : 1;		// Bits : 15
+			unsigned single_cam_img_height		 : 15;		// Bits : 30_16
+		} bit;
+		UINT32 word;
+	} reg_265; // 0x0424
+
+	union {
+		struct {
+			unsigned stitch_shift_overlap_angle 	   : 20;	  // bits : 19_0
+		} bit;
+		UINT32 word;
+	} reg_266; // 0x0428
+
+	union {
+		struct {
+			unsigned reserved 	   : 32;	  // bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_267; // 0x042c
+
+	union {
+		struct {
+			unsigned fire_cnt			   : 8; 	// bits : 7_0
+			unsigned done_cnt			   : 8; 	// bits : 15_8
+			unsigned sys_cs 			   : 4; 	// bits : 19_16
+			unsigned dma_r_src_done 	   : 1; 	// bits : 20
+			unsigned					   : 3;
+			unsigned dma_r_lut_done 	   : 1; 	// bits : 24
+			unsigned dma_w_des_done 	   : 1; 	// bits : 25
+			unsigned					   : 4;
+			unsigned col_cnt			   : 2; 	// bits : 31_30
+		} bit;
+		UINT32 word;
+	} reg_268; // 0x0430
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_269; // 0x0434
+
+	union {
+		struct {
+			unsigned res0_yvd				: 1;		// bits : 0
+			unsigned res0_y_block			: 1;		// bits : 1
+			unsigned res0_y_line_num		: 11;		// bits : 12_2
+			unsigned						: 3;
+			unsigned res0_cvd				: 1;		// bits : 16
+			unsigned res0_c_block			: 1;		// bits : 17
+			unsigned res0_c_line_num		: 11;		// bits : 28_18
+		} bit;
+		UINT32 word;
+	} reg_270; // 0x0438
+
+	union {
+		struct {
+			unsigned res1_yvd				: 1;		// bits : 0
+			unsigned res1_y_block			: 1;		// bits : 1
+			unsigned res1_y_line_num		: 11;		// bits : 12_2
+			unsigned						: 3;
+			unsigned res1_cvd				: 1;		// bits : 16
+			unsigned res1_c_block			: 1;		// bits : 17
+			unsigned res1_c_line_num		: 11;		// bits : 28_18
+		} bit;
+		UINT32 word;
+	} reg_271; // 0x043c
+
+	union {
+		struct {
+			unsigned res2_yvd               : 1;		// bits : 0
+			unsigned res2_y_block           : 1;		// bits : 1
+			unsigned res2_y_line_num        : 11;		// bits : 12_2
+			unsigned                        : 3;
+			unsigned res2_cvd               : 1;		// bits : 16
+			unsigned res2_c_block           : 1;		// bits : 17
+			unsigned res2_c_line_num        : 11;		// bits : 28_18
+		} bit;
+		UINT32 word;
+	} reg_272; // 0x0440
+
+	union {
+		struct {
+			unsigned res3_yvd               : 1;		// bits : 0
+			unsigned res3_y_block           : 1;		// bits : 1
+			unsigned res3_y_line_num        : 11;		// bits : 12_2
+			unsigned                        : 3;
+			unsigned res3_cvd               : 1;		// bits : 16
+			unsigned res3_c_block           : 1;		// bits : 17
+			unsigned res3_c_line_num        : 11;		// bits : 28_18
+		} bit;
+		UINT32 word;
+	} reg_273; // 0x0444
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_274; // 0x0448
+
+	union {
+		struct {
+			unsigned wbuf_cnt              : 5;		// bits : 4_0
+			unsigned                       : 3;		// bits : 7_5
+			unsigned des0_frm_end         : 1;		// bits : 8
+			unsigned des1_frm_end         : 1;		// bits : 9
+		} bit;
+		UINT32 word;
+	} reg_275; // 0x044c
+
+	union {
+		struct {
+			unsigned vmiss_cnt		  : 32; 	 // bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_276; // 0x0450
+
+	union {
+		struct {
+			unsigned conflict_cnt		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_277; // 0x0454
+
+	union {
+		struct {
+			unsigned vc_cs			: 3;		// bits : 2_0
+			unsigned				: 1;
+			unsigned pc_cs			: 3;		// bits : 10_8
+			unsigned				: 1;
+			unsigned miss_cs		: 3;		// bits : 10_8
+			unsigned miss_type		: 1;		// bits : 10_8
+			unsigned phit_cs		: 3;		// bits : 10_8
+
+		} bit;
+		UINT32 word;
+	} reg_278; // 0x0458
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_279; // 0x045c
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_280; // 0x0460
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_281; // 0x0464
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_282; // 0x0468
+
+	union {
+		struct {
+			unsigned job_empt			 : 1;		// bits : 0
+			unsigned job_type			 : 1;		// bits : 1
+			unsigned sd_sys_fsm 		 : 7;		// bits : 8_2
+			unsigned tc_eng_rfy 		 : 1;		// bits : 9
+			unsigned					 : 2;
+			unsigned sd0_hsac_fsm		 : 5;		// bits : 16_12
+			unsigned sd1_hsac_fsm		 : 5;		// bits : 21_17
+			unsigned sd2_hsac_fsm		 : 5;		// bits : 26_22
+			unsigned sd3_hsac_fsm		 : 5;		// bits : 31_27
+		} bit;
+		UINT32 word;
+	} reg_283; // 0x046c
+
+	union {
+		struct {
+			unsigned sd_src_frm_scan_fin		: 1;		// bits : 0
+			unsigned sm_scan_done				: 1;		// bits : 1
+		} bit;
+		UINT32 word;
+	} reg_284; // 0x0470
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_285; // 0x0474
+
+	union {
+		struct {
+			unsigned res0_fsm_done_keep        : 1;		// bits : 0
+			unsigned res1_fsm_done_keep        : 1;		// bits : 1
+			unsigned res2_fsm_done_keep        : 1;		// bits : 0
+			unsigned res3_fsm_done_keep        : 1;		// bits : 1
+			unsigned tc0_proc_job              : 1;		// bits : 4
+			unsigned tc1_proc_job              : 1;		// bits : 5
+			unsigned                           : 2;		// bits : 7_6
+			unsigned out0_full                 : 1;		// bits : 8
+			unsigned out1_full                 : 1;		// bits : 9
+			unsigned out2_full                 : 1;		// bits : 8
+			unsigned out3_full                 : 1;		// bits : 9
+			unsigned                           : 1;		// bits : 12_10
+			unsigned mas_fsm                   : 3;		// bits : 15_13
+		} bit;
+		UINT32 word;
+	} reg_286; // 0x0478
+
+	union {
+		struct {
+			unsigned ra_done		  : 1;		// bits : 0
+			unsigned dctg_done		  : 1;		// bits : 1
+			unsigned l2d_done		  : 1;		// bits : 2
+			unsigned dp_stall		  : 1;		// bits : 3
+			unsigned vmr_fsm		  : 3;		// bits : 6_4
+			unsigned				  : 1;
+			unsigned vmr_cnt		  : 3;		// bits : 10_8
+			unsigned				  : 1;
+			unsigned hmr_cnt		  : 2;		// bits : 13_12
+			unsigned				  : 2;
+			unsigned hfrac			  : 7;		// bits : 22_16
+			unsigned				  : 1;
+			unsigned vfrac			  : 7;		// bits : 30_24
+		} bit;
+		UINT32 word;
+	} reg_287; // 0x047c
+
+	union {
+		struct {
+			unsigned				: 8;
+			unsigned col_cnt		: 7;		// bits : 14_8
+			unsigned				: 1;
+			unsigned row_cnt		: 7;		// bits : 22_16
+		} bit;
+		UINT32 word;
+	} reg_288; // 0x0480
+
+	union {
+		struct {
+			unsigned l2d_done		   : 1; 	// bits : 0
+			unsigned dppm_full		   : 1; 	// bits : 1
+			unsigned dc_fm_done 	   : 1; 	// bits : 2
+			unsigned phase			   : 1; 	// bits : 3
+			unsigned scan_done		   : 1; 	// bits : 4
+			unsigned dwc_done		   : 1; 	// bits : 5
+			unsigned				   : 2;
+			unsigned dc_fsm 		   : 3; 	// bits : 10_8
+			unsigned				   : 5;
+			unsigned dst_x			   : 16;		// bits : 31_16
+		} bit;
+		UINT32 word;
+	} reg_289; // 0x0484
+
+	union {
+		struct {
+			unsigned dst_y			: 16;		// bits : 15_0
+			unsigned cc_rdy 		: 1;		// bits : 16
+			unsigned reuse			: 1;		// bits : 17
+			unsigned hmap_eq		: 1;		// bits : 18
+			unsigned				: 5;
+			unsigned buf_idx		: 7;		// bits : 30_24
+
+		} bit;
+		UINT32 word;
+	} reg_290; // 0x0488
+
+	union {
+		struct {
+			unsigned vpos		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_291; // 0x048c
+
+	union {
+		struct {
+			unsigned ll_tab_status00		: 4;		// bits : 3_0
+			unsigned ll_tab_status01		: 4;		// bits : 7_4
+			unsigned ll_tab_status02		: 4;		// bits : 11_8
+			unsigned ll_tab_status03		: 4;		// bits : 15_12
+			unsigned ll_tab_status04		: 4;		// bits : 19_16
+			unsigned ll_tab_status05		: 4;		// bits : 23_20
+			unsigned ll_tab_status06		: 4;		// bits : 27_24
+			unsigned ll_tab_status07		: 4;		// bits : 31_28
+		} bit;
+		UINT32 word;
+	} reg_292; // 0x0490
+
+	union {
+		struct {
+			unsigned ll_tab_status08		: 4;		// bits : 3_0
+			unsigned ll_tab_status09		: 4;		// bits : 7_4
+			unsigned ll_tab_status10		: 4;		// bits : 11_8
+			unsigned ll_tab_status11		: 4;		// bits : 15_12
+			unsigned ll_tab_status12		: 4;		// bits : 19_16
+			unsigned ll_tab_status13		: 4;		// bits : 23_20
+			unsigned ll_tab_status14		: 4;		// bits : 27_24
+			unsigned ll_tab_status15		: 4;		// bits : 31_28
+		} bit;
+		UINT32 word;
+	} reg_293; // 0x0494
+
+	union {
+		struct {
+			unsigned ll_tab_status16		: 4;		// bits : 3_0
+			unsigned ll_tab_status17		: 4;		// bits : 7_4
+			unsigned ll_tab_status18		: 4;		// bits : 11_8
+			unsigned ll_tab_status19		: 4;		// bits : 15_12
+			unsigned ll_tab_status20		: 4;		// bits : 19_16
+			unsigned ll_tab_status21		: 4;		// bits : 23_20
+			unsigned ll_tab_status22		: 4;		// bits : 27_24
+			unsigned ll_tab_status23		: 4;		// bits : 31_28
+		} bit;
+		UINT32 word;
+	} reg_294; // 0x0498
+
+	union {
+		struct {
+			unsigned ll_tab_status24		: 4;		// bits : 3_0
+			unsigned ll_tab_status25		: 4;		// bits : 7_4
+			unsigned ll_tab_status26		: 4;		// bits : 11_8
+			unsigned ll_tab_status27		: 4;		// bits : 15_12
+			unsigned ll_tab_status28		: 4;		// bits : 19_16
+			unsigned ll_tab_status29		: 4;		// bits : 23_20
+			unsigned ll_tab_status30		: 4;		// bits : 27_24
+			unsigned ll_tab_status31		: 4;		// bits : 31_28
+		} bit;
+		UINT32 word;
+	} reg_295; // 0x049c
+
+	union {
+		struct {
+			unsigned ll_tab_status32		: 4;		// bits : 3_0
+			unsigned ll_tab_status33		: 4;		// bits : 7_4
+			unsigned ll_tab_status34		: 4;		// bits : 11_8
+			unsigned ll_tab_status35		: 4;		// bits : 15_12
+			unsigned ll_tab_status36		: 4;		// bits : 19_16
+			unsigned ll_tab_status37		: 4;		// bits : 23_20
+			unsigned ll_tab_status38		: 4;		// bits : 27_24
+			unsigned ll_tab_status39		: 4;		// bits : 31_28
+		} bit;
+		UINT32 word;
+	} reg_296; // 0x04a0
+
+	union {
+		struct {
+			unsigned ll_tab_status40		: 4;		// bits : 3_0
+			unsigned ll_tab_status41		: 4;		// bits : 7_4
+			unsigned ll_tab_status42		: 4;		// bits : 11_8
+			unsigned ll_tab_status43		: 4;		// bits : 15_12
+			unsigned ll_tab_status44		: 4;		// bits : 19_16
+			unsigned ll_tab_status45		: 4;		// bits : 23_20
+			unsigned ll_tab_status46		: 4;		// bits : 27_24
+			unsigned ll_tab_status47		: 4;		// bits : 31_28
+		} bit;
+		UINT32 word;
+	} reg_297; // 0x04a4
+
+	union {
+		struct {
+			unsigned ll_tab_status48		: 4;		// bits : 3_0
+			unsigned ll_tab_status49		: 4;		// bits : 7_4
+			unsigned ll_tab_status50		: 4;		// bits : 11_8
+			unsigned ll_tab_status51		: 4;		// bits : 15_12
+			unsigned ll_tab_status52		: 4;		// bits : 19_16
+			unsigned ll_tab_status53		: 4;		// bits : 23_20
+			unsigned ll_tab_status54		: 4;		// bits : 27_24
+			unsigned ll_tab_status55		: 4;		// bits : 31_28
+		} bit;
+		UINT32 word;
+	} reg_298; // 0x04a8
+
+	union {
+		struct {
+			unsigned ll_tab_status56		: 4;		// bits : 3_0
+			unsigned ll_tab_status57		: 4;		// bits : 7_4
+			unsigned ll_tab_status58		: 4;		// bits : 11_8
+			unsigned ll_tab_status59		: 4;		// bits : 15_12
+			unsigned ll_tab_status60		: 4;		// bits : 19_16
+			unsigned ll_tab_status61		: 4;		// bits : 23_20
+			unsigned ll_tab_status62		: 4;		// bits : 27_24
+			unsigned ll_tab_status63		: 4;		// bits : 31_28
+		} bit;
+		UINT32 word;
+	} reg_299; // 0x04ac
+
+	union {
+		struct {
+			unsigned res0_out_checksum		  : 32; 	// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_300; // 0x04b0
+
+	union {
+		struct {
+			unsigned res1_out_checksum		  : 32; 	// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_301; // 0x04b4
+
+	union {
+		struct {
+			unsigned res2_out_checksum        : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_302; // 0x04b8
+
+	union {
+		struct {
+			unsigned res3_out_checksum        : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_303; // 0x04bc
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_304; // 0x04c0
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_305; // 0x04c4
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_306; // 0x04c8
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_307; // 0x04cc
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_308; // 0x04d0
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_309; // 0x04d4
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_310; // 0x04d8
+
+	union {
+		struct {
+			unsigned bst_checksum		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_311; // 0x04dc
+
+	union {
+		struct {
+			unsigned bst_checksum		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_312; // 0x04e0
+
+	union {
+		struct {
+			unsigned cycle_cnt		  : 32; 	// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_313; // 0x04e4
+
+	union {
+		struct {
+			unsigned ll_cycle_cnt		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_314; // 0x04e8
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_315; // 0x04ec
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_316; // 0x04f0
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_317; // 0x04f4
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_318; // 0x04f8
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_319; // 0x04fc
+
+	union {
+		struct {
+			unsigned res0_sca_en		   : 1; 	// bits : 0
+			unsigned					   : 1; 	// bits : 1
+			unsigned res0_sca_crop_en	   : 1; 	// bits : 2
+			unsigned res0_tc_en 		   : 1; 	// bits : 3
+			unsigned res0_seg_op 		   : 2; 	// bits : 5_4
+			unsigned					   : 2; 	// bits : 7_6
+			unsigned res0_des_drt		   : 2; 	// bits : 9_8
+			unsigned					   : 1; 	// bits : 10
+			unsigned res0_des_format	   : 3; 	  // bits : 13_11
+			unsigned					   : 2; 	// Bits : 14
+			unsigned res0_out_bg_sel	   : 3; 	// bits : 18_16
+			unsigned					   : 1; 	// bits : 19
+			unsigned res0_scl_method	   : 1; 	// bits : 20
+			unsigned					      : 2; 	// Bits : 22_21
+			unsigned res0_des_drt_pc2tv_weight: 9; 	// Bits : 31_23			
+		} bit;
+		UINT32 word;
+	} reg_320; // 0x0500
+
+	union {
+		struct {
+			unsigned res0_des_ycc_enc_en		: 1;		// bits : 0
+			unsigned							: 3;
+			unsigned res0_des_chrw				: 1;		// bits : 4
+		} bit;
+		UINT32 word;
+	} reg_321; // 0x0504
+
+	union {
+		struct {
+			unsigned res0_sca_height		  : 15; 	// Bits : 14_0
+		} bit;
+		UINT32 word;
+	} reg_322; // 0x0508
+	
+	union {
+		struct {
+
+			unsigned res0_seg_pos0          : 14;
+			unsigned						: 2;		// bits : 13_0
+			unsigned res0_des_height		: 15;		// bits : 30_16
+		} bit;
+		UINT32 word;
+	} reg_323; // 0x050c
+
+	union {
+		struct {
+			unsigned res0_out_y_start		 : 15;		// Bits : 14_0
+			unsigned						 : 1;
+			unsigned res0_out_height		 : 15;		// Bits : 30_16
+		} bit;
+		UINT32 word;
+	} reg_324; // 0x0510
+
+	union {
+		struct {
+			unsigned res0_rlt_y_start		 : 15;		// Bits : 14_0
+			unsigned						 : 1;
+			unsigned res0_rlt_height		 : 15;		// Bits : 30_16
+		} bit;
+		UINT32 word;
+	} reg_325; // 0x0514
+
+	union {
+		struct {
+			unsigned res0_pip_y_start		 : 15;		// Bits : 14_0
+			unsigned						 : 1;
+			unsigned res0_pip_height		 : 15;		// Bits : 30_16
+		} bit;
+		UINT32 word;
+	} reg_326; // 0x0518
+
+	union {
+		struct {
+			unsigned res0_sca_crop_y_start		  : 15; 	// Bits : 14_0
+			unsigned							  : 1;
+			unsigned res0_sca_crop_height		  : 15; 	// Bits : 30_16
+		} bit;
+		UINT32 word;
+	} reg_327; // 0x051c
+
+	union {
+		struct {
+			unsigned						 : 12;
+			unsigned res0_sca_drate_h		 : 4;		// bits : 15_12
+			unsigned						 : 4;
+			unsigned res0_sca_drate_v		 : 4;		// bits : 23_20
+		} bit;
+		UINT32 word;
+	} reg_328; // 0x0520
+
+	union {
+		struct {
+			unsigned res0_sca_factor_h		  : 16; 	// bits : 15_0
+			unsigned res0_sca_factor_v		  : 16; 	// bits : 31_16
+		} bit;
+		UINT32 word;
+	} reg_329; // 0x0524
+
+	union {
+		struct {
+			unsigned res0_des_y0_dram_ofs		   : 19;	   // bits : 18_0
+		} bit;
+		UINT32 word;
+	} reg_330; // 0x0528
+
+	union {
+		struct {
+			unsigned res0_des_uv0_dram_ofs			: 19;		// bits : 18_0
+		} bit;
+		UINT32 word;
+	} reg_331; // 0x052c
+
+	union {
+		struct {
+			unsigned res0_des_y1_dram_ofs		   : 19;	   // bits : 18_0
+		} bit;
+		UINT32 word;
+	} reg_332; // 0x0530
+
+	union {
+		struct {
+			unsigned res0_des_uv1_dram_ofs			: 19;		// bits : 18_0
+		} bit;
+		UINT32 word;
+	} reg_333; // 0x0534
+
+	union {
+		struct {
+			unsigned res0_des_y2_dram_ofs		   : 19;	   // Bits : 18_0
+		} bit;
+		UINT32 word;
+	} reg_334; // 0x0538
+
+	union {
+		struct {
+			unsigned res0_des_uv2_dram_ofs			: 19;		// Bits : 18_0
+		} bit;
+		UINT32 word;
+	} reg_335; // 0x053c
+
+	union {
+		struct {
+			unsigned res0_tc_crop_y_start		 : 15;		// Bits : 14_0
+			unsigned							 : 1;
+			unsigned res0_tc_crop_height		 : 15;		// Bits : 30_16
+		} bit;
+		UINT32 word;
+	} reg_336; // 0x0540
+
+	union {
+		struct {
+			unsigned res0_seg_pos1                : 14;      // bits : 13_0
+			unsigned res0_cl0_out_x2_start        : 15;      // bits : 28_14
+			unsigned res0_seg0_out_en             : 1;      // bits : 29
+			unsigned res0_seg1_out_en             : 1;      // bits : 30
+			unsigned res0_seg2_out_en             : 1;      // bits : 31	
+		} bit;
+		UINT32 word;
+	} reg_337; // 0x0544
+
+	union {
+		struct {
+			unsigned res0_out_y1_start        : 15;		// Bits : 14_0
+			unsigned                		  : 1; 	    // Bits : 15
+			unsigned res0_out_y2_start		  : 15; 	// Bits : 30_16
+		} bit;
+		UINT32 word;
+	} reg_338; // 0x0548
+
+	union {
+		struct {
+			unsigned res0_cl0_min_y	 : 8;		// bits : 7_0
+			unsigned res0_cl0_max_y	 : 8;		// bits : 15_8
+			unsigned res0_cl0_min_uv : 8;		// bits : 23_16
+			unsigned res0_cl0_max_uv : 8;		// bits : 31_24
+		} bit;
+		UINT32 word;
+	} reg_339; // 0x054c
+
+
+	union {
+		struct {
+
+			unsigned res0_cl0_sca_width 		: 12;		// bits : 11_0
+			unsigned							: 4;
+			unsigned res0_cl0_out_x1_start 		: 15;		// bits : 30_16
+
+			
+		} bit;
+		UINT32 word;
+	} reg_340; // 0x0550
+
+	union {
+		struct {
+			unsigned res0_cl0_out_x0_start		: 15;		// bits : 14_0
+			unsigned							: 1;
+			unsigned res0_cl0_out_width 		: 12;		// bits : 27_16
+
+		} bit;
+		UINT32 word;
+	} reg_341; // 0x0554
+
+	union {
+		struct {
+			unsigned res0_cl0_rlt_x_start		 : 11;		// Bits : 12_0
+			unsigned							: 5;
+			unsigned res0_cl0_rlt_width 		 : 12;		// Bits : 28_16
+		} bit;
+		UINT32 word;
+	} reg_342; // 0x0558
+
+	union {
+		struct {
+			unsigned res0_cl0_pip_x_start		: 11;		// bits : 10_0
+			unsigned							: 5;
+			unsigned res0_cl0_pip_width 		: 12;		// bits : 27_16
+
+
+		} bit;
+		UINT32 word;
+	} reg_343; // 0x055c
+
+	union {
+		struct {
+			unsigned res0_cl0_sca_crop_x_start		 : 11;		// bits : 10_0
+			unsigned								 : 5;
+			unsigned res0_cl0_sca_crop_width		 : 12;		// bits : 27_16
+
+
+		} bit;
+		UINT32 word;
+	} reg_344; // 0x0560
+
+	union {
+		struct {
+			unsigned res0_cl0_tc_crop_x_start		: 11;		// bits : 10_0
+			unsigned								: 5;
+			unsigned res0_cl0_tc_crop_width 		: 12;		// bits : 27_16
+			unsigned								: 3;
+			unsigned res0_cl0_tc_crop_skip			 : 1;		// bits : 31
+
+
+		} bit;
+		UINT32 word;
+	} reg_345; // 0x0564
+
+	union {
+		struct {
+			unsigned res0_cl0_sca_factor_h_init_ofs 	   : 25;		// bits : 24_0
+		} bit;
+		UINT32 word;
+	} reg_346; // 0x0568
+
+	union {
+		struct {
+			unsigned res0_sca_coef_h0        : 10;      // bits : 9_0
+			unsigned                         : 6;
+			unsigned res0_sca_coef_h1        : 10;      // bits : 25_16
+		} bit;
+		UINT32 word;
+	} reg_347; // 0x056c
+
+	union {
+		struct {
+			unsigned res0_sca_coef_h2        : 10;      // bits : 9_0
+			unsigned                         : 6;
+			unsigned res0_sca_coef_h3        : 10;      // bits : 25_16
+		} bit;
+		UINT32 word;
+	} reg_348; // 0x0570
+
+	union {
+		struct {
+			unsigned res0_sca_coef_v0        : 10;      // bits : 9_0
+			unsigned                         : 6;
+			unsigned res0_sca_coef_v1        : 10;      // bits : 25_16
+		} bit;
+		UINT32 word;
+	} reg_349; // 0x0574
+
+	union {
+		struct {
+			unsigned res0_sca_coef_v2        : 10;      // bits : 9_0
+			unsigned                         : 6;
+			unsigned res0_sca_coef_v3        : 10;      // bits : 25_16
+		} bit;
+		UINT32 word;
+	} reg_350; // 0x0578
+
+
+
+	union {
+		struct {
+			unsigned res0_sca_luma_wet           : 5;       // bits : 4_0
+			unsigned                             : 3;
+			unsigned res0_sca_chroma_wet         : 5;       // bits : 12_8
+			unsigned                             : 3;
+			unsigned res0_sca_chroma_hlpf        : 2;       // bits : 17_16
+			unsigned                             : 2;
+			unsigned res0_sca_chroma_vlpf        : 2;       // bits : 21_20
+		} bit;
+		UINT32 word;
+	} reg_351; // 0x057c
+
+
+	union {
+		struct {
+			unsigned res1_sca_en		   : 1; 	// bits : 0
+			unsigned					   : 1; 	// bits : 1
+			unsigned res1_sca_crop_en	   : 1; 	// bits : 2
+			unsigned res1_tc_en 		   : 1; 	// bits : 3
+			unsigned res1_seg_op 		   : 2; 	// bits : 5_4
+			unsigned					   : 2; 	// bits : 7_6
+			unsigned res1_des_drt		   : 2; 	// bits : 9_8
+			unsigned					   : 1; 	// bits : 10
+			unsigned res1_des_format	   : 3; 	  // bits : 13_11
+			unsigned					   : 2; 	// Bits : 14
+			unsigned res1_out_bg_sel		 : 3;		// bits : 18_16
+			unsigned					   : 1; 	// bits : 19
+			unsigned res1_scl_method	   : 1; 	// bits : 20
+			unsigned					      : 2; 	// Bits : 22_21
+			unsigned res1_des_drt_pc2tv_weight: 9; 	// Bits : 31_23			
+		} bit;
+		UINT32 word;
+	} reg_352; // 0x0580
+
+	union {
+		struct {
+			unsigned res1_des_ycc_enc_en		: 1;		// bits : 0
+			unsigned							: 3;
+			unsigned res1_des_chrw				: 1;		// bits : 4
+		} bit;
+		UINT32 word;
+	} reg_353; // 0x0584
+
+	union {
+		struct {
+			unsigned res1_sca_height		  : 15; 	// Bits : 14_0
+		} bit;
+		UINT32 word;
+	} reg_354; // 0x0588
+
+	union {
+		struct {
+			unsigned res1_seg_pos0          : 14;
+			unsigned						: 2;		// bits : 13_0
+			unsigned res1_des_height        : 15;       // bits : 30_16
+		} bit;
+		UINT32 word;
+	} reg_355; // 0x058c
+
+	union {
+		struct {
+			unsigned res1_out_y_start		 : 15;		// Bits : 14_0
+			unsigned						 : 1;
+			unsigned res1_out_height		 : 15;		// Bits : 30_16
+		} bit;
+		UINT32 word;
+	} reg_356; // 0x0590
+
+	union {
+		struct {
+			unsigned res1_rlt_y_start		 : 15;		// Bits : 14_0
+			unsigned						 : 1;
+			unsigned res1_rlt_height		 : 15;		// Bits : 30_16
+		} bit;
+		UINT32 word;
+	} reg_357; // 0x0594
+
+	union {
+		struct {
+			unsigned res1_pip_y_start		 : 15;		// Bits : 14_0
+			unsigned						 : 1;
+			unsigned res1_pip_height		 : 15;		// Bits : 30_16
+		} bit;
+		UINT32 word;
+	} reg_358; // 0x0598
+
+	union {
+		struct {
+			unsigned res1_sca_crop_y_start		  : 15; 	// Bits : 14_0
+			unsigned							  : 1;
+			unsigned res1_sca_crop_height		  : 15; 	// Bits : 30_16
+
+		} bit;
+		UINT32 word;
+	} reg_359; // 0x059c
+
+	union {
+		struct {
+			unsigned								  : 12; 	// bits : 11_0
+			unsigned res1_sca_drate_h				  : 4;		// bits : 15_12
+			unsigned						 : 4;
+			unsigned res1_sca_drate_v				  : 4;		// bits : 23_20
+		} bit;
+		UINT32 word;
+	} reg_360; // 0x05a0
+
+	union {
+		struct {
+			unsigned res1_sca_factor_h		  : 16; 	// bits : 15_0
+			unsigned res1_sca_factor_v		  : 16; 	// bits : 31_16
+		} bit;
+		UINT32 word;
+	} reg_361; // 0x05a4
+
+	union {
+		struct {
+			unsigned res1_des_y0_dram_ofs		: 19;		// bits : 18_0
+
+		} bit;
+		UINT32 word;
+	} reg_362; // 0x05a8
+
+	union {
+		struct {
+			unsigned res1_des_uv0_dram_ofs		 : 19;		// bits : 18_0
+		} bit;
+		UINT32 word;
+	} reg_363; // 0x05ac
+
+
+	union {
+		struct {
+			unsigned res1_des_y1_dram_ofs		: 19;		// bits : 18_0
+		} bit;
+		UINT32 word;
+	} reg_364; // 0x05b0
+
+	union {
+		struct {
+			unsigned res1_des_uv1_dram_ofs		 : 19;		// bits : 18_0
+		} bit;
+		UINT32 word;
+	} reg_365; // 0x05b4
+
+	union {
+		struct {
+			unsigned res1_des_y2_dram_ofs		: 19;		// bits : 18_0
+		} bit;
+		UINT32 word;
+	} reg_366; // 0x05b8
+
+	union {
+		struct {
+			unsigned res1_des_uv2_dram_ofs		 : 19;		// bits : 18_0
+		} bit;
+		UINT32 word;
+	} reg_367; // 0x05bc
+
+	union {
+		struct {
+
+			unsigned res1_tc_crop_y_start		 : 15;		// Bits : 14_0
+			unsigned							 : 1;
+			unsigned res1_tc_crop_height		 : 15;		// Bits : 30_16
+		} bit;
+		UINT32 word;
+	} reg_368; // 0x05c0
+
+	union {
+		struct {
+
+			unsigned res1_seg_pos1                : 14;      // bits : 13_0
+			unsigned res1_cl0_out_x2_start        : 15;      // bits : 28_14
+			unsigned res1_seg0_out_en             : 1;      // bits : 29
+			unsigned res1_seg1_out_en             : 1;      // bits : 30
+			unsigned res1_seg2_out_en             : 1;      // bits : 31	
+
+		} bit;
+		UINT32 word;
+	} reg_369; // 0x05c4
+
+	union {
+		struct {
+			unsigned res1_out_y1_start        : 15;		// Bits : 14_0
+			unsigned                		  : 1; 	    // Bits : 15
+			unsigned res1_out_y2_start		  : 15; 	// Bits : 30_16
+		} bit;
+		UINT32 word;
+	} reg_370; // 0x05c8
+
+	union {
+		struct {
+
+			unsigned res1_cl0_min_y	 : 8;		// bits : 7_0
+			unsigned res1_cl0_max_y	 : 8;		// bits : 15_8
+			unsigned res1_cl0_min_uv : 8;		// bits : 23_16
+			unsigned res1_cl0_max_uv : 8;		// bits : 31_24
+		} bit;
+		UINT32 word;
+	} reg_371; // 0x05cc
+
+	union {
+		struct {
+
+			unsigned res1_cl0_sca_width 		: 12;		// bits : 11_0
+			unsigned							: 4;
+		    unsigned res1_cl0_out_x1_start		: 15;		// bits : 30_16
+			
+		} bit;
+		UINT32 word;
+	} reg_372; // 0x05d0
+
+	union {
+		struct {
+			unsigned res1_cl0_out_x0_start		: 15;		// bits : 12_0
+			unsigned							: 1;
+			unsigned res1_cl0_out_width 		: 12;		// Bits : 28_16
+
+		} bit;
+		UINT32 word;
+	} reg_373; // 0x05d4
+
+	union {
+		struct {
+			unsigned res1_cl0_rlt_x_start		 : 11;		// bits : 12_0
+			unsigned							: 5;
+			unsigned res1_cl0_rlt_width 		 : 12;		// bits : 28_16
+		} bit;
+		UINT32 word;
+	} reg_374; // 0x05d8
+
+	union {
+		struct {
+			unsigned res1_cl0_pip_x_start		: 11;		// bits : 10_0
+			unsigned							: 5;
+			unsigned res1_cl0_pip_width 		: 12;		// bits : 27_16
+
+
+		} bit;
+		UINT32 word;
+	} reg_375; // 0x05dc
+
+	union {
+		struct {
+			unsigned res1_cl0_sca_crop_x_start		 : 11;		// bits : 10_0
+			unsigned								 : 5;
+			unsigned res1_cl0_sca_crop_width		 : 12;		// bits : 27_16
+
+
+		} bit;
+		UINT32 word;
+	} reg_376; // 0x05e0
+
+	union {
+		struct {
+			unsigned res1_cl0_tc_crop_x_start		: 11;		// bits : 10_0
+			unsigned								: 5;
+			unsigned res1_cl0_tc_crop_width 		: 12;		// bits : 27_16
+			unsigned								: 3;
+			unsigned res1_cl0_tc_crop_skip			 : 1;		// bits : 31
+
+
+		} bit;
+		UINT32 word;
+	} reg_377; // 0x05e4
+
+	union {
+		struct {
+			unsigned res1_cl0_sca_factor_h_init_ofs 	   : 25;		// bits : 24_0
+		} bit;
+		UINT32 word;
+	} reg_378; // 0x05e8
+
+	union {
+		struct {
+			unsigned res1_sca_coef_h0        : 10;      // bits : 9_0
+			unsigned                         : 6;
+			unsigned res1_sca_coef_h1        : 10;      // bits : 25_16
+		} bit;
+		UINT32 word;
+	} reg_379; // 0x05ec
+
+	union {
+		struct {
+			unsigned res1_sca_coef_h2        : 10;      // bits : 9_0
+			unsigned                         : 6;
+			unsigned res1_sca_coef_h3        : 10;      // bits : 25_16
+		} bit;
+		UINT32 word;
+	} reg_380; // 0x05f0
+
+	union {
+		struct {
+			unsigned res1_sca_coef_v0        : 10;      // bits : 9_0
+			unsigned                         : 6;
+			unsigned res1_sca_coef_v1        : 10;      // bits : 25_16
+		} bit;
+		UINT32 word;
+	} reg_381; // 0x05f4
+
+	union {
+		struct {
+			unsigned res1_sca_coef_v2        : 10;      // bits : 9_0
+			unsigned                         : 6;
+			unsigned res1_sca_coef_v3        : 10;      // bits : 25_16
+		} bit;
+		UINT32 word;
+	} reg_382; // 0x05f8
+
+
+
+	union {
+		struct {
+			unsigned res1_sca_luma_wet           : 5;       // bits : 4_0
+			unsigned                             : 3;
+			unsigned res1_sca_chroma_wet         : 5;       // bits : 12_8
+			unsigned                             : 3;
+			unsigned res1_sca_chroma_hlpf        : 2;       // bits : 17_16
+			unsigned                             : 2;
+			unsigned res1_sca_chroma_vlpf        : 2;       // bits : 21_20
+		} bit;
+		UINT32 word;
+	} reg_383; // 0x05fc
+
+
+	union {
+		struct {
+			unsigned res2_sca_en		   : 1; 	// bits : 0
+			unsigned					   : 1; 	// bits : 1
+			unsigned res2_sca_crop_en	   : 1; 	// bits : 2
+			unsigned res2_tc_en 		   : 1; 	// bits : 3
+			unsigned res2_seg_op 		   : 2; 	// bits : 5_4
+			unsigned					   : 2; 	// bits : 7_6
+			unsigned res2_des_drt		   : 2; 	// bits : 9_8
+			unsigned					   : 1; 	// bits : 10
+			unsigned res2_des_format	   : 3; 	  // bits : 13_11
+			unsigned					   : 2; 	// bits : 14
+			unsigned res2_out_bg_sel	   : 3; 	// bits : 18_16
+			unsigned					   : 1; 	// bits : 19
+			unsigned res2_scl_method	   : 1; 	// bits : 20
+			unsigned					      : 2; 	// Bits : 22_21
+			unsigned res2_des_drt_pc2tv_weight: 9; 	// Bits : 31_23			
+		} bit;
+		UINT32 word;
+	} reg_384; // 0x0600
+
+	union {
+		struct {
+			unsigned res2_des_ycc_enc_en        : 1;        // bits : 0
+			unsigned                         : 3;		// bits : 3_1
+			unsigned res2_des_chrw              : 1;        // bits : 4
+		} bit;
+		UINT32 word;
+	} reg_385; // 0x0604
+
+	union {
+		struct {
+			unsigned res2_sca_height          : 15;		// bits : 14_0
+		} bit;
+		UINT32 word;
+	} reg_386; // 0x0608
+
+	union {
+		struct {
+
+			unsigned res2_seg_pos0          : 14;
+			unsigned						: 2;		// bits : 13_0
+			unsigned res2_des_height		: 15;		// bits : 30_16
+		} bit;
+		UINT32 word;
+	} reg_387; // 0x060c
+
+	union {
+		struct {
+			unsigned res2_out_y_start        : 15;		// bits : 14_0
+			unsigned                         : 1;
+			unsigned res2_out_height         : 15;		// bits : 30_16
+		} bit;
+		UINT32 word;
+	} reg_388; // 0x0610
+
+	union {
+		struct {
+			unsigned res2_rlt_y_start        : 15;		// bits : 14_0
+			unsigned                         : 1;
+			unsigned res2_rlt_height         : 15;		// bits : 30_16
+		} bit;
+		UINT32 word;
+	} reg_389; // 0x0614
+
+	union {
+		struct {
+			unsigned res2_pip_y_start        : 15;		// bits : 14_0
+			unsigned                         : 1;
+			unsigned res2_pip_height         : 15;		// bits : 30_16
+		} bit;
+		UINT32 word;
+	} reg_390; // 0x0618
+
+	union {
+		struct {
+			unsigned res2_sca_crop_y_start        : 15;		// bits : 14_0
+			unsigned                              : 1;
+			unsigned res2_sca_crop_height         : 15;		// bits : 30_16
+		} bit;
+		UINT32 word;
+	} reg_391; // 0x061c
+
+	union {
+		struct {
+			unsigned 							      : 12;		// bits : 11_0
+			unsigned res2_sca_drate_h			      : 4;		// bits : 15_12
+			unsigned 						          : 4;		// bits : 19_16
+			unsigned res2_sca_drate_v		          : 4;		// bits : 23_20
+		} bit;
+		UINT32 word;
+	} reg_392; // 0x0620
+
+	union {
+		struct {
+			unsigned res2_sca_factor_h        : 16;		// bits : 15_0
+			unsigned res2_sca_factor_v        : 16;		// bits : 31_16
+		} bit;
+		UINT32 word;
+	} reg_393; // 0x0624
+
+	union {
+		struct {
+			unsigned res2_des_y0_dram_ofs		   : 19;	   // bits : 18_0
+		} bit;
+		UINT32 word;
+	} reg_394; // 0x0628
+
+	union {
+		struct {
+			unsigned res2_des_uv0_dram_ofs			: 19;		// bits : 18_0
+		} bit;
+		UINT32 word;
+	} reg_395; // 0x062c
+
+	union {
+		struct {
+			unsigned res2_des_y1_dram_ofs		   : 19;	   // bits : 18_0
+		} bit;
+		UINT32 word;
+	} reg_396; // 0x0630
+
+	union {
+		struct {
+			unsigned res2_des_uv1_dram_ofs			: 19;		// bits : 18_0
+		} bit;
+		UINT32 word;
+	} reg_397; // 0x0634
+
+	union {
+		struct {
+			unsigned res2_des_y2_dram_ofs		   : 19;	   // bits : 18_0
+		} bit;
+		UINT32 word;
+	} reg_398; // 0x0638
+
+	union {
+		struct {
+			unsigned res2_des_uv2_dram_ofs			: 19;		// bits : 18_0
+		} bit;
+		UINT32 word;
+	} reg_399; // 0x063c
+
+	union {
+		struct {
+			unsigned res2_tc_crop_y_start        : 15;		// bits : 14_0
+			unsigned                             : 1;
+			unsigned res2_tc_crop_height         : 15;		// bits : 30_16
+		} bit;
+		UINT32 word;
+	} reg_400; // 0x0640
+
+	union {
+		struct {
+			unsigned res2_seg_pos1                : 14;      // bits : 13_0
+			unsigned res2_cl0_out_x2_start        : 15;      // bits : 28_14
+			unsigned res2_seg0_out_en             : 1;      // bits : 29
+			unsigned res2_seg1_out_en             : 1;      // bits : 30
+			unsigned res2_seg2_out_en             : 1;      // bits : 31	
+
+		} bit;
+		UINT32 word;
+	} reg_401; // 0x0644
+
+	union {
+		struct {
+			unsigned res2_out_y1_start        : 15;		// Bits : 14_0
+			unsigned                		  : 1; 	    // Bits : 15
+			unsigned res2_out_y2_start		  : 15; 	// Bits : 30_16
+
+		} bit;
+		UINT32 word;
+	} reg_402; // 0x0648
+
+	union {
+		struct {
+			unsigned res2_cl0_min_y	 : 8;		// bits : 7_0
+			unsigned res2_cl0_max_y	 : 8;		// bits : 15_8
+			unsigned res2_cl0_min_uv : 8;		// bits : 23_16
+			unsigned res2_cl0_max_uv : 8;		// bits : 31_24
+		} bit;
+		UINT32 word;
+	} reg_403; // 0x064c
+
+
+
+	union {
+		struct {
+
+			unsigned res2_cl0_sca_width 		: 12;		// bits : 11_0
+			unsigned							: 4;
+			unsigned res2_cl0_out_x1_start 		: 15;		// bits : 30_16
+
+		} bit;
+		UINT32 word;
+	} reg_404; // 0x0650
+
+	union {
+		struct {
+			unsigned res2_cl0_out_x0_start		: 15;		// bits : 14_0
+			unsigned							: 1;
+			unsigned res2_cl0_out_width 		: 12;		// bits : 27_16
+
+		} bit;
+		UINT32 word;
+	} reg_405; // 0x0654
+
+	union {
+		struct {
+			unsigned res2_cl0_rlt_x_start        : 11;		// bits : 12_0
+			unsigned                            : 5;
+			unsigned res2_cl0_rlt_width          : 12;		// bits : 28_16
+		} bit;
+		UINT32 word;
+	} reg_406; // 0x0658
+
+	union {
+		struct {
+			unsigned res2_cl0_pip_x_start		: 11;		// bits : 10_0
+			unsigned		        			: 5;
+			unsigned res2_cl0_pip_width			: 12;		// bits : 27_16
+
+
+		} bit;
+		UINT32 word;
+	} reg_407; // 0x065c
+
+	union {
+		struct {
+			unsigned res2_cl0_sca_crop_x_start		 : 11;		// bits : 10_0
+			unsigned						         : 5;
+			unsigned res2_cl0_sca_crop_width 		 : 12;		// bits : 27_16
+
+
+		} bit;
+		UINT32 word;
+	} reg_408; // 0x0660
+
+	union {
+		struct {
+			unsigned res2_cl0_tc_crop_x_start		: 11;		// bits : 10_0
+			unsigned						        : 5;
+			unsigned res2_cl0_tc_crop_width			: 12;		// bits : 27_16
+			unsigned						        : 3;
+			unsigned res2_cl0_tc_crop_skip           : 1;       // bits : 31
+
+		} bit;
+		UINT32 word;
+	} reg_409; // 0x0664
+
+	union {
+		struct {
+			unsigned res2_cl0_sca_factor_h_init_ofs        : 25;        // bits : 24_0
+		} bit;
+		UINT32 word;
+	} reg_410; // 0x0668
+
+	union {
+		struct {
+			unsigned res2_sca_coef_h0        : 10;      // bits : 9_0
+			unsigned                         : 6;
+			unsigned res2_sca_coef_h1        : 10;      // bits : 25_16
+
+		} bit;
+		UINT32 word;
+	} reg_411; // 0x066c
+
+	union {
+		struct {
+			unsigned res2_sca_coef_h2        : 10;      // bits : 9_0
+			unsigned                         : 6;
+			unsigned res2_sca_coef_h3        : 10;      // bits : 25_16
+
+
+		} bit;
+		UINT32 word;
+	} reg_412; // 0x0670
+
+	union {
+		struct {
+			unsigned res2_sca_coef_v0        : 10;      // bits : 9_0
+			unsigned                         : 6;
+			unsigned res2_sca_coef_v1        : 10;      // bits : 25_16
+
+		} bit;
+		UINT32 word;
+	} reg_413; // 0x0674
+
+	union {
+		struct {
+			unsigned res2_sca_coef_v2        : 10;      // bits : 9_0
+			unsigned                         : 6;
+			unsigned res2_sca_coef_v3        : 10;      // bits : 25_16
+
+		} bit;
+		UINT32 word;
+	} reg_414; // 0x0678
+
+	union {
+		struct {
+			unsigned res2_sca_luma_wet           : 5;		// bits : 4_0
+			unsigned                             : 3;
+			unsigned res2_sca_chroma_wet         : 5;		// bits : 12_8
+			unsigned                             : 3;
+			unsigned res2_sca_chroma_hlpf        : 2;		// bits : 17_16
+			unsigned                             : 2;
+			unsigned res2_sca_chroma_vlpf        : 2;		// bits : 21_20
+
+		} bit;
+		UINT32 word;
+	} reg_415; // 0x067c
+
+	union {
+		struct {
+			unsigned res3_sca_en		   : 1; 	// bits : 0
+			unsigned					   : 1; 	// bits : 1
+			unsigned res3_sca_crop_en	   : 1; 	// bits : 2
+			unsigned res3_tc_en 		   : 1; 	// bits : 3
+			unsigned res3_seg_op 		   : 2; 	// bits : 5_4
+			unsigned					   : 2; 	// bits : 7_6
+			unsigned res3_des_drt		   : 2; 	// bits : 9_8
+			unsigned					   : 1; 	// bits : 10
+			unsigned res3_des_format	   : 3; 	  // bits : 13_11
+			unsigned					   : 2; 	// bits : 15_14
+			unsigned res3_out_bg_sel       : 3;       // bits : 18_16
+			unsigned                       : 1;		// bits : 19
+			unsigned res3_scl_method       : 1;		// bits : 20
+			unsigned					      : 2; 	// Bits : 22_21
+			unsigned res3_des_drt_pc2tv_weight: 9; 	// Bits : 31_23			
+		} bit;
+		UINT32 word;
+	} reg_416; // 0x0680
+
+	union {
+		struct {
+			unsigned res3_des_ycc_enc_en        : 1;        // bits : 0
+			unsigned                         : 3;		// bits : 3_1
+			unsigned res3_des_chrw              : 1;        // bits : 4
+		} bit;
+		UINT32 word;
+	} reg_417; // 0x0684
+
+	union {
+		struct {
+			unsigned res3_sca_height          : 15;		// bits : 14_0
+		} bit;
+		UINT32 word;
+	} reg_418; // 0x0688
+
+	union {
+		struct {
+			unsigned res3_seg_pos0          : 14;
+			unsigned						: 2;		// bits : 13_0
+			unsigned res3_des_height        : 15;       // bits : 30_16
+		} bit;
+		UINT32 word;
+	} reg_419; // 0x068c
+
+	union {
+		struct {
+			unsigned res3_out_y_start        : 15;		// bits : 14_0
+			unsigned                         : 1;
+			unsigned res3_out_height         : 15;		// bits : 30_16
+		} bit;
+		UINT32 word;
+	} reg_420; // 0x0690
+
+	union {
+		struct {
+			unsigned res3_rlt_y_start        : 15;		// bits : 14_0
+			unsigned                         : 1;
+			unsigned res3_rlt_height         : 15;		// bits : 30_16
+		} bit;
+		UINT32 word;
+	} reg_421; // 0x0694
+
+	union {
+		struct {
+			unsigned res3_pip_y_start        : 15;		// bits : 14_0
+			unsigned                         : 1;
+			unsigned res3_pip_height         : 15;		// bits : 30_16
+		} bit;
+		UINT32 word;
+	} reg_422; // 0x0698
+
+	union {
+		struct {
+			unsigned res3_sca_crop_y_start        : 15;		// bits : 14_0
+			unsigned                              : 1;
+			unsigned res3_sca_crop_height         : 15;		// bits : 30_16
+
+		} bit;
+		UINT32 word;
+	} reg_423; // 0x069c
+
+	union {
+		struct {
+			unsigned 						          : 12;		// bits : 11_0
+			unsigned res3_sca_drate_h		          : 4;		// bits : 15_12
+			unsigned                         : 4;
+			unsigned res3_sca_drate_v		          : 4;		// bits : 23_20
+		} bit;
+		UINT32 word;
+	} reg_424; // 0x06a0
+
+	union {
+		struct {
+			unsigned res3_sca_factor_h        : 16;		// bits : 15_0
+			unsigned res3_sca_factor_v        : 16;		// bits : 31_16
+		} bit;
+		UINT32 word;
+	} reg_425; // 0x06a4
+
+	union {
+		struct {
+			unsigned res3_des_y0_dram_ofs		: 19;		// bits : 18_0
+
+		} bit;
+		UINT32 word;
+	} reg_426; // 0x06a8
+
+	union {
+		struct {
+			unsigned res3_des_uv0_dram_ofs		 : 19;		// bits : 18_0
+		} bit;
+		UINT32 word;
+	} reg_427; // 0x06ac
+
+
+	union {
+		struct {
+			unsigned res3_des_y1_dram_ofs		: 19;		// bits : 18_0
+		} bit;
+		UINT32 word;
+	} reg_428; // 0x06b0
+
+	union {
+		struct {
+			unsigned res3_des_uv1_dram_ofs		 : 19;		// bits : 18_0
+		} bit;
+		UINT32 word;
+	} reg_429; // 0x06b4
+
+	union {
+		struct {
+			unsigned res3_des_y2_dram_ofs		: 19;		// bits : 18_0
+		} bit;
+		UINT32 word;
+	} reg_430; // 0x06b8
+
+	union {
+		struct {
+			unsigned res3_des_uv2_dram_ofs		 : 19;		// bits : 18_0
+
+		} bit;
+		UINT32 word;
+	} reg_431; // 0x06bc
+
+	union {
+		struct {
+
+			unsigned res3_tc_crop_y_start		 : 15;		// bits : 14_0
+			unsigned							 : 1;
+			unsigned res3_tc_crop_height		 : 15;		// bits : 30_16
+		} bit;
+		UINT32 word;
+	} reg_432; // 0x06c0
+
+	union {
+		struct {
+			unsigned res3_seg_pos1                : 14;      // bits : 13_0
+			unsigned res3_cl0_out_x2_start        : 15;      // bits : 28_14
+			unsigned res3_seg0_out_en             : 1;      // bits : 29
+			unsigned res3_seg1_out_en             : 1;      // bits : 30
+			unsigned res3_seg2_out_en             : 1;      // bits : 31	
+		} bit;
+		UINT32 word;
+	} reg_433; // 0x06c4
+
+	union {
+		struct {
+			unsigned res3_out_y1_start        : 15;		// Bits : 14_0
+			unsigned                		  : 1; 	    // Bits : 15
+			unsigned res3_out_y2_start		  : 15; 	// Bits : 30_16
+		} bit;
+		UINT32 word;
+	} reg_434; // 0x06c8
+
+	union {
+		struct {
+
+			unsigned res3_cl0_min_y	 : 8;		// bits : 7_0
+			unsigned res3_cl0_max_y	 : 8;		// bits : 15_8
+			unsigned res3_cl0_min_uv : 8;		// bits : 23_16
+			unsigned res3_cl0_max_uv : 8;		// bits : 31_24
+		} bit;
+		UINT32 word;
+	} reg_435; // 0x06cc
+
+
+
+	union {
+		struct {
+
+			unsigned res3_cl0_sca_width 		: 12;		// bits : 11_0
+			unsigned							: 4;
+		    unsigned res3_cl0_out_x1_start		: 15;		// bits : 30_16
+			
+		} bit;
+		UINT32 word;
+	} reg_436; // 0x06d0
+
+	union {
+		struct {
+			unsigned res3_cl0_out_x0_start		: 15;		// bits : 12_0
+			unsigned							: 1;
+			unsigned res3_cl0_out_width 		: 12;		// bits : 28_16
+
+		} bit;
+		UINT32 word;
+	} reg_437; // 0x06d4
+
+	union {
+		struct {
+			unsigned res3_cl0_rlt_x_start        : 11;		// bits : 12_0
+			unsigned                            : 5;
+			unsigned res3_cl0_rlt_width          : 12;		// bits : 28_16
+		} bit;
+		UINT32 word;
+	} reg_438; // 0x06d8
+
+	union {
+		struct {
+			unsigned res3_cl0_pip_x_start		: 11;		// bits : 10_0
+			unsigned		        			: 5;
+			unsigned res3_cl0_pip_width			: 12;		// bits : 27_16
+
+
+		} bit;
+		UINT32 word;
+	} reg_439; // 0x06dc
+
+	union {
+		struct {
+			unsigned res3_cl0_sca_crop_x_start		 : 11;		// bits : 10_0
+			unsigned						         : 5;
+			unsigned res3_cl0_sca_crop_width 		 : 12;		// bits : 27_16
+
+
+		} bit;
+		UINT32 word;
+	} reg_440; // 0x06e0
+
+	union {
+		struct {
+			unsigned res3_cl0_tc_crop_x_start		: 11;		// bits : 10_0
+			unsigned						        : 5;
+			unsigned res3_cl0_tc_crop_width			: 12;		// bits : 27_16
+			unsigned						        : 3;
+			unsigned res3_cl0_tc_crop_skip           : 1;       // bits : 31
+
+
+		} bit;
+		UINT32 word;
+	} reg_441; // 0x06e4
+
+	union {
+		struct {
+			unsigned res3_cl0_sca_factor_h_init_ofs        : 25;        // bits : 24_0
+		} bit;
+		UINT32 word;
+	} reg_442; // 0x06e8
+
+	union {
+		struct {
+			unsigned res3_sca_coef_h0        : 10;      // bits : 9_0
+			unsigned                         : 6;
+			unsigned res3_sca_coef_h1        : 10;      // bits : 25_16
+
+		} bit;
+		UINT32 word;
+	} reg_443; // 0x06ec
+
+	union {
+		struct {
+			unsigned res3_sca_coef_h2        : 10;      // bits : 9_0
+			unsigned                         : 6;
+			unsigned res3_sca_coef_h3        : 10;      // bits : 25_16
+		} bit;
+		UINT32 word;
+	} reg_444; // 0x06F0
+
+	union {
+		struct {
+			unsigned res3_sca_coef_v0        : 10;      // bits : 9_0
+			unsigned                         : 6;
+			unsigned res3_sca_coef_v1        : 10;      // bits : 25_16
+		} bit;
+		UINT32 word;
+	} reg_445; // 0x06F4
+
+
+	union {
+		struct {
+			unsigned res3_sca_coef_v2        : 10;      // bits : 9_0
+			unsigned                         : 6;
+			unsigned res3_sca_coef_v3        : 10;      // bits : 25_16
+		} bit;
+		UINT32 word;
+	} reg_446; // 0x06F8
+
+	union {
+		struct {
+			unsigned res3_sca_luma_wet           : 5;		// bits : 4_0
+			unsigned                             : 3;
+			unsigned res3_sca_chroma_wet         : 5;		// bits : 12_8
+			unsigned                             : 3;
+			unsigned res3_sca_chroma_hlpf        : 2;		// bits : 17_16
+			unsigned                             : 2;
+			unsigned res3_sca_chroma_vlpf        : 2;		// bits : 21_20
+		} bit;
+		UINT32 word;
+	} reg_447; // 0x06FC
+
+	union {
+		struct {
+			unsigned des_res0_y2_addr	   : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_448; // 0x0700
+
+	union {
+		struct {
+			unsigned des_res0_y2_addr_msb	  : 4;		// bits : 3_0
+
+		} bit;
+		UINT32 word;
+	} reg_449; // 0x0704
+
+	union {
+		struct {
+
+			unsigned des_res0_uv2_addr	   : 32;		// bits : 31_0
+
+		} bit;
+		UINT32 word;
+	} reg_450; // 0x0708
+
+	union {
+		struct {
+
+			unsigned des_res0_uv2_addr_msb	   : 4;		// bits : 3_0
+
+
+		} bit;
+		UINT32 word;
+	} reg_451; // 0x070c
+
+	union {
+		struct {
+
+			unsigned des_res1_y2_addr	   : 32;		// bits : 31_0
+
+		} bit;
+		UINT32 word;
+	} reg_452; // 0x0710
+
+	union {
+		struct {
+			unsigned des_res1_y2_addr_msb	   : 4;		// bits : 31_0
+
+
+		} bit;
+		UINT32 word;
+	} reg_453; // 0x0714
+
+	union {
+		struct {
+			unsigned des_res1_uv2_addr	   : 32;		// bits : 31_0
+
+		} bit;
+		UINT32 word;
+	} reg_454; // 0x0718
+
+	union {
+		struct {
+			unsigned des_res1_uv2_addr_msb	   : 4;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_455; // 0x071c
+
+	union {
+		struct {
+			unsigned des_res2_y2_addr		 : 32;		// bits : 31_0
+		} bit;
+		uint32_t word;
+	} reg_456; // 0x0720
+
+	union {
+		struct {
+			unsigned des_res2_y2_addr_msb		 : 4;		// bits : 31_0
+		} bit;
+		uint32_t word;
+	} reg_457; // 0x0724
+
+	union {
+		struct {
+			unsigned des_res2_uv2_addr		 : 32;		// bits : 31_0
+		} bit;
+		uint32_t word;
+	} reg_458; // 0x0728
+
+	union {
+		struct {
+			unsigned des_res2_uv2_addr_msb		 : 4;		// bits : 31_0
+		} bit;
+		uint32_t word;
+	} reg_459; // 0x072c
+
+	union {
+		struct {
+			unsigned des_res3_y2_addr		 : 32;		// bits : 31_0
+		} bit;
+		uint32_t word;
+	} reg_460; // 0x0730
+
+	union {
+		struct {
+			unsigned des_res3_y2_addr_msb		 : 4;		// bits : 31_0
+		} bit;
+		uint32_t word;
+	} reg_461; // 0x0734
+
+	union {
+		struct {
+			unsigned des_res3_uv2_addr		 : 32;		// bits : 31_0
+		} bit;
+		uint32_t word;
+	} reg_462; // 0x0738
+
+
+	union {
+		struct {
+			unsigned des_res3_uv2_addr_msb		 : 4;		// bits : 31_0
+		} bit;
+		uint32_t word;
+	} reg_463; // 0x073c
+
+	union {
+		struct {
+			unsigned cl0_proc_width 	   : 12;		// bits : 11_0
+			unsigned					   : 4; 		// bits : 15_12
+			unsigned cl0_proc_x_start	   : 14;		// bits : 29_16
+		} bit;
+		UINT32 word;
+	} reg_464; // 0x0740
+
+	union {
+		struct {
+			unsigned cl0_col_x_start		: 15;		// Bits : 14_0
+		} bit;
+		UINT32 word;
+	} reg_465; // 0x0744
+
+	union {
+		struct {
+			unsigned cl0_proc_width2		: 12;		// bits : 11_0
+
+		} bit;
+		UINT32 word;
+	} reg_466; // 0x0748
+
+
+	union {
+		struct {
+			unsigned Reserved		 : 32;		// bits : 31_0
+		} bit;
+		uint32_t word;
+	} reg_467; // 0x074c
+
+
+	union {
+		struct {
+			unsigned Reserved		 : 32;		// bits : 31_0
+		} bit;
+		uint32_t word;
+	} reg_468; // 0x0750
+
+
+	union {
+		struct {
+			unsigned Reserved		 : 32;		// bits : 31_0
+		} bit;
+		uint32_t word;
+	} reg_469; // 0x0754
+
+
+	union {
+		struct {
+			unsigned Reserved		 : 32;		// bits : 31_0
+		} bit;
+		uint32_t word;
+	} reg_470; // 0x0758
+
+
+	union {
+		struct {
+			unsigned reserved		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_471; // 0x075c
+
+
+	union {
+		struct {
+			unsigned geo_lut0		 : 16;		// bits : 15_0
+			unsigned geo_lut1		 : 16;		// bits : 31_16
+		} bit;
+		UINT32 word;
+	} reg_472; // 0x0760
+
+	union {
+		struct {
+			unsigned geo_lut2		 : 16;		// bits : 15_0
+			unsigned geo_lut3		 : 16;		// bits : 31_16
+
+
+		} bit;
+		UINT32 word;
+	} reg_473; // 0x0764
+
+	union {
+		struct {
+
+			unsigned geo_lut4		 : 16;		// bits : 15_0
+			unsigned geo_lut5		 : 16;		// bits : 31_16
+
+
+		} bit;
+		UINT32 word;
+	} reg_474; // 0x0768
+
+	union {
+		struct {
+
+			unsigned geo_lut6		 : 16;		// bits : 15_0
+			unsigned geo_lut7		 : 16;		// bits : 31_16
+
+		} bit;
+		UINT32 word;
+	} reg_475; // 0x076c
+
+	union {
+		struct {
+
+			unsigned geo_lut8		 : 16;		// bits : 15_0
+			unsigned geo_lut9		 : 16;		// bits : 31_16
+
+
+		} bit;
+		UINT32 word;
+	} reg_476; // 0x0770
+
+	union {
+		struct {
+
+			unsigned geo_lut10		  : 16; 	// bits : 15_0
+			unsigned geo_lut11		  : 16; 	// bits : 31_16
+
+
+		} bit;
+		UINT32 word;
+	} reg_477; // 0x0774
+
+	union {
+		struct {
+			unsigned geo_lut12		  : 16; 	// bits : 15_0
+			unsigned geo_lut13		  : 16; 	// bits : 31_16
+
+
+		} bit;
+		UINT32 word;
+	} reg_478; // 0x0778
+
+	union {
+		struct {
+			unsigned geo_lut14		  : 16; 	// bits : 15_0
+			unsigned geo_lut15		  : 16; 	// bits : 31_16
+
+
+		} bit;
+		UINT32 word;
+	} reg_479; // 0x077c
+
+	union {
+		struct {
+			unsigned geo_lut16		  : 16; 	// bits : 15_0
+			unsigned geo_lut17		  : 16; 	// bits : 31_16
+		} bit;
+		UINT32 word;
+	} reg_480; // 0x0780
+
+	union {
+		struct {
+			unsigned geo_lut18		  : 16; 	// bits : 15_0
+			unsigned geo_lut19		  : 16; 	// bits : 31_16
+
+
+		} bit;
+		UINT32 word;
+	} reg_481; // 0x0784
+
+	union {
+		struct {
+			unsigned geo_lut20		  : 16; 	// bits : 15_0
+			unsigned geo_lut21		  : 16; 	// bits : 31_16
+
+
+		} bit;
+		UINT32 word;
+	} reg_482; // 0x0788
+
+	union {
+		struct {
+			unsigned geo_lut22		  : 16; 	// bits : 15_0
+			unsigned geo_lut23		  : 16; 	// bits : 31_16
+
+
+		} bit;
+		UINT32 word;
+	} reg_483; // 0x078c
+
+	union {
+		struct {
+			unsigned geo_lut24		  : 16; 	// bits : 15_0
+			unsigned geo_lut25		  : 16; 	// bits : 31_16
+
+
+		} bit;
+		UINT32 word;
+	} reg_484; // 0x0790
+
+	union {
+		struct {
+			unsigned geo_lut26		  : 16; 	// bits : 15_0
+			unsigned geo_lut27		  : 16; 	// bits : 31_16
+		} bit;
+		UINT32 word;
+	} reg_485; // 0x0794
+
+	union {
+		struct {
+			unsigned geo_lut28		  : 16; 	// bits : 15_0
+			unsigned geo_lut29		  : 16; 	// bits : 31_16
+
+
+		} bit;
+		UINT32 word;
+	} reg_486; // 0x0798
+
+	union {
+		struct {
+			unsigned geo_lut30		  : 16; 	// bits : 15_0
+			unsigned geo_lut31		  : 16; 	// bits : 31_16
+
+
+		} bit;
+		UINT32 word;
+	} reg_487; // 0x079c
+
+	union {
+		struct {
+			unsigned geo_lut32		  : 16; 	// bits : 15_0
+			unsigned geo_lut33		  : 16; 	// bits : 31_16
+		} bit;
+		UINT32 word;
+	} reg_488; // 0x07a0
+
+	union {
+		struct {
+			unsigned geo_lut34		  : 16; 	// bits : 15_0
+			unsigned geo_lut35		  : 16; 	// bits : 31_16
+		} bit;
+		UINT32 word;
+	} reg_489; // 0x07a4
+
+	union {
+		struct {
+			unsigned geo_lut36		  : 16; 	// bits : 15_0
+			unsigned geo_lut37		  : 16; 	// bits : 31_16
+		} bit;
+		UINT32 word;
+	} reg_490; // 0x07a8
+
+	union {
+		struct {
+			unsigned geo_lut38		  : 16; 	// bits : 15_0
+			unsigned geo_lut39		  : 16; 	// bits : 31_16
+		} bit;
+		UINT32 word;
+	} reg_491; // 0x07ac
+
+	union {
+		struct {
+			unsigned geo_lut40		  : 16; 	// bits : 15_0
+			unsigned geo_lut41		  : 16; 	// bits : 31_16
+		} bit;
+		UINT32 word;
+	} reg_492; // 0x07b0
+
+	union {
+		struct {
+			unsigned geo_lut42		  : 16; 	// bits : 15_0
+			unsigned geo_lut43		  : 16; 	// bits : 31_16
+		} bit;
+		UINT32 word;
+	} reg_493; // 0x07b4
+
+	union {
+		struct {
+			unsigned geo_lut44		  : 16; 	// bits : 15_0
+			unsigned geo_lut45		  : 16; 	// bits : 31_16
+		} bit;
+		UINT32 word;
+	} reg_494; // 0x07b8
+
+	union {
+		struct {
+			unsigned geo_lut46		  : 16; 	// bits : 15_0
+			unsigned geo_lut47		  : 16; 	// bits : 31_16
+		} bit;
+		UINT32 word;
+	} reg_495; // 0x07bc
+
+	union {
+		struct {
+			unsigned geo_lut48		  : 16; 	// bits : 15_0
+			unsigned geo_lut49		  : 16; 	// bits : 31_16
+		} bit;
+		UINT32 word;
+	} reg_496; // 0x07c0
+
+	union {
+		struct {
+			unsigned geo_lut50		  : 16; 	// bits : 15_0
+			unsigned geo_lut51		  : 16; 	// bits : 31_16
+		} bit;
+		UINT32 word;
+	} reg_497; // 0x07c4
+
+	union {
+		struct {
+			unsigned geo_lut52		  : 16; 	// bits : 15_0
+			unsigned geo_lut53		  : 16; 	// bits : 31_16
+		} bit;
+		UINT32 word;
+	} reg_498; // 0x07c8
+
+	union {
+		struct {
+			unsigned geo_lut54		  : 16; 	// bits : 15_0
+			unsigned geo_lut55		  : 16; 	// bits : 31_16
+		} bit;
+		UINT32 word;
+	} reg_499; // 0x07cc
+
+	union {
+		struct {
+			unsigned geo_lut56		  : 16; 	// bits : 15_0
+			unsigned geo_lut57		  : 16; 	// bits : 31_16
+		} bit;
+		UINT32 word;
+	} reg_500; // 0x07d0
+
+	union {
+		struct {
+			unsigned geo_lut58		  : 16; 	// bits : 15_0
+			unsigned geo_lut59		  : 16; 	// bits : 31_16
+
+
+		} bit;
+		UINT32 word;
+	} reg_501; // 0x07d4
+
+	union {
+		struct {
+			unsigned geo_lut60		  : 16; 	// bits : 15_0
+			unsigned geo_lut61		  : 16; 	// bits : 31_16
+
+
+		} bit;
+		UINT32 word;
+	} reg_502; // 0x07d8
+
+	union {
+		struct {
+			unsigned geo_lut62		  : 16; 	// bits : 15_0
+			unsigned geo_lut63		  : 16; 	// bits : 31_16
+		} bit;
+		UINT32 word;
+	} reg_503; // 0x07dc
+
+	union {
+		struct {
+			unsigned geo_lut64		  : 16; 	// bits : 15_0
+		} bit;
+		UINT32 word;
+	} reg_504; // 0x07e0
+
+
+	union {
+		struct {
+			unsigned reserved	   : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_505; // 0x07e4
+
+	union {
+		struct {
+			unsigned reserved	   : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_506; // 0x07e8
+
+	union {
+		struct {
+
+			unsigned reserved	   : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_507; // 0x07ec
+
+
+	union {
+		struct {
+			unsigned Reserved		 : 32;		// bits : 31_0
+		} bit;
+		uint32_t word;
+	} reg_508; // 0x07f0
+
+	union {
+		struct {
+			unsigned Reserved		 : 32;		// bits : 31_0
+		} bit;
+		uint32_t word;
+	} reg_509; // 0x07f4
+
+	union {
+		struct {
+			unsigned Reserved		 : 32;		// bits : 31_0
+		} bit;
+		uint32_t word;
+	} reg_510; // 0x07f8
+
+
+	union {
+		struct {
+			unsigned Reserved		 : 32;		// bits : 31_0
+		} bit;
+		uint32_t word;
+	} reg_511; // 0x07fc
+
+
+
+	union {
+		struct {
+
+			unsigned in_dec_smode_en			: 1;		// bits : 0
+			unsigned						 : 1;		// bits : 1
+			unsigned in_dec_dither_en			: 1;		// bits : 2
+			unsigned in_dec_dither_reset		: 1;		// bits : 3
+			unsigned res0_enc_smode_en		 : 1;		// bits : 4
+			unsigned res1_enc_smode_en		 : 1;		// bits : 5
+			unsigned res2_enc_smode_en		 : 1;		// bits : 6
+			unsigned res3_enc_smode_en		 : 1;		// bits : 7
+			unsigned						 : 8;		// bits : 15_6
+			unsigned in_dec_dither_seed0		: 15;		// bits : 30_16
+		} bit;
+		UINT32 word;
+	} reg_512; // 0x0800
+
+	union {
+		struct {
+
+			unsigned in_dec_dither_seed1		: 4;		// bits : 3_0
+		} bit;
+		UINT32 word;
+	} reg_513; // 0x0804
+
+	union {
+		struct {
+			unsigned dct_level_th0		  : 8;		// bits : 7_0
+			unsigned dct_level_th1		  : 8;		// bits : 15_8
+			unsigned dct_level_th2		  : 8;		// bits : 23_16
+			unsigned dct_level_th3		  : 8;		// bits : 31_24
+		} bit;
+		UINT32 word;
+	} reg_514; // 0x0808
+
+	union {
+		struct {
+			unsigned dct_level_th4		  : 8;		// bits : 7_0
+			unsigned dct_level_th5		  : 8;		// bits : 15_8
+			unsigned dct_level_th6		  : 8;		// bits : 23_16
+			unsigned dct_level_th7		  : 8;		// bits : 31_24
+
+
+		} bit;
+		UINT32 word;
+	} reg_515; // 0x080c
+
+	union {
+		struct {
+			unsigned dct_qtbl0_idx			  : 5;		// bits : 4_0
+			unsigned						  : 3;		// bits : 7_5
+			unsigned dct_qtbl1_idx			  : 5;		// bits : 12_8
+			unsigned						  : 3;		// bits : 15_13
+			unsigned dct_qtbl2_idx			  : 5;		// bits : 20_16
+			unsigned						  : 3;		// bits : 23_21
+			unsigned dct_qtbl3_idx			  : 5;		// bits : 28_24
+		} bit;
+		UINT32 word;
+	} reg_516; // 0x0810
+
+	union {
+		struct {
+			unsigned dct_qtbl4_idx		  : 5;		// bits : 4_0
+			unsigned					  : 3;
+			unsigned dct_qtbl5_idx		  : 5;		// bits : 12_8
+			unsigned					  : 3;
+			unsigned dct_qtbl6_idx		  : 5;		// bits : 20_16
+			unsigned					  : 3;
+			unsigned dct_qtbl7_idx		  : 5;		// bits : 28_24
+		} bit;
+		UINT32 word;
+	} reg_517; // 0x0814
+
+	union {
+		struct {
+
+			unsigned dct_qtbl8_idx			  : 5;		// bits : 4_0
+			unsigned						  : 3;		// bits : 7_5
+			unsigned dct_qtbl9_idx			  : 5;		// bits : 12_8
+			unsigned						  : 3;		// bits : 15_13
+			unsigned dct_qtbl10_idx 		  : 5;		// bits : 20_16
+			unsigned						  : 3;		// bits : 23_21
+			unsigned dct_qtbl11_idx 		  : 5;		// bits : 28_24
+		} bit;
+		UINT32 word;
+	} reg_518; // 0x0818
+
+	union {
+		struct {
+
+			unsigned dct_qtbl12_idx 		  : 5;		// bits : 4_0
+			unsigned						  : 3;		// bits : 7_5
+			unsigned dct_qtbl13_idx 		  : 5;		// bits : 12_8
+			unsigned						  : 3;		// bits : 15_13
+			unsigned dct_qtbl14_idx 		  : 5;		// bits : 20_16
+			unsigned						  : 3;		// bits : 23_21
+			unsigned dct_qtbl15_idx 		  : 5;		// bits : 28_24
+		} bit;
+		UINT32 word;
+	} reg_519; // 0x081c
+
+	union {
+		struct {
+			unsigned yrc_lncnt_lfn0 		 : 13;		// bits : 12_0
+			unsigned						 : 3;		// bits : 15_13
+			unsigned yrc_lncnt_lfn1 	   : 12;		// bits : 27_16
+		} bit;
+		UINT32 word;
+	} reg_520; // 0x0820
+
+	union {
+		struct {
+
+			unsigned yrc_lncnt_lfn2 		 : 13;		// bits : 12_0
+			unsigned						 : 3;		// bits : 15_13
+			unsigned yrc_lncnt_lfn3 	   : 12;		// bits : 27_16
+		} bit;
+		UINT32 word;
+	} reg_521; // 0x0824
+
+	union {
+		struct {
+			unsigned yrc_lncnt_lfn4 		 : 13;		// bits : 12_0
+			unsigned						 : 3;		// bits : 15_13
+			unsigned yrc_lncnt_lfn5 	   : 12;		// bits : 27_16
+		} bit;
+		UINT32 word;
+	} reg_522; // 0x0828
+
+	union {
+		struct {
+			unsigned dct_maxdist	   : 8; 	// bits : 7_0
+		} bit;
+		UINT32 word;
+	} reg_523; // 0x082c
+
+	union {
+		struct {
+			unsigned des_res2_y0_addr		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_524; // 0x0830
+
+
+	union {
+		struct {
+			unsigned des_res2_y0_addr_msb		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_525; // 0x0834
+
+	union {
+		struct {
+			unsigned des_res2_uv0_addr		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_526; // 0x0838
+
+	union {
+		struct {
+			unsigned des_res2_uv0_addr_msb		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_527; // 0x083c
+
+	union {
+		struct {
+			unsigned des_res2_y1_addr		: 32;	  // bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_528; // 0x0840
+
+	union {
+		struct {
+			unsigned des_res2_y1_addr_msb		: 4;		// bits : 3_0
+		} bit;
+		UINT32 word;
+	} reg_529; // 0x0844
+
+	union {
+		struct {
+			unsigned des_res2_uv1_addr		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_530; // 0x0848
+
+	union {
+		struct {
+			unsigned des_res2_uv1_addr_msb		 : 4;	  // bits : 3_0
+		} bit;
+		UINT32 word;
+	} reg_531; // 0x084c
+
+
+
+	union {
+		struct {
+			unsigned des_res3_y0_addr		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_532; // 0x0850
+
+	union {
+		struct {
+			unsigned des_res3_y0_addr_msb		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_533; // 0x0854
+
+	union {
+		struct {
+			unsigned des_res3_uv0_addr		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_534; // 0x0858
+
+	union {
+		struct {
+			unsigned des_res3_uv0_addr_msb		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_535; // 0x085C
+
+	union {
+		struct {
+			unsigned des_res3_y1_addr		: 32;	  // bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_536; // 0x0860
+
+	union {
+		struct {
+			unsigned des_res3_y1_addr_msb		: 4;		// bits : 3_0
+		} bit;
+		UINT32 word;
+	} reg_537; // 0x0864
+
+	union {
+		struct {
+			unsigned des_res3_uv1_addr		 : 32;		// bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_538; // 0x0868
+
+	union {
+		struct {
+			unsigned des_res3_uv1_addr_msb		 : 4;	  // bits : 3_0
+		} bit;
+		UINT32 word;
+	} reg_539; // 0x086c
+
+	union {
+		struct {
+
+			unsigned reserved	   : 32;		// Bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_540; // 0x0870
+
+
+	union {
+		struct {
+			unsigned Reserved		 : 32;		// bits : 31_0
+		} bit;
+		uint32_t word;
+	} reg_541; // 0x0874
+
+	union {
+		struct {
+			unsigned Reserved		 : 32;		// bits : 31_0
+		} bit;
+		uint32_t word;
+	} reg_542; // 0x0878
+
+	union {
+		struct {
+			unsigned Reserved		 : 32;		// bits : 31_0
+		} bit;
+		uint32_t word;
+	} reg_543; // 0x087c
+	union {
+		struct {
+
+			unsigned reserved	   : 32;		// Bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_544; // 0x0880
+
+
+	union {
+		struct {
+			unsigned Reserved		 : 32;		// bits : 31_0
+		} bit;
+		uint32_t word;
+	} reg_545; // 0x0884
+
+	union {
+		struct {
+			unsigned Reserved		 : 32;		// bits : 31_0
+		} bit;
+		uint32_t word;
+	} reg_546; // 0x0888
+
+	union {
+		struct {
+			unsigned Reserved		 : 32;		// bits : 31_0
+		} bit;
+		uint32_t word;
+	} reg_547; // 0x088c
+	union {
+		struct {
+
+			unsigned reserved	   : 32;		// Bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_548; // 0x0890
+
+
+	union {
+		struct {
+			unsigned Reserved		 : 32;		// bits : 31_0
+		} bit;
+		uint32_t word;
+	} reg_549; // 0x0894
+
+	union {
+		struct {
+			unsigned Reserved		 : 32;		// bits : 31_0
+		} bit;
+		uint32_t word;
+	} reg_550; // 0x0898
+
+	union {
+		struct {
+			unsigned Reserved		 : 32;		// bits : 31_0
+		} bit;
+		uint32_t word;
+	} reg_551; // 0x089c
+	union {
+		struct {
+
+			unsigned reserved	   : 32;		// Bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_552; // 0x08a0
+
+
+	union {
+		struct {
+			unsigned Reserved		 : 32;		// bits : 31_0
+		} bit;
+		uint32_t word;
+	} reg_553; // 0x08a4
+
+	union {
+		struct {
+			unsigned Reserved		 : 32;		// bits : 31_0
+		} bit;
+		uint32_t word;
+	} reg_554; // 0x08a8
+
+	union {
+		struct {
+			unsigned Reserved		 : 32;		// bits : 31_0
+		} bit;
+		uint32_t word;
+	} reg_555; // 0x08ac
+
+	union {
+		struct {
+
+			unsigned reserved	   : 32;		// Bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_556; // 0x08b0
+
+
+	union {
+		struct {
+			unsigned Reserved		 : 32;		// bits : 31_0
+		} bit;
+		uint32_t word;
+	} reg_557; // 0x08b4
+
+	union {
+		struct {
+			unsigned Reserved		 : 32;		// bits : 31_0
+		} bit;
+		uint32_t word;
+	} reg_558; // 0x08b8
+
+	union {
+		struct {
+			unsigned Reserved		 : 32;		// bits : 31_0
+		} bit;
+		uint32_t word;
+	} reg_559; // 0x08bc
+
+	union {
+		struct {
+
+			unsigned reserved	   : 32;		// Bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_560; // 0x08c0
+
+
+	union {
+		struct {
+			unsigned Reserved		 : 32;		// bits : 31_0
+		} bit;
+		uint32_t word;
+	} reg_561; // 0x08c4
+
+	union {
+		struct {
+			unsigned Reserved		 : 32;		// bits : 31_0
+		} bit;
+		uint32_t word;
+	} reg_562; // 0x08c8
+
+	union {
+		struct {
+			unsigned Reserved		 : 32;		// bits : 31_0
+		} bit;
+		uint32_t word;
+	} reg_563; // 0x08cc
+
+	union {
+		struct {
+
+			unsigned reserved	   : 32;		// Bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_564; // 0x08d0
+
+
+	union {
+		struct {
+			unsigned Reserved		 : 32;		// bits : 31_0
+		} bit;
+		uint32_t word;
+	} reg_565; // 0x08d4
+
+	union {
+		struct {
+			unsigned Reserved		 : 32;		// bits : 31_0
+		} bit;
+		uint32_t word;
+	} reg_566; // 0x08d8
+
+	union {
+		struct {
+			unsigned Reserved		 : 32;		// bits : 31_0
+		} bit;
+		uint32_t word;
+	} reg_567; // 0x08dc
+
+	union {
+		struct {
+
+			unsigned reserved	   : 32;		// Bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_568; // 0x08e0
+
+
+	union {
+		struct {
+			unsigned Reserved		 : 32;		// bits : 31_0
+		} bit;
+		uint32_t word;
+	} reg_569; // 0x08e4
+
+	union {
+		struct {
+			unsigned Reserved		 : 32;		// bits : 31_0
+		} bit;
+		uint32_t word;
+	} reg_570; // 0x08e8
+
+	union {
+		struct {
+			unsigned Reserved		 : 32;		// bits : 31_0
+		} bit;
+		uint32_t word;
+	} reg_571; // 0x08ec
+
+	union {
+		struct {
+
+			unsigned reserved	   : 32;		// Bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_572; // 0x08f0
+
+
+	union {
+		struct {
+			unsigned Reserved		 : 32;		// bits : 31_0
+		} bit;
+		uint32_t word;
+	} reg_573; // 0x08f4
+
+	union {
+		struct {
+			unsigned Reserved		 : 32;		// bits : 31_0
+		} bit;
+		uint32_t word;
+	} reg_574; // 0x08f8
+
+	union {
+		struct {
+			unsigned Reserved		 : 32;		// bits : 31_0
+		} bit;
+		uint32_t word;
+	} reg_575; // 0x08fc
+	union {
+		struct {
+
+			unsigned reserved	   : 32;		// Bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_576; // 0x0900
+
+
+	union {
+		struct {
+			unsigned Reserved		 : 32;		// bits : 31_0
+		} bit;
+		uint32_t word;
+	} reg_577; // 0x0904
+
+	union {
+		struct {
+			unsigned Reserved		 : 32;		// bits : 31_0
+		} bit;
+		uint32_t word;
+	} reg_578; // 0x0908
+
+	union {
+		struct {
+			unsigned Reserved		 : 32;		// bits : 31_0
+		} bit;
+		uint32_t word;
+	} reg_579; // 0x090c
+
+	union {
+		struct {
+
+			unsigned reserved	   : 32;		// Bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_580; // 0x0910
+
+
+	union {
+		struct {
+			unsigned Reserved		 : 32;		// bits : 31_0
+		} bit;
+		uint32_t word;
+	} reg_581; // 0x0914
+
+	union {
+		struct {
+			unsigned Reserved		 : 32;		// bits : 31_0
+		} bit;
+		uint32_t word;
+	} reg_582; // 0x0918
+
+	union {
+		struct {
+			unsigned Reserved		 : 32;		// bits : 31_0
+		} bit;
+		uint32_t word;
+	} reg_583; // 0x091c
+
+	union {
+		struct {
+
+			unsigned reserved	   : 32;		// Bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_584; // 0x0920
+
+
+	union {
+		struct {
+			unsigned Reserved		 : 32;		// bits : 31_0
+		} bit;
+		uint32_t word;
+	} reg_585; // 0x0924
+
+	union {
+		struct {
+			unsigned Reserved		 : 32;		// bits : 31_0
+		} bit;
+		uint32_t word;
+	} reg_586; // 0x0928
+
+	union {
+		struct {
+			unsigned Reserved		 : 32;		// bits : 31_0
+		} bit;
+		uint32_t word;
+	} reg_587; // 0x092c
+
+
+	union {
+		struct {
+			unsigned Reserved		 : 32;		// bits : 31_0
+		} bit;
+		uint32_t word;
+	} reg_588; // 0x0930
+
+	union {
+		struct {
+			unsigned Reserved		 : 32;		// bits : 31_0
+		} bit;
+		uint32_t word;
+	} reg_589; // 0x0934
+
+	union {
+		struct {
+			unsigned Reserved		 : 32;		// bits : 31_0
+		} bit;
+		uint32_t word;
+	} reg_590; // 0x0938
+
+	union {
+		struct {
+			unsigned Reserved		 : 32;		// bits : 31_0
+		} bit;
+		uint32_t word;
+	} reg_591; // 0x093c
+
+
+	union {
+		struct {
+
+			unsigned reserved	   : 32;		// Bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_592; // 0x0940
+
+
+	union {
+		struct {
+			unsigned Reserved		 : 32;		// bits : 31_0
+		} bit;
+		uint32_t word;
+	} reg_593; // 0x0944
+
+	union {
+		struct {
+			unsigned Reserved		 : 32;		// bits : 31_0
+		} bit;
+		uint32_t word;
+	} reg_594; // 0x0948
+
+	union {
+		struct {
+			unsigned Reserved		 : 32;		// bits : 31_0
+		} bit;
+		uint32_t word;
+	} reg_595; // 0x094c
+
+	union {
+		struct {
+
+			unsigned reserved	   : 32;		// Bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_596; // 0x0950
+
+
+	union {
+		struct {
+			unsigned Reserved		 : 32;		// bits : 31_0
+		} bit;
+		uint32_t word;
+	} reg_597; // 0x0954
+
+	union {
+		struct {
+			unsigned Reserved		 : 32;		// bits : 31_0
+		} bit;
+		uint32_t word;
+	} reg_598; // 0x0958
+
+	union {
+		struct {
+			unsigned Reserved		 : 32;		// bits : 31_0
+		} bit;
+		uint32_t word;
+	} reg_599; // 0x095c
+	union {
+		struct {
+
+			unsigned reserved	   : 32;		// Bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_600; // 0x0960
+
+
+	union {
+		struct {
+			unsigned Reserved		 : 32;		// bits : 31_0
+		} bit;
+		uint32_t word;
+	} reg_601; // 0x0964
+
+	union {
+		struct {
+			unsigned Reserved		 : 32;		// bits : 31_0
+		} bit;
+		uint32_t word;
+	} reg_602; // 0x0968
+
+	union {
+		struct {
+			unsigned Reserved		 : 32;		// bits : 31_0
+		} bit;
+		uint32_t word;
+	} reg_603; // 0x096c
+	union {
+		struct {
+
+			unsigned reserved	   : 32;		// Bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_604; // 0x0970
+
+
+	union {
+		struct {
+			unsigned Reserved		 : 32;		// bits : 31_0
+		} bit;
+		uint32_t word;
+	} reg_605; // 0x0974
+
+	union {
+		struct {
+			unsigned Reserved		 : 32;		// bits : 31_0
+		} bit;
+		uint32_t word;
+	} reg_606; // 0x0978
+
+	union {
+		struct {
+			unsigned Reserved		 : 32;		// bits : 31_0
+		} bit;
+		uint32_t word;
+	} reg_607; // 0x097c
+	union {
+		struct {
+
+			unsigned reserved	   : 32;		// Bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_608; // 0x0980
+
+
+	union {
+		struct {
+			unsigned Reserved		 : 32;		// bits : 31_0
+		} bit;
+		uint32_t word;
+	} reg_609; // 0x0984
+
+	union {
+		struct {
+			unsigned Reserved		 : 32;		// bits : 31_0
+		} bit;
+		uint32_t word;
+	} reg_610; // 0x0988
+
+	union {
+		struct {
+			unsigned Reserved		 : 32;		// bits : 31_0
+		} bit;
+		uint32_t word;
+	} reg_611; // 0x098c
+	union {
+		struct {
+
+			unsigned reserved	   : 32;		// Bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_612; // 0x0990
+
+
+	union {
+		struct {
+			unsigned Reserved		 : 32;		// bits : 31_0
+		} bit;
+		uint32_t word;
+	} reg_613; // 0x0994
+
+	union {
+		struct {
+			unsigned Reserved		 : 32;		// bits : 31_0
+		} bit;
+		uint32_t word;
+	} reg_614; // 0x0998
+
+	union {
+		struct {
+			unsigned Reserved		 : 32;		// bits : 31_0
+		} bit;
+		uint32_t word;
+	} reg_615; // 0x099c
+	union {
+		struct {
+
+			unsigned reserved	   : 32;		// Bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_616; // 0x09a0
+
+
+	union {
+		struct {
+			unsigned Reserved		 : 32;		// bits : 31_0
+		} bit;
+		uint32_t word;
+	} reg_617; // 0x09a4
+
+	union {
+		struct {
+			unsigned Reserved		 : 32;		// bits : 31_0
+		} bit;
+		uint32_t word;
+	} reg_618; // 0x09a8
+
+	union {
+		struct {
+			unsigned Reserved		 : 32;		// bits : 31_0
+		} bit;
+		uint32_t word;
+	} reg_619; // 0x09ac
+
+	union {
+		struct {
+
+			unsigned reserved	   : 32;		// Bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_620; // 0x09b0
+
+
+	union {
+		struct {
+			unsigned Reserved		 : 32;		// bits : 31_0
+		} bit;
+		uint32_t word;
+	} reg_621; // 0x09b4
+
+	union {
+		struct {
+			unsigned Reserved		 : 32;		// bits : 31_0
+		} bit;
+		uint32_t word;
+	} reg_622; // 0x09b8
+
+	union {
+		struct {
+			unsigned Reserved		 : 32;		// bits : 31_0
+		} bit;
+		uint32_t word;
+	} reg_623; // 0x09bc
+
+	union {
+		struct {
+
+			unsigned reserved	   : 32;		// Bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_624; // 0x09c0
+
+
+	union {
+		struct {
+			unsigned Reserved		 : 32;		// bits : 31_0
+		} bit;
+		uint32_t word;
+	} reg_625; // 0x09c4
+
+	union {
+		struct {
+			unsigned Reserved		 : 32;		// bits : 31_0
+		} bit;
+		uint32_t word;
+	} reg_626; // 0x09c8
+
+	union {
+		struct {
+			unsigned Reserved		 : 32;		// bits : 31_0
+		} bit;
+		uint32_t word;
+	} reg_627; // 0x09cc
+
+	union {
+		struct {
+
+			unsigned reserved	   : 32;		// Bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_628; // 0x09d0
+
+
+	union {
+		struct {
+			unsigned Reserved		 : 32;		// bits : 31_0
+		} bit;
+		uint32_t word;
+	} reg_629; // 0x09d4
+
+	union {
+		struct {
+			unsigned Reserved		 : 32;		// bits : 31_0
+		} bit;
+		uint32_t word;
+	} reg_630; // 0x09d8
+
+	union {
+		struct {
+			unsigned Reserved		 : 32;		// bits : 31_0
+		} bit;
+		uint32_t word;
+	} reg_631; // 0x09dc
+
+	union {
+		struct {
+
+			unsigned reserved	   : 32;		// Bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_632; // 0x09e0
+
+
+	union {
+		struct {
+			unsigned Reserved		 : 32;		// bits : 31_0
+		} bit;
+		uint32_t word;
+	} reg_633; // 0x09e4
+
+	union {
+		struct {
+			unsigned Reserved		 : 32;		// bits : 31_0
+		} bit;
+		uint32_t word;
+	} reg_634; // 0x09e8
+
+	union {
+		struct {
+			unsigned Reserved		 : 32;		// bits : 31_0
+		} bit;
+		uint32_t word;
+	} reg_635; // 0x09ec
+
+	union {
+		struct {
+
+			unsigned reserved	   : 32;		// Bits : 31_0
+		} bit;
+		UINT32 word;
+	} reg_636; // 0x09f0
+
+
+	union {
+		struct {
+			unsigned Reserved		 : 32;		// bits : 31_0
+		} bit;
+		uint32_t word;
+	} reg_637; // 0x09f4
+
+	union {
+		struct {
+			unsigned Reserved		 : 32;		// bits : 31_0
+		} bit;
+		uint32_t word;
+	} reg_638; // 0x09f8
+
+	union {
+		struct {
+			unsigned Reserved		 : 32;		// bits : 31_0
+		} bit;
+		uint32_t word;
+	} reg_639; // 0x09fc
+	union {
+		struct {
+			unsigned mosaic_blk_size		 : 2;		// bits : 1_0
+		} bit;
+		uint32_t word;
+	} reg_640; // 0x0a00
+
+	union {
+		struct {
+			unsigned Reserved		 : 32;		// bits : 1_0
+		} bit;
+		uint32_t word;
+	} reg_641; // 0x0a04
+	union {
+		struct {
+			unsigned mask0_did		   : 2; 	// bits : 1_0
+			unsigned				   : 2; 	// bits : 3_2
+			unsigned mask0_pal_sel	   : 3; 	// bits : 6_4
+			unsigned				   : 1; 	// bits : 7
+			unsigned mask0_line_hit_op : 2; 	// bits : 9_8
+			unsigned				   : 6; 	// bits : 15_10
+			unsigned mask0_alpha	   : 9; 	// bits : 24_16
+			unsigned mask0_shape	   : 2; 	// bits : 26_25
+		} bit;
+		uint32_t word;
+	} reg_642; // 0x0a08
+	union {
+		struct {
+			unsigned mask0_line0_coeffa 	   : 16;		// bits : 15_0
+			unsigned mask0_line0_coeffb 	   : 16;		// bits : 31_16
+		} bit;
+		uint32_t word;
+	} reg_643; // 0x0a0c
+	union {
+		struct {
+			unsigned mask0_line0_coeffc 	   : 30;		// bits : 29_0
+			unsigned mask0_line0_comp		   : 2; 		// bits : 31_30
+		} bit;
+		uint32_t word;
+	} reg_644; // 0x0a10
+
+	union {
+		struct {
+			unsigned mask0_line1_coeffa 	   : 16;		// bits : 15_0
+			unsigned mask0_line1_coeffb 	   : 16;		// bits : 31_16
+		} bit;
+		uint32_t word;
+	} reg_645; // 0x0a14
+	union {
+		struct {
+			unsigned mask0_line1_coeffc 	   : 30;		// bits : 29_0
+			unsigned mask0_line1_comp		   : 2; 		// bits : 31
+		} bit;
+		uint32_t word;
+	} reg_646; // 0x0a18
+
+	union {
+		struct {
+			unsigned mask0_line2_coeffa 	   : 16;		// bits : 15_0
+			unsigned mask0_line2_coeffb 	   : 16;		// bits : 31_16
+		} bit;
+		uint32_t word;
+	} reg_647; // 0x0a1c
+	union {
+		struct {
+			unsigned mask0_line2_coeffc 	   : 30;		// bits : 29_0
+			unsigned mask0_line2_comp		   : 2; 		// bits : 31
+		} bit;
+		uint32_t word;
+	} reg_648; // 0x0a20
+
+	union {
+		struct {
+			unsigned mask0_line3_coeffa 	   : 16;		// bits : 15_0
+			unsigned mask0_line3_coeffb 	   : 16;		// bits : 31_16
+		} bit;
+		uint32_t word;
+	} reg_649; // 0x0a24
+	union {
+		struct {
+			unsigned mask0_line3_coeffc 	   : 30;		// bits : 29_0
+			unsigned mask0_line3_comp		   : 2; 		// bits : 31
+		} bit;
+		uint32_t word;
+	} reg_650; // 0x0a28
+
+	union {
+		struct {
+			unsigned mask1_did		   : 2; 	// bits : 1_0
+			unsigned				   : 2; 	// bits : 3_2
+			unsigned mask1_pal_sel	   : 3; 	// bits : 6_4
+			unsigned				   : 1; 	// bits : 7
+			unsigned mask1_line_hit_op : 2; 	// bits : 9_8
+			unsigned				   : 6; 	// bits : 15_10
+			unsigned mask1_alpha	   : 9; 	// bits : 24_16
+		} bit;
+		uint32_t word;
+	} reg_651; // 0x0a2c
+	union {
+		struct {
+			unsigned mask1_line0_coeffa 	   : 16;		// bits : 15_0
+			unsigned mask1_line0_coeffb 	   : 16;		// bits : 31_16
+		} bit;
+		uint32_t word;
+	} reg_652; // 0x0a30
+	union {
+		struct {
+			unsigned mask1_line0_coeffc 	   : 30;		// bits : 29_0
+			unsigned mask1_line0_comp		   : 2; 		// bits : 31
+		} bit;
+		uint32_t word;
+	} reg_653; // 0x0a34
+
+	union {
+		struct {
+			unsigned mask1_line1_coeffa 	   : 16;		// bits : 15_0
+			unsigned mask1_line1_coeffb 	   : 16;		// bits : 31_16
+		} bit;
+		uint32_t word;
+	} reg_654; // 0x0a38
+	union {
+		struct {
+			unsigned mask1_line1_coeffc 	   : 30;		// bits : 29_0
+			unsigned mask1_line1_comp		   : 2; 		// bits : 31
+		} bit;
+		uint32_t word;
+	} reg_655; // 0x0a3c
+
+	union {
+		struct {
+			unsigned mask1_line2_coeffa 	   : 16;		// bits : 15_0
+			unsigned mask1_line2_coeffb 	   : 16;		// bits : 31_16
+		} bit;
+		uint32_t word;
+	} reg_656; // 0x0a40
+	union {
+		struct {
+			unsigned mask1_line2_coeffc 	   : 30;		// bits : 29_0
+			unsigned mask1_line2_comp		   : 2; 		// bits : 31
+		} bit;
+		uint32_t word;
+	} reg_657; // 0x0a44
+
+	union {
+		struct {
+			unsigned mask1_line3_coeffa 	   : 16;		// bits : 15_0
+			unsigned mask1_line3_coeffb 	   : 16;		// bits : 31_16
+		} bit;
+		uint32_t word;
+	} reg_658; // 0x0a48
+	union {
+		struct {
+			unsigned mask1_line3_coeffc 	   : 30;		// bits : 29_0
+			unsigned mask1_line3_comp		   : 2; 		// bits : 31
+		} bit;
+		uint32_t word;
+	} reg_659; // 0x0a4c
+
+	union {
+		struct {
+			unsigned mask2_did		   : 2; 	// bits : 1_0
+			unsigned				   : 2; 	// bits : 3_2
+			unsigned mask2_pal_sel	   : 3; 	// bits : 6_4
+			unsigned				   : 1; 	// bits : 7
+			unsigned mask2_line_hit_op : 2; 	// bits : 9_8
+			unsigned				   : 6; 	// bits : 15_10
+			unsigned mask2_alpha	   : 9; 	// bits : 24_16
+			unsigned mask2_shape	   : 2; 	// bits : 26_25
+			
+		} bit;
+		uint32_t word;
+	} reg_660; // 0x0a50
+	union {
+		struct {
+			unsigned mask2_line0_coeffa 	   : 16;		// bits : 15_0
+			unsigned mask2_line0_coeffb 	   : 16;		// bits : 31_16
+		} bit;
+		uint32_t word;
+	} reg_661; // 0x0a54
+	union {
+		struct {
+			unsigned mask2_line0_coeffc 	   : 30;		// bits : 29_0
+			unsigned mask2_line0_comp		   : 2; 		// bits : 31
+		} bit;
+		uint32_t word;
+	} reg_662; // 0x0a58
+
+	union {
+		struct {
+			unsigned mask2_line1_coeffa 	   : 16;		// bits : 15_0
+			unsigned mask2_line1_coeffb 	   : 16;		// bits : 31_16
+		} bit;
+		uint32_t word;
+	} reg_663; // 0x0a5c
+	union {
+		struct {
+			unsigned mask2_line1_coeffc 	   : 30;		// bits : 29_0
+			unsigned mask2_line1_comp		   : 2; 		// bits : 31
+		} bit;
+		uint32_t word;
+	} reg_664; // 0x0a60
+
+	union {
+		struct {
+			unsigned mask2_line2_coeffa 	   : 16;		// bits : 15_0
+			unsigned mask2_line2_coeffb 	   : 16;		// bits : 31_16
+		} bit;
+		uint32_t word;
+	} reg_665; // 0x0a64
+	union {
+		struct {
+			unsigned mask2_line2_coeffc 	   : 30;		// bits : 29_0
+			unsigned mask2_line2_comp		   : 2; 		// bits : 31
+		} bit;
+		uint32_t word;
+	} reg_666; // 0x0a68
+
+	union {
+		struct {
+			unsigned mask2_line3_coeffa 	   : 16;		// bits : 15_0
+			unsigned mask2_line3_coeffb 	   : 16;		// bits : 31_16
+		} bit;
+		uint32_t word;
+	} reg_667; // 0x0a6c
+	union {
+		struct {
+			unsigned mask2_line3_coeffc 	   : 30;		// bits : 29_0
+			unsigned mask2_line3_comp		   : 2; 		// bits : 31
+		} bit;
+		uint32_t word;
+	} reg_668; // 0x0a70
+
+	union {
+		struct {
+			unsigned mask3_did		   : 2; 	// bits : 1_0
+			unsigned				   : 2; 	// bits : 3_2
+			unsigned mask3_pal_sel	   : 3; 	// bits : 6_4
+			unsigned				   : 1; 	// bits : 7
+			unsigned mask3_line_hit_op : 2; 	// bits : 9_8
+			unsigned				   : 6; 	// bits : 15_10
+			unsigned mask3_alpha	   : 9; 	// bits : 24_16
+		} bit;
+		uint32_t word;
+	} reg_669; // 0x0a74
+	union {
+		struct {
+			unsigned mask3_line0_coeffa 	   : 16;		// bits : 15_0
+			unsigned mask3_line0_coeffb 	   : 16;		// bits : 31_16
+		} bit;
+		uint32_t word;
+	} reg_670; // 0x0a78
+	union {
+		struct {
+			unsigned mask3_line0_coeffc 	   : 30;		// bits : 29_0
+			unsigned mask3_line0_comp		   : 2; 		// bits : 31
+		} bit;
+		uint32_t word;
+	} reg_671; // 0x0a7c
+
+	union {
+		struct {
+			unsigned mask3_line1_coeffa 	   : 16;		// bits : 15_0
+			unsigned mask3_line1_coeffb 	   : 16;		// bits : 31_16
+		} bit;
+		uint32_t word;
+	} reg_672; // 0x0a80
+	union {
+		struct {
+			unsigned mask3_line1_coeffc 	   : 30;		// bits : 29_0
+			unsigned mask3_line1_comp		   : 2; 		// bits : 31
+		} bit;
+		uint32_t word;
+	} reg_673; // 0x0a84
+
+	union {
+		struct {
+			unsigned mask3_line2_coeffa 	   : 16;		// bits : 15_0
+			unsigned mask3_line2_coeffb 	   : 16;		// bits : 31_16
+		} bit;
+		uint32_t word;
+	} reg_674; // 0x0a88
+	union {
+		struct {
+			unsigned mask3_line2_coeffc 	   : 30;		// bits : 29_0
+			unsigned mask3_line2_comp		   : 2; 		// bits : 31
+		} bit;
+		uint32_t word;
+	} reg_675; // 0x0a8c
+
+	union {
+		struct {
+			unsigned mask3_line3_coeffa 	   : 16;		// bits : 15_0
+			unsigned mask3_line3_coeffb 	   : 16;		// bits : 31_16
+		} bit;
+		uint32_t word;
+	} reg_676; // 0x0a90
+	union {
+		struct {
+			unsigned mask3_line3_coeffc 	   : 30;		// bits : 29_0
+			unsigned mask3_line3_comp		   : 2; 		// bits : 31
+		} bit;
+		uint32_t word;
+	} reg_677; // 0x0a94
+
+	union {
+		struct {
+			unsigned mask4_did		   : 2; 	// bits : 1_0
+			unsigned				   : 2; 	// bits : 3_2
+			unsigned mask4_pal_sel	   : 3; 	// bits : 6_4
+			unsigned				   : 1; 	// bits : 7
+			unsigned mask4_line_hit_op : 2; 	// bits : 9_8
+			unsigned				   : 6; 	// bits : 15_10
+			unsigned mask4_alpha	   : 9; 	// bits : 24_16
+			unsigned mask4_shape	   : 2; 	// bits : 26_25
+		} bit;
+		uint32_t word;
+	} reg_678; // 0x0a98
+	union {
+		struct {
+			unsigned mask4_line0_coeffa 	   : 16;		// bits : 15_0
+			unsigned mask4_line0_coeffb 	   : 16;		// bits : 31_16
+		} bit;
+		uint32_t word;
+	} reg_679; // 0x0a9c
+	union {
+		struct {
+			unsigned mask4_line0_coeffc 	   : 30;		// bits : 29_0
+			unsigned mask4_line0_comp		   : 2; 		// bits : 31
+		} bit;
+		uint32_t word;
+	} reg_680; // 0x0aa0
+
+	union {
+		struct {
+			unsigned mask4_line1_coeffa 	   : 16;		// bits : 15_0
+			unsigned mask4_line1_coeffb 	   : 16;		// bits : 31_16
+		} bit;
+		uint32_t word;
+	} reg_681; // 0x0aa4
+	union {
+		struct {
+			unsigned mask4_line1_coeffc 	   : 30;		// bits : 29_0
+			unsigned mask4_line1_comp		   : 2; 		// bits : 31
+		} bit;
+		uint32_t word;
+	} reg_682; // 0x0aa8
+
+	union {
+		struct {
+			unsigned mask4_line2_coeffa 	   : 16;		// bits : 15_0
+			unsigned mask4_line2_coeffb 	   : 16;		// bits : 31_16
+		} bit;
+		uint32_t word;
+	} reg_683; // 0x0aac
+	union {
+		struct {
+			unsigned mask4_line2_coeffc 	   : 30;		// bits : 29_0
+			unsigned mask4_line2_comp		   : 2; 		// bits : 31
+		} bit;
+		uint32_t word;
+	} reg_684; // 0x0ab0
+
+	union {
+		struct {
+			unsigned mask4_line3_coeffa 	   : 16;		// bits : 15_0
+			unsigned mask4_line3_coeffb 	   : 16;		// bits : 31_16
+		} bit;
+		uint32_t word;
+	} reg_685; // 0x0ab4
+	union {
+		struct {
+			unsigned mask4_line3_coeffc 	   : 30;		// bits : 29_0
+			unsigned mask4_line3_comp		   : 2; 		// bits : 31
+		} bit;
+		uint32_t word;
+	} reg_686; // 0x0ab8
+
+	union {
+		struct {
+			unsigned mask5_did		   : 2; 	// bits : 1_0
+			unsigned				   : 2; 	// bits : 3_2
+			unsigned mask5_pal_sel	   : 3; 	// bits : 6_4
+			unsigned				   : 1; 	// bits : 7
+			unsigned mask5_line_hit_op : 2; 	// bits : 9_8
+			unsigned				   : 6; 	// bits : 15_10
+			unsigned mask5_alpha	   : 9; 	// bits : 24_16
+		} bit;
+		uint32_t word;
+	} reg_687; // 0x0abc
+	union {
+		struct {
+			unsigned mask5_line0_coeffa 	   : 16;		// bits : 15_0
+			unsigned mask5_line0_coeffb 	   : 16;		// bits : 31_16
+		} bit;
+		uint32_t word;
+	} reg_688; // 0x0ac0
+	union {
+		struct {
+			unsigned mask5_line0_coeffc 	   : 30;		// bits : 29_0
+			unsigned mask5_line0_comp		   : 2; 		// bits : 31
+		} bit;
+		uint32_t word;
+	} reg_689; // 0x0ac4
+
+	union {
+		struct {
+			unsigned mask5_line1_coeffa 	   : 16;		// bits : 15_0
+			unsigned mask5_line1_coeffb 	   : 16;		// bits : 31_16
+		} bit;
+		uint32_t word;
+	} reg_690; // 0x0ac8
+	union {
+		struct {
+			unsigned mask5_line1_coeffc 	   : 30;		// bits : 29_0
+			unsigned mask5_line1_comp		   : 2; 		// bits : 31
+		} bit;
+		uint32_t word;
+	} reg_691; // 0x0acc
+
+	union {
+		struct {
+			unsigned mask5_line2_coeffa 	   : 16;		// bits : 15_0
+			unsigned mask5_line2_coeffb 	   : 16;		// bits : 31_16
+		} bit;
+		uint32_t word;
+	} reg_692; // 0x0ad0
+	union {
+		struct {
+			unsigned mask5_line2_coeffc 	   : 30;		// bits : 29_0
+			unsigned mask5_line2_comp		   : 2; 		// bits : 31
+		} bit;
+		uint32_t word;
+	} reg_693; // 0x0ad4
+
+	union {
+		struct {
+			unsigned mask5_line3_coeffa 	   : 16;		// bits : 15_0
+			unsigned mask5_line3_coeffb 	   : 16;		// bits : 31_16
+		} bit;
+		uint32_t word;
+	} reg_694; // 0x0ad8
+	union {
+		struct {
+			unsigned mask5_line3_coeffc 	   : 30;		// bits : 29_0
+			unsigned mask5_line3_comp		   : 2; 		// bits : 31
+		} bit;
+		uint32_t word;
+	} reg_695; // 0x0adc
+
+
+	union {
+		struct {
+			unsigned mask6_did		   : 2; 	// bits : 1_0
+			unsigned				   : 2; 	// bits : 3_2
+			unsigned mask6_pal_sel	   : 3; 	// bits : 6_4
+			unsigned				   : 1; 	// bits : 7
+			unsigned mask6_line_hit_op : 2; 	// bits : 9_8
+			unsigned				   : 6; 	// bits : 15_10
+			unsigned mask6_alpha	   : 9; 	// bits : 24_16
+			unsigned mask6_shape	   : 2; 	// bits : 26_25
+		} bit;
+		uint32_t word;
+	} reg_696; // 0x0ae0
+	union {
+		struct {
+			unsigned mask6_line0_coeffa 	   : 16;		// bits : 15_0
+			unsigned mask6_line0_coeffb 	   : 16;		// bits : 31_16
+		} bit;
+		uint32_t word;
+	} reg_697; // 0x0ae4
+	union {
+		struct {
+			unsigned mask6_line0_coeffc 	   : 30;		// bits : 29_0
+			unsigned mask6_line0_comp		   : 2; 		// bits : 31
+		} bit;
+		uint32_t word;
+	} reg_698; // 0x0ae8
+
+	union {
+		struct {
+			unsigned mask6_line1_coeffa 	   : 16;		// bits : 15_0
+			unsigned mask6_line1_coeffb 	   : 16;		// bits : 31_16
+		} bit;
+		uint32_t word;
+	} reg_699; // 0x0aec
+	union {
+		struct {
+			unsigned mask6_line1_coeffc 	   : 30;		// bits : 29_0
+			unsigned mask6_line1_comp		   : 2; 		// bits : 31
+		} bit;
+		uint32_t word;
+	} reg_700; // 0x0af0
+
+	union {
+		struct {
+			unsigned mask6_line2_coeffa 	   : 16;		// bits : 15_0
+			unsigned mask6_line2_coeffb 	   : 16;		// bits : 31_16
+		} bit;
+		uint32_t word;
+	} reg_701; // 0x0af4
+	union {
+		struct {
+			unsigned mask6_line2_coeffc 	   : 30;		// bits : 29_0
+			unsigned mask6_line2_comp		   : 2; 		// bits : 31
+		} bit;
+		uint32_t word;
+	} reg_702; // 0x0af8
+
+	union {
+		struct {
+			unsigned mask6_line3_coeffa 	   : 16;		// bits : 15_0
+			unsigned mask6_line3_coeffb 	   : 16;		// bits : 31_16
+		} bit;
+		uint32_t word;
+	} reg_703; // 0x0afc
+	union {
+		struct {
+			unsigned mask6_line3_coeffc 	   : 30;		// bits : 29_0
+			unsigned mask6_line3_comp		   : 2; 		// bits : 31
+		} bit;
+		uint32_t word;
+	} reg_704; // 0x0b00
+
+	union {
+		struct {
+			unsigned mask7_did		   : 2; 	// bits : 1_0
+			unsigned				   : 2; 	// bits : 3_2
+			unsigned mask7_pal_sel	   : 3; 	// bits : 6_4
+			unsigned				   : 1; 	// bits : 7
+			unsigned mask7_line_hit_op : 2; 	// bits : 9_8
+			unsigned				   : 6; 	// bits : 15_10
+			unsigned mask7_alpha	   : 9; 	// bits : 24_16
+		} bit;
+		uint32_t word;
+	} reg_705; // 0x0b04
+	union {
+		struct {
+			unsigned mask7_line0_coeffa 	   : 16;		// bits : 15_0
+			unsigned mask7_line0_coeffb 	   : 16;		// bits : 31_16
+		} bit;
+		uint32_t word;
+	} reg_706; // 0x0b08
+	union {
+		struct {
+			unsigned mask7_line0_coeffc 	   : 30;		// bits : 29_0
+			unsigned mask7_line0_comp		   : 2; 		// bits : 31
+		} bit;
+		uint32_t word;
+	} reg_707; // 0x0b0c
+
+	union {
+		struct {
+			unsigned mask7_line1_coeffa 	   : 16;		// bits : 15_0
+			unsigned mask7_line1_coeffb 	   : 16;		// bits : 31_16
+		} bit;
+		uint32_t word;
+	} reg_708; // 0x0b10
+	union {
+		struct {
+			unsigned mask7_line1_coeffc 	   : 30;		// bits : 29_0
+			unsigned mask7_line1_comp		   : 2; 		// bits : 31
+		} bit;
+		uint32_t word;
+	} reg_709; // 0x0b14
+
+	union {
+		struct {
+			unsigned mask7_line2_coeffa 	   : 16;		// bits : 15_0
+			unsigned mask7_line2_coeffb 	   : 16;		// bits : 31_16
+		} bit;
+		uint32_t word;
+	} reg_710; // 0x0b18
+	union {
+		struct {
+			unsigned mask7_line2_coeffc 	   : 30;		// bits : 29_0
+			unsigned mask7_line2_comp		   : 2; 		// bits : 31
+		} bit;
+		uint32_t word;
+	} reg_711; // 0x0b1c
+
+	union {
+		struct {
+			unsigned mask7_line3_coeffa 	   : 16;		// bits : 15_0
+			unsigned mask7_line3_coeffb 	   : 16;		// bits : 31_16
+		} bit;
+		uint32_t word;
+	} reg_712; // 0x0b20
+	union {
+		struct {
+			unsigned mask7_line3_coeffc 	   : 30;		// bits : 29_0
+			unsigned mask7_line3_comp		   : 2; 		// bits : 31
+		} bit;
+		uint32_t word;
+	} reg_713; // 0x0b24
+	union {
+		struct {
+			unsigned Reserved		 : 32;		// bits : 31_0
+		} bit;
+		uint32_t word;
+	} reg_714; // 0x0b28
+	union {
+		struct {
+			unsigned Reserved		 : 32;		// bits : 31_0
+		} bit;
+		uint32_t word;
+	} reg_715; // 0x0b2c
+	union {
+		struct {
+			unsigned mask0_line4_coeffa 	   : 16;		// bits : 15_0
+			unsigned mask0_line4_coeffb 	   : 16;		// bits : 31_16
+		} bit;
+		uint32_t word;
+	} reg_716; // 0x0b30
+	union {
+		struct {
+			unsigned mask0_line4_coeffc 	   : 30;		// bits : 29_0
+			unsigned mask0_line4_comp		   : 2; 		// bits : 31
+		} bit;
+		uint32_t word;
+	} reg_717; // 0x0b34
+
+	union {
+		struct {
+			unsigned mask0_line5_coeffa 	   : 16;		// bits : 15_0
+			unsigned mask0_line5_coeffb 	   : 16;		// bits : 31_16
+		} bit;
+		uint32_t word;
+	} reg_718; // 0x0b38
+	union {
+		struct {
+			unsigned mask0_line5_coeffc 	   : 30;		// bits : 29_0
+			unsigned mask0_line5_comp		   : 2; 		// bits : 31
+		} bit;
+		uint32_t word;
+	} reg_719; // 0x0b3c
+
+
+	union {
+		struct {
+			unsigned mask2_line4_coeffa 	   : 16;		// bits : 15_0
+			unsigned mask2_line4_coeffb 	   : 16;		// bits : 31_16
+		} bit;
+		uint32_t word;
+	} reg_720; // 0x0b40
+	union {
+		struct {
+			unsigned mask2_line4_coeffc 	   : 30;		// bits : 29_0
+			unsigned mask2_line4_comp		   : 2; 		// bits : 31
+		} bit;
+		uint32_t word;
+	} reg_721; // 0x0b44
+
+	union {
+		struct {
+			unsigned mask2_line5_coeffa 	   : 16;		// bits : 15_0
+			unsigned mask2_line5_coeffb 	   : 16;		// bits : 31_16
+		} bit;
+		uint32_t word;
+	} reg_722; // 0x0b48
+	union {
+		struct {
+			unsigned mask2_line5_coeffc 	   : 30;		// bits : 29_0
+			unsigned mask2_line5_comp		   : 2; 		// bits : 31
+		} bit;
+			uint32_t word;
+	} reg_723; // 0x0b4c
+
+
+	union {
+		struct {
+			unsigned mask4_line4_coeffa 	   : 16;		// bits : 15_0
+			unsigned mask4_line4_coeffb 	   : 16;		// bits : 31_16
+		} bit;
+		uint32_t word;
+	} reg_724; // 0x0b50
+	union {
+		struct {
+			unsigned mask4_line4_coeffc 	   : 30;		// bits : 29_0
+			unsigned mask4_line4_comp		   : 2; 		// bits : 31
+		} bit;
+		uint32_t word;
+	} reg_725; // 0x0b54
+
+	union {
+		struct {
+			unsigned mask4_line5_coeffa 	   : 16;		// bits : 15_0
+			unsigned mask4_line5_coeffb 	   : 16;		// bits : 31_16
+		} bit;
+		uint32_t word;
+	} reg_726; // 0x0b58
+	union {
+		struct {
+			unsigned mask4_line5_coeffc 	   : 30;		// bits : 29_0
+			unsigned mask4_line5_comp		   : 2; 		// bits : 31
+		} bit;
+			uint32_t word;
+	} reg_727; // 0x0b5c
+
+	union {
+		struct {
+			unsigned mask6_line4_coeffa 	   : 16;		// bits : 15_0
+			unsigned mask6_line4_coeffb 	   : 16;		// bits : 31_16
+		} bit;
+		uint32_t word;
+	} reg_728; // 0x0b60
+	union {
+		struct {
+			unsigned mask6_line4_coeffc 	   : 30;		// bits : 29_0
+			unsigned mask6_line4_comp		   : 2; 		// bits : 31
+		} bit;
+		uint32_t word;
+	} reg_729; // 0x0b64
+
+	union {
+		struct {
+			unsigned mask6_line5_coeffa 	   : 16;		// bits : 15_0
+			unsigned mask6_line5_coeffb 	   : 16;		// bits : 31_16
+		} bit;
+		uint32_t word;
+	} reg_730; // 0x0b68
+	union {
+		struct {
+			unsigned mask6_line5_coeffc 	   : 30;		// bits : 29_0
+			unsigned mask6_line5_comp		   : 2; 		// bits : 31
+		} bit;
+			uint32_t word;
+	} reg_731; // 0x0b6c
+
+
+
+	
+
+} NT98538_VPE_REGISTER_STRUCT;
+
+
+
+
+
+
+
+#ifdef __cplusplus
+}
+#endif
+
+
+#endif
+

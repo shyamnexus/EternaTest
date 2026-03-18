@@ -1,0 +1,1 @@
+cmd_/home/nvt03128/538v8/ns02302_linux_sdk/base/linux-code/driver/source/net/rtl8189FS_linux_v5.15.12/modules.order := {   echo /home/nvt03128/538v8/ns02302_linux_sdk/base/linux-code/driver/source/net/rtl8189FS_linux_v5.15.12/8189fs.ko; :; } | awk '!x[$$0]++' - > /home/nvt03128/538v8/ns02302_linux_sdk/base/linux-code/driver/source/net/rtl8189FS_linux_v5.15.12/modules.order

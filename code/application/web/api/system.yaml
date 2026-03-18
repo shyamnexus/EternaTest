@@ -1,0 +1,942 @@
+# =============================================================================
+# System API  –  Device, Time/NTP/DST, Reboot, Shutdown, Factory Reset,
+#                Diagnostics, Maintenance, Watchdog, Backup/Restore, Alarms
+# =============================================================================
+
+paths:
+
+  # --------------------------------------------------------------------------
+  # 1. Device Information
+  # --------------------------------------------------------------------------
+  /system/device:
+    get:
+      tags: [System]
+      summary: Get device information
+      description: >
+        Returns complete device metadata including model, serial number,
+        firmware version, hardware ID, sensor type, and channel count.
+      operationId: getSystemDevice
+      responses:
+        '200':
+          description: Device information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeviceInfo'
+    put:
+      tags: [System]
+      summary: Update device settings
+      description: >
+        Modify the user-configurable device settings such as device name and
+        telecontrol ID.  Generates an audit log entry.
+      operationId: updateSystemDevice
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                device_name:
+                  type: string
+                  minLength: 1
+                  maxLength: 64
+                  example: "IPCamera01"
+                telecontrol_id:
+                  type: integer
+                  minimum: 0
+                  maximum: 255
+                  example: 88
+      responses:
+        '200':
+          description: Updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  device_name:
+                    type: string
+                  telecontrol_id:
+                    type: integer
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  # --------------------------------------------------------------------------
+  # 2a. Date / Time
+  # --------------------------------------------------------------------------
+  /system/time:
+    get:
+      tags: [System]
+      summary: Get current date/time and timezone
+      operationId: getSystemTime
+      responses:
+        '200':
+          description: Current time information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TimeInfo'
+    put:
+      tags: [System]
+      summary: Set timezone, date/time, or date format
+      operationId: updateSystemTime
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                timezone:
+                  type: string
+                  example: "America/New_York"
+                date_time:
+                  type: string
+                  format: date-time
+                  description: ISO-8601 datetime string
+                  example: "2026-02-22T12:00:00Z"
+                date_format:
+                  type: string
+                  enum: ["YYYY-MM-DD", "MM/DD/YYYY", "DD/MM/YYYY"]
+                  example: "YYYY-MM-DD"
+      responses:
+        '200':
+          description: Time updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  timezone:
+                    type: string
+                  local_time:
+                    type: string
+                  utc_time:
+                    type: string
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  # --------------------------------------------------------------------------
+  # 2b. NTP Configuration
+  # --------------------------------------------------------------------------
+  /system/time/ntp:
+    get:
+      tags: [System]
+      summary: Get NTP configuration
+      operationId: getSystemTimeNtp
+      responses:
+        '200':
+          description: NTP configuration
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NtpConfig'
+    put:
+      tags: [System]
+      summary: Update NTP configuration
+      operationId: updateSystemTimeNtp
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NtpConfig'
+      responses:
+        '200':
+          description: NTP config updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  config:
+                    type: object
+                    properties:
+                      enabled:
+                        type: boolean
+                      source:
+                        type: string
+                      primary_server:
+                        type: string
+                      refresh_interval_sec:
+                        type: integer
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  # --------------------------------------------------------------------------
+  # 2c. Manual NTP Sync
+  # --------------------------------------------------------------------------
+  /system/time/sync:
+    post:
+      tags: [System]
+      summary: Trigger manual NTP synchronization
+      operationId: syncSystemTime
+      responses:
+        '200':
+          description: Sync result
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  server:
+                    type: string
+                    description: NTP server used
+                  offset_ms:
+                    type: number
+                    description: Clock offset in milliseconds
+                  local_time:
+                    type: string
+                  utc_time:
+                    type: string
+                  unix_timestamp:
+                    type: integer
+
+  # --------------------------------------------------------------------------
+  # 2d. DST Configuration
+  # --------------------------------------------------------------------------
+  /system/time/dst:
+    get:
+      tags: [System]
+      summary: Get DST configuration
+      operationId: getSystemTimeDst
+      responses:
+        '200':
+          description: DST configuration
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DstConfig'
+    put:
+      tags: [System]
+      summary: Update DST configuration
+      operationId: updateSystemTimeDst
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DstConfig'
+      responses:
+        '200':
+          description: DST config updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  config:
+                    $ref: '#/components/schemas/DstConfig'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  # --------------------------------------------------------------------------
+  # 3a. Reboot
+  # --------------------------------------------------------------------------
+  /system/reboot:
+    get:
+      tags: [System]
+      summary: Get scheduled reboot status
+      operationId: getSystemReboot
+      responses:
+        '200':
+          description: Reboot schedule status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reboot_scheduled:
+                    type: boolean
+                  scheduled_reboot_time:
+                    type: string
+    post:
+      tags: [System]
+      summary: Trigger device reboot
+      description: >
+        Initiates a warm, cold, or scheduled reboot. Generates an audit log entry.
+      operationId: triggerSystemReboot
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                type:
+                  type: string
+                  enum: [warm, cold, scheduled]
+                  default: warm
+                delay_seconds:
+                  type: integer
+                  minimum: 0
+                  default: 0
+                scheduled_time:
+                  type: string
+                  description: ISO-8601 time for scheduled reboot
+      responses:
+        '200':
+          description: Reboot initiated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  type:
+                    type: string
+                  delay_seconds:
+                    type: integer
+    delete:
+      tags: [System]
+      summary: Cancel a scheduled reboot
+      operationId: cancelSystemReboot
+      responses:
+        '200':
+          description: Scheduled reboot cancelled
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+
+  # --------------------------------------------------------------------------
+  # 3b. Shutdown
+  # --------------------------------------------------------------------------
+  /system/shutdown:
+    post:
+      tags: [System]
+      summary: Trigger device shutdown
+      operationId: triggerSystemShutdown
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                delay_seconds:
+                  type: integer
+                  minimum: 0
+                  default: 0
+      responses:
+        '200':
+          description: Shutdown initiated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  delay_seconds:
+                    type: integer
+
+  # --------------------------------------------------------------------------
+  # 4. Factory Reset
+  # --------------------------------------------------------------------------
+  /system/factory-reset:
+    post:
+      tags: [System]
+      summary: Perform factory reset
+      description: >
+        Resets the device to factory defaults.  `soft` preserves network settings,
+        `hard` erases everything.  Generates an audit log entry.
+      operationId: triggerFactoryReset
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                mode:
+                  type: string
+                  enum: [soft, hard]
+                  default: hard
+                delay_seconds:
+                  type: integer
+                  minimum: 0
+                  default: 0
+      responses:
+        '200':
+          description: Factory reset initiated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  mode:
+                    type: string
+                  message:
+                    type: string
+                  delay_seconds:
+                    type: integer
+
+  # --------------------------------------------------------------------------
+  # 5. Diagnostics / Health
+  # --------------------------------------------------------------------------
+  /system/diagnostics:
+    get:
+      tags: [System]
+      summary: Get system diagnostics
+      description: >
+        Returns real-time CPU, memory, disk, process, temperature and uptime data.
+      operationId: getSystemDiagnostics
+      responses:
+        '200':
+          description: Diagnostic report
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DiagnosticsReport'
+
+  /system/diagnostics/report:
+    get:
+      tags: [System]
+      summary: Download diagnostic bundle
+      description: >
+        Generates and downloads a comprehensive `.tar.gz` diagnostic bundle
+        containing network info, hardware stats, running config, and log files.
+      operationId: getSystemDiagnosticBundle
+      responses:
+        '200':
+          description: Diagnostic bundle tar.gz
+          content:
+            application/gzip:
+              schema:
+                type: string
+                format: binary
+          headers:
+            Content-Disposition:
+              schema:
+                type: string
+                example: 'attachment; filename="diagnostic_20260222_175104.tar.gz"'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  # --------------------------------------------------------------------------
+  # 7. Maintenance
+  # --------------------------------------------------------------------------
+  /system/maintenance:
+    get:
+      tags: [System]
+      summary: Get maintenance schedule
+      operationId: getSystemMaintenance
+      responses:
+        '200':
+          description: Maintenance configuration
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MaintenanceConfig'
+    put:
+      tags: [System]
+      summary: Update maintenance schedule
+      operationId: updateSystemMaintenance
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MaintenanceConfig'
+      responses:
+        '200':
+          description: Updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  config:
+                    $ref: '#/components/schemas/MaintenanceConfig'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  # --------------------------------------------------------------------------
+  # 8. Watchdog
+  # --------------------------------------------------------------------------
+  /system/watchdog:
+    get:
+      tags: [System]
+      summary: Get watchdog configuration
+      operationId: getSystemWatchdog
+      responses:
+        '200':
+          description: Watchdog configuration
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WatchdogConfig'
+    put:
+      tags: [System]
+      summary: Update watchdog configuration
+      operationId: updateSystemWatchdog
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WatchdogConfig'
+      responses:
+        '200':
+          description: Updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  enabled:
+                    type: boolean
+                  interval_seconds:
+                    type: integer
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  # --------------------------------------------------------------------------
+  # 10a. Config Backup
+  # --------------------------------------------------------------------------
+  /system/backup:
+    get:
+      tags: [System]
+      summary: Download configuration backup
+      description: >
+        Creates and downloads a `.tar.gz` archive of all device configuration files.
+      operationId: getSystemBackup
+      responses:
+        '200':
+          description: Configuration backup tar.gz
+          content:
+            application/gzip:
+              schema:
+                type: string
+                format: binary
+          headers:
+            Content-Disposition:
+              schema:
+                type: string
+                example: 'attachment; filename="config_backup.tar.gz"'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  # --------------------------------------------------------------------------
+  # 10b. Config Restore
+  # --------------------------------------------------------------------------
+  /system/restore:
+    post:
+      tags: [System]
+      summary: Restore configuration from backup
+      description: >
+        Uploads a previously downloaded `.tar.gz` config backup and restores it.
+        A restart is recommended after restore completes.
+      operationId: restoreSystemConfig
+      requestBody:
+        required: true
+        content:
+          application/gzip:
+            schema:
+              type: string
+              format: binary
+      responses:
+        '200':
+          description: Configuration restored
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: "Configuration restored successfully — restart recommended"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  # --------------------------------------------------------------------------
+  # 11. Alarm Thresholds
+  # --------------------------------------------------------------------------
+  /system/alarms:
+    get:
+      tags: [System]
+      summary: Get alarm thresholds and current status
+      description: >
+        Returns configured alarm thresholds, current sensor readings,
+        and whether each alarm is currently active.
+      operationId: getSystemAlarms
+      responses:
+        '200':
+          description: Alarm thresholds and status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AlarmStatus'
+    put:
+      tags: [System]
+      summary: Update alarm thresholds
+      operationId: updateSystemAlarms
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                disk_space_threshold:
+                  type: number
+                  format: float
+                  description: Disk usage percentage to trigger alarm
+                  example: 90.0
+                temperature_threshold:
+                  type: number
+                  format: float
+                  description: Temperature in °C to trigger alarm
+                  example: 85.0
+                memory_threshold:
+                  type: number
+                  format: float
+                  description: Memory usage percentage to trigger alarm
+                  example: 90.0
+                alarm_outputs_number:
+                  type: integer
+                  example: 0
+      responses:
+        '200':
+          description: Thresholds updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  thresholds:
+                    type: object
+                    properties:
+                      disk_space_threshold:
+                        type: number
+                      temperature_threshold:
+                        type: number
+                      memory_threshold:
+                        type: number
+                      alarm_outputs_number:
+                        type: integer
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+# =============================================================================
+# Schemas
+# =============================================================================
+components:
+  schemas:
+    DeviceInfo:
+      type: object
+      properties:
+        device_name:
+          type: string
+          example: "IPCamera01"
+        model:
+          type: string
+          example: "NS02302"
+        serial_number:
+          type: string
+        firmware_version:
+          type: string
+          example: "V0.0.1"
+        hardware_id:
+          type: string
+        manufacturer:
+          type: string
+        telecontrol_id:
+          type: integer
+          example: 88
+        encoder_version:
+          type: string
+        web_version:
+          type: string
+        plugin_version:
+          type: string
+        channels_number:
+          type: integer
+          example: 1
+        hard_disks_number:
+          type: integer
+        alarm_inputs_number:
+          type: integer
+        alarm_outputs_number:
+          type: integer
+        firmware_version_info:
+          type: string
+        sensor_type:
+          type: string
+
+    TimeInfo:
+      type: object
+      properties:
+        timezone:
+          type: string
+          example: "UTC"
+        local_time:
+          type: string
+          example: "2026-02-22T17:49:10+00:00"
+        utc_time:
+          type: string
+        unix_timestamp:
+          type: integer
+        dst_active:
+          type: boolean
+        utc_offset_min:
+          type: integer
+        date_format:
+          type: string
+          example: "YYYY-MM-DD"
+        dst:
+          $ref: '#/components/schemas/DstConfig'
+
+    NtpConfig:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+          example: true
+        source:
+          type: string
+          enum: [auto, dhcp, manual]
+          example: "auto"
+        primary_server:
+          type: string
+          example: "pool.ntp.org"
+        port:
+          type: integer
+          example: 123
+        sync_timeout_sec:
+          type: integer
+          example: 10
+        retry_count:
+          type: integer
+          example: 3
+        refresh_interval_sec:
+          type: integer
+          example: 3600
+        timezone:
+          type: string
+        use_fallback_ips:
+          type: boolean
+        fallback_servers:
+          type: array
+          items:
+            type: string
+        fallback_ips:
+          type: array
+          items:
+            type: string
+
+    DstConfig:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+          example: false
+        mode:
+          type: string
+          enum: [auto, manual]
+          example: "auto"
+        offset_minutes:
+          type: integer
+          example: 60
+
+    DiagnosticsReport:
+      type: object
+      properties:
+        cpu:
+          type: object
+          properties:
+            usage_percent:
+              type: number
+            num_cores:
+              type: integer
+            per_core_percent:
+              type: array
+              items:
+                type: number
+        memory:
+          type: object
+          properties:
+            total_bytes:
+              type: integer
+              format: int64
+            free_bytes:
+              type: integer
+              format: int64
+            available_bytes:
+              type: integer
+              format: int64
+            buffers_bytes:
+              type: integer
+              format: int64
+            cached_bytes:
+              type: integer
+              format: int64
+            usage_percent:
+              type: number
+        disks:
+          type: array
+          items:
+            type: object
+            properties:
+              mount_point:
+                type: string
+              device:
+                type: string
+              filesystem:
+                type: string
+              total_bytes:
+                type: integer
+                format: int64
+              free_bytes:
+                type: integer
+                format: int64
+              usage_percent:
+                type: number
+        processes:
+          type: array
+          items:
+            type: object
+            properties:
+              pid:
+                type: integer
+              name:
+                type: string
+              state:
+                type: string
+              cpu_percent:
+                type: number
+              memory_kb:
+                type: integer
+        uptime:
+          type: string
+          example: "0d 2h 15m"
+        uptime_seconds:
+          type: integer
+        temperature_c:
+          type: number
+          example: 76.0
+        kernel_version:
+          type: string
+
+    MaintenanceConfig:
+      type: object
+      properties:
+        auto_restart_enabled:
+          type: boolean
+          example: false
+        restart_time:
+          type: string
+          description: "Time of day for auto-restart (HH:MM)"
+          example: "03:00"
+        restart_days:
+          type: array
+          items:
+            type: string
+          example: ["monday", "wednesday", "friday"]
+
+    WatchdogConfig:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+          example: true
+        interval_seconds:
+          type: integer
+          minimum: 1
+          maximum: 3600
+          example: 30
+
+    AlarmStatus:
+      type: object
+      properties:
+        thresholds:
+          type: object
+          properties:
+            disk_space_threshold:
+              type: number
+              example: 90.0
+            temperature_threshold:
+              type: number
+              example: 85.0
+            memory_threshold:
+              type: number
+              example: 90.0
+            alarm_outputs_number:
+              type: integer
+        current:
+          type: object
+          properties:
+            temperature_c:
+              type: number
+            memory_usage_pct:
+              type: number
+            disk_usage_pct:
+              type: number
+        alarms_active:
+          type: object
+          properties:
+            disk_space:
+              type: boolean
+            temperature:
+              type: boolean
+            memory:
+              type: boolean
+
+  responses:
+    BadRequest:
+      description: Invalid request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: error
+              message:
+                type: string
+    ServerError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: error
+              message:
+                type: string

@@ -1,0 +1,32 @@
+#!/bin/sh
+### BEGIN INIT INFO
+# Provides:          system_logger
+# Required-Start:    $remote_fs $syslog
+# Required-Stop:     $remote_fs $syslog
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Capture early-boot dmesg (one-shot)
+# Description:       Captures kernel ring buffer before ipcamd starts.
+#                    All periodic collection is handled by ipcamd SystemLogger.
+### END INIT INFO
+
+LOGGER_SCRIPT="/bin/system_logger.sh"
+
+case "${1:-start}" in
+  start)
+    echo "Capturing early-boot dmesg..."
+    if [ -x "$LOGGER_SCRIPT" ]; then
+      "$LOGGER_SCRIPT" start
+    fi
+    ;;
+  stop|restart|status)
+    # One-shot — nothing to stop
+    echo "system_logger: one-shot boot capture (periodic collection by ipcamd)"
+    ;;
+  *)
+    echo "Usage: $0 {start|stop|restart|status}"
+    exit 1
+    ;;
+esac
+
+exit 0

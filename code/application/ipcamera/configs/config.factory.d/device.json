@@ -1,0 +1,35 @@
+{
+  "device": {
+    "info": {
+      "device_name": "Honeywell IP Camera",
+      "telecontrol_id": 88,
+      "model": "Eterna",
+      "serial_number": "HONMMS-003-A",
+      "firmware_version": "V0.0.1",
+      "encoder_version": "V1.0 build 202108",
+      "web_version": "V2.12.2 build 202108",
+      "plugin_version": "V1.0.0.0",
+      "channels_number": 1,
+      "hard_disks_number": 1,
+      "alarm_inputs_number": 0,
+      "alarm_outputs_number": 0,
+      "firmware_version_info": "CP-3-B",
+      "manufacturer": "Honeywell",
+      "hardware_id": "c3d9b8674f4b94f6"
+    },
+    "sensor": {
+      "type": "GC5603",
+      "interface": "MIPI",
+      "resolution": "1920x1080",
+      "enable_aiq": true,
+      "enable_vo": false,
+      "vo_dev_id": 3,
+      "enable_ivs": true,
+      "enable_jpeg": true,
+      "enable_venc_0": true,
+      "enable_venc_1": true,
+      "enable_venc_2": false,
+      "enable_npu": true
+    }
+  }
+}

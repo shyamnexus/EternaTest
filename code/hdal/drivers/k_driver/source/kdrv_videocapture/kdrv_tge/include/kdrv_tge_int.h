@@ -1,0 +1,64 @@
+#ifndef _KDRV_TGE_INT_H_
+#define _KDRV_TGE_INT_H_
+
+#include "kdrv_videocapture/kdrv_tge.h"
+
+typedef ER (*KDRV_TGE_SET_FP)(UINT32, void*);
+typedef ER (*KDRV_TGE_GET_FP)(UINT32, void*);
+
+#define KDRV_TGE_VDHD_CH_ALL 		((1 << KDRV_TGE_VDHD_CH_MAX) - 1)		// (KDRV_TGE_VDHD_CH_1 | KDRV_TGE_VDHD_CH_2 | ...)
+#define KDRV_TGE_SWAP_CH_ALL 		((1 << KDRV_TGE_SWAP_CH_MAX) - 1)		// (KDRV_TGE_SWAP_CH15 | KDRV_TGE_SWAP_CH26 | ...)
+#define KDRV_TGE_SIE_VD_SRC_CH_ALL 	((1 << KDRV_TGE_SIE_SRC_CH_MAX) - 1)	// (KDRV_TGE_SIE1_IN | KDRV_TGE_SIE3_IN | ...)
+#define KDRV_TGE_CLK_ID_ALL 		((1 << KDRV_TGE_CLK_ID_MAX) - 1)		// (KDRV_TGECLK1 | KDRV_TGECLK2 | ...)
+#define KDRV_TGE_FLSH_ID_ALL 		((1 << KDRV_TGE_FLSH_ID_MAX) - 1)		// (KDRV_TGE_FLSH_1 | ...)
+#define KDRV_TGE_MSH_ID_ALL 		((1ULL << KDRV_TGE_MSH_ID_MAX) - 1)		// (KDRV_TGE_MSHA_CLOSE | KDRV_TGE_MSHA_OPEN | ...)
+
+#define KDRV_TGE_INT_VDHD_CH_MAX 	4
+#define KDRV_TGE_INT_SWAP_CH_MAX 	2
+#define KDRV_TGE_INT_FLSH_ID_MAX 	1
+#define KDRV_TGE_INT_MSH_ID_MAX 	2
+
+/**
+	tge kdrv channel
+*/
+typedef enum {
+	KDRV_TGE_UPDATE_BIT_BASE_VDHD_PARAM 	= 0,
+	KDRV_TGE_UPDATE_BIT_BASE_VDHD_BP 		= (KDRV_TGE_UPDATE_BIT_BASE_VDHD_PARAM 	+ KDRV_TGE_INT_VDHD_CH_MAX),
+	KDRV_TGE_UPDATE_BIT_BASE_VDHD_SWAP 		= (KDRV_TGE_UPDATE_BIT_BASE_VDHD_BP 	+ KDRV_TGE_INT_VDHD_CH_MAX),
+	KDRV_TGE_UPDATE_BIT_BASE_FLSH_CTRL 		= (KDRV_TGE_UPDATE_BIT_BASE_VDHD_SWAP 	+ KDRV_TGE_INT_SWAP_CH_MAX),
+	KDRV_TGE_UPDATE_BIT_BASE_FLSH_VD_SRC 	= (KDRV_TGE_UPDATE_BIT_BASE_FLSH_CTRL 	+ KDRV_TGE_INT_FLSH_ID_MAX),
+	KDRV_TGE_UPDATE_BIT_BASE_MSH_INFO 		= (KDRV_TGE_UPDATE_BIT_BASE_FLSH_VD_SRC + KDRV_TGE_INT_FLSH_ID_MAX),
+	KDRV_TGE_UPDATE_BIT_BASE_MSH_PIN_CTRL 	= (KDRV_TGE_UPDATE_BIT_BASE_MSH_INFO + KDRV_TGE_INT_MSH_ID_MAX),
+	KDRV_TGE_UPDATE_BIT_BASE_MSH_VD_SRC 	= (KDRV_TGE_UPDATE_BIT_BASE_MSH_PIN_CTRL + KDRV_TGE_INT_MSH_ID_MAX),
+} KDRV_TGE_UPDATE_BIT_BASE;
+
+/**
+    KDRV TGE structure
+*/
+typedef struct _KDRV_TGE_PRAM {
+	KDRV_TGE_ISRCB isrcb_fp;
+    KDRV_TGE_VDHD_INFO vdhd_info[KDRV_TGE_VDHD_CH_MAX];
+    KDRV_TGE_BP_INFO tge_bp[KDRV_TGE_VDHD_CH_MAX];
+	KDRV_TGE_SWAP_INFO tge_swap_vdhd_pin[KDRV_TGE_SWAP_CH_MAX];
+	KDRV_TGE_TIMING_PAUSE_INFO tge_pause[KDRV_TGE_VDHD_CH_MAX];
+	KDRV_TGE_SIE_VD_INFO tge_to_sie_vd_ch[KDRV_TGE_SIE_SRC_CH_MAX];
+	KDRV_TGE_CLK_SRC_SEL tge_clk[KDRV_TGE_VDHD_CH_MAX];
+	KDRV_TGE_FLSH_INFO tge_flsh_info[KDRV_TGE_FLSH_ID_MAX];
+	KDRV_TGE_FLSH_VD_SRC_INFO tge_flsh_vd_src[KDRV_TGE_FLSH_ID_MAX];
+	KDRV_TGE_MSH_INFO tge_msh_info[KDRV_TGE_MSH_ID_MAX];
+	KDRV_TGE_MSH_PIN_CTRL tge_msh_pin_ctrl[KDRV_TGE_MSH_ID_MAX];
+	KDRV_TGE_MSH_VD_SRC_INFO tge_msh_vd_src[KDRV_TGE_MSH_ID_MAX];
+
+	KDRV_TGE_TRIG_TYPE tge_last_flsh_trig_type[KDRV_TGE_FLSH_ID_MAX]; // last flash trigger type
+	UINT64 tge_flsh_clk_rate[KDRV_TGE_FLSH_ID_MAX]; // flash clock rate
+	UINT64 tge_flsh_delay_cnt[KDRV_TGE_FLSH_ID_MAX]; // flash delay count
+	UINT64 tge_flsh_assert_cnt[KDRV_TGE_FLSH_ID_MAX]; // flash assert count
+
+	KDRV_TGE_TRIG_TYPE tge_last_msh_trig_type[KDRV_TGE_MSH_ID_MAX]; // last mechanical-shutter trigger type
+	UINT64 tge_msh_clk_rate[KDRV_TGE_MSH_ID_MAX]; // mechanical-shutter clock rate
+	UINT64 tge_msh_delay_cnt[KDRV_TGE_MSH_ID_MAX]; // mechanical-shutter delay count
+	UINT64 tge_msh_assert_cnt[KDRV_TGE_MSH_ID_MAX]; // mechanical-shutter assert count
+} KDRV_TGE_PRAM, *pKDRV_TGE_PRAM;
+
+#endif //_KDRV_IME_INT_H_
+

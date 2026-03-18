@@ -1,0 +1,18 @@
+/*
+ * Novatek Ltd. BSP part of dts
+ */
+
+&nand {
+    partition_loader {      label = "loader";       reg = <0x0 0x000000  0x0 0x40000>; }; /* Fixed */
+    partition_fdt {         label = "fdt";          reg = <0x0 0x040000  0x0 0x40000>; }; /* Fixed */
+    partition_fdt.restore { label = "fdt.restore";  reg = <0x0 0x080000  0x0 0x40000>; }; /* Fixed */
+    partition_atf {         label = "atf";          reg = <0x0 0x0C0000  0x0 0x40000>; };
+	partition_teeos {       label = "teeos";        reg = <0x0 0x100000  0x0 0x100000>; };
+    partition_uboot {       label = "uboot";        reg = <0x0 0x200000  0x0 0xC0000>; };
+    partition_uenv {        label = "uenv";         reg = <0x0 0x2C0000  0x0 0x40000>; };
+    partition_kernel {      label = "kernel";       reg = <0x0 0x300000  0x0 0x380000>; };
+    partition_rootfs {      label = "rootfs";       reg = <0x0 0x6C0000  0x0 0x600000>; };
+    partition_rootfs1 {     label = "rootfs1";      reg = <0x0 0xCC0000  0x0 0x6B40000>; };
+    partition_app {         label = "app";          reg = <0x0 0x7800000 0x0 0x0800000>; }; /* app size depneds on hdal/samples/vendor_cfg */
+    partition_all {         label = "all";          reg = <0x0 0x0000000 0x0 0x8000000>; };
+};

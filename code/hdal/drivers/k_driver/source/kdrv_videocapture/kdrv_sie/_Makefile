@@ -1,0 +1,55 @@
+MODULE_NAME = kdrv_sie
+# DIRs
+VOS_DRIVER_DIR = $(NVT_VOS_DIR)/drivers
+KDRV_DIR = $(NVT_HDAL_DIR)/drivers/k_driver
+CURR_DRIVER_DIR = $(KDRV_DIR)
+# INCs
+VOS_INC_PATH = $(VOS_DRIVER_DIR)/include
+KDRV_INC_PATH = $(KDRV_DIR)/include
+KDRV_SRC_INC_PATH = $(KDRV_DIR)/source/include
+CURR_DRIVER_INC_PATH = $(CURR_DRIVER_DIR)/include
+# INC FLAGs
+EXTRA_INCLUDE += \
+	-I$(VOS_INC_PATH) \
+	-I$(KDRV_INC_PATH) \
+	-I$(CURR_DRIVER_INC_PATH) \
+	-I$(KDRV_SRC_INC_PATH) \
+
+EXTRA_INCLUDE += -I$(KDRV_INC_PATH)/rtos_$(SDK_CODENAME)
+
+###############################################################################
+# Linux Makefile                                                              #
+###############################################################################
+ifeq ($(NVT_PRJCFG_CFG),Linux)
+EXTRA_CFLAGS += -DDEBUG
+
+SRC += \
+	sie_main.c \
+	sie_proc.c \
+	sie_drv.c \
+	sie_int.c \
+	sie_lib.c \
+	sie_platform.c \
+	sie_api.c \
+	kdrv_sie_api.c \
+	kdrv_sie_config.c \
+
+###############################################################################
+# rtos Makefile                                                               #
+###############################################################################
+else ifeq ($(NVT_PRJCFG_CFG),rtos)
+EXTRA_CFLAGS += \
+	-DDEBUG \
+	-I$(CURDIR)/include \
+
+
+SRC += \
+	sie_int.c \
+	sie_lib.c \
+	sie_platform.c \
+	kdrv_sie_api.c \
+	kdrv_sie_config.c \
+
+endif
+
+include $(NVT_HDAL_DIR)/driver.mk

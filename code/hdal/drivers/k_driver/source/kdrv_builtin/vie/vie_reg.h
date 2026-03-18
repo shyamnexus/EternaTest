@@ -1,0 +1,2806 @@
+#ifndef __VIE_REG_H__
+#define __VIE_REG_H__
+
+
+/*
+    VIE register related header file.
+
+    @file       vie1_reg.h
+    @ingroup    mIIPPSIE
+
+    Copyright   Novatek Microelectronics Corp. 2012.  All rights reserved.
+*/
+
+//#include "mach/rcw_macro.h"
+//#include "kwrap/type.h"
+#include "vie_platform.h"
+
+
+/*
+    VIE_SW_RST     :    [0x0, 0x1],			bits : 0
+    VIE_CH0_LOAD   :    [0x0, 0x1],			bits : 1
+    VIE_CH1_LOAD   :    [0x0, 0x1],			bits : 2
+    VIE_CH2_LOAD   :    [0x0, 0x1],			bits : 3
+    VIE_CH3_LOAD   :    [0x0, 0x1],			bits : 4
+
+    CH0_EN         :    [0x0, 0x1],			bits : 8
+    CH1_EN         :    [0x0, 0x1],			bits : 9
+    CH2_EN         :    [0x0, 0x1],			bits : 10
+    CH3_EN         :    [0x0, 0x1],			bits : 11
+    CH0_RST        :    [0x0, 0x1],			bits : 12
+    CH1_RST        :    [0x0, 0x1],			bits : 13
+    CH2_RST        :    [0x0, 0x1],			bits : 14
+    CH3_RST        :    [0x0, 0x1],			bits : 15
+    CH0_4KMODE     :    [0x0, 0x1],			bits : 16
+    CH1_4KMODE     :    [0x0, 0x1],			bits : 17
+    PADA_SRC_SEL   :    [0x0, 0x1],			bits : 18
+    CH0_MAIN_IN_SEL:    [0x0, 0x1],			bits : 20-21
+    CH1_MAIN_IN_SEL:    [0x0, 0x1],			bits : 22-23
+    CH2_MAIN_IN_SEL:    [0x0, 0x1],			bits : 24-25
+    CH3_MAIN_IN_SEL:    [0x0, 0x1],			bits : 26-27
+*/
+#define R0_ENGINE_CONTROL_OFS 0x0000
+REGDEF_BEGIN(ENGINE_CONTROL)
+REGDEF_BIT(VIE_SW_RST     ,        1)
+REGDEF_BIT(VIE_CH0_LOAD   ,        1)
+REGDEF_BIT(VIE_CH1_LOAD   ,        1)
+REGDEF_BIT(VIE_CH2_LOAD   ,        1)
+REGDEF_BIT(VIE_CH3_LOAD   ,        1)
+REGDEF_BIT(               ,        3)
+REGDEF_BIT(CH0_EN         ,        1)
+REGDEF_BIT(CH1_EN         ,        1)
+REGDEF_BIT(CH2_EN         ,        1)
+REGDEF_BIT(CH3_EN         ,        1)
+REGDEF_BIT(CH0_RST        ,        1)
+REGDEF_BIT(CH1_RST        ,        1)
+REGDEF_BIT(CH2_RST        ,        1)
+REGDEF_BIT(CH3_RST        ,        1)
+REGDEF_BIT(CH0_4KMODE     ,        1)
+REGDEF_BIT(CH1_4KMODE     ,        1)
+REGDEF_BIT(PADA_SRC_SEL   , 	   1)
+REGDEF_BIT( 			  , 	   1)
+REGDEF_BIT(CH0_MAIN_IN_SEL, 	   2)
+REGDEF_BIT(CH1_MAIN_IN_SEL, 	   2)
+REGDEF_BIT(CH2_MAIN_IN_SEL, 	   2)
+REGDEF_BIT(CH3_MAIN_IN_SEL, 	   2)
+REGDEF_END(R0_ENGINE_CONTROL)
+
+
+/*
+    CH0_EN               :    [0x0, 0x1],			bits : 0
+    CH1_EN               :    [0x0, 0x1],			bits : 1
+    CH2_EN               :    [0x0, 0x1],			bits : 2
+    CH3_EN               :    [0x0, 0x1],			bits : 3
+    CH0_MASK0_EN         :    [0x0, 0x1],			bits : 4
+    CH0_MASK1_EN         :    [0x0, 0x1],			bits : 5
+    CH0_MASK2_EN         :    [0x0, 0x1],			bits : 6
+    CH0_MASK3_EN         :    [0x0, 0x1],			bits : 7
+    CH1_MASK0_EN         :    [0x0, 0x1],			bits : 8
+    CH1_MASK1_EN         :    [0x0, 0x1],			bits : 9
+    CH1_MASK2_EN         :    [0x0, 0x1],			bits : 10
+    CH1_MASK3_EN         :    [0x0, 0x1],			bits : 11
+    CH2_MASK0_EN         :    [0x0, 0x1],			bits : 12
+    CH2_MASK1_EN         :    [0x0, 0x1],			bits : 13
+    CH2_MASK2_EN         :    [0x0, 0x1],			bits : 14
+    CH2_MASK3_EN         :    [0x0, 0x1],			bits : 15
+    CH3_MASK0_EN         :    [0x0, 0x1],			bits : 16
+    CH3_MASK1_EN         :    [0x0, 0x1],			bits : 17
+    CH3_MASK2_EN         :    [0x0, 0x1],			bits : 18
+    CH3_MASK3_EN         :    [0x0, 0x1],			bits : 19
+    CH0_YCC_ENC_EN       :    [0x0, 0x1],			bits : 20
+    CH1_YCC_ENC_EN       :    [0x0, 0x1],			bits : 21
+    CH2_YCC_ENC_EN       :    [0x0, 0x1],			bits : 22
+    CH3_YCC_ENC_EN       :    [0x0, 0x1],			bits : 23
+    CH0_YCC_SHIFT_MODE_EN:    [0x0, 0x1],			bits : 24
+    CH1_YCC_SHIFT_MODE_EN:    [0x0, 0x1],			bits : 25
+    CH2_YCC_SHIFT_MODE_EN:    [0x0, 0x1],			bits : 26
+    CH3_YCC_SHIFT_MODE_EN:    [0x0, 0x1],			bits : 27
+*/
+#define R4_ENGINE_FUNCTION_OFS 0x0004
+REGDEF_BEGIN(ENGINE_FUNCTION)
+REGDEF_BIT(               ,        1)
+REGDEF_BIT(               ,        1)
+REGDEF_BIT(               ,        1)
+REGDEF_BIT(               ,        1)
+REGDEF_BIT(CH0_MASK0_EN         ,        1)
+REGDEF_BIT(CH0_MASK1_EN         ,        1)
+REGDEF_BIT(CH0_MASK2_EN         ,        1)
+REGDEF_BIT(CH0_MASK3_EN         ,        1)
+REGDEF_BIT(CH1_MASK0_EN         ,        1)
+REGDEF_BIT(CH1_MASK1_EN         ,        1)
+REGDEF_BIT(CH1_MASK2_EN         ,        1)
+REGDEF_BIT(CH1_MASK3_EN         ,        1)
+REGDEF_BIT(CH2_MASK0_EN         ,        1)
+REGDEF_BIT(CH2_MASK1_EN         ,        1)
+REGDEF_BIT(CH2_MASK2_EN         ,        1)
+REGDEF_BIT(CH2_MASK3_EN         ,        1)
+REGDEF_BIT(CH3_MASK0_EN         ,        1)
+REGDEF_BIT(CH3_MASK1_EN         ,        1)
+REGDEF_BIT(CH3_MASK2_EN         ,        1)
+REGDEF_BIT(CH3_MASK3_EN         ,        1)
+REGDEF_BIT(CH0_YCC_ENC_EN       ,        1)
+REGDEF_BIT(CH1_YCC_ENC_EN       ,        1)
+REGDEF_BIT(CH2_YCC_ENC_EN       ,        1)
+REGDEF_BIT(CH3_YCC_ENC_EN       ,        1)
+REGDEF_BIT(CH0_PATGEN_EN        ,        1)
+REGDEF_BIT(CH1_PATGEN_EN        ,        1)
+REGDEF_BIT(CH2_PATGEN_EN        ,        1)
+REGDEF_BIT(CH3_PATGEN_EN        ,        1)
+REGDEF_END(R4_ENGINE_FUNCTION)
+
+
+/*
+    INT_ENALBE:    [0x0, 0x3ffff],			bits : 17_0
+*/
+#define R8_ENGINE_INTERRUPT_OFS 0x0008
+REGDEF_BEGIN(ENGINE_INTERRUPT)
+REGDEF_BIT(INTE_CH0_VD,        1)
+REGDEF_BIT(INTE_CH1_VD, 	   1)	
+REGDEF_BIT(INTE_CH2_VD,        1)
+REGDEF_BIT(INTE_CH3_VD, 	   1)
+REGDEF_BIT(INTE_CH0_BP1, 	   1)
+REGDEF_BIT(INTE_CH0_BP2, 	   1)
+REGDEF_BIT(INTE_CH0_BP3, 	   1)
+REGDEF_BIT(INTE_CH1_BP1,	   1)
+REGDEF_BIT(INTE_CH1_BP2,	   1)
+REGDEF_BIT(INTE_CH1_BP3,	   1)
+REGDEF_BIT(INTE_CH2_BP1, 	   1)
+REGDEF_BIT(INTE_CH2_BP2, 	   1)
+REGDEF_BIT(INTE_CH2_BP3, 	   1)
+REGDEF_BIT(INTE_CH3_BP1,	   1)
+REGDEF_BIT(INTE_CH3_BP2,	   1)
+REGDEF_BIT(INTE_CH3_BP3,	   1)
+REGDEF_BIT(INTE_CH0_DRAM_OUT0_END,	   1)
+REGDEF_BIT(INTE_CH0_DRAM_OUT1_END,	   1)
+REGDEF_BIT(INTE_CH1_DRAM_OUT0_END,	   1)
+REGDEF_BIT(INTE_CH1_DRAM_OUT1_END,	   1)
+REGDEF_BIT(INTE_CH2_DRAM_OUT0_END,	   1)
+REGDEF_BIT(INTE_CH2_DRAM_OUT1_END,	   1)
+REGDEF_BIT(INTE_CH3_DRAM_OUT0_END,	   1)
+REGDEF_BIT(INTE_CH3_DRAM_OUT1_END,	   1)
+REGDEF_BIT(INTE_CRPSTR,	   1)
+REGDEF_BIT(INTE_CRPEND,	   1)
+REGDEF_BIT(INTE_CH0_YCC_OVFL,	   1)
+REGDEF_BIT(INTE_CH1_YCC_OVFL,	   1)
+REGDEF_BIT(INTE_CH2_YCC_OVFL,	   1)
+REGDEF_BIT(INTE_CH3_YCC_OVFL,	   1)
+REGDEF_END(R8_ENGINE_INTERRUPT)
+
+
+/*
+    INT_STATUS:    [0x0, 0x3ffff],			bits : 17_0
+*/
+#define RC_ENGINE_INTERRUPT_OFS 0x000c
+REGDEF_BEGIN(ENGINE_INTERRUPT)
+REGDEF_BIT(INT_CH0_VD, 	   1)
+REGDEF_BIT(INT_CH1_VD, 	   1)	
+REGDEF_BIT(INT_CH2_VD, 	   1)
+REGDEF_BIT(INT_CH3_VD, 	   1)
+REGDEF_BIT(INT_CH0_BP1,	   1)
+REGDEF_BIT(INT_CH0_BP2,	   1)
+REGDEF_BIT(INT_CH0_BP3,	   1)
+REGDEF_BIT(INT_CH1_BP1,	   1)
+REGDEF_BIT(INT_CH1_BP2,	   1)
+REGDEF_BIT(INT_CH1_BP3,	   1)
+REGDEF_BIT(INT_CH2_BP1,	   1)
+REGDEF_BIT(INT_CH2_BP2,	   1)
+REGDEF_BIT(INT_CH2_BP3,	   1)
+REGDEF_BIT(INT_CH3_BP1,	   1)
+REGDEF_BIT(INT_CH3_BP2,	   1)
+REGDEF_BIT(INT_CH3_BP3,	   1)
+REGDEF_BIT(INT_CH0_DRAM_OUT0_END,	   1)
+REGDEF_BIT(INT_CH0_DRAM_OUT1_END,	   1)
+REGDEF_BIT(INT_CH1_DRAM_OUT0_END,	   1)
+REGDEF_BIT(INT_CH1_DRAM_OUT1_END,	   1)
+REGDEF_BIT(INT_CH2_DRAM_OUT0_END,	   1)
+REGDEF_BIT(INT_CH2_DRAM_OUT1_END,	   1)
+REGDEF_BIT(INT_CH3_DRAM_OUT0_END,	   1)
+REGDEF_BIT(INT_CH3_DRAM_OUT1_END,	   1)
+REGDEF_BIT(INT_CRPSTR,    1)
+REGDEF_BIT(INT_CRPEND,    1)
+REGDEF_BIT(INT_CH0_YCC_OVFL,	   1)
+REGDEF_BIT(INT_CH1_YCC_OVFL,	   1)
+REGDEF_BIT(INT_CH2_YCC_OVFL,	   1)
+REGDEF_BIT(INT_CH3_YCC_OVFL,	   1)
+REGDEF_END(RC_ENGINE_INTERRUPT)
+
+
+/*
+    ENG_STATUS:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define R10_ENGINE_STATUS_OFS 0x0010
+REGDEF_BEGIN(ENGINE_STATUS)
+REGDEF_BIT(PX_MAX_CNT,        14)
+REGDEF_BIT(, 2)
+REGDEF_BIT(VSYNC, 1)
+REGDEF_BIT(HSYNC, 1)
+REGDEF_BIT(, 2)
+REGDEF_BIT(CH0_CCIR656_HEADER_HIT, 1)
+REGDEF_BIT(CH1_CCIR656_HEADER_HIT, 1)
+REGDEF_BIT(CH2_CCIR656_HEADER_HIT, 1)
+REGDEF_BIT(CH3_CCIR656_HEADER_HIT, 1)
+REGDEF_BIT(CH0_DBGOUT_END, 1)
+REGDEF_BIT(CH1_DBGOUT_END, 1)
+REGDEF_BIT(CH2_DBGOUT_END, 1)
+REGDEF_BIT(CH3_DBGOUT_END, 1)
+REGDEF_BIT(CH0_LINEBUF_OVFL, 1)
+REGDEF_BIT(CH1_LINEBUF_OVFL, 1)
+REGDEF_BIT(CH2_LINEBUF_OVFL, 1)
+REGDEF_BIT(CH3_LINEBUF_OVFL, 1)
+REGDEF_END(R10_ENGINE_STATUS)
+
+
+/*
+    RESERVED:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define R14_RESERVED_OFS 0x0014
+REGDEF_BEGIN(RESERVED)
+REGDEF_BIT(RESERVED,        32)
+REGDEF_END(R14_RESERVED)
+
+
+/*
+    RESERVED:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define R18_ENGINE_STATUS_OFS 0x0018
+REGDEF_BEGIN(ENGINE_STATUS)
+REGDEF_BIT(,				12)
+REGDEF_BIT(PXCLKA_IN,		 1)
+REGDEF_BIT(PXCLKB_IN,		 1)
+REGDEF_BIT(VIECLK_IN,		 1)
+REGDEF_END(R18_ENGINE_STATUS)
+
+
+/*
+    RESERVED:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define R1C_ENGINE_TIMING_OFS 0x001c
+REGDEF_BEGIN(ENGINE_TIMING)
+REGDEF_BIT(SRCA_DELAY_VAL,		    5)
+REGDEF_BIT( 		     ,		    3)
+REGDEF_BIT(SRCB_DELAY_VAL,			5)
+REGDEF_BIT( 		     ,		    2)
+REGDEF_BIT(SRCA_DELAYCHAIN_SEL,	    1)
+REGDEF_END(R1C_ENGINE_TIMING)
+
+
+/*
+    RESERVED:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define R20_ENGINE_TIMING_OFS 0x0020
+REGDEF_BEGIN(ENGINE_TIMING)
+REGDEF_BIT(SRCA_CLKSMPL_SEL,		1)
+REGDEF_BIT(SRCA_VD_PHASE,		    1)
+REGDEF_BIT(SRCA_HD_PHASE,			1)
+REGDEF_BIT(SRCA_FID_PHASE,		    1)
+REGDEF_BIT(SRCA_DATA_PHASE,	    	1)
+REGDEF_BIT(SRCA_VD_INV,	    	    1)
+REGDEF_BIT(SRCA_HD_INV, 		    1)
+REGDEF_BIT(SRCA_FID_INV, 		    1)
+REGDEF_BIT(SRCA_HI_BYTE_INV, 		1)
+REGDEF_BIT(SRCA_LO_BYTE_INV,		1)
+REGDEF_BIT(SRCA_HI_4BIT_SWAP,		1)
+REGDEF_BIT(SRCA_LO_4BIT_SWAP,		1)
+REGDEF_BIT(SRCA_HI_LO_BYTE_SWAP,    1)
+REGDEF_BIT(SRCA_EDGE_SWAP,	        1)
+REGDEF_BIT( 			   ,		2)
+REGDEF_BIT(SRCB_CLKSMPL_SEL,		1)
+REGDEF_BIT(SRCB_VD_PHASE,			1)
+REGDEF_BIT(SRCB_HD_PHASE,			1)
+REGDEF_BIT(SRCB_FID_PHASE,			1)
+REGDEF_BIT(SRCB_DATA_PHASE, 		1)
+REGDEF_BIT(SRCB_VD_INV, 			1)
+REGDEF_BIT(SRCB_HD_INV, 			1)
+REGDEF_BIT(SRCB_FID_INV,			1)
+REGDEF_BIT(SRCB_HI_BYTE_INV,		1)
+REGDEF_BIT(SRCB_LO_BYTE_INV,		1)
+REGDEF_BIT(SRCB_HI_4BIT_SWAP,		1)
+REGDEF_BIT(SRCB_LO_4BIT_SWAP,		1)
+REGDEF_BIT(SRCB_HI_LO_BYTE_SWAP,	1)
+REGDEF_BIT(SRCB_EDGE_SWAP,			1)
+REGDEF_END(R20_ENGINE_TIMING)
+
+
+/*
+    RESERVED:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define R24_RESERVED_OFS 0x0024
+REGDEF_BEGIN(RESERVED)
+REGDEF_BIT(RESERVED,        32)
+REGDEF_END(R24_RESERVED)
+
+
+/*
+    PATGEN_MODE:    [0x0, 0xf],			bits : 3_0
+    PATGEN_VAL :    [0x0, 0x3fff],			bits : 29_16
+*/
+#define R28_PATGEN_OFS 0x0028
+REGDEF_BEGIN(PATGEN)
+REGDEF_BIT(PATGEN_MODE,        4)
+REGDEF_BIT(           ,        12)
+REGDEF_BIT(PATGEN_VAL ,        14)
+REGDEF_END(R28_PATGEN)
+
+
+/*
+    CH0_DRAM_BURST_LENGTH_OUT0:    [0x0, 0x3],			bits : 1_0
+    CH0_DRAM_BURST_LENGTH_OUT1:    [0x0, 0x3],			bits : 5_4
+    CH1_DRAM_BURST_LENGTH_OUT0:    [0x0, 0x3],			bits : 9_8
+    CH1_DRAM_BURST_LENGTH_OUT1:    [0x0, 0x3],			bits : 13_12
+    CH2_DRAM_BURST_LENGTH_OUT0:    [0x0, 0x3],			bits : 17_16
+    CH2_DRAM_BURST_LENGTH_OUT1:    [0x0, 0x3],			bits : 21_20
+    CH3_DRAM_BURST_LENGTH_OUT0:    [0x0, 0x3],			bits : 25_24
+    CH3_DRAM_BURST_LENGTH_OUT1:    [0x0, 0x3],			bits : 29_28
+*/
+#define R2C_ENGINE_TIMING_OFS 0x002c
+REGDEF_BEGIN(ENGINE_TIMING)
+REGDEF_BIT(CH0_DRAM_BURST_LENGTH_OUT0,        2)
+REGDEF_BIT(                          ,        2)
+REGDEF_BIT(CH0_DRAM_BURST_LENGTH_OUT1,        2)
+REGDEF_BIT(                          ,        2)
+REGDEF_BIT(CH1_DRAM_BURST_LENGTH_OUT0,        2)
+REGDEF_BIT(                          ,        2)
+REGDEF_BIT(CH1_DRAM_BURST_LENGTH_OUT1,        2)
+REGDEF_BIT(                          ,        2)
+REGDEF_BIT(CH2_DRAM_BURST_LENGTH_OUT0,        2)
+REGDEF_BIT(                          ,        2)
+REGDEF_BIT(CH2_DRAM_BURST_LENGTH_OUT1,        2)
+REGDEF_BIT(                          ,        2)
+REGDEF_BIT(CH3_DRAM_BURST_LENGTH_OUT0,        2)
+REGDEF_BIT(                          ,        2)
+REGDEF_BIT(CH3_DRAM_BURST_LENGTH_OUT1,        2)
+REGDEF_END(R2C_ENGINE_TIMING)
+
+
+/*
+    RESERVED:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define R30_RESERVED_OFS 0x0030
+REGDEF_BEGIN(RESERVED)
+REGDEF_BIT(RESERVED,        32)
+REGDEF_END(RR30_ESERVED)
+
+
+/*
+    RESERVED:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define R34_RESERVED_OFS 0x0034
+REGDEF_BEGIN(RESERVED)
+REGDEF_BIT(RESERVED,        32)
+REGDEF_END(R34_SRESERVED)
+
+
+/*
+    RESERVED:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define R38_RESERVED_OFS 0x0038
+REGDEF_BEGIN(RESERVED)
+REGDEF_BIT(RESERVED,        32)
+REGDEF_END(R38_RESERVED)
+
+
+/*
+    RESERVED:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define R3C_RESERVED_OFS 0x003c
+REGDEF_BEGIN(RESERVED)
+REGDEF_BIT(RESERVED,        32)
+REGDEF_END(R3C_RESERVED)
+
+
+/*
+    CH0_VD_CURRENT_CNT    :    [0x0, 0xffff],			bits : 15_0
+    CH0_CRPEND_CURRENT_CNT:    [0x0, 0xffff],			bits : 31_16
+*/
+#define R40_ENGINE_STATUS_OFS 0x0040
+REGDEF_BEGIN(ENGINE_STATUS)
+REGDEF_BIT(CH0_VD_CURRENT_CNT,		   16)
+REGDEF_BIT(CH0_CRPEND_CURRENT_CNT,	   16)
+REGDEF_END(R40_ENGINE_STATUS)
+
+
+/*
+    CH1_VD_CURRENT_CNT    :    [0x0, 0xffff],			bits : 15_0
+    CH1_CRPEND_CURRENT_CNT:    [0x0, 0xffff],			bits : 31_16
+*/
+#define R44_ENGINE_STATUS_OFS 0x0044
+REGDEF_BEGIN(ENGINE_STATUS)
+REGDEF_BIT(CH1_VD_CURRENT_CNT,		   16)
+REGDEF_BIT(CH1_CRPEND_CURRENT_CNT,	   16)
+REGDEF_END(R44_ENGINE_STATUS)
+
+
+/*
+    CH2_VD_CURRENT_CNT    :    [0x0, 0xffff],			bits : 15_0
+    CH2_CRPEND_CURRENT_CNT:    [0x0, 0xffff],			bits : 31_16
+*/
+
+#define R48_ENGINE_STATUS_OFS 0x0048
+REGDEF_BEGIN(ENGINE_STATUS)
+REGDEF_BIT(CH2_VD_CURRENT_CNT,		   16)
+REGDEF_BIT(CH2_CRPEND_CURRENT_CNT,	   16)
+REGDEF_END(R48_ENGINE_STATUS)
+
+
+/*
+    CH3_VD_CURRENT_CNT    :    [0x0, 0xffff],			bits : 15_0
+    CH3_CRPEND_CURRENT_CNT:    [0x0, 0xffff],			bits : 31_16
+*/
+
+#define R4C_ENGINE_STATUS_OFS 0x004c
+REGDEF_BEGIN(ENGINE_STATUS)
+REGDEF_BIT(CH3_VD_CURRENT_CNT,		   16)
+REGDEF_BIT(CH3_CRPEND_CURRENT_CNT,	   16)
+REGDEF_END(R4C_ENGINE_STATUS)
+
+
+/*
+    RESERVED:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define R50_RESERVED_OFS 0x0050
+REGDEF_BEGIN(RESERVED)
+REGDEF_BIT(RESERVED,        32)
+REGDEF_END(R50_RESERVED)
+
+
+/*
+    RESERVED:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define R54_RESERVED_OFS 0x0054
+REGDEF_BEGIN(RESERVED)
+REGDEF_BIT(RESERVED,        32)
+REGDEF_END(R54_RESERVED)
+
+
+/*
+    RESERVED:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define R58_RESERVED_OFS 0x0058
+REGDEF_BEGIN(RESERVED)
+REGDEF_BIT(RESERVED,        32)
+REGDEF_END(R58_RESERVED)
+
+
+/*
+    RESERVED:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define R5C_RESERVED_OFS 0x005c
+REGDEF_BEGIN(RESERVED)
+REGDEF_BIT(RESERVED,        32)
+REGDEF_END(R5C_RESERVED)
+
+#if 0 //690,530
+/*
+    DRAM_OUTX_MODE:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define R60_ENGINE_DRAM_OFS 0x0060
+REGDEF_BEGIN(ENGINE_DRAM)
+REGDEF_BIT(CH0_DRAM_OUT0_MODE     ,		   1)
+REGDEF_BIT(CH1_DRAM_OUT0_MODE	  , 	   1)
+REGDEF_BIT(CH2_DRAM_OUT0_MODE     ,		   1)
+REGDEF_BIT(CH3_DRAM_OUT0_MODE     ,		   1)
+REGDEF_BIT(	                      , 	   4)
+REGDEF_BIT(CH0_DRAM_OUT1_MODE	  , 	   1)
+REGDEF_BIT(CH1_DRAM_OUT1_MODE	  , 	   1)
+REGDEF_BIT(CH2_DRAM_OUT1_MODE	  , 	   1)
+REGDEF_BIT(CH3_DRAM_OUT1_MODE	  , 	   1)
+REGDEF_BIT( 					  , 	   4)
+REGDEF_BIT(CH0_DRAM_DBGOUT_MODE	  , 	   1)
+REGDEF_BIT(CH1_DRAM_DBGOUT_MODE	  , 	   1)
+REGDEF_BIT(CH2_DRAM_DBGOUT_MODE	  , 	   1)
+REGDEF_BIT(CH3_DRAM_DBGOUT_MODE	  , 	   1)
+REGDEF_END(R60_ENGINE_DRAM)
+
+
+/*
+    DRAM_OUTX_SINGLE_EN:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define R64_ENGINE_DRAM_OFS 0x0064
+REGDEF_BEGIN(ENGINE_DRAM)
+REGDEF_BIT(CH0_DRAM_OUT0_SINGLE_EN, 	   1)
+REGDEF_BIT(CH1_DRAM_OUT0_SINGLE_EN, 	   1)
+REGDEF_BIT(CH2_DRAM_OUT0_SINGLE_EN, 	   1)
+REGDEF_BIT(CH3_DRAM_OUT0_SINGLE_EN, 	   1)
+REGDEF_BIT( 					  , 	   4)
+REGDEF_BIT(CH0_DRAM_OUT1_SINGLE_EN, 	   1)
+REGDEF_BIT(CH1_DRAM_OUT1_SINGLE_EN, 	   1)
+REGDEF_BIT(CH2_DRAM_OUT1_SINGLE_EN, 	   1)
+REGDEF_BIT(CH3_DRAM_OUT1_SINGLE_EN, 	   1)
+REGDEF_BIT( 					  , 	   4)
+REGDEF_BIT(CH0_DRAM_DBGOUT_SINGLE_EN, 	   1)
+REGDEF_BIT(CH1_DRAM_DBGOUT_SINGLE_EN, 	   1)
+REGDEF_BIT(CH2_DRAM_DBGOUT_SINGLE_EN, 	   1)
+REGDEF_BIT(CH3_DRAM_DBGOUT_SINGLE_EN, 	   1)
+REGDEF_END(R64_ENGINE_DRAM)
+
+#else //538
+/*
+    DRAM_OUTX_MODE:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define R60_ENGINE_DRAM_OFS 0x0060
+REGDEF_BEGIN(ENGINE_DRAM)
+REGDEF_BIT(CH0_DRAM_OUT0_MODE     ,		   1)
+REGDEF_BIT(CH1_DRAM_OUT0_MODE	  , 	   1)
+REGDEF_BIT(CH2_DRAM_OUT0_MODE     ,		   1)
+REGDEF_BIT(CH3_DRAM_OUT0_MODE     ,		   1)
+REGDEF_BIT(CH0_DRAM_OUT1_MODE	  , 	   1)
+REGDEF_BIT(CH1_DRAM_OUT1_MODE	  , 	   1)
+REGDEF_BIT(CH2_DRAM_OUT1_MODE	  , 	   1)
+REGDEF_BIT(CH3_DRAM_OUT1_MODE	  , 	   1)
+REGDEF_BIT(CH0_DRAM_DBGOUT_MODE	  , 	   1)
+REGDEF_BIT(CH1_DRAM_DBGOUT_MODE	  , 	   1)
+REGDEF_BIT(CH2_DRAM_DBGOUT_MODE	  , 	   1)
+REGDEF_BIT(CH3_DRAM_DBGOUT_MODE	  , 	   1)
+REGDEF_END(R60_ENGINE_DRAM)
+
+
+/*
+    DRAM_OUTX_SINGLE_EN:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define R64_ENGINE_DRAM_OFS 0x0064
+REGDEF_BEGIN(ENGINE_DRAM)
+REGDEF_BIT(CH0_DRAM_OUT0_SINGLE_EN, 	   1)
+REGDEF_BIT(CH1_DRAM_OUT0_SINGLE_EN, 	   1)
+REGDEF_BIT(CH2_DRAM_OUT0_SINGLE_EN, 	   1)
+REGDEF_BIT(CH3_DRAM_OUT0_SINGLE_EN, 	   1)
+REGDEF_BIT(CH0_DRAM_OUT1_SINGLE_EN, 	   1)
+REGDEF_BIT(CH1_DRAM_OUT1_SINGLE_EN, 	   1)
+REGDEF_BIT(CH2_DRAM_OUT1_SINGLE_EN, 	   1)
+REGDEF_BIT(CH3_DRAM_OUT1_SINGLE_EN, 	   1)
+REGDEF_BIT(CH0_DRAM_DBGOUT_SINGLE_EN, 	   1)
+REGDEF_BIT(CH1_DRAM_DBGOUT_SINGLE_EN, 	   1)
+REGDEF_BIT(CH2_DRAM_DBGOUT_SINGLE_EN, 	   1)
+REGDEF_BIT(CH3_DRAM_DBGOUT_SINGLE_EN, 	   1)
+REGDEF_BIT( 					  , 	   4)
+REGDEF_BIT(CH0_DRAM_OUT0_SINGLE_EN_MASK,   1)
+REGDEF_BIT(CH1_DRAM_OUT0_SINGLE_EN_MASK,   1)
+REGDEF_BIT(CH2_DRAM_OUT0_SINGLE_EN_MASK,   1)
+REGDEF_BIT(CH3_DRAM_OUT0_SINGLE_EN_MASK,   1)
+REGDEF_BIT(CH0_DRAM_OUT1_SINGLE_EN_MASK,   1)
+REGDEF_BIT(CH1_DRAM_OUT1_SINGLE_EN_MASK,   1)
+REGDEF_BIT(CH2_DRAM_OUT1_SINGLE_EN_MASK,   1)
+REGDEF_BIT(CH3_DRAM_OUT1_SINGLE_EN_MASK,   1)
+REGDEF_BIT(CH0_DRAM_DBGOUT_SINGLE_EN_MASK, 1)
+REGDEF_BIT(CH1_DRAM_DBGOUT_SINGLE_EN_MASK, 1)
+REGDEF_BIT(CH2_DRAM_DBGOUT_SINGLE_EN_MASK, 1)
+REGDEF_BIT(CH3_DRAM_DBGOUT_SINGLE_EN_MASK, 1)
+REGDEF_END(R64_ENGINE_DRAM)
+
+#endif
+
+/*
+    DBGOUT:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define R68_DBGOUT_OFS 0x0068
+REGDEF_BEGIN(DBGOUT)
+REGDEF_BIT(DBGOUT_EN,	  4)
+REGDEF_END(R68_DBGOUT)
+
+
+/*
+    RESERVED:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define R6C_RESERVED_OFS 0x006c
+REGDEF_BEGIN(RESERVED)
+REGDEF_BIT(RESERVED,        32)
+REGDEF_END(R6C_RESERVED)
+
+
+/*
+    RESERVED:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define R70_AXI_OFS 0x0070
+REGDEF_BEGIN(R70_AXI)
+REGDEF_BIT(CH0_OUT0_CH_EN,	  1)
+REGDEF_BIT(CH0_OUT1_CH_EN,	  1)
+REGDEF_BIT(CH1_OUT0_CH_EN,	  1)
+REGDEF_BIT(CH1_OUT1_CH_EN,	  1)
+REGDEF_BIT(CH2_OUT0_CH_EN,	  1)
+REGDEF_BIT(CH2_OUT1_CH_EN,	  1)
+REGDEF_BIT(CH3_OUT0_CH_EN,	  1)
+REGDEF_BIT(CH3_OUT1_CH_EN,	  1)
+REGDEF_BIT(CH0_OUT0_LOCK_DISABLE, 1)
+REGDEF_BIT(CH0_OUT1_LOCK_DISABLE, 1)
+REGDEF_BIT(CH1_OUT0_LOCK_DISABLE, 1)
+REGDEF_BIT(CH1_OUT1_LOCK_DISABLE, 1)
+REGDEF_BIT(CH2_OUT0_LOCK_DISABLE, 1)
+REGDEF_BIT(CH2_OUT1_LOCK_DISABLE, 1)
+REGDEF_BIT(CH3_OUT0_LOCK_DISABLE, 1)
+REGDEF_BIT(CH3_OUT1_LOCK_DISABLE, 1)
+REGDEF_BIT(WRITE_CH_OUTSTANDING_NUM, 8)
+REGDEF_BIT(READ_CH_OUTSTANDING_NUM,  8)
+REGDEF_END(R70_AXI)
+
+
+/*
+    RESERVED:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define R74_AXI_OFS 0x0074
+REGDEF_BEGIN(R74_AXI)
+REGDEF_BIT(AXI_BUS_DISABLE,        1)
+REGDEF_BIT( , 	   15)
+REGDEF_BIT(AXI_BUS_IDLE,	 1)
+REGDEF_END(R74_AXI)
+
+
+/*
+    RESERVED:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define R78_AXI_OFS 0x0078
+REGDEF_BEGIN(R78_AXI)
+REGDEF_BIT(AXI_STATUS,	 1)
+REGDEF_END(R78_AXI)
+
+
+/*
+    RESERVED:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define R7C_RESERVED_OFS 0x007c
+REGDEF_BEGIN(RESERVED)
+REGDEF_BIT(RESERVED,        32)
+REGDEF_END(R7C_RESERVED)
+
+
+/*
+    CH0_BP1:    [0x0, 0xfff],			bits : 11_0
+    CH0_BP2:    [0x0, 0xfff],			bits : 27_16
+*/
+#define R80_ENGINE_TIMING_OFS 0x0080
+REGDEF_BEGIN(ENGINE_TIMING)
+REGDEF_BIT(CH0_BP1,        12)
+REGDEF_BIT(       ,        4)
+REGDEF_BIT(CH0_BP2,        12)
+REGDEF_END(R80_ENGINE_TIMING)
+
+
+/*
+    CH0_BP3:    [0x0, 0xfff],			bits : 11_0
+*/
+#define R84_ENGINE_TIMING_OFS 0x0084
+REGDEF_BEGIN(ENGINE_TIMING)
+REGDEF_BIT(CH0_BP3,        12)
+REGDEF_END(R84_ENGINE_TIMING)
+
+
+/*
+    CH0_SRC_SZX:    [0x0, 0xfff],			bits : 11_0
+    CH0_SRC_SZY:    [0x0, 0xfff],			bits : 27_16
+*/
+#define R88_ENGINE_SIZE_OFS 0x0088
+REGDEF_BEGIN(ENGINE_SIZE)
+REGDEF_BIT(CH0_SRC_SZX,        14)
+REGDEF_BIT(           ,         2)
+REGDEF_BIT(CH0_SRC_SZY,        14)
+REGDEF_END(R88_ENGINE_SIZE)
+
+
+/*
+    CH0_CRP_STX:    [0x0, 0xfff],			bits : 11_0
+    CH0_CRP_STY:    [0x0, 0xfff],			bits : 27_16
+*/
+#define R8C_ENGINE_SIZE_OFS 0x008c
+REGDEF_BEGIN(ENGINE_SIZE)
+REGDEF_BIT(CH0_CRP_STX,        14)
+REGDEF_BIT(           ,         2)
+REGDEF_BIT(CH0_CRP_STY,        14)
+REGDEF_END(R8C_ENGINE_SIZE)
+
+
+/*
+    CH0_CRP_SZX:    [0x0, 0xfff],			bits : 11_0
+    CH0_CRP_SZY:    [0x0, 0xfff],			bits : 27_16
+*/
+#define R90_ENGINE_SIZE_OFS 0x0090
+REGDEF_BEGIN(ENGINE_SIZE)
+REGDEF_BIT(CH0_CRP_SZX,        14)
+REGDEF_BIT(           ,         2)
+REGDEF_BIT(CH0_CRP_SZY,        14)
+REGDEF_END(R90_ENGINE_SIZE)
+
+
+/*
+    CH0_DRAM_OUT0_SAO:    [0x0, 0x3fffffff],			bits : 31_2
+*/
+#define R94_ENGINE_DRAM_OFS 0x0094
+REGDEF_BEGIN(ENGINE_DRAM)
+REGDEF_BIT(                 ,        2)
+REGDEF_BIT(CH0_DRAM_OUT0_SAO,        30)
+REGDEF_END(R94_ENGINE_DRAM)
+
+
+/*
+    CH0_DRAM_OUT0_OFSO  :    [0x0, 0x3fff],			bits : 15_2
+    CH0_DRAM_OUT0_MIRROR:    [0x0, 0x1],			bits : 16
+    CH0_DRAM_OUT0_FLIP  :    [0x0, 0x1],			bits : 17
+    CH0_DRAM_OUT0_MODE  :    [0x0, 0x1],			bits : 20
+*/
+#define R98_ENGINE_DRAM_OFS 0x0098
+REGDEF_BEGIN(ENGINE_DRAM)
+REGDEF_BIT(                    ,        2)
+REGDEF_BIT(CH0_DRAM_OUT0_OFSO  ,        14)
+REGDEF_BIT(CH0_DRAM_OUT0_MIRROR,        1)
+REGDEF_BIT(CH0_DRAM_OUT0_FLIP  ,        1)
+REGDEF_END(R98_ENGINE_DRAM)
+
+
+/*
+    CH0_DRAM_OUT1_SAO:    [0x0, 0x3fffffff],			bits : 31_2
+*/
+#define R9C_ENGINE_DRAM_OFS 0x009c
+REGDEF_BEGIN(ENGINE_DRAM)
+REGDEF_BIT(                 ,        2)
+REGDEF_BIT(CH0_DRAM_OUT1_SAO,        30)
+REGDEF_END(R9C_ENGINE_DRAM)
+
+
+/*
+    CH0_DRAM_OUT1_OFSO  :    [0x0, 0x3fff],			bits : 15_2
+    CH0_DRAM_OUT1_MIRROR:    [0x0, 0x1],			bits : 16
+    CH0_DRAM_OUT1_FLIP  :    [0x0, 0x1],			bits : 17
+    CH0_DRAM_OUT1_MODE  :    [0x0, 0x1],			bits : 20
+*/
+#define RA0_ENGINE_DRAM_OFS 0x00a0
+REGDEF_BEGIN(ENGINE_DRAM)
+REGDEF_BIT(                    ,        2)
+REGDEF_BIT(CH0_DRAM_OUT1_OFSO  ,        14)
+REGDEF_BIT(CH0_DRAM_OUT1_MIRROR,        1)
+REGDEF_BIT(CH0_DRAM_OUT1_FLIP  ,        1)
+REGDEF_END(RA0_ENGINE_DRAM)
+
+
+/*
+    RESERVED:    [0x0, 0x1],			bits : 31_0
+*/
+#define RA4_RESERVED_OFS 0x00a4
+REGDEF_BEGIN(RESERVED)
+REGDEF_BIT(RESERVED,		32)
+REGDEF_END(RA4_RESERVED)
+
+
+/*
+    CH0_DRAM_DBGOUT_SAO:    [0x0, 0x3fffffff],			bits : 31_2
+*/
+#define RA8_ENGINE_DRAM_OFS 0x00a8
+REGDEF_BEGIN(ENGINE_DRAM)
+REGDEF_BIT( 				  ,		  2)
+REGDEF_BIT(CH0_DRAM_DBGOUT_SAO,		 30)
+REGDEF_END(RA8_ENGINE_DRAM)
+
+
+/*
+    RESERVED:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define RAC_RESERVED_OFS 0x00ac
+REGDEF_BEGIN(RESERVED)
+REGDEF_BIT(RESERVED,        32)
+REGDEF_END(RAC_RESERVED)
+
+
+/*
+    CH0_FMT                 :    [0x0, 0x7],			bits : 2_0
+    CH0_FIELD_EN            :    [0x0, 0x1],			bits : 3
+    CH0_FIELD_SEL           :    [0x0, 0x1],			bits : 4
+    CH0_HD_IN_SWAP          :    [0x0, 0x1],			bits : 5
+    CH0_OUT_SWAP            :    [0x0, 0x3],			bits : 7_6
+    CH0_OUT_SPLIT           :    [0x0, 0x1],			bits : 8
+    CH0_OUT_YUV420          :    [0x0, 0x1],			bits : 9
+    CH0_PARAL_DATA_PERIOD   :    [0x0, 0x3],			bits : 13_12
+    CH0_PARAL_DATA_INDEX    :    [0x0, 0x3],			bits : 15_14
+    CH0_PARAL_CH_ID         :    [0x0, 0xf],			bits : 19_16
+    CH0_CCIR656_ID_AUTOALIGN:    [0x0, 0x1],			bits : 30
+    CH0_SRC_SEL             :    [0x0, 0x1],			bits : 31
+*/
+#define RB0_CCIR_OFS 0x00b0
+REGDEF_BEGIN(CCIR )
+REGDEF_BIT(CH0_FMT                 ,        3)
+REGDEF_BIT(CH0_FIELD_EN            ,        1)
+REGDEF_BIT(CH0_FIELD_SEL           ,        1)
+REGDEF_BIT(CH0_HD_IN_SWAP          ,        1)
+REGDEF_BIT(CH0_OUT_SWAP            ,        2)
+REGDEF_BIT(CH0_OUT_SPLIT           ,        1)
+REGDEF_BIT(CH0_OUT_YUV420          ,        1)
+REGDEF_BIT(CH0_YUV_IN_FMT          ,        1)
+REGDEF_BIT(CH0_OUT_YUV420_SWAP     ,        2)
+REGDEF_BIT(                        ,        1)
+REGDEF_BIT(CH0_PARAL_DATA_INDEX    ,        2)
+REGDEF_BIT(CH0_PARAL_CH_ID         ,        4)
+REGDEF_BIT(                        ,        10)
+REGDEF_BIT(CH0_CCIR656_ID_AUTOALIGN,        1)
+REGDEF_BIT(CH0_SRC_SEL             ,        1)
+REGDEF_END(RB0_CCIR)
+
+
+/*
+    CH0_CCIR656_WIDTH :    [0x0, 0xffff],			bits : 15_0
+    CH0_CCIR656_HEIGHT:    [0x0, 0xffff],			bits : 31_16
+*/
+#define RB4_CCIR_STATUS_OFS 0x00b4
+REGDEF_BEGIN(CCIR STATUS)
+REGDEF_BIT(CH0_CCIR656_WIDTH ,        16)
+REGDEF_BIT(CH0_CCIR656_HEIGHT,        16)
+REGDEF_END(RB4_CCIR_STATUS)
+
+
+/*
+    CH0_CCIR656_HEADER:    [0x0, 0xffff],			bits : 15_0
+*/
+#define RB8_CCIR_STATUS_OFS 0x00b8
+REGDEF_BEGIN(CCIR STATUS)
+REGDEF_BIT(CH0_CCIR656_HEADER,        16)
+REGDEF_END(RB8_CCIR_STATUS)
+
+
+/*
+    CH0_CCIR656_HEADER_STATUS:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define RBC_CCIR_STATUS_OFS 0x00bc
+REGDEF_BEGIN(CCIR STATUS)
+REGDEF_BIT(CH0_CCIR656_HEADER_STATUS,        32)
+REGDEF_END(RBC_CCIR_STATUS)
+
+
+/*
+    CH0_MASK0_WIN_X0:    [0x0, 0xfff],			bits : 11_0
+    CH0_MASK0_WIN_Y0:    [0x0, 0xfff],			bits : 27_16
+*/
+#define RC0_MASK_OFS 0x00c0
+REGDEF_BEGIN(MASK)
+REGDEF_BIT(CH0_MASK0_WIN_X0,        12)
+REGDEF_BIT(                ,        4)
+REGDEF_BIT(CH0_MASK0_WIN_Y0,        12)
+REGDEF_END(RC0_MASK)
+
+
+/*
+    CH0_MASK0_WIN_X1:    [0x0, 0xfff],			bits : 11_0
+    CH0_MASK0_WIN_Y1:    [0x0, 0xfff],			bits : 27_16
+*/
+#define RC4_MASK_OFS 0x00c4
+REGDEF_BEGIN(MASK)
+REGDEF_BIT(CH0_MASK0_WIN_X1,        12)
+REGDEF_BIT(                ,        4)
+REGDEF_BIT(CH0_MASK0_WIN_Y1,        12)
+REGDEF_END(RC4_MASK)
+
+
+/*
+    CH0_MASK0_COL_Y :    [0x0, 0xff],			bits : 7_0
+    CH0_MASK0_COL_CB:    [0x0, 0xff],			bits : 15_8
+    CH0_MASK0_COL_CR:    [0x0, 0xff],			bits : 23_16
+*/
+#define RC8_MASK_OFS 0x00c8
+REGDEF_BEGIN(MASK)
+REGDEF_BIT(CH0_MASK0_COL_Y ,        8)
+REGDEF_BIT(CH0_MASK0_COL_CB,        8)
+REGDEF_BIT(CH0_MASK0_COL_CR,        8)
+REGDEF_END(RC8_MASK)
+
+
+/*
+    CH0_MASK1_WIN_X0:    [0x0, 0xfff],			bits : 11_0
+    CH0_MASK1_WIN_Y0:    [0x0, 0xfff],			bits : 27_16
+*/
+#define RCC_MASK_OFS 0x00cc
+REGDEF_BEGIN(MASK)
+REGDEF_BIT(CH0_MASK1_WIN_X0,        12)
+REGDEF_BIT(                ,        4)
+REGDEF_BIT(CH0_MASK1_WIN_Y0,        12)
+REGDEF_END(RCC_MASK)
+
+
+/*
+    CH0_MASK1_WIN_X1:    [0x0, 0xfff],			bits : 11_0
+    CH0_MASK1_WIN_Y1:    [0x0, 0xfff],			bits : 27_16
+*/
+#define RD0_MASK_OFS 0x00d0
+REGDEF_BEGIN(MASK)
+REGDEF_BIT(CH0_MASK1_WIN_X1,        12)
+REGDEF_BIT(                ,        4)
+REGDEF_BIT(CH0_MASK1_WIN_Y1,        12)
+REGDEF_END(RD0_MASK)
+
+
+/*
+    CH0_MASK1_COL_Y :    [0x0, 0xff],			bits : 7_0
+    CH0_MASK1_COL_CB:    [0x0, 0xff],			bits : 15_8
+    CH0_MASK1_COL_CR:    [0x0, 0xff],			bits : 23_16
+*/
+#define RD4_MASK_OFS 0x00d4
+REGDEF_BEGIN(MASK)
+REGDEF_BIT(CH0_MASK1_COL_Y ,        8)
+REGDEF_BIT(CH0_MASK1_COL_CB,        8)
+REGDEF_BIT(CH0_MASK1_COL_CR,        8)
+REGDEF_END(RD4_MASK)
+
+
+/*
+    CH0_MASK2_WIN_X0:    [0x0, 0xfff],			bits : 11_0
+    CH0_MASK2_WIN_Y0:    [0x0, 0xfff],			bits : 27_16
+*/
+#define RD8_MASK_OFS 0x00d8
+REGDEF_BEGIN(MASK)
+REGDEF_BIT(CH0_MASK2_WIN_X0,        12)
+REGDEF_BIT(                ,        4)
+REGDEF_BIT(CH0_MASK2_WIN_Y0,        12)
+REGDEF_END(RD8_MASK)
+
+
+/*
+    CH0_MASK2_WIN_X1:    [0x0, 0xfff],			bits : 11_0
+    CH0_MASK2_WIN_Y1:    [0x0, 0xfff],			bits : 27_16
+*/
+#define RDC_MASK_OFS 0x00dc
+REGDEF_BEGIN(MASK)
+REGDEF_BIT(CH0_MASK2_WIN_X1,        12)
+REGDEF_BIT(                ,        4)
+REGDEF_BIT(CH0_MASK2_WIN_Y1,        12)
+REGDEF_END(RDC_MASK)
+
+
+/*
+    CH0_MASK2_COL_Y :    [0x0, 0xff],			bits : 7_0
+    CH0_MASK2_COL_CB:    [0x0, 0xff],			bits : 15_8
+    CH0_MASK2_COL_CR:    [0x0, 0xff],			bits : 23_16
+*/
+#define RE0_MASK_OFS 0x00e0
+REGDEF_BEGIN(MASK)
+REGDEF_BIT(CH0_MASK2_COL_Y ,        8)
+REGDEF_BIT(CH0_MASK2_COL_CB,        8)
+REGDEF_BIT(CH0_MASK2_COL_CR,        8)
+REGDEF_END(RE0_MASK)
+
+
+/*
+    CH0_MASK3_WIN_X0:    [0x0, 0xfff],			bits : 11_0
+    CH0_MASK3_WIN_Y0:    [0x0, 0xfff],			bits : 27_16
+*/
+#define RE4_MASK_OFS 0x00e4
+REGDEF_BEGIN(MASK)
+REGDEF_BIT(CH0_MASK3_WIN_X0,        12)
+REGDEF_BIT(                ,        4)
+REGDEF_BIT(CH0_MASK3_WIN_Y0,        12)
+REGDEF_END(RE4_MASK)
+
+
+/*
+    CH0_MASK3_WIN_X1:    [0x0, 0xfff],			bits : 11_0
+    CH0_MASK3_WIN_Y1:    [0x0, 0xfff],			bits : 27_16
+*/
+#define RE8_MASK_OFS 0x00e8
+REGDEF_BEGIN(MASK)
+REGDEF_BIT(CH0_MASK3_WIN_X1,        12)
+REGDEF_BIT(                ,        4)
+REGDEF_BIT(CH0_MASK3_WIN_Y1,        12)
+REGDEF_END(RE8_MASK)
+
+
+/*
+    CH0_MASK3_COL_Y :    [0x0, 0xff],			bits : 7_0
+    CH0_MASK3_COL_CB:    [0x0, 0xff],			bits : 15_8
+    CH0_MASK3_COL_CR:    [0x0, 0xff],			bits : 23_16
+*/
+#define REC_MASK_OFS 0x00ec
+REGDEF_BEGIN(MASK)
+REGDEF_BIT(CH0_MASK3_COL_Y ,        8)
+REGDEF_BIT(CH0_MASK3_COL_CB,        8)
+REGDEF_BIT(CH0_MASK3_COL_CR,        8)
+REGDEF_END(REC_MASK)
+
+
+/*
+    CH0_VD_TIME:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define RF0_TIMING_OFS 0x00f0
+REGDEF_BEGIN(TIMING)
+REGDEF_BIT(CH0_VD_TIME,        32)
+REGDEF_END(RF0_TIMING)
+
+
+/*
+    CH0_HD_TIME:    [0x0, 0xfff],			bits : 11_0
+*/
+#define RF4_TIMING_OFS 0x00f4
+REGDEF_BEGIN(TIMING)
+REGDEF_BIT(CH0_HD_TIME,        12)
+REGDEF_END(RF4_TIMING)
+
+
+/*
+    CH0_LN_CNT    :    [0x0, 0x3fff],			bits : 13_0
+    CH0_LN_CNT_MAX:    [0x0, 0x3fff],			bits : 29_16
+*/
+#define RF8_TIMING_OFS 0x00f8
+REGDEF_BEGIN(TIMING)
+REGDEF_BIT(CH0_LN_CNT,        14)
+REGDEF_BIT(              ,        2)
+REGDEF_BIT(CH0_LN_CNT_MAX,        14)
+REGDEF_END(RF8_TIMING)
+
+
+/*
+    RESERVED:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define RFC_TIMING_OFS 0x00fc
+REGDEF_BEGIN(TIMING)
+REGDEF_BIT(CH0_LASTF_PXL_CNT,	  16)
+REGDEF_BIT(CH0_LASTF_LN_CNT,	  16)
+REGDEF_END(RFC_TIMING)
+
+
+/*
+    CH1_BP1:    [0x0, 0xfff],			bits : 11_0
+    CH1_BP2:    [0x0, 0xfff],			bits : 27_16
+*/
+#define R100_ENGINE_TIMING_OFS 0x0100
+REGDEF_BEGIN(ENGINE TIMING)
+REGDEF_BIT(CH1_BP1,        12)
+REGDEF_BIT(       ,        4)
+REGDEF_BIT(CH1_BP2,        12)
+REGDEF_END(R100_ENGINE_TIMING)
+
+
+/*
+    CH1_BP3:    [0x0, 0xfff],			bits : 11_0
+*/
+#define R104_ENGINE_TIMING_OFS 0x0104
+REGDEF_BEGIN(ENGINE TIMING)
+REGDEF_BIT(CH1_BP3,        12)
+REGDEF_END(R104_ENGINE_TIMING)
+
+
+/*
+    CH1_SRC_SZX:    [0x0, 0xfff],			bits : 11_0
+    CH1_SRC_SZY:    [0x0, 0xfff],			bits : 27_16
+*/
+#define R108_ENGINE_SIZE_OFS 0x0108
+REGDEF_BEGIN(ENGINE_SIZE)
+REGDEF_BIT(CH1_SRC_SZX,        14)
+REGDEF_BIT(           ,         2)
+REGDEF_BIT(CH1_SRC_SZY,        14)
+REGDEF_END(R108_ENGINE_SIZE)
+
+
+/*
+    CH1_CRP_STX:    [0x0, 0xfff],			bits : 11_0
+    CH1_CRP_STY:    [0x0, 0xfff],			bits : 27_16
+*/
+#define R10C_ENGINE_SIZE_OFS 0x010c
+REGDEF_BEGIN(ENGINE_SIZE)
+REGDEF_BIT(CH1_CRP_STX,        14)
+REGDEF_BIT(           ,         2)
+REGDEF_BIT(CH1_CRP_STY,        14)
+REGDEF_END(R10C_ENGINE_SIZE)
+
+
+/*
+    CH1_CRP_SZX:    [0x0, 0xfff],			bits : 11_0
+    CH1_CRP_SZY:    [0x0, 0xfff],			bits : 27_16
+*/
+#define R110_ENGINE_SIZE_OFS 0x0110
+REGDEF_BEGIN(ENGINE_SIZE)
+REGDEF_BIT(CH1_CRP_SZX,        14)
+REGDEF_BIT(           ,         2)
+REGDEF_BIT(CH1_CRP_SZY,        14)
+REGDEF_END(R110_ENGINE_SIZE)
+
+
+/*
+    CH1_DRAM_OUT0_SAO:    [0x0, 0x3fffffff],			bits : 31_2
+*/
+#define R114_ENGINE_DRAM_OFS 0x0114
+REGDEF_BEGIN(ENGINE_DRAM)
+REGDEF_BIT(                 ,        2)
+REGDEF_BIT(CH1_DRAM_OUT0_SAO,        30)
+REGDEF_END(R114_ENGINE_DRAM)
+
+
+/*
+    CH1_DRAM_OUT0_OFSO  :    [0x0, 0x3fff],			bits : 15_2
+    CH1_DRAM_OUT0_MIRROR:    [0x0, 0x1],			bits : 16
+    CH1_DRAM_OUT0_FLIP  :    [0x0, 0x1],			bits : 17
+    CH1_DRAM_OUT0_MODE  :    [0x0, 0x1],			bits : 20
+*/
+#define R118_ENGINE_DRAM_OFS 0x0118
+REGDEF_BEGIN(ENGINE_DRAM)
+REGDEF_BIT(                    ,        2)
+REGDEF_BIT(CH1_DRAM_OUT0_OFSO  ,        14)
+REGDEF_BIT(CH1_DRAM_OUT0_MIRROR,        1)
+REGDEF_BIT(CH1_DRAM_OUT0_FLIP  ,        1)
+REGDEF_END(R118_ENGINE_DRAM)
+
+
+/*
+    CH1_DRAM_OUT1_SAO:    [0x0, 0x3fffffff],			bits : 31_2
+*/
+#define R11C_ENGINE_DRAM_OFS 0x011c
+REGDEF_BEGIN(ENGINE_DRAM)
+REGDEF_BIT(                 ,        2)
+REGDEF_BIT(CH1_DRAM_OUT1_SAO,        30)
+REGDEF_END(R11C_ENGINE_DRAM)
+
+
+/*
+    CH1_DRAM_OUT1_OFSO  :    [0x0, 0x3fff],			bits : 15_2
+    CH1_DRAM_OUT1_MIRROR:    [0x0, 0x1],			bits : 16
+    CH1_DRAM_OUT1_FLIP  :    [0x0, 0x1],			bits : 17
+    CH1_DRAM_OUT1_MODE  :    [0x0, 0x1],			bits : 20
+*/
+#define R120_ENGINE_DRAM_OFS 0x0120
+REGDEF_BEGIN(ENGINE_DRAM)
+REGDEF_BIT(                    ,        2)
+REGDEF_BIT(CH1_DRAM_OUT1_OFSO  ,        14)
+REGDEF_BIT(CH1_DRAM_OUT1_MIRROR,        1)
+REGDEF_BIT(CH1_DRAM_OUT1_FLIP  ,        1)
+REGDEF_END(R120_ENGINE_DRAM)
+
+
+/*
+    RESERVED:    [0x0, 0x1],			bits : 31_0
+*/
+#define R124_RESERVED_OFS 0x0124
+REGDEF_BEGIN(RESERVED)
+REGDEF_BIT(RESERVED,        32)
+REGDEF_END(R124_RESERVED)
+
+
+/*
+    CH1_DRAM_DBGOUT_SAO:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define R128_ENGINE_DRAM_OFS 0x0128
+REGDEF_BEGIN(ENGINE_DRAM)
+REGDEF_BIT( 				  , 	  2)
+REGDEF_BIT(CH1_DRAM_DBGOUT_SAO, 	 30)
+REGDEF_END(R128_ENGINE_DRAM)
+
+
+/*
+    RESERVED:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define R12C_RESERVED_OFS 0x012c
+REGDEF_BEGIN(RESERVED)
+REGDEF_BIT(RESERVED,        32)
+REGDEF_END(R12C_RESERVED)
+
+
+/*
+    CH1_FMT                 :    [0x0, 0x7],			bits : 2_0
+    CH1_FIELD_EN            :    [0x0, 0x1],			bits : 3
+    CH1_FIELD_SEL           :    [0x0, 0x1],			bits : 4
+    CH1_HD_IN_SWAP          :    [0x0, 0x1],			bits : 5
+    CH1_OUT_SWAP            :    [0x0, 0x3],			bits : 7_6
+    CH1_OUT_SPLIT           :    [0x0, 0x1],			bits : 8
+    CH1_OUT_YUV420          :    [0x0, 0x1],			bits : 9
+    CH1_PARAL_DATA_PERIOD   :    [0x0, 0x3],			bits : 13_12
+    CH1_PARAL_DATA_INDEX    :    [0x0, 0x3],			bits : 15_14
+    CH1_PARAL_CH_ID         :    [0x0, 0xf],			bits : 19_16
+    CH1_CCIR656_ID_AUTOALIGN:    [0x0, 0x1],			bits : 30
+    CH1_SRC_SEL             :    [0x0, 0x1],			bits : 31
+*/
+#define R130_CCIR_OFS 0x0130
+REGDEF_BEGIN(CCIR)
+REGDEF_BIT(CH1_FMT                 ,        3)
+REGDEF_BIT(CH1_FIELD_EN            ,        1)
+REGDEF_BIT(CH1_FIELD_SEL           ,        1)
+REGDEF_BIT(CH1_HD_IN_SWAP          ,        1)
+REGDEF_BIT(CH1_OUT_SWAP            ,        2)
+REGDEF_BIT(CH1_OUT_SPLIT           ,        1)
+REGDEF_BIT(CH1_OUT_YUV420          ,        1)
+REGDEF_BIT(CH1_YUV_IN_FMT		   ,		1)
+REGDEF_BIT(CH1_OUT_YUV420_SWAP	   ,		2)
+REGDEF_BIT(						   ,		1)
+REGDEF_BIT(CH1_PARAL_DATA_INDEX    ,        2)
+REGDEF_BIT(CH1_PARAL_CH_ID         ,        4)
+REGDEF_BIT(                        ,        10)
+REGDEF_BIT(CH1_CCIR656_ID_AUTOALIGN,        1)
+REGDEF_BIT(CH1_SRC_SEL             ,        1)
+REGDEF_END(R130_CCIR)
+
+
+/*
+    CH1_CCIR656_WIDTH :    [0x0, 0xffff],			bits : 15_0
+    CH1_CCIR656_HEIGHT:    [0x0, 0xffff],			bits : 31_16
+*/
+#define R134_CCIR_STATUS_OFS 0x0134
+REGDEF_BEGIN(CCIR STATUS)
+REGDEF_BIT(CH1_CCIR656_WIDTH ,        16)
+REGDEF_BIT(CH1_CCIR656_HEIGHT,        16)
+REGDEF_END(R134_CCIR_STATUS)
+
+
+/*
+    CH1_CCIR656_HEADER:    [0x0, 0xffff],			bits : 15_0
+*/
+#define R138_CCIR_STATUS_OFS 0x0138
+REGDEF_BEGIN(CCIR STATUS)
+REGDEF_BIT(CH1_CCIR656_HEADER,        16)
+REGDEF_END(R138_CCIR_STATUS)
+
+
+/*
+    CH1_CCIR656_HEADER_STATUS:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define R13C_CCIR_STATUS_OFS 0x013c
+REGDEF_BEGIN(CCIR STATUS)
+REGDEF_BIT(CH1_CCIR656_HEADER_STATUS,        32)
+REGDEF_END(R13C_CCIR_STATUS)
+
+
+/*
+    CH1_MASK0_WIN_X0:    [0x0, 0xfff],			bits : 11_0
+    CH1_MASK0_WIN_Y0:    [0x0, 0xfff],			bits : 27_16
+*/
+#define R140_MASK_OFS 0x0140
+REGDEF_BEGIN(MASK)
+REGDEF_BIT(CH1_MASK0_WIN_X0,        12)
+REGDEF_BIT(                ,        4)
+REGDEF_BIT(CH1_MASK0_WIN_Y0,        12)
+REGDEF_END(R140_MASK)
+
+
+/*
+    CH1_MASK0_WIN_X1:    [0x0, 0xfff],			bits : 11_0
+    CH1_MASK0_WIN_Y1:    [0x0, 0xfff],			bits : 27_16
+*/
+#define R144_MASK_OFS 0x0144
+REGDEF_BEGIN(MASK)
+REGDEF_BIT(CH1_MASK0_WIN_X1,        12)
+REGDEF_BIT(                ,        4)
+REGDEF_BIT(CH1_MASK0_WIN_Y1,        12)
+REGDEF_END(R144_MASK)
+
+
+/*
+    CH1_MASK0_COL_Y :    [0x0, 0xff],			bits : 7_0
+    CH1_MASK0_COL_CB:    [0x0, 0xff],			bits : 15_8
+    CH1_MASK0_COL_CR:    [0x0, 0xff],			bits : 23_16
+*/
+#define R148_MASK_OFS 0x0148
+REGDEF_BEGIN(MASK)
+REGDEF_BIT(CH1_MASK0_COL_Y ,        8)
+REGDEF_BIT(CH1_MASK0_COL_CB,        8)
+REGDEF_BIT(CH1_MASK0_COL_CR,        8)
+REGDEF_END(R148_MASK)
+
+
+/*
+    CH1_MASK1_WIN_X0:    [0x0, 0xfff],			bits : 11_0
+    CH1_MASK1_WIN_Y0:    [0x0, 0xfff],			bits : 27_16
+*/
+#define R14C_MASK_OFS 0x014c
+REGDEF_BEGIN(MASK)
+REGDEF_BIT(CH1_MASK1_WIN_X0,        12)
+REGDEF_BIT(                ,        4)
+REGDEF_BIT(CH1_MASK1_WIN_Y0,        12)
+REGDEF_END(R14C_MASK)
+
+
+/*
+    CH1_MASK1_WIN_X1:    [0x0, 0xfff],			bits : 11_0
+    CH1_MASK1_WIN_Y1:    [0x0, 0xfff],			bits : 27_16
+*/
+#define R150_MASK_OFS 0x0150
+REGDEF_BEGIN(MASK)
+REGDEF_BIT(CH1_MASK1_WIN_X1,        12)
+REGDEF_BIT(                ,        4)
+REGDEF_BIT(CH1_MASK1_WIN_Y1,        12)
+REGDEF_END(R150_MASK)
+
+
+/*
+    CH1_MASK1_COL_Y :    [0x0, 0xff],			bits : 7_0
+    CH1_MASK1_COL_CB:    [0x0, 0xff],			bits : 15_8
+    CH1_MASK1_COL_CR:    [0x0, 0xff],			bits : 23_16
+*/
+#define R154_MASK_OFS 0x0154
+REGDEF_BEGIN(MASK)
+REGDEF_BIT(CH1_MASK1_COL_Y ,        8)
+REGDEF_BIT(CH1_MASK1_COL_CB,        8)
+REGDEF_BIT(CH1_MASK1_COL_CR,        8)
+REGDEF_END(R154_MASK)
+
+
+/*
+    CH1_MASK2_WIN_X0:    [0x0, 0xfff],			bits : 11_0
+    CH1_MASK2_WIN_Y0:    [0x0, 0xfff],			bits : 27_16
+*/
+#define R158_MASK_OFS 0x0158
+REGDEF_BEGIN(MASK)
+REGDEF_BIT(CH1_MASK2_WIN_X0,        12)
+REGDEF_BIT(                ,        4)
+REGDEF_BIT(CH1_MASK2_WIN_Y0,        12)
+REGDEF_END(R158_MASK)
+
+
+/*
+    CH1_MASK2_WIN_X1:    [0x0, 0xfff],			bits : 11_0
+    CH1_MASK2_WIN_Y1:    [0x0, 0xfff],			bits : 27_16
+*/
+#define R15C_MASK_OFS 0x015c
+REGDEF_BEGIN(MASK)
+REGDEF_BIT(CH1_MASK2_WIN_X1,        12)
+REGDEF_BIT(                ,        4)
+REGDEF_BIT(CH1_MASK2_WIN_Y1,        12)
+REGDEF_END(R15C_MASK)
+
+
+/*
+    CH1_MASK2_COL_Y :    [0x0, 0xff],			bits : 7_0
+    CH1_MASK2_COL_CB:    [0x0, 0xff],			bits : 15_8
+    CH1_MASK2_COL_CR:    [0x0, 0xff],			bits : 23_16
+*/
+#define R160_MASK_OFS 0x0160
+REGDEF_BEGIN(MASK)
+REGDEF_BIT(CH1_MASK2_COL_Y ,        8)
+REGDEF_BIT(CH1_MASK2_COL_CB,        8)
+REGDEF_BIT(CH1_MASK2_COL_CR,        8)
+REGDEF_END(R160_MASK)
+
+
+/*
+    CH1_MASK3_WIN_X0:    [0x0, 0xfff],			bits : 11_0
+    CH1_MASK3_WIN_Y0:    [0x0, 0xfff],			bits : 27_16
+*/
+#define R164_MASK_OFS 0x0164
+REGDEF_BEGIN(MASK)
+REGDEF_BIT(CH1_MASK3_WIN_X0,        12)
+REGDEF_BIT(                ,        4)
+REGDEF_BIT(CH1_MASK3_WIN_Y0,        12)
+REGDEF_END(R164_MASK)
+
+
+/*
+    CH1_MASK3_WIN_X1:    [0x0, 0xfff],			bits : 11_0
+    CH1_MASK3_WIN_Y1:    [0x0, 0xfff],			bits : 27_16
+*/
+#define R168_MASK_OFS 0x0168
+REGDEF_BEGIN(MASK)
+REGDEF_BIT(CH1_MASK3_WIN_X1,        12)
+REGDEF_BIT(                ,        4)
+REGDEF_BIT(CH1_MASK3_WIN_Y1,        12)
+REGDEF_END(R168_MASK)
+
+
+/*
+    CH1_MASK3_COL_Y :    [0x0, 0xff],			bits : 7_0
+    CH1_MASK3_COL_CB:    [0x0, 0xff],			bits : 15_8
+    CH1_MASK3_COL_CR:    [0x0, 0xff],			bits : 23_16
+*/
+#define R16C_MASK_OFS 0x016c
+REGDEF_BEGIN(MASK)
+REGDEF_BIT(CH1_MASK3_COL_Y ,        8)
+REGDEF_BIT(CH1_MASK3_COL_CB,        8)
+REGDEF_BIT(CH1_MASK3_COL_CR,        8)
+REGDEF_END(R16C_MASK)
+
+
+/*
+    CH1_VD_TIME:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define R170_TIMING_OFS 0x0170
+REGDEF_BEGIN(TIMING)
+REGDEF_BIT(CH1_VD_TIME,        32)
+REGDEF_END(R170_TIMING)
+
+
+/*
+    CH1_HD_TIME:    [0x0, 0xfff],			bits : 11_0
+*/
+#define R174_TIMING_OFS 0x0174
+REGDEF_BEGIN(TIMING)
+REGDEF_BIT(CH1_HD_TIME,        12)
+REGDEF_END(R174_TIMING)
+
+
+/*
+    CH1_LN_CNT    :    [0x0, 0x3fff],			bits : 13_0
+    CH1_LN_CNT_MAX:    [0x0, 0x3fff],			bits : 29_16
+*/
+#define R178_TIMING_OFS 0x0178
+REGDEF_BEGIN(TIMING)
+REGDEF_BIT(CH1_LN_CNT,        14)
+REGDEF_BIT(              ,        2)
+REGDEF_BIT(CH1_LN_CNT_MAX,        14)
+REGDEF_END(R178_TIMING)
+
+
+/*
+    RESERVED:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define R17C_TIMING_OFS 0x017c
+REGDEF_BEGIN(TIMING)
+REGDEF_BIT(CH1_LASTF_PXL_CNT,	  16)
+REGDEF_BIT(CH1_LASTF_LN_CNT,	  16)
+REGDEF_END(R17C_TIMING)
+
+
+/*
+    CH2_BP1:    [0x0, 0xfff],			bits : 11_0
+    CH2_BP2:    [0x0, 0xfff],			bits : 27_16
+*/
+#define R180_ENGINE_TIMING_OFS 0x0180
+REGDEF_BEGIN(ENGINE_TIMING)
+REGDEF_BIT(CH2_BP1,        12)
+REGDEF_BIT(       ,        4)
+REGDEF_BIT(CH2_BP2,        12)
+REGDEF_END(R180_ENGINE_TIMING)
+
+
+/*
+    CH2_BP3:    [0x0, 0xfff],			bits : 11_0
+*/
+#define R184_ENGINE_TIMING_OFS 0x0184
+REGDEF_BEGIN(ENGINE_TIMING)
+REGDEF_BIT(CH2_BP3,        12)
+REGDEF_END(R184_ENGINE_TIMING)
+
+
+/*
+    CH2_SRC_SZX:    [0x0, 0xfff],			bits : 11_0
+    CH2_SRC_SZY:    [0x0, 0xfff],			bits : 27_16
+*/
+#define R188_ENGINE_SIZE_OFS 0x0188
+REGDEF_BEGIN(ENGINE_SIZE)
+REGDEF_BIT(CH2_SRC_SZX,        14)
+REGDEF_BIT(           ,         2)
+REGDEF_BIT(CH2_SRC_SZY,        14)
+REGDEF_END(R188_ENGINE_SIZE)
+
+
+/*
+    CH2_CRP_STX:    [0x0, 0xfff],			bits : 11_0
+    CH2_CRP_STY:    [0x0, 0xfff],			bits : 27_16
+*/
+#define R18C_ENGINE_SIZE_OFS 0x018c
+REGDEF_BEGIN(ENGINE_SIZE)
+REGDEF_BIT(CH2_CRP_STX,        14)
+REGDEF_BIT(           ,         2)
+REGDEF_BIT(CH2_CRP_STY,        14)
+REGDEF_END(R18C_ENGINE_SIZE)
+
+
+/*
+    CH2_CRP_SZX:    [0x0, 0xfff],			bits : 11_0
+    CH2_CRP_SZY:    [0x0, 0xfff],			bits : 27_16
+*/
+#define R190_ENGINE_SIZE_OFS 0x0190
+REGDEF_BEGIN(ENGINE_SIZE)
+REGDEF_BIT(CH2_CRP_SZX,        14)
+REGDEF_BIT(           ,         2)
+REGDEF_BIT(CH2_CRP_SZY,        14)
+REGDEF_END(R190_ENGINE_SIZE)
+
+
+/*
+    CH2_DRAM_OUT0_SAO:    [0x0, 0x3fffffff],			bits : 31_2
+*/
+#define R194_ENGINE_DRAM_OFS 0x0194
+REGDEF_BEGIN(ENGINE_DRAM)
+REGDEF_BIT(                 ,        2)
+REGDEF_BIT(CH2_DRAM_OUT0_SAO,        30)
+REGDEF_END(R194_ENGINE_DRAM)
+
+
+/*
+    CH2_DRAM_OUT0_OFSO  :    [0x0, 0x3fff],			bits : 15_2
+    CH2_DRAM_OUT0_MIRROR:    [0x0, 0x1],			bits : 16
+    CH2_DRAM_OUT0_FLIP  :    [0x0, 0x1],			bits : 17
+    CH2_DRAM_OUT0_MODE  :    [0x0, 0x1],			bits : 20
+*/
+#define R198_ENGINE_DRAM_OFS 0x0198
+REGDEF_BEGIN(ENGINE_DRAM)
+REGDEF_BIT(                    ,        2)
+REGDEF_BIT(CH2_DRAM_OUT0_OFSO  ,        14)
+REGDEF_BIT(CH2_DRAM_OUT0_MIRROR,        1)
+REGDEF_BIT(CH2_DRAM_OUT0_FLIP  ,        1)
+REGDEF_END(R198_ENGINE_DRAM)
+
+
+/*
+    CH2_DRAM_OUT1_SAO:    [0x0, 0x3fffffff],			bits : 31_2
+*/
+#define R19C_ENGINE_DRAM_OFS 0x019c
+REGDEF_BEGIN(ENGINE_DRAM)
+REGDEF_BIT(                 ,        2)
+REGDEF_BIT(CH2_DRAM_OUT1_SAO,        30)
+REGDEF_END(R19C_ENGINE_DRAM)
+
+
+/*
+    CH2_DRAM_OUT1_OFSO  :    [0x0, 0x3fff],			bits : 15_2
+    CH2_DRAM_OUT1_MIRROR:    [0x0, 0x1],			bits : 16
+    CH2_DRAM_OUT1_FLIP  :    [0x0, 0x1],			bits : 17
+    CH2_DRAM_OUT1_MODE  :    [0x0, 0x1],			bits : 20
+*/
+#define R1A0_ENGINE_DRAM_OFS 0x01a0
+REGDEF_BEGIN(ENGINE_DRAM)
+REGDEF_BIT(                    ,        2)
+REGDEF_BIT(CH2_DRAM_OUT1_OFSO  ,        14)
+REGDEF_BIT(CH2_DRAM_OUT1_MIRROR,        1)
+REGDEF_BIT(CH2_DRAM_OUT1_FLIP  ,        1)
+REGDEF_END(R1A0_ENGINE_DRAM)
+
+
+/*
+    CH2_DRAM_OUT0_SINGLE_EN:    [0x0, 0x1],			bits : 0
+    CH2_DRAM_OUT1_SINGLE_EN:    [0x0, 0x1],			bits : 1
+*/
+#define R1A4_RESERVED_OFS 0x01a4
+REGDEF_BEGIN(RESERVED)
+REGDEF_BIT(RESERVED,		32)
+REGDEF_END(R1A4_RESERVED)
+
+
+/*
+    RESERVED:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define R1A8_ENGINE_DRAM_OFS 0x01a8
+REGDEF_BEGIN(ENGINE_DRAM)
+REGDEF_BIT( 				  , 	  2)
+REGDEF_BIT(CH2_DRAM_DBGOUT_SAO, 	 30)
+REGDEF_END(R1A8_ENGINE_DRAM)
+
+
+/*
+    RESERVED:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define R1AC_RESERVED_OFS 0x01ac
+REGDEF_BEGIN(RESERVED)
+REGDEF_BIT(RESERVED,        32)
+REGDEF_END(R1AC_RESERVED)
+
+
+/*
+    CH2_FMT                 :    [0x0, 0x7],			bits : 2_0
+    CH2_FIELD_EN            :    [0x0, 0x1],			bits : 3
+    CH2_FIELD_SEL           :    [0x0, 0x1],			bits : 4
+    CH2_HD_IN_SWAP          :    [0x0, 0x1],			bits : 5
+    CH2_OUT_SWAP            :    [0x0, 0x3],			bits : 7_6
+    CH2_OUT_SPLIT           :    [0x0, 0x1],			bits : 8
+    CH2_OUT_YUV420          :    [0x0, 0x1],			bits : 9
+    CH2_PARAL_DATA_PERIOD   :    [0x0, 0x3],			bits : 13_12
+    CH2_PARAL_DATA_INDEX    :    [0x0, 0x3],			bits : 15_14
+    CH2_PARAL_CH_ID         :    [0x0, 0xf],			bits : 19_16
+    CH2_CCIR656_ID_AUTOALIGN:    [0x0, 0x1],			bits : 30
+    CH2_SRC_SEL             :    [0x0, 0x1],			bits : 31
+*/
+#define R1B0_CCIR_OFS 0x01b0
+REGDEF_BEGIN(CCIR)
+REGDEF_BIT(CH2_FMT                 ,        3)
+REGDEF_BIT(CH2_FIELD_EN            ,        1)
+REGDEF_BIT(CH2_FIELD_SEL           ,        1)
+REGDEF_BIT(CH2_HD_IN_SWAP          ,        1)
+REGDEF_BIT(CH2_OUT_SWAP            ,        2)
+REGDEF_BIT(CH2_OUT_SPLIT           ,        1)
+REGDEF_BIT(CH2_OUT_YUV420          ,        1)
+REGDEF_BIT(CH2_YUV_IN_FMT		   ,		1)
+REGDEF_BIT(CH2_OUT_YUV420_SWAP	   ,		2)
+REGDEF_BIT(						   ,		1)
+REGDEF_BIT(CH2_PARAL_DATA_INDEX    ,        2)
+REGDEF_BIT(CH2_PARAL_CH_ID         ,        4)
+REGDEF_BIT(                        ,        10)
+REGDEF_BIT(CH2_CCIR656_ID_AUTOALIGN,        1)
+REGDEF_BIT(CH2_SRC_SEL             ,        1)
+REGDEF_END(R1B0_CCIR)
+
+
+/*
+    CH2_CCIR656_WIDTH :    [0x0, 0xffff],			bits : 15_0
+    CH2_CCIR656_HEIGHT:    [0x0, 0xffff],			bits : 31_16
+*/
+#define R1B4_CCIR_STATUS_OFS 0x01b4
+REGDEF_BEGIN(CCIR STATUS)
+REGDEF_BIT(CH2_CCIR656_WIDTH ,        16)
+REGDEF_BIT(CH2_CCIR656_HEIGHT,        16)
+REGDEF_END(R1B4_CCIR_STATUS)
+
+
+/*
+    CH2_CCIR656_HEADER:    [0x0, 0xffff],			bits : 15_0
+*/
+#define R1B8_CCIR_STATUS_OFS 0x01b8
+REGDEF_BEGIN(CCIR STATUS)
+REGDEF_BIT(CH2_CCIR656_HEADER,        16)
+REGDEF_END(R1B8_CCIR_STATUS)
+
+
+/*
+    CH2_CCIR656_HEADER_STATUS:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define R1BC_CCIR_STATUS_OFS 0x01bc
+REGDEF_BEGIN(CCIR STATUS)
+REGDEF_BIT(CH2_CCIR656_HEADER_STATUS,        32)
+REGDEF_END(R1BC_CCIR_STATUS)
+
+
+/*
+    CH2_MASK0_WIN_X0:    [0x0, 0xfff],			bits : 11_0
+    CH1_MASK0_WIN_Y0:    [0x0, 0xfff],			bits : 27_16
+*/
+#define R1C0_MASK_OFS 0x01C0
+REGDEF_BEGIN(MASK)
+REGDEF_BIT(CH2_MASK0_WIN_X0,        12)
+REGDEF_BIT(                ,        4)
+REGDEF_BIT(CH2_MASK0_WIN_Y0,        12)
+REGDEF_END(R1C0_MASK)
+
+
+/*
+    CH2_MASK0_WIN_X1:    [0x0, 0xfff],			bits : 11_0
+    CH2_MASK0_WIN_Y1:    [0x0, 0xfff],			bits : 27_16
+*/
+#define R1C4_MASK_OFS 0x01c4
+REGDEF_BEGIN(MASK)
+REGDEF_BIT(CH2_MASK0_WIN_X1,        12)
+REGDEF_BIT(                ,        4)
+REGDEF_BIT(CH2_MASK0_WIN_Y1,        12)
+REGDEF_END(R1C4_MASK)
+
+
+/*
+    CH2_MASK0_COL_Y :    [0x0, 0xff],			bits : 7_0
+    CH2_MASK0_COL_CB:    [0x0, 0xff],			bits : 15_8
+    CH2_MASK0_COL_CR:    [0x0, 0xff],			bits : 23_16
+*/
+#define R1C8_MASK_OFS 0x01c8
+REGDEF_BEGIN(MASK)
+REGDEF_BIT(CH2_MASK0_COL_Y ,        8)
+REGDEF_BIT(CH2_MASK0_COL_CB,        8)
+REGDEF_BIT(CH2_MASK0_COL_CR,        8)
+REGDEF_END(R1C8_MASK)
+
+
+/*
+    CH2_MASK1_WIN_X0:    [0x0, 0xfff],			bits : 11_0
+    CH2_MASK1_WIN_Y0:    [0x0, 0xfff],			bits : 27_16
+*/
+#define R1CC_MASK_OFS 0x01cc
+REGDEF_BEGIN(MASK)
+REGDEF_BIT(CH2_MASK1_WIN_X0,        12)
+REGDEF_BIT(                ,        4)
+REGDEF_BIT(CH2_MASK1_WIN_Y0,        12)
+REGDEF_END(R1CC_MASK)
+
+
+/*
+    CH2_MASK1_WIN_X1:    [0x0, 0xfff],			bits : 11_0
+    CH2_MASK1_WIN_Y1:    [0x0, 0xfff],			bits : 27_16
+*/
+#define R1D0_MASK_OFS 0x01d0
+REGDEF_BEGIN(MASK)
+REGDEF_BIT(CH2_MASK1_WIN_X1,        12)
+REGDEF_BIT(                ,        4)
+REGDEF_BIT(CH2_MASK1_WIN_Y1,        12)
+REGDEF_END(R1D0_MASK)
+
+
+/*
+    CH2_MASK1_COL_Y :    [0x0, 0xff],			bits : 7_0
+    CH2_MASK1_COL_CB:    [0x0, 0xff],			bits : 15_8
+    CH2_MASK1_COL_CR:    [0x0, 0xff],			bits : 23_16
+*/
+#define R1D4_MASK_OFS 0x01d4
+REGDEF_BEGIN(MASK)
+REGDEF_BIT(CH2_MASK1_COL_Y ,        8)
+REGDEF_BIT(CH2_MASK1_COL_CB,        8)
+REGDEF_BIT(CH2_MASK1_COL_CR,        8)
+REGDEF_END(R1D4_MASK)
+
+
+/*
+    CH2_MASK2_WIN_X0:    [0x0, 0xfff],			bits : 11_0
+    CH2_MASK2_WIN_Y0:    [0x0, 0xfff],			bits : 27_16
+*/
+#define R1D8_MASK_OFS 0x01d8
+REGDEF_BEGIN(MASK)
+REGDEF_BIT(CH2_MASK2_WIN_X0,        12)
+REGDEF_BIT(                ,        4)
+REGDEF_BIT(CH2_MASK2_WIN_Y0,        12)
+REGDEF_END(R1D8_MASK)
+
+
+/*
+    CH2_MASK2_WIN_X1:    [0x0, 0xfff],			bits : 11_0
+    CH2_MASK2_WIN_Y1:    [0x0, 0xfff],			bits : 27_16
+*/
+#define R1DC_MASK_OFS 0x01dc
+REGDEF_BEGIN(MASK)
+REGDEF_BIT(CH2_MASK2_WIN_X1,        12)
+REGDEF_BIT(                ,        4)
+REGDEF_BIT(CH2_MASK2_WIN_Y1,        12)
+REGDEF_END(R1DC_MASK)
+
+
+/*
+    CH2_MASK2_COL_Y :    [0x0, 0xff],			bits : 7_0
+    CH2_MASK2_COL_CB:    [0x0, 0xff],			bits : 15_8
+    CH2_MASK2_COL_CR:    [0x0, 0xff],			bits : 23_16
+*/
+#define R1E0_MASK_OFS 0x01e0
+REGDEF_BEGIN(MASK)
+REGDEF_BIT(CH2_MASK2_COL_Y ,        8)
+REGDEF_BIT(CH2_MASK2_COL_CB,        8)
+REGDEF_BIT(CH2_MASK2_COL_CR,        8)
+REGDEF_END(R1E0_MASK)
+
+
+/*
+    CH2_MASK3_WIN_X0:    [0x0, 0xfff],			bits : 11_0
+    CH2_MASK3_WIN_Y0:    [0x0, 0xfff],			bits : 27_16
+*/
+#define R1E4_MASK_OFS 0x01e4
+REGDEF_BEGIN(MASK)
+REGDEF_BIT(CH2_MASK3_WIN_X0,        12)
+REGDEF_BIT(                ,        4)
+REGDEF_BIT(CH2_MASK3_WIN_Y0,        12)
+REGDEF_END(R1E4_MASK)
+
+
+/*
+    CH2_MASK3_WIN_X1:    [0x0, 0xfff],			bits : 11_0
+    CH2_MASK3_WIN_Y1:    [0x0, 0xfff],			bits : 27_16
+*/
+#define R1E8_MASK_OFS 0x01e8
+REGDEF_BEGIN(MASK)
+REGDEF_BIT(CH2_MASK3_WIN_X1,        12)
+REGDEF_BIT(                ,        4)
+REGDEF_BIT(CH2_MASK3_WIN_Y1,        12)
+REGDEF_END(R1E8_MASK)
+
+
+/*
+    CH2_MASK3_COL_Y :    [0x0, 0xff],			bits : 7_0
+    CH2_MASK3_COL_CB:    [0x0, 0xff],			bits : 15_8
+    CH2_MASK3_COL_CR:    [0x0, 0xff],			bits : 23_16
+*/
+#define R1EC_MASK_OFS 0x01ec
+REGDEF_BEGIN(MASK)
+REGDEF_BIT(CH2_MASK3_COL_Y ,        8)
+REGDEF_BIT(CH2_MASK3_COL_CB,        8)
+REGDEF_BIT(CH2_MASK3_COL_CR,        8)
+REGDEF_END(R1EC_MASK)
+
+
+/*
+    CH2_VD_TIME:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define R1F0_TIMING_OFS 0x01f0
+REGDEF_BEGIN(TIMING)
+REGDEF_BIT(CH2_VD_TIME,        32)
+REGDEF_END(R1F0_TIMING)
+
+
+/*
+    CH2_HD_TIME:    [0x0, 0xfff],			bits : 11_0
+*/
+#define R1F4_TIMING_OFS 0x01f4
+REGDEF_BEGIN(TIMING)
+REGDEF_BIT(CH2_HD_TIME,        12)
+REGDEF_END(R1F4_TIMING)
+
+
+/*
+    CH2_LN_CNT    :    [0x0, 0x3fff],			bits : 13_0
+    CH2_LN_CNT_MAX:    [0x0, 0x3fff],			bits : 29_16
+*/
+#define R1F8_TIMING_OFS 0x01f8
+REGDEF_BEGIN(TIMING)
+REGDEF_BIT(CH2_LN_CNT,        14)
+REGDEF_BIT(              ,        2)
+REGDEF_BIT(CH2_LN_CNT_MAX,        14)
+REGDEF_END(R1F8_TIMING)
+
+
+/*
+    RESERVED:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define R1FC_TIMING_OFS 0x01fc
+REGDEF_BEGIN(TIMING)
+REGDEF_BIT(CH2_LASTF_PXL_CNT,	  16)
+REGDEF_BIT(CH2_LASTF_LN_CNT,	  16)
+REGDEF_END(R1FC_TIMING)
+
+
+/*
+    CH3_BP1:    [0x0, 0xfff],			bits : 11_0
+    CH3_BP2:    [0x0, 0xfff],			bits : 27_16
+*/
+#define R200_ENGINE_TIMING_OFS 0x0200
+REGDEF_BEGIN(ENGINE TIMING)
+REGDEF_BIT(CH3_BP1,        12)
+REGDEF_BIT(       ,        4)
+REGDEF_BIT(CH3_BP2,        12)
+REGDEF_END(R200_ENGINE_TIMING)
+
+
+/*
+    CH3_BP3:    [0x0, 0xfff],			bits : 11_0
+*/
+#define R204_ENGINE_TIMING_OFS 0x0204
+REGDEF_BEGIN(ENGINE TIMING)
+REGDEF_BIT(CH3_BP3,        12)
+REGDEF_END(R204_ENGINE_TIMING)
+
+
+/*
+    CH3_SRC_SZX:    [0x0, 0xfff],			bits : 11_0
+    CH3_SRC_SZY:    [0x0, 0xfff],			bits : 27_16
+*/
+#define R208_ENGINE_SIZE_OFS 0x0208
+REGDEF_BEGIN(ENGINE_SIZE)
+REGDEF_BIT(CH3_SRC_SZX,        14)
+REGDEF_BIT(           ,         2)
+REGDEF_BIT(CH3_SRC_SZY,        14)
+REGDEF_END(R208_ENGINE_SIZE)
+
+
+/*
+    CH3_CRP_STX:    [0x0, 0xfff],			bits : 11_0
+    CH3_CRP_STY:    [0x0, 0xfff],			bits : 27_16
+*/
+#define R20C_ENGINE_SIZE_OFS 0x020c
+REGDEF_BEGIN(ENGINE_SIZE)
+REGDEF_BIT(CH3_CRP_STX,        14)
+REGDEF_BIT(           ,         2)
+REGDEF_BIT(CH3_CRP_STY,        14)
+REGDEF_END(R20C_ENGINE_SIZE)
+
+
+/*
+    CH3_CRP_SZX:    [0x0, 0xfff],			bits : 11_0
+    CH3_CRP_SZY:    [0x0, 0xfff],			bits : 27_16
+*/
+#define R210_ENGINE_SIZE_OFS 0x0210
+REGDEF_BEGIN(ENGINE_SIZE)
+REGDEF_BIT(CH3_CRP_SZX,        14)
+REGDEF_BIT(           ,         2)
+REGDEF_BIT(CH3_CRP_SZY,        14)
+REGDEF_END(R210_ENGINE_SIZE)
+
+
+/*
+    CH3_DRAM_OUT0_SAO:    [0x0, 0x3fffffff],			bits : 31_2
+*/
+#define R214_ENGINE_DRAM_OFS 0x0214
+REGDEF_BEGIN(ENGINE_DRAM)
+REGDEF_BIT(                 ,        2)
+REGDEF_BIT(CH3_DRAM_OUT0_SAO,        30)
+REGDEF_END(R214_ENGINE_DRAM)
+
+
+/*
+    CH3_DRAM_OUT0_OFSO  :    [0x0, 0x3fff],			bits : 15_2
+    CH3_DRAM_OUT0_MIRROR:    [0x0, 0x1],			bits : 16
+    CH3_DRAM_OUT0_FLIP  :    [0x0, 0x1],			bits : 17
+    CH3_DRAM_OUT0_MODE  :    [0x0, 0x1],			bits : 20
+*/
+#define R218_ENGINE_DRAM_OFS 0x0218
+REGDEF_BEGIN(ENGINE_DRAM)
+REGDEF_BIT(                    ,        2)
+REGDEF_BIT(CH3_DRAM_OUT0_OFSO  ,        14)
+REGDEF_BIT(CH3_DRAM_OUT0_MIRROR,        1)
+REGDEF_BIT(CH3_DRAM_OUT0_FLIP  ,        1)
+REGDEF_END(R218_ENGINE_DRAM)
+
+
+/*
+    CH3_DRAM_OUT1_SAO:    [0x0, 0x3fffffff],			bits : 31_2
+*/
+#define R21C_ENGINE_DRAM_OFS 0x021c
+REGDEF_BEGIN(ENGINE_DRAM)
+REGDEF_BIT(                 ,        2)
+REGDEF_BIT(CH3_DRAM_OUT1_SAO,        30)
+REGDEF_END(R21C_ENGINE_DRAM)
+
+
+/*
+    CH3_DRAM_OUT1_OFSO  :    [0x0, 0x3fff],			bits : 15_2
+    CH3_DRAM_OUT1_MIRROR:    [0x0, 0x1],			bits : 16
+    CH3_DRAM_OUT1_FLIP  :    [0x0, 0x1],			bits : 17
+    CH3_DRAM_OUT1_MODE  :    [0x0, 0x1],			bits : 20
+*/
+#define R220_ENGINE_DRAM_OFS 0x0220
+REGDEF_BEGIN(ENGINE_DRAM)
+REGDEF_BIT(                    ,        2)
+REGDEF_BIT(CH3_DRAM_OUT1_OFSO  ,        14)
+REGDEF_BIT(CH3_DRAM_OUT1_MIRROR,        1)
+REGDEF_BIT(CH3_DRAM_OUT1_FLIP  ,        1)
+REGDEF_END(R220_ENGINE_DRAM)
+
+
+/*
+    RESERVED:    [0x0, 0x1],			bits : 31_0
+*/
+#define R224_RESERVED_OFS 0x0224
+REGDEF_BEGIN(RESERVED)
+REGDEF_BIT(RESERVED,		32)
+REGDEF_END(R224_RESERVED)
+
+
+/*
+    RESERVED:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define R228_ENGINE_DRAM_OFS 0x0228
+REGDEF_BEGIN(ENGINE_DRAM)
+REGDEF_BIT( 				  , 	  2)
+REGDEF_BIT(CH3_DRAM_DBGOUT_SAO, 	 30)
+REGDEF_END(R228_ENGINE_DRAM)
+
+
+/*
+    RESERVED:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define R22C_RESERVED_OFS 0x022c
+REGDEF_BEGIN(RESERVED)
+REGDEF_BIT(RESERVED,        32)
+REGDEF_END(R22C_RESERVED)
+
+
+/*
+    CH3_FMT                 :    [0x0, 0x7],			bits : 2_0
+    CH3_FIELD_EN            :    [0x0, 0x1],			bits : 3
+    CH3_FIELD_SEL           :    [0x0, 0x1],			bits : 4
+    CH3_HD_IN_SWAP          :    [0x0, 0x1],			bits : 5
+    CH3_OUT_SWAP            :    [0x0, 0x3],			bits : 7_6
+    CH3_OUT_SPLIT           :    [0x0, 0x1],			bits : 8
+    CH3_OUT_YUV420          :    [0x0, 0x1],			bits : 9
+    CH3_PARAL_DATA_PERIOD   :    [0x0, 0x3],			bits : 13_12
+    CH3_PARAL_DATA_INDEX    :    [0x0, 0x3],			bits : 15_14
+    CH3_PARAL_CH_ID         :    [0x0, 0xf],			bits : 19_16
+    CH3_CCIR656_ID_AUTOALIGN:    [0x0, 0x1],			bits : 30
+    CH3_SRC_SEL             :    [0x0, 0x1],			bits : 31
+*/
+#define R230_CCIR_OFS 0x0230
+REGDEF_BEGIN(CCIR)
+REGDEF_BIT(CH3_FMT                 ,        3)
+REGDEF_BIT(CH3_FIELD_EN            ,        1)
+REGDEF_BIT(CH3_FIELD_SEL           ,        1)
+REGDEF_BIT(CH3_HD_IN_SWAP          ,        1)
+REGDEF_BIT(CH3_OUT_SWAP            ,        2)
+REGDEF_BIT(CH3_OUT_SPLIT           ,        1)
+REGDEF_BIT(CH3_OUT_YUV420          ,        1)
+REGDEF_BIT(CH3_YUV_IN_FMT		   ,		1)
+REGDEF_BIT(CH3_OUT_YUV420_SWAP	   ,		2)
+REGDEF_BIT(						   ,		1)
+REGDEF_BIT(CH3_PARAL_DATA_INDEX    ,        2)
+REGDEF_BIT(CH3_PARAL_CH_ID         ,        4)
+REGDEF_BIT(                        ,        10)
+REGDEF_BIT(CH3_CCIR656_ID_AUTOALIGN,        1)
+REGDEF_BIT(CH3_SRC_SEL             ,        1)
+REGDEF_END(R230_CCIR)
+
+
+/*
+    CH3_CCIR656_WIDTH :    [0x0, 0xffff],			bits : 15_0
+    CH3_CCIR656_HEIGHT:    [0x0, 0xffff],			bits : 31_16
+*/
+#define R234_CCIR _STATUS_OFS 0x0234
+REGDEF_BEGIN(CCIR STATUS)
+REGDEF_BIT(CH3_CCIR656_WIDTH ,        16)
+REGDEF_BIT(CH3_CCIR656_HEIGHT,        16)
+REGDEF_END(R234_CCIR_STATUS)
+
+
+/*
+    CH3_CCIR656_HEADER:    [0x0, 0xffff],			bits : 15_0
+*/
+#define R238_CCIR_STATUS_OFS 0x0238
+REGDEF_BEGIN(CCIR STATUS)
+REGDEF_BIT(CH3_CCIR656_HEADER,        16)
+REGDEF_END(R238_CCIR_STATUS)
+
+
+/*
+    CH3_CCIR656_HEADER_STATUS:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define R23C_CCIR_STATUS_OFS 0x023c
+REGDEF_BEGIN(CCIR STATUS)
+REGDEF_BIT(CH3_CCIR656_HEADER_STATUS,        32)
+REGDEF_END(R23C_CCIR_STATUS)
+
+
+/*
+    CH3_MASK0_WIN_X0:    [0x0, 0xfff],			bits : 11_0
+    CH3_MASK0_WIN_Y0:    [0x0, 0xfff],			bits : 27_16
+*/
+#define R240_MASK_OFS 0x0240
+REGDEF_BEGIN(MASK)
+REGDEF_BIT(CH3_MASK0_WIN_X0,        12)
+REGDEF_BIT(                ,        4)
+REGDEF_BIT(CH3_MASK0_WIN_Y0,        12)
+REGDEF_END(R240_MASK)
+
+
+/*
+    CH3_MASK0_WIN_X1:    [0x0, 0xfff],			bits : 11_0
+    CH3_MASK0_WIN_Y1:    [0x0, 0xfff],			bits : 27_16
+*/
+#define R244_MASK_OFS 0x0244
+REGDEF_BEGIN(MASK)
+REGDEF_BIT(CH3_MASK0_WIN_X1,        12)
+REGDEF_BIT(                ,        4)
+REGDEF_BIT(CH3_MASK0_WIN_Y1,        12)
+REGDEF_END(R244_MASK)
+
+
+/*
+    CH3_MASK0_COL_Y :    [0x0, 0xff],			bits : 7_0
+    CH3_MASK0_COL_CB:    [0x0, 0xff],			bits : 15_8
+    CH3_MASK0_COL_CR:    [0x0, 0xff],			bits : 23_16
+*/
+#define R248_MASK_OFS 0x0248
+REGDEF_BEGIN(MASK)
+REGDEF_BIT(CH3_MASK0_COL_Y ,        8)
+REGDEF_BIT(CH3_MASK0_COL_CB,        8)
+REGDEF_BIT(CH3_MASK0_COL_CR,        8)
+REGDEF_END(R248_MASK)
+
+
+/*
+    CH3_MASK1_WIN_X0:    [0x0, 0xfff],			bits : 11_0
+    CH3_MASK1_WIN_Y0:    [0x0, 0xfff],			bits : 27_16
+*/
+#define R24C_MASK_OFS 0x024c
+REGDEF_BEGIN(MASK)
+REGDEF_BIT(CH3_MASK1_WIN_X0,        12)
+REGDEF_BIT(                ,        4)
+REGDEF_BIT(CH3_MASK1_WIN_Y0,        12)
+REGDEF_END(R24C_MASK)
+
+
+/*
+    CH3_MASK1_WIN_X1:    [0x0, 0xfff],			bits : 11_0
+    CH3_MASK1_WIN_Y1:    [0x0, 0xfff],			bits : 27_16
+*/
+#define R250_MASK_OFS 0x0250
+REGDEF_BEGIN(MASK)
+REGDEF_BIT(CH3_MASK1_WIN_X1,        12)
+REGDEF_BIT(                ,        4)
+REGDEF_BIT(CH3_MASK1_WIN_Y1,        12)
+REGDEF_END(R250_MASK)
+
+
+/*
+    CH3_MASK1_COL_Y :    [0x0, 0xff],			bits : 7_0
+    CH3_MASK1_COL_CB:    [0x0, 0xff],			bits : 15_8
+    CH3_MASK1_COL_CR:    [0x0, 0xff],			bits : 23_16
+*/
+#define R254_MASK_OFS 0x0254
+REGDEF_BEGIN(MASK)
+REGDEF_BIT(CH3_MASK1_COL_Y ,        8)
+REGDEF_BIT(CH3_MASK1_COL_CB,        8)
+REGDEF_BIT(CH3_MASK1_COL_CR,        8)
+REGDEF_END(R254_MASK)
+
+
+/*
+    CH3_MASK2_WIN_X0:    [0x0, 0xfff],			bits : 11_0
+    CH3_MASK2_WIN_Y0:    [0x0, 0xfff],			bits : 27_16
+*/
+#define R258_MASK_OFS 0x0258
+REGDEF_BEGIN(MASK)
+REGDEF_BIT(CH3_MASK2_WIN_X0,        12)
+REGDEF_BIT(                ,        4)
+REGDEF_BIT(CH3_MASK2_WIN_Y0,        12)
+REGDEF_END(R258_MASK)
+
+
+/*
+    CH3_MASK2_WIN_X1:    [0x0, 0xfff],			bits : 11_0
+    CH3_MASK2_WIN_Y1:    [0x0, 0xfff],			bits : 27_16
+*/
+#define R25C_MASK_OFS 0x025c
+REGDEF_BEGIN(MASK)
+REGDEF_BIT(CH3_MASK2_WIN_X1,        12)
+REGDEF_BIT(                ,        4)
+REGDEF_BIT(CH3_MASK2_WIN_Y1,        12)
+REGDEF_END(R25C_MASK)
+
+
+/*
+    CH3_MASK2_COL_Y :    [0x0, 0xff],			bits : 7_0
+    CH3_MASK2_COL_CB:    [0x0, 0xff],			bits : 15_8
+    CH3_MASK2_COL_CR:    [0x0, 0xff],			bits : 23_16
+*/
+#define R260_MASK_OFS 0x0260
+REGDEF_BEGIN(MASK)
+REGDEF_BIT(CH3_MASK2_COL_Y ,        8)
+REGDEF_BIT(CH3_MASK2_COL_CB,        8)
+REGDEF_BIT(CH3_MASK2_COL_CR,        8)
+REGDEF_END(R260_MASK)
+
+
+/*
+    CH3_MASK3_WIN_X0:    [0x0, 0xfff],			bits : 11_0
+    CH3_MASK3_WIN_Y0:    [0x0, 0xfff],			bits : 27_16
+*/
+#define R264_MASK_OFS 0x0264
+REGDEF_BEGIN(MASK)
+REGDEF_BIT(CH3_MASK3_WIN_X0,        12)
+REGDEF_BIT(                ,        4)
+REGDEF_BIT(CH3_MASK3_WIN_Y0,        12)
+REGDEF_END(R264_MASK)
+
+
+/*
+    CH3_MASK3_WIN_X1:    [0x0, 0xfff],			bits : 11_0
+    CH3_MASK3_WIN_Y1:    [0x0, 0xfff],			bits : 27_16
+*/
+#define R268_MASK_OFS 0x0268
+REGDEF_BEGIN(MASK)
+REGDEF_BIT(CH3_MASK3_WIN_X1,        12)
+REGDEF_BIT(                ,        4)
+REGDEF_BIT(CH3_MASK3_WIN_Y1,        12)
+REGDEF_END(R268_MASK)
+
+
+/*
+    CH3_MASK3_COL_Y :    [0x0, 0xff],			bits : 7_0
+    CH3_MASK3_COL_CB:    [0x0, 0xff],			bits : 15_8
+    CH3_MASK3_COL_CR:    [0x0, 0xff],			bits : 23_16
+*/
+#define R26C_MASK_OFS 0x026c
+REGDEF_BEGIN(MASK)
+REGDEF_BIT(CH3_MASK3_COL_Y ,        8)
+REGDEF_BIT(CH3_MASK3_COL_CB,        8)
+REGDEF_BIT(CH3_MASK3_COL_CR,        8)
+REGDEF_END(R26C_MASK)
+
+
+/*
+    CH3_VD_TIME:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define R270_TIMING_OFS 0x0270
+REGDEF_BEGIN(TIMING)
+REGDEF_BIT(CH3_VD_TIME,        32)
+REGDEF_END(R270_TIMING)
+
+
+/*
+    CH3_HD_TIME:    [0x0, 0xfff],			bits : 11_0
+*/
+#define R274_TIMING_OFS 0x0274
+REGDEF_BEGIN(TIMING)
+REGDEF_BIT(CH3_HD_TIME,        12)
+REGDEF_END(R274_TIMING)
+
+
+/*
+    CH3_LN_CNT    :    [0x0, 0x3fff],			bits : 13_0
+    CH3_LN_CNT_MAX:    [0x0, 0x3fff],			bits : 29_16
+*/
+#define R278_TIMING_OFS 0x0278
+REGDEF_BEGIN(TIMING)
+REGDEF_BIT(CH3_LN_CNT,        14)
+REGDEF_BIT(              ,        2)
+REGDEF_BIT(CH3_LN_CNT_MAX,        14)
+REGDEF_END(R278_TIMING)
+
+
+/*
+    RESERVED:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define R27C_TIMING_OFS 0x027c
+REGDEF_BEGIN(TIMING)
+REGDEF_BIT(CH3_LASTF_PXL_CNT,	  16)
+REGDEF_BIT(CH3_LASTF_LN_CNT,	  16)
+REGDEF_END(R27C_TIMING)
+
+/*
+    RESERVED:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define R280_RESERVED_OFS 0x0280
+REGDEF_BEGIN(RESERVED)
+REGDEF_BIT(RESERVED,        32)
+REGDEF_END(R280_RESERVED)
+
+/*
+    RESERVED:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define R284_RESERVED_OFS 0x0284
+REGDEF_BEGIN(RESERVED)
+REGDEF_BIT(RESERVED,        32)
+REGDEF_END(R284_RESERVED)
+
+
+/*
+    RESERVED:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define R288_RESERVED_OFS 0x0288
+REGDEF_BEGIN(RESERVED)
+REGDEF_BIT(RESERVED,        32)
+REGDEF_END(R288_RESERVED)
+
+/*
+    RESERVED:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define R28C_RESERVED_OFS 0x028c
+REGDEF_BEGIN(RESERVED)
+REGDEF_BIT(RESERVED,        32)
+REGDEF_END(R28C_RESERVED)
+
+/*
+    RESERVED:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define R290_RESERVED_OFS 0x0290
+REGDEF_BEGIN(RESERVED)
+REGDEF_BIT(RESERVED,        32)
+REGDEF_END(R290_RESERVED)
+
+/*
+    RESERVED:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define R294_RESERVED_OFS 0x0294
+REGDEF_BEGIN(RESERVED)
+REGDEF_BIT(RESERVED,        32)
+REGDEF_END(R294_RESERVED)
+
+
+/*
+    RESERVED:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define R298_RESERVED_OFS 0x0298
+REGDEF_BEGIN(RESERVED)
+REGDEF_BIT(RESERVED,        32)
+REGDEF_END(R298_RESERVED)
+
+/*
+    RESERVED:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define R29C_RESERVED_OFS 0x029c
+REGDEF_BEGIN(RESERVED)
+REGDEF_BIT(RESERVED,        32)
+REGDEF_END(R29C_RESERVED)
+
+/*
+    RESERVED:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define R2A0_RESERVED_OFS 0x02a0
+REGDEF_BEGIN(RESERVED)
+REGDEF_BIT(RESERVED,        32)
+REGDEF_END(R2A0_RESERVED)
+
+
+/*
+    RESERVED:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define R2A4_RESERVED_OFS 0x02a4
+REGDEF_BEGIN(RESERVED)
+REGDEF_BIT(RESERVED,        32)
+REGDEF_END(R2A4_RESERVED)
+
+/*
+    RESERVED:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define R2A8_RESERVED_OFS 0x02a8
+REGDEF_BEGIN(RESERVED)
+REGDEF_BIT(RESERVED,        32)
+REGDEF_END(R2A8_RESERVED)
+
+/*
+    RESERVED:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define R2AC_RESERVED_OFS 0x02ac
+REGDEF_BEGIN(RESERVED)
+REGDEF_BIT(RESERVED,        32)
+REGDEF_END(R2AC_RESERVED)
+
+/*
+    RESERVED:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define R2B0_RESERVED_OFS 0x02b0
+REGDEF_BEGIN(RESERVED)
+REGDEF_BIT(RESERVED,        32)
+REGDEF_END(R2B0_RESERVED)
+
+/*
+    RESERVED:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define R2B4_RESERVED_OFS 0x02b4
+REGDEF_BEGIN(RESERVED)
+REGDEF_BIT(RESERVED,        32)
+REGDEF_END(R2B4_RESERVED)
+
+/*
+    RESERVED:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define R2B8_RESERVED_OFS 0x02b8
+REGDEF_BEGIN(RESERVED)
+REGDEF_BIT(RESERVED,        32)
+REGDEF_END(R2B8_RESERVED)
+
+/*
+    RESERVED:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define R2BC_RESERVED_OFS 0x02bc
+REGDEF_BEGIN(RESERVED)
+REGDEF_BIT(RESERVED,        32)
+REGDEF_END(R2BC_RESERVED)
+
+/*
+    RESERVED:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define R2C0_RESERVED_OFS 0x02c0
+REGDEF_BEGIN(RESERVED)
+REGDEF_BIT(RESERVED,        32)
+REGDEF_END(R2C0_RESERVED)
+
+/*
+    RESERVED:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define R2C4_RESERVED_OFS 0x02c4
+REGDEF_BEGIN(RESERVED)
+REGDEF_BIT(RESERVED,        32)
+REGDEF_END(R2C4_RESERVED)
+
+/*
+    RESERVED:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define R2C8_RESERVED_OFS 0x02c8
+REGDEF_BEGIN(RESERVED)
+REGDEF_BIT(RESERVED,        32)
+REGDEF_END(R2C8_RESERVED)
+
+/*
+    RESERVED:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define R2CC_RESERVED_OFS 0x02cc
+REGDEF_BEGIN(RESERVED)
+REGDEF_BIT(RESERVED,        32)
+REGDEF_END(R2CC_RESERVED)
+
+/*
+    RESERVED:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define R2D0_RESERVED_OFS 0x02d0
+REGDEF_BEGIN(RESERVED)
+REGDEF_BIT(RESERVED,        32)
+REGDEF_END(R2D0_RESERVED)
+
+/*
+    RESERVED:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define R2D4_RESERVED_OFS 0x02d4
+REGDEF_BEGIN(RESERVED)
+REGDEF_BIT(RESERVED,        32)
+REGDEF_END(R2D4_RESERVED)
+
+/*
+    RESERVED:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define R2D8_RESERVED_OFS 0x02d8
+REGDEF_BEGIN(RESERVED)
+REGDEF_BIT(RESERVED,        32)
+REGDEF_END(R2D8_RESERVED)
+
+/*
+    RESERVED:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define R2DC_RESERVED_OFS 0x02dc
+REGDEF_BEGIN(RESERVED)
+REGDEF_BIT(RESERVED,        32)
+REGDEF_END(R2DC_RESERVED)
+
+/*
+    RESERVED:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define R2E0_RESERVED_OFS 0x02e0
+REGDEF_BEGIN(RESERVED)
+REGDEF_BIT(RESERVED,        32)
+REGDEF_END(R2E0_RESERVED)
+
+/*
+    RESERVED:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define R2E4_RESERVED_OFS 0x02e4
+REGDEF_BEGIN(RESERVED)
+REGDEF_BIT(RESERVED,        32)
+REGDEF_END(RR2E4_ESERVED)
+
+/*
+    RESERVED:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define R2E8_RESERVED_OFS 0x02e8
+REGDEF_BEGIN(RESERVED)
+REGDEF_BIT(RESERVED,        32)
+REGDEF_END(R2E8_RESERVED)
+
+/*
+    RESERVED:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define R2EC_RESERVED_OFS 0x02ec
+REGDEF_BEGIN(RESERVED)
+REGDEF_BIT(RESERVED,        32)
+REGDEF_END(R2EC_RESERVED)
+
+
+/*
+    RESERVED:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define R2F0_RESERVED_OFS 0x02f0
+REGDEF_BEGIN(RESERVED)
+REGDEF_BIT(RESERVED,        32)
+REGDEF_END(R2F0_RESERVED)
+
+/*
+    RESERVED:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define R2F4_RESERVED_OFS 0x02f4
+REGDEF_BEGIN(RESERVED)
+REGDEF_BIT(RESERVED,        32)
+REGDEF_END(R2F4_RESERVED)
+
+/*
+    RESERVED:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define R2F8_RESERVED_OFS 0x02f8
+REGDEF_BEGIN(RESERVED)
+REGDEF_BIT(RESERVED,        32)
+REGDEF_END(R2F8_RESERVED)
+
+/*
+    RESERVED:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define R2FC_RESERVED_OFS 0x02fc
+REGDEF_BEGIN(RESERVED)
+REGDEF_BIT(RESERVED,        32)
+REGDEF_END(R2FC_RESERVED)
+
+
+/*
+    DCT_LEVEL_TH0:    [0x0, 0xff],			bits : 7_0
+    DCT_LEVEL_TH1:    [0x0, 0xff],			bits :15_8
+    DCT_LEVEL_TH2:    [0x0, 0xff],			bits :23_16
+    DCT_LEVEL_TH3:    [0x0, 0xff],			bits :31_24
+*/
+
+#define R300_YCC_OFS 0x0300
+REGDEF_BEGIN(YCC)
+REGDEF_BIT(CH0_YCC_SHIFT_MODE_EN,		 1)
+REGDEF_BIT(CH1_YCC_SHIFT_MODE_EN,		 1)
+REGDEF_BIT(CH2_YCC_SHIFT_MODE_EN,		 1)
+REGDEF_BIT(CH3_YCC_SHIFT_MODE_EN,		 1)
+REGDEF_END(R300_YCC)
+
+
+/*
+    DCT_LEVEL_TH4:    [0x0, 0xff],			bits : 7_0
+    DCT_LEVEL_TH5:    [0x0, 0xff],			bits :15_8
+    DCT_LEVEL_TH6:    [0x0, 0xff],			bits :23_16
+    DCT_LEVEL_TH7:    [0x0, 0xff],			bits :31_24
+*/
+
+#define R304_YCC_OFS 0x0304
+REGDEF_BEGIN(YCC)
+REGDEF_BIT(DCT_LEVEL_TH0,        8)
+REGDEF_BIT(DCT_LEVEL_TH1,		 8)
+REGDEF_BIT(DCT_LEVEL_TH2,        8)
+REGDEF_BIT(DCT_LEVEL_TH3,        8)
+REGDEF_END(R304_YCC)
+
+
+/*
+    DCT_QTBL0_IDX:    [0x0, 0x1f],			bits : 4_0
+    DCT_QTBL1_IDX:    [0x0, 0x1f],			bits :12_8
+    DCT_QTBL2_IDX:    [0x0, 0x1f],			bits :20_16
+    DCT_QTBL3_IDX:    [0x0, 0x1f],			bits :38_24
+*/
+
+#define R308_YCC_OFS 0x0308
+REGDEF_BEGIN(YCC)
+REGDEF_BIT(DCT_LEVEL_TH4,		 8)
+REGDEF_BIT(DCT_LEVEL_TH5,		 8)
+REGDEF_BIT(DCT_LEVEL_TH6,		 8)
+REGDEF_BIT(DCT_LEVEL_TH7,		 8)
+REGDEF_END(R308_YCC)
+
+
+/*
+    DCT_QTBL4_IDX:    [0x0, 0x1f],			bits : 4_0
+    DCT_QTBL5_IDX:    [0x0, 0x1f],			bits :12_8
+    DCT_QTBL6_IDX:    [0x0, 0x1f],			bits :20_16
+    DCT_QTBL7_IDX:    [0x0, 0x1f],			bits :38_24
+*/
+
+#define R30C_YCC_OFS 0x030C
+REGDEF_BEGIN(YCC)
+REGDEF_BIT(DCT_QTBL0_IDX,        5)
+REGDEF_BIT(, 3)
+REGDEF_BIT(DCT_QTBL1_IDX,		 5)
+REGDEF_BIT(, 3)
+REGDEF_BIT(DCT_QTBL2_IDX,        5)
+REGDEF_BIT(, 3)
+REGDEF_BIT(DCT_QTBL3_IDX,        5)
+REGDEF_END(R30C_YCC)
+
+
+/*
+    DCT_QTBL8_IDX:     [0x0, 0x1f],			bits : 4_0
+    DCT_QTBL6_IDX:     [0x0, 0x1f],			bits :12_8
+    DCT_QTBL10_IDX:    [0x0, 0x1f],			bits :20_16
+    DCT_QTBL11_IDX:    [0x0, 0x1f],			bits :38_24
+*/
+
+#define R310_YCC_OFS 0x0310
+REGDEF_BEGIN(YCC)
+REGDEF_BIT(DCT_QTBL4_IDX,        5)
+REGDEF_BIT(, 3)
+REGDEF_BIT(DCT_QTBL5_IDX,		 5)
+REGDEF_BIT(, 3)
+REGDEF_BIT(DCT_QTBL6_IDX,        5)
+REGDEF_BIT(, 3)
+REGDEF_BIT(DCT_QTBL7_IDX,        5)
+REGDEF_END(R310_YCC)
+
+/*
+    DCT_QTBL12_IDX:    [0x0, 0x1f],			bits : 4_0
+    DCT_QTBL13_IDX:    [0x0, 0x1f],			bits :12_8
+    DCT_QTBL14_IDX:    [0x0, 0x1f],			bits :20_16
+    DCT_QTBL15_IDX:    [0x0, 0x1f],			bits :38_24
+*/
+
+#define R314_YCC_OFS 0x0314
+REGDEF_BEGIN(YCC)
+REGDEF_BIT(DCT_QTBL8_IDX,        5)
+REGDEF_BIT(, 3)
+REGDEF_BIT(DCT_QTBL9_IDX,		 5)
+REGDEF_BIT(, 3)
+REGDEF_BIT(DCT_QTBL10_IDX,        5)
+REGDEF_BIT(, 3)
+REGDEF_BIT(DCT_QTBL11_IDX,        5)
+REGDEF_END(R314_YCC)
+
+#define R318_YCC_OFS 0x0318
+REGDEF_BEGIN(YCC)
+REGDEF_BIT(DCT_QTBL12_IDX,        5)
+REGDEF_BIT(, 3)
+REGDEF_BIT(DCT_QTBL13_IDX,		 5)
+REGDEF_BIT(, 3)
+REGDEF_BIT(DCT_QTBL14_IDX,        5)
+REGDEF_BIT(, 3)
+REGDEF_BIT(DCT_QTBL15_IDX,        5)
+REGDEF_END(R318_YCC)
+
+/*
+    RESERVED:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define R31C_RESERVED_OFS 0x031C
+REGDEF_BEGIN(RESERVED)
+REGDEF_BIT(RESERVED,        32)
+REGDEF_END(R31C_RESERVED)
+
+/*
+    RESERVED:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define R320_RESERVED_OFS 0x0320
+REGDEF_BEGIN(RESERVED)
+REGDEF_BIT(RESERVED,        32)
+REGDEF_END(R320_RESERVED)
+
+/*
+    RESERVED:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define R324_RESERVED_OFS 0x0324
+REGDEF_BEGIN(RESERVED)
+REGDEF_BIT(RESERVED,        32)
+REGDEF_END(R324_RESERVED)
+
+/*
+    RESERVED:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define R328_RESERVED_OFS 0x0328
+REGDEF_BEGIN(RESERVED)
+REGDEF_BIT(RESERVED,        32)
+REGDEF_END(R328_RESERVED)
+
+/*
+    RESERVED:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define R32C_RESERVED_OFS 0x032C
+REGDEF_BEGIN(RESERVED)
+REGDEF_BIT(RESERVED,        32)
+REGDEF_END(R32C_RESERVED)
+
+/*
+    RESERVED:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define R330_RESERVED_OFS 0x0330
+REGDEF_BEGIN(RESERVED)
+REGDEF_BIT(RESERVED,        32)
+REGDEF_END(R330_RESERVED)
+
+/*
+    RESERVED:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define R334_RESERVED_OFS 0x0334
+REGDEF_BEGIN(RESERVED)
+REGDEF_BIT(RESERVED,        32)
+REGDEF_END(R334_RESERVED)
+
+/*
+    RESERVED:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define R338_RESERVED_OFS 0x0338
+REGDEF_BEGIN(RESERVED)
+REGDEF_BIT(RESERVED,        32)
+REGDEF_END(R338_RESERVED)
+
+/*
+    RESERVED:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define R33C_RESERVED_OFS 0x033C
+REGDEF_BEGIN(RESERVED)
+REGDEF_BIT(RESERVED,        32)
+REGDEF_END(R33C_RESERVED)
+
+/*
+    RESERVED:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define R340_RESERVED_OFS 0x0340
+REGDEF_BEGIN(RESERVED)
+REGDEF_BIT(RESERVED,        32)
+REGDEF_END(R340_RESERVED)
+
+/*
+    RESERVED:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define R344_RESERVED_OFS 0x0344
+REGDEF_BEGIN(RESERVED)
+REGDEF_BIT(RESERVED,        32)
+REGDEF_END(R344_RESERVED)
+
+/*
+    RESERVED:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define R348_RESERVED_OFS 0x0348
+REGDEF_BEGIN(RESERVED)
+REGDEF_BIT(RESERVED,        32)
+REGDEF_END(R348_RESERVED)
+
+/*
+    RESERVED:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define R34C_RESERVED_OFS 0x034C
+REGDEF_BEGIN(RESERVED)
+REGDEF_BIT(RESERVED,        32)
+REGDEF_END(R34C_RESERVED)
+
+/*
+    CH0_DRAM_OUT0_SAO_1:    [0x0, 0xf],			bits : 3_0
+*/
+#define R350_ENGINE_DRAM_OFS 0x0350
+REGDEF_BEGIN(ENGINE_DRAM)
+REGDEF_BIT(CH0_DRAM_OUT0_SAO_1,		 4)
+REGDEF_END(R350_ENGINE_DRAM)
+
+
+/*
+    CH0_DRAM_OUT1_SAO_1:    [0x0, 0xf],			bits : 3_0
+*/
+#define R354_ENGINE_DRAM_OFS 0x0354
+REGDEF_BEGIN(ENGINE_DRAM)
+REGDEF_BIT(CH0_DRAM_OUT1_SAO_1,		 4)
+REGDEF_END(R354_ENGINE_DRAM)
+
+
+/*
+    CH0_DRAM_DBGOUT_SAO_1:    [0x0, 0xf],			bits : 3_0
+*/
+#define R358_ENGINE_DRAM_OFS 0x0358
+REGDEF_BEGIN(ENGINE_DRAM)
+REGDEF_BIT(CH0_DRAM_DBGOUT_SAO_1,		 4)
+REGDEF_END(R358_ENGINE_DRAM)
+
+/*
+    RESERVED:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define R35C_RESERVED_OFS 0x035C
+REGDEF_BEGIN(RESERVED)
+REGDEF_BIT(RESERVED,        32)
+REGDEF_END(R35C_RESERVED)
+
+
+/*
+    CH1_DRAM_OUT0_SAO_1:    [0x0, 0xf],			bits : 3_0
+*/
+#define R360_ENGINE_DRAM_OFS 0x0360
+REGDEF_BEGIN(ENGINE_DRAM)
+REGDEF_BIT(CH1_DRAM_OUT0_SAO_1,		 4)
+REGDEF_END(R360_ENGINE_DRAM)
+
+
+/*
+    CH1_DRAM_OUT1_SAO_1:    [0x0, 0xf],			bits : 3_0
+*/
+#define R364_ENGINE_DRAM_OFS 0x0364
+REGDEF_BEGIN(ENGINE_DRAM)
+REGDEF_BIT(CH1_DRAM_OUT1_SAO_1,		 4)
+REGDEF_END(R364_ENGINE_DRAM)
+
+
+/*
+    CH1_DRAM_DBGOUT_SAO_1:    [0x0, 0xf],			bits : 3_0
+*/
+#define R368_ENGINE_DRAM_OFS 0x0368
+REGDEF_BEGIN(ENGINE_DRAM)
+REGDEF_BIT(CH1_DRAM_DBGOUT_SAO_1,		 4)
+REGDEF_END(R368_ENGINE_DRAM)
+
+/*
+    RESERVED:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define R36C_RESERVED_OFS 0x036C
+REGDEF_BEGIN(RESERVED)
+REGDEF_BIT(RESERVED,        32)
+REGDEF_END(R36C_RESERVED)
+
+
+/*
+    CH2_DRAM_OUT0_SAO_1:    [0x0, 0xf],			bits : 3_0
+*/
+#define R370_ENGINE_DRAM_OFS 0x0370
+REGDEF_BEGIN(ENGINE_DRAM)
+REGDEF_BIT(CH2_DRAM_OUT0_SAO_1,		 4)
+REGDEF_END(R370_ENGINE_DRAM)
+
+
+/*
+    CH2_DRAM_OUT1_SAO_1:    [0x0, 0xf],			bits : 3_0
+*/
+#define R374_ENGINE_DRAM_OFS 0x0374
+REGDEF_BEGIN(ENGINE_DRAM)
+REGDEF_BIT(CH2_DRAM_OUT1_SAO_1,		 4)
+REGDEF_END(R374_ENGINE_DRAM)
+
+
+/*
+    CH2_DRAM_DBGOUT_SAO_1:    [0x0, 0xf],			bits : 3_0
+*/
+#define R378_ENGINE_DRAM_OFS 0x0378
+REGDEF_BEGIN(ENGINE_DRAM)
+REGDEF_BIT(CH2_DRAM_DBGOUT_SAO_1,		 4)
+REGDEF_END(R378_ENGINE_DRAM)
+
+/*
+    RESERVED:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define R37C_RESERVED_OFS 0x037C
+REGDEF_BEGIN(RESERVED)
+REGDEF_BIT(RESERVED,        32)
+REGDEF_END(R37C_RESERVED)
+
+
+/*
+    CH3_DRAM_OUT0_SAO_1:    [0x0, 0xf],			bits : 3_0
+*/
+#define R380_ENGINE_DRAM_OFS 0x0380
+REGDEF_BEGIN(ENGINE_DRAM)
+REGDEF_BIT(CH3_DRAM_OUT0_SAO_1,		 4)
+REGDEF_END(R380_ENGINE_DRAM)
+
+
+/*
+    CH3_DRAM_OUT1_SAO_1:    [0x0, 0xf],			bits : 3_0
+*/
+#define R384_ENGINE_DRAM_OFS 0x0384
+REGDEF_BEGIN(ENGINE_DRAM)
+REGDEF_BIT(CH3_DRAM_OUT1_SAO_1,		 4)
+REGDEF_END(R384_ENGINE_DRAM)
+
+
+/*
+    CH3_DRAM_DBGOUT_SAO_1:    [0x0, 0xf],			bits : 3_0
+*/
+#define R388_ENGINE_DRAM_OFS 0x0388
+REGDEF_BEGIN(ENGINE_DRAM)
+REGDEF_BIT(CH3_DRAM_DBGOUT_SAO_1,		 4)
+REGDEF_END(R388_ENGINE_DRAM)
+
+/*
+    RESERVED:    [0x0, 0xffffffff],			bits : 31_0
+*/
+#define R38C_RESERVED_OFS 0x038C
+REGDEF_BEGIN(RESERVED)
+REGDEF_BIT(RESERVED,        32)
+REGDEF_END(R38C_RESERVED)
+
+#endif

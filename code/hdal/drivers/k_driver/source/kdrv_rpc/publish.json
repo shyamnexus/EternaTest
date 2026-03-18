@@ -1,0 +1,8 @@
+{
+	"jsontype": "module_publish",
+	"publish_src": [
+	"kdrv_rpc_main.c",
+	"kdrv_rpc_platform.c",
+	"kdrv_rpc_proc.c"
+	]
+}

@@ -1,0 +1,27 @@
+&top {
+	sdio{pinmux = <0x1>;};
+	nand{pinmux = <0x1>;};
+	eth{pinmux = <0x10000>;};
+	i2c{pinmux = <0x0>;};
+	pwm{pinmux = <0x0>;};
+	pwmII{pinmux = <0x0>;};
+	pwmIII{pinmux = <0x1080000>;};
+	ccnt{pinmux = <0x0>;};
+	sensor{pinmux = <0x0>;};
+	sensor2{pinmux = <0x0>;};
+	sensor3{pinmux = <0x0>;};
+	sensormisc{pinmux = <0x0>;};
+	sensorsync{pinmux = <0x84218421>;};
+	audio{pinmux = <0x0>;};
+	uart{pinmux = <(0x1 | PIN_UART_CFG_UART2_1)>;};
+	uartII{pinmux = <0x0>;};
+	csi{pinmux = <0x0>;};
+	remote{pinmux = <0x0>;};
+	sdp{pinmux = <0x0>;};
+	spi{pinmux = <0x0>;};
+	sif{pinmux = <0x0>;};
+	misc{pinmux = <0x0>;};
+	lcd{pinmux = <0x00000000>;};
+	tv{pinmux = <0x0>;};
+	sel_lcd{pinmux = <0x0>;};
+};

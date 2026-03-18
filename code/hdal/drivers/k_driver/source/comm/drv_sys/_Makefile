@@ -1,0 +1,51 @@
+MODULE_NAME = nvt_drv_sys
+# DIRs
+VOS_DRIVER_DIR = $(NVT_VOS_DIR)/drivers
+KDRV_DIR = $(NVT_HDAL_DIR)/drivers/k_driver
+CURR_DRIVER_DIR = $(KDRV_DIR)
+# INCs
+VOS_INC_PATH = $(VOS_DRIVER_DIR)/include
+KDRV_INC_PATH = $(KDRV_DIR)/include
+KDRV_SRC_INC_PATH = $(KDRV_DIR)/source/include
+CURR_DRIVER_INC_PATH = $(CURR_DRIVER_DIR)/include
+# INC FLAGs
+EXTRA_INCLUDE += \
+	-I$(VOS_INC_PATH) \
+	-I$(KDRV_INC_PATH) \
+	-I$(CURR_DRIVER_INC_PATH) \
+	-I$(KDRV_SRC_INC_PATH) \
+
+###############################################################################
+# Linux Makefile                                                              #
+###############################################################################
+ifeq ($(NVT_PRJCFG_CFG),Linux)
+EXTRA_CFLAGS += -DDEBUG
+
+SRC += \
+	timer_main.c \
+	timer_proc.c \
+	timer_drv.c \
+	timer_api.c \
+	timer_platform.c \
+	timer.c \
+	emu_timer.c \
+	hwclock.c \
+	nvt_jiffies.c \
+
+#	ddr_proc.c
+
+###############################################################################
+# rtos Makefile                                                               #
+###############################################################################
+else ifeq ($(NVT_PRJCFG_CFG),rtos)
+SRC += \
+	dummy_core.c \
+	timer_platform.c \
+	timer.c \
+	timer_drv.c \
+	hwclock.c \
+	delay.c \
+
+endif
+
+include $(NVT_HDAL_DIR)/driver.mk

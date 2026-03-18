@@ -1,0 +1,23 @@
+{
+  "_comment": "RTSP server options: 'rtsp.enabled=true' uses new Live555 server (replaces nvtrtspd_ipc), 'rtsp.enabled=false' uses legacy nvtrtspd_ipc. go2rtc is a separate WebRTC/HLS restreamer.",
+  "streaming": {
+    "rtsp": {
+      "enabled": true,
+      "port": 554,
+      "http_tunnel_port": 0,
+      "max_connections": 10,
+      "auth": {
+        "mode": "none",
+        "realm": "IP Camera",
+        "username": "admin",
+        "password": ""
+      }
+    },
+    "go2rtc": {
+      "enabled": true,
+      "binary_path": "/bin/go2rtc_linux_arm64",
+      "config_path": "/etc/go2rtc.yaml",
+      "init_script": "/etc/init.d/S51go2rtc"
+    }
+  }
+}

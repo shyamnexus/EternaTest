@@ -1,0 +1,269 @@
+# =============================================================================
+# Firmware Upgrade API  –  Version info, upload, validate, upgrade, cancel
+# =============================================================================
+
+paths:
+
+  # --------------------------------------------------------------------------
+  # Firmware Version
+  # --------------------------------------------------------------------------
+  /firmware/version:
+    get:
+      tags: [Firmware]
+      summary: Get firmware version information
+      description: >
+        Returns the current firmware version, build date, hardware platform,
+        and other version metadata.
+      operationId: getFirmwareVersion
+      responses:
+        '200':
+          description: Firmware version info
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FirmwareVersionInfo'
+
+  # --------------------------------------------------------------------------
+  # Firmware Status
+  # --------------------------------------------------------------------------
+  /firmware/status:
+    get:
+      tags: [Firmware]
+      summary: Get firmware upgrade status
+      description: >
+        Returns the current state of any in-progress firmware upgrade,
+        including progress percentage, stage, and any error messages.
+      operationId: getFirmwareStatus
+      responses:
+        '200':
+          description: Upgrade status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FirmwareStatus'
+
+  # --------------------------------------------------------------------------
+  # Firmware Upload
+  # --------------------------------------------------------------------------
+  /firmware/upload:
+    post:
+      tags: [Firmware]
+      summary: Upload firmware file
+      description: >
+        Uploads a firmware binary file to the device.  Supports both
+        multipart/form-data and raw binary body uploads.
+        The file is stored temporarily for subsequent validation or upgrade.
+      operationId: uploadFirmware
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: Firmware binary file (.bin)
+          application/octet-stream:
+            schema:
+              type: string
+              format: binary
+      responses:
+        '200':
+          description: Firmware uploaded successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  file_path:
+                    type: string
+                    description: Temporary path of uploaded file
+                  file_size:
+                    type: integer
+                    format: int64
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  # --------------------------------------------------------------------------
+  # Firmware Validate
+  # --------------------------------------------------------------------------
+  /firmware/validate:
+    post:
+      tags: [Firmware]
+      summary: Validate firmware without installing
+      description: >
+        Validates the integrity and compatibility of an uploaded firmware
+        file without actually installing it.  Checks header, checksum,
+        hardware compatibility, and version.
+      operationId: validateFirmware
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  description: Path to firmware file (uses last uploaded if omitted)
+      responses:
+        '200':
+          description: Validation result
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  valid:
+                    type: boolean
+                  message:
+                    type: string
+                  firmware_version:
+                    type: string
+                  hardware_compatible:
+                    type: boolean
+                  checksum_ok:
+                    type: boolean
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  # --------------------------------------------------------------------------
+  # Firmware Upgrade
+  # --------------------------------------------------------------------------
+  /firmware/upgrade:
+    post:
+      tags: [Firmware]
+      summary: Start firmware upgrade
+      description: >
+        Begins the firmware upgrade process using a previously uploaded file.
+        The device will validate, flash, and automatically reboot upon completion.
+        Monitor progress via `GET /firmware/status`.
+      operationId: startFirmwareUpgrade
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  description: Path to firmware file (uses last uploaded if omitted)
+      responses:
+        '200':
+          description: Upgrade started
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                    example: "Firmware upgrade started"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '409':
+          description: Upgrade already in progress
+
+  # --------------------------------------------------------------------------
+  # Firmware Cancel
+  # --------------------------------------------------------------------------
+  /firmware/cancel:
+    post:
+      tags: [Firmware]
+      summary: Cancel in-progress upgrade
+      description: >
+        Attempts to cancel a firmware upgrade that is currently in progress.
+        Only possible during the upload/validation stage; once flashing has
+        begun it cannot be cancelled.
+      operationId: cancelFirmwareUpgrade
+      responses:
+        '200':
+          description: Upgrade cancelled
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+        '409':
+          description: Cannot cancel — flashing already in progress
+
+# =============================================================================
+# Components
+# =============================================================================
+components:
+  schemas:
+    FirmwareVersionInfo:
+      type: object
+      properties:
+        firmware_version:
+          type: string
+          example: "V0.0.1"
+        build_date:
+          type: string
+          example: "2026-02-22"
+        hardware_platform:
+          type: string
+          example: "NS02302"
+        model:
+          type: string
+        serial_number:
+          type: string
+
+    FirmwareStatus:
+      type: object
+      properties:
+        state:
+          type: string
+          enum: [idle, uploading, validating, flashing, rebooting, error]
+          example: "idle"
+        progress_percent:
+          type: integer
+          minimum: 0
+          maximum: 100
+          example: 0
+        message:
+          type: string
+        file_path:
+          type: string
+        started_at:
+          type: string
+          format: date-time
+
+  responses:
+    BadRequest:
+      description: Invalid request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: error
+              message:
+                type: string
+    ServerError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: error
+              message:
+                type: string

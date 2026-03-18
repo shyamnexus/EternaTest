@@ -1,0 +1,97 @@
+/**
+	NVT hardware description
+	To define NVT platform IO address
+	@file      hardware.h
+	@ingroup
+	@note
+
+	Copyright   Novatek Microelectronics Corp. 2019.  All rights reserved.
+	This program is free software; you can redistribute it and/or modify
+	it under the terms of the GNU General Public License version 2 as
+	published by the Free Software Foundation.
+*/
+
+#ifndef __ASM_ARCH_PLAT_HARDWARE_H
+#define __ASM_ARCH_PLAT_HARDWARE_H
+
+/*
+ * ----------------------------------------------------------------------------
+ * Interrupts (GIC)
+ * ----------------------------------------------------------------------------
+ */
+#define NVT_GIC_DIST_PHYS_BASE	(0x2fff01000)
+#define NVT_GIC_CPU_PHYS_BASE	(0x2fff02000)
+
+#define NVT_CPU_REG_BASE_PHYS	(NVT_PERIPHERAL_PHYS_BASE + 0x1400000)
+/*
+ * ----------------------------------------------------------------------------
+ * Peripheral mapping address
+ * ----------------------------------------------------------------------------
+ */
+#define NVT_PERIPHERAL_PHYS_BASE	(0x2f0000000)
+
+#define NVT_TOP_BASE_PHYS		(NVT_PERIPHERAL_PHYS_BASE + 0x0010000)
+
+#define NVT_SRAM_BASE_PHYS     		(NVT_PERIPHERAL_PHYS_BASE + 0x0011000)
+
+#define NVT_CG_BASE_PHYS		(NVT_PERIPHERAL_PHYS_BASE + 0x0020000)
+
+#define NVT_PAD_BASE_PHYS		(NVT_PERIPHERAL_PHYS_BASE + 0x0030000)
+
+#define NVT_GPIO_BASE_PHYS		(NVT_PERIPHERAL_PHYS_BASE + 0x0040000)
+
+#define NVT_TZPC_BASE_PHYS		(NVT_PERIPHERAL_PHYS_BASE + 0x0050000)
+
+#define NVT_TGE_BASE_PHYS		(NVT_PERIPHERAL_PHYS_BASE + 0x0CC0000)
+
+#define NVT_TIMER_BASE_PHYS		(NVT_PERIPHERAL_PHYS_BASE + 0x0100000)
+
+#define NVT_WDT_BASE_PHYS		(NVT_PERIPHERAL_PHYS_BASE + 0x0110000)
+
+#define NVT_PWM_BASE_PHYS		(NVT_PERIPHERAL_PHYS_BASE + 0x0120000)
+
+#define NVT_MSI_BASE_PHYS		(NVT_PERIPHERAL_PHYS_BASE + 0x0140000)
+
+#define NVT_TRNG_BASE_PHYS		(NVT_PERIPHERAL_PHYS_BASE + 0x0150000)
+
+#define NVT_CC_BASE_PHYS		(NVT_PERIPHERAL_PHYS_BASE + 0x0160000)
+
+#define NVT_NAND_BASE_PHYS		(NVT_PERIPHERAL_PHYS_BASE + 0x0180000)
+
+#define NVT_SDIO_BASE_PHYS		(NVT_PERIPHERAL_PHYS_BASE + 0x0190000)
+
+#define NVT_SDIO2_BASE_PHYS		(NVT_PERIPHERAL_PHYS_BASE + 0x01A0000)
+
+#define NVT_I2C1_BASE_PHYS		(NVT_PERIPHERAL_PHYS_BASE + 0x01C0000)
+
+#define NVT_I2C2_BASE_PHYS		(NVT_PERIPHERAL_PHYS_BASE + 0x01D0000)
+
+#define NVT_I2C3_BASE_PHYS		(NVT_PERIPHERAL_PHYS_BASE + 0x01E0000)
+
+#define NVT_I2C4_BASE_PHYS		(NVT_PERIPHERAL_PHYS_BASE + 0x01F0000)
+
+#define NVT_ETH_BASE_PHYS		(NVT_PERIPHERAL_PHYS_BASE + 0x0200000)
+
+#define NVT_ETH2_BASE_PHYS		(NVT_PERIPHERAL_PHYS_BASE + 0x0210000)
+
+#define NVT_UART1_BASE_PHYS		(NVT_PERIPHERAL_PHYS_BASE + 0x0280000)
+
+#define NVT_UART2_BASE_PHYS		(NVT_PERIPHERAL_PHYS_BASE + 0x0290000)
+
+#define NVT_UART3_BASE_PHYS		(NVT_PERIPHERAL_PHYS_BASE + 0x02a0000)
+
+#define NVT_UART4_BASE_PHYS		(NVT_PERIPHERAL_PHYS_BASE + 0x02b0000)
+
+#define NVT_UART5_BASE_PHYS		(NVT_PERIPHERAL_PHYS_BASE + 0x02c0000)
+
+#define NVT_PCIE_DBI_BASE_PHYS		(NVT_PERIPHERAL_PHYS_BASE + 0xD000000)
+
+#define NVT_PCIE_PHY_BASE_PHYS      (NVT_PERIPHERAL_PHYS_BASE + 0x08B0000)
+
+
+#define CHIPVER_A                       0x0
+#define CHIPVER_B                       0x1
+#define CHIPVER_C                       0x2
+
+extern u32 nvt_get_chip_ver(phys_addr_t base);
+#endif	/* __ASM_ARCH_PLAT_HARDWARE_H */

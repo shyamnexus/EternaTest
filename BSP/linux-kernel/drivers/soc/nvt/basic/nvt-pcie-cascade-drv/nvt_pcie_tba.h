@@ -1,0 +1,95 @@
+#ifndef __NVT_PCIE_TBA_H__
+#define __NVT_PCIE_TBA_H__
+
+#include "nvt_pcie_int.h"
+
+
+#define 	PCIE_EC_GROUP_0	0x0000
+#define 	PCIE_EC_GROUP_1	0x0100
+#define 	PCIE_EC_GROUP_2	0x0200
+#define 	PCIE_EC_GROUP_3	0x0300
+#define 	PCIE_EC_GROUP_4	0x0400
+#define 	PCIE_EC_GROUP_5	0x0500
+#define 	PCIE_EC_GROUP_6	0x0600
+#define 	PCIE_EC_GROUP_7	0x0700
+
+
+typedef enum {
+	PCIE_TBA_TIME_MANUAL = 0x0,
+	PCIE_TBA_TIME_1MS,
+	PCIE_TBA_TIME_10MS,
+	PCIE_TBA_TIME_100MS,
+	PCIE_TBA_TIME_1S,
+	PCIE_TBA_TIME_2S,
+	PCIE_TBA_TIME_4S,
+	PCIE_TBA_TIME_4US = 0xFF,	
+	PCIE_TBA_TIME_COUNT = 0x8,
+
+	ENUM_DUMMY4WORD(PCIE_TBA_TIME)
+} PCIE_TBA_TIME;
+
+
+typedef enum {
+	PCIE_TBA_SEL_ONECYCLE = 0x0,
+	PCIE_TBA_SEL_TXL0S,
+	PCIE_TBA_SEL_RXL0S,
+	PCIE_TBA_SEL_L0,
+	PCIE_TBA_SEL_L1,
+	PCIE_TBA_SEL_L1_1,
+	PCIE_TBA_SEL_L1_2,	
+	PCIE_TBA_SEL_CFG_RCVRY,
+	PCIE_TBA_SEL_TXRXL0S,
+	PCIE_TBA_SEL_L1_AUX = 0x9,	
+	PCIE_TBA_SEL_1CYCLE = 0x10,		
+	PCIE_TBA_SEL_TXL0S_,
+	PCIE_TBA_SEL_RXL0S_,
+	PCIE_TBA_SEL_L0_,
+	PCIE_TBA_SEL_L1_,
+	PCIE_TBA_SEL_CFG_RCVRY_ = 0x17,
+	PCIE_TBA_SEL_TXRXL0S_,
+	
+	PCIE_TBA_SEL_TX_TLP = 0x20,
+	PCIE_TBA_SEL_RX_TLP = 0x21,
+	PCIE_TBA_SEL_TX_CCIXTLP = 0x22,
+	PCIE_TBA_SEL_RX_CCIXTLP = 0x23,	
+
+	PCIE_TBA_SEL_COUNT = 20,
+
+	ENUM_DUMMY4WORD(PCIE_TBA_SEL)
+} PCIE_TBA_SEL;
+
+typedef enum {
+	PCIE_EC_EN_PEROFF = 0x1,
+	PCIE_EC_EN_PERON = 0x3,
+	PCIE_EC_EN_ALLOFF = 0x5,
+	PCIE_EC_EN_ALLON = 0x7,
+	PCIE_EC_EN_COUNT = 4,
+
+	ENUM_DUMMY4WORD(PCIE_EC_EN_SEL)
+} PCIE_EC_EN_SEL;
+
+typedef enum {
+	PCIE_EC_CLEAR_NOCHANGE = 0x0,
+	PCIE_EC_CLEAR_PERCLEAR,
+	PCIE_EC_CLEAR_NOCHANGE2,
+	PCIE_EC_CLEAR_ALLCLEAR,
+	PCIE_EC_CLEAR_COUNT,
+
+	ENUM_DUMMY4WORD(PCIE_EC_CLEAR_SEL)
+} PCIE_EC_CLEAR_SEL;
+
+
+//RAS TBA
+extern void 		pcie_ras_tba_set(PCIE_TBA_SEL tba_sel , PCIE_TBA_TIME tba_time);
+extern void 		pcie_ras_tba_start(void);
+extern void 		pcie_ras_tba_stop(void); 
+extern UINT32 	pcie_ras_tba_data(void);
+
+
+extern void 		pcie_ras_ec_set(UINT32 ec_sel);
+extern void 		pcie_ras_ec_start(UINT32 sel);
+extern void 		pcie_ras_ec_stop(UINT32 sel);
+extern UINT32 	pcie_ras_ec_data(void);
+
+
+#endif /* __NVT_PCIE_TBA_H__ */

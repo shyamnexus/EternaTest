@@ -1,0 +1,24 @@
+#
+# Panel drivers configuration
+#
+#
+choice
+	prompt "Novatek Panel3 Selection menu"
+	default DISP_IFPA_LCD3_RGB8888
+	depends on VIDEO_LOGO && (TARGET_NS02201 || TARGET_NS02201_A64) 
+	help
+	  select panel for device object.
+
+config DISP_IFPA_LCD3_RGB8888
+	bool "To support RGB8888 parallel panel"
+	depends on VIDEO_LOGO && (TARGET_NS02201 || TARGET_NS02201_A64) 
+	help
+	  Novatek Serial IF 8bit Panel2 PW35P00 support.
+
+config DISP_IFNONE3
+        bool "To support NULL panel"
+        depends on VIDEO_LOGO && (TARGET_NS02201 || TARGET_NS02201_A64) 
+        help
+          Novatek NULL panel support.
+
+endchoice

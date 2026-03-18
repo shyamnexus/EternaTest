@@ -1,0 +1,26 @@
+#define CORE_0         0
+#define CORE_1         1
+#define CORE_2         2
+#define CORE_3         3
+#define CORE_DYNAMIC   255
+
+&gic {
+	direction = <
+		INT_ID_DMA       CORE_1
+		INT_ID_UART2     CORE_1
+		INT_ID_TIMER     CORE_1
+		INT_ID_SIE       CORE_1
+		INT_ID_SIE2      CORE_1
+		INT_ID_SIE3      CORE_1
+		INT_ID_IPE       CORE_1
+		INT_ID_IME       CORE_1
+		INT_ID_VPE       CORE_1
+		INT_ID_IFE       CORE_1
+		INT_ID_DAI       CORE_1
+		INT_ID_HEVC      CORE_1
+		INT_ID_JPEG      CORE_1
+		INT_ID_GRAPHIC   CORE_1
+		INT_ID_GRAPHIC2  CORE_1
+		INT_ID_ISE       CORE_1
+	>;
+};

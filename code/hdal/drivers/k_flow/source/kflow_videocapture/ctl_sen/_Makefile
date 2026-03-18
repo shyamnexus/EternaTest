@@ -1,0 +1,74 @@
+MODULE_NAME = ctl_sen
+# DIRs
+VOS_DRIVER_DIR = $(NVT_VOS_DIR)/drivers
+KDRV_DIR = $(NVT_HDAL_DIR)/drivers/k_driver
+KFLOW_DIR = $(NVT_HDAL_DIR)/drivers/k_flow
+CURR_DRIVER_DIR = $(KFLOW_DIR)
+KFLOW_CTL_SEN_DIR = $(CURR_DRIVER_DIR)/source/kflow_videocapture/ctl_sen
+# INCs
+VOS_INC_PATH = $(VOS_DRIVER_DIR)/include
+KDRV_INC_PATH = $(KDRV_DIR)/include
+KFLOW_INC_PATH = $(KFLOW_DIR)/include
+CURR_DRIVER_INC_PATH = $(CURR_DRIVER_DIR)/include
+CTL_SEN_COM_INC_PATH = $(KFLOW_CTL_SEN_DIR)/include
+CTL_SEN_LIB_INC_PATH = $(KFLOW_CTL_SEN_DIR)/lib
+CTL_SEN_LIB_CTL_INC_PATH = $(KFLOW_CTL_SEN_DIR)/lib/sen_ctrl
+CTL_SEN_LIB_CMD_INC_PATH = $(KFLOW_CTL_SEN_DIR)/lib/sen_ctrl_cmdif
+CTL_SEN_LIB_CDR_INC_PATH = $(KFLOW_CTL_SEN_DIR)/lib/sen_ctrl_drv
+CTL_SEN_LIB_CIF_INC_PATH = $(KFLOW_CTL_SEN_DIR)/lib/sen_ctrl_if
+CTL_SEN_LIB_DBG_INC_PATH = $(KFLOW_CTL_SEN_DIR)/lib/sen_dbg
+CTL_SEN_LIB_MID_INC_PATH = $(KFLOW_CTL_SEN_DIR)/lib/sen_middle
+CTL_SEN_LIB_UTI_INC_PATH = $(KFLOW_CTL_SEN_DIR)/lib/sen_utility
+# INC FLAGs
+EXTRA_INCLUDE += \
+	-I$(VOS_INC_PATH) \
+	-I$(KDRV_INC_PATH) \
+	-I$(KFLOW_INC_PATH) \
+	-I$(CURR_DRIVER_INC_PATH) \
+	-I$(CTL_SEN_COM_INC_PATH) \
+	-I$(CTL_SEN_LIB_INC_PATH) \
+
+EXTRA_INCLUDE += \
+	-I$(CTL_SEN_LIB_CTL_INC_PATH) \
+	-I$(CTL_SEN_LIB_CMD_INC_PATH) \
+	-I$(CTL_SEN_LIB_CDR_INC_PATH) \
+	-I$(CTL_SEN_LIB_CIF_INC_PATH) \
+	-I$(CTL_SEN_LIB_DBG_INC_PATH) \
+	-I$(CTL_SEN_LIB_MID_INC_PATH) \
+	-I$(CTL_SEN_LIB_UTI_INC_PATH) \
+
+###############################################################################
+# Linux Makefile                                                              #
+###############################################################################
+ifeq ($(NVT_PRJCFG_CFG),Linux)
+EXTRA_CFLAGS += -DDEBUG
+
+$(MODULE_NAME)-src := \
+	ctl_sen_main.c \
+	ctl_sen_proc.c \
+	ctl_sen_api.c \
+	ctl_sen_config.c \
+	ctl_sen_export.c \
+	ctl_sen_ver.c \
+	sen_flow/ctl_sen.c \
+	sen_flow/ctl_sen_clk.c \
+	sen_flow/ctl_sen_if.c \
+	sen_utility/ctl_sen_utility.c \
+	sen_debug/ctl_sen_debug_infor.c
+
+###############################################################################
+# rtos Makefile                                                               #
+###############################################################################
+else ifeq ($(NVT_PRJCFG_CFG),rtos)
+SRC += \
+	ctl_sen_config.c \
+	ctl_sen_api.c \
+	sen_flow/ctl_sen.c \
+	sen_flow/ctl_sen_clk.c \
+	sen_flow/ctl_sen_if.c \
+	sen_utility/ctl_sen_utility.c \
+	sen_debug/ctl_sen_debug_infor.c \
+
+endif
+
+include $(NVT_HDAL_DIR)/driver.mk

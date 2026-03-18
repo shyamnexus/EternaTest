@@ -1,0 +1,469 @@
+openapi: 3.0.3
+info:
+  title: IP Camera API - RTSP Server
+  version: 1.0.0
+  description: |
+    RTSP Server configuration and control API.
+    
+    Provides management of:
+    - RTSP server settings (port, max connections)
+    - Authentication configuration (none, basic, digest)
+    - Server control (start/stop/restart)
+    - Client connection monitoring
+
+paths:
+  /rtsp:
+    get:
+      summary: Get RTSP Server Configuration
+      description: Returns RTSP server settings and current status
+      operationId: getRtspConfig
+      tags: [RTSP]
+      responses:
+        '200':
+          description: RTSP configuration retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RtspConfig'
+              example:
+                enabled: true
+                port: 554
+                http_tunnel_port: 8554
+                max_connections: 10
+                auth:
+                  mode: "basic"
+                  realm: "IP Camera"
+                  username: "admin"
+                  go2rtc_compatible: true
+                status:
+                  running: true
+                  client_count: 2
+                  streams:
+                    - name: "stream0"
+                      url: "rtsp://192.168.1.100/stream0"
+                      codec: "h264"
+                    - name: "stream1"
+                      url: "rtsp://192.168.1.100/stream1"
+                      codec: "h264"
+
+    put:
+      summary: Update RTSP Server Configuration
+      description: |
+        Update RTSP server settings.
+        Some changes require server restart to take effect.
+      operationId: updateRtspConfig
+      tags: [RTSP]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RtspConfigUpdate'
+            examples:
+              change_port:
+                summary: Change RTSP port
+                value:
+                  port: 8554
+              enable_auth:
+                summary: Enable basic authentication
+                value:
+                  auth:
+                    mode: "basic"
+                    username: "admin"
+                    password: "secret123"
+      responses:
+        '200':
+          description: Configuration updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  needs_restart:
+                    type: boolean
+                    description: Whether RTSP server needs restart
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /rtsp/auth:
+    get:
+      summary: Get RTSP Authentication Settings
+      description: Get current authentication configuration (password not returned)
+      operationId: getRtspAuth
+      tags: [RTSP]
+      responses:
+        '200':
+          description: Authentication settings retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RtspAuthConfig'
+              example:
+                mode: "basic"
+                realm: "IP Camera"
+                username: "admin"
+                has_password: true
+                go2rtc_compatible: true
+
+    put:
+      summary: Update RTSP Authentication Settings
+      description: |
+        Configure RTSP authentication.
+        
+        Modes:
+        - **none**: No authentication required
+        - **basic**: HTTP Basic authentication (compatible with go2rtc/WebRTC)
+        - **digest**: HTTP Digest authentication (more secure, not WebRTC compatible)
+      operationId: updateRtspAuth
+      tags: [RTSP]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RtspAuthUpdate'
+            examples:
+              disable_auth:
+                summary: Disable authentication
+                value:
+                  mode: "none"
+              basic_auth:
+                summary: Enable basic auth
+                value:
+                  mode: "basic"
+                  username: "admin"
+                  password: "mypassword"
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /rtsp/control:
+    post:
+      summary: Control RTSP Server
+      description: |
+        Start, stop, or restart the RTSP server.
+        
+        Actions:
+        - **start**: Start the RTSP server
+        - **stop**: Stop the RTSP server
+        - **restart**: Restart the RTSP server (applies pending config changes)
+      operationId: controlRtspServer
+      tags: [RTSP]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - action
+              properties:
+                action:
+                  type: string
+                  enum: [start, stop, restart]
+            example:
+              action: "restart"
+      responses:
+        '200':
+          description: Action executed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  running:
+                    type: boolean
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /rtsp/status:
+    get:
+      summary: Get RTSP Server Status
+      description: Get real-time server status and stream information
+      operationId: getRtspStatus
+      tags: [RTSP]
+      responses:
+        '200':
+          description: Status retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RtspStatus'
+              example:
+                running: true
+                uptime_seconds: 3600
+                client_count: 3
+                streams:
+                  - name: "stream0"
+                    url: "rtsp://192.168.1.100/stream0"
+                    codec: "h264"
+                    resolution: "2560x1440"
+                    bitrate: 4096
+                    clients: 2
+                  - name: "stream1"
+                    url: "rtsp://192.168.1.100/stream1"
+                    codec: "h264"
+                    resolution: "1280x720"
+                    bitrate: 2048
+                    clients: 1
+
+  /rtsp/clients:
+    get:
+      summary: Get Connected RTSP Clients
+      description: List all currently connected RTSP clients
+      operationId: getRtspClients
+      tags: [RTSP]
+      responses:
+        '200':
+          description: Client list retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+                  clients:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/RtspClient'
+              example:
+                count: 2
+                clients:
+                  - id: "client_001"
+                    ip: "192.168.1.50"
+                    port: 54321
+                    stream: "stream0"
+                    connected_at: "2026-01-16T10:00:00Z"
+                    duration_seconds: 1800
+                    bytes_sent: 524288000
+                    transport: "tcp"
+                  - id: "client_002"
+                    ip: "192.168.1.51"
+                    port: 54322
+                    stream: "stream1"
+                    connected_at: "2026-01-16T10:15:00Z"
+                    duration_seconds: 900
+                    bytes_sent: 131072000
+                    transport: "udp"
+
+    delete:
+      summary: Disconnect RTSP Client
+      description: Forcefully disconnect a specific RTSP client
+      operationId: disconnectRtspClient
+      tags: [RTSP]
+      parameters:
+        - name: client_id
+          in: query
+          required: true
+          description: Client ID to disconnect
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Client disconnected
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+        '404':
+          description: Client not found
+
+components:
+  schemas:
+    RtspConfig:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+          description: Whether RTSP server is enabled
+        port:
+          type: integer
+          minimum: 1
+          maximum: 65535
+          description: RTSP server port (default 554)
+        http_tunnel_port:
+          type: integer
+          minimum: 0
+          maximum: 65535
+          description: HTTP tunneling port for firewall traversal (0 to disable)
+        max_connections:
+          type: integer
+          minimum: 1
+          maximum: 100
+          description: Maximum simultaneous client connections
+        auth:
+          $ref: '#/components/schemas/RtspAuthConfig'
+        status:
+          $ref: '#/components/schemas/RtspStatus'
+
+    RtspConfigUpdate:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+        port:
+          type: integer
+          minimum: 1
+          maximum: 65535
+        http_tunnel_port:
+          type: integer
+          minimum: 0
+          maximum: 65535
+        max_connections:
+          type: integer
+          minimum: 1
+          maximum: 100
+        auth:
+          $ref: '#/components/schemas/RtspAuthUpdate'
+
+    RtspAuthConfig:
+      type: object
+      properties:
+        mode:
+          type: string
+          enum: [none, basic, digest]
+          description: |
+            Authentication mode:
+            - none: No authentication
+            - basic: HTTP Basic (WebRTC compatible)
+            - digest: HTTP Digest (more secure)
+        realm:
+          type: string
+          description: Authentication realm
+        username:
+          type: string
+          description: Username for authentication
+        has_password:
+          type: boolean
+          description: Whether password is set (read-only)
+        go2rtc_compatible:
+          type: boolean
+          description: Whether current auth mode is WebRTC compatible (read-only)
+
+    RtspAuthUpdate:
+      type: object
+      properties:
+        mode:
+          type: string
+          enum: [none, basic, digest]
+        realm:
+          type: string
+        username:
+          type: string
+        password:
+          type: string
+          format: password
+          description: Password (write-only, never returned in responses)
+
+    RtspStatus:
+      type: object
+      properties:
+        running:
+          type: boolean
+          description: Whether server is currently running
+        uptime_seconds:
+          type: integer
+          description: Server uptime in seconds
+        client_count:
+          type: integer
+          description: Number of connected clients
+        streams:
+          type: array
+          items:
+            $ref: '#/components/schemas/RtspStreamInfo'
+
+    RtspStreamInfo:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Stream name (stream0, stream1, stream2)
+        url:
+          type: string
+          format: uri
+          description: Full RTSP URL for this stream
+        codec:
+          type: string
+          enum: [h264, h265]
+          description: Video codec
+        resolution:
+          type: string
+          description: Video resolution (e.g., "1920x1080")
+        bitrate:
+          type: integer
+          description: Target bitrate in kbps
+        clients:
+          type: integer
+          description: Number of clients viewing this stream
+
+    RtspClient:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique client identifier
+        ip:
+          type: string
+          format: ipv4
+          description: Client IP address
+        port:
+          type: integer
+          description: Client source port
+        stream:
+          type: string
+          description: Stream being viewed
+        connected_at:
+          type: string
+          format: date-time
+          description: Connection timestamp
+        duration_seconds:
+          type: integer
+          description: Connection duration in seconds
+        bytes_sent:
+          type: integer
+          description: Total bytes sent to client
+        transport:
+          type: string
+          enum: [tcp, udp]
+          description: Transport protocol
+
+  responses:
+    Success:
+      description: Operation completed successfully
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              success:
+                type: boolean
+              message:
+                type: string
+
+    BadRequest:
+      description: Invalid request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+              message:
+                type: string

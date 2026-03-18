@@ -1,0 +1,28 @@
+/*
+  gpio_config = <[gpio_pin] [level]>;
+  - gpio_pin  : pin as defined at dt-bindings/gpio/
+  - level     : <GPIO_LOW / GPIO_HIGH>
+  For example to set cgpio7 output high, add the following to nvt-gpio.dtsi:
+  cgpio7 {gpio_config = <C_GPIO(7) GPIO_HIGH>;};
+
+  pad_config = <[pad_ds] [level] [pad_pull] [direction]>
+  - pad_ds    : pad driving pin as defined at dt-bindings/gpio/
+  - level     : pad driving level, <PAD_DS_L0 / PAD_DS_L1 / ...>
+  - pad_pull  : pad pull pin as defined at dt-bindings/gpio/
+  - direction : pad pull type, <PAD_NONE / PAD_PULLDOWN / PAD_PULLUP / PAD_KEEPER>
+  For example to set cgpio7 driving to level3 and pullup, add the following to nvt-gpio.dtsi:
+  cgpio7 {pad_config = <PAD_DS_CGPIO(7) PAD_DS_L3 PAD_CGPIO(7) PAD_PULLUP>;};
+*/
+
+&top {
+      /* L_GPIO 18 - Configure as output, initial LOW */
+    lgpio18 {
+        gpio_config = <L_GPIO(18) GPIO_LOW>;
+    };
+
+    /* L_GPIO 19 - Configure as output, initial LOW */
+    lgpio19 {
+        gpio_config = <L_GPIO(19) GPIO_LOW>;
+    };
+
+};

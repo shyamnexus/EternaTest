@@ -1,0 +1,286 @@
+/*
+ * Novatek Ltd. BSP part of dts
+ */
+
+/ {
+	nvt_info:nvt_info {						/* Get from ModelConfig.txt */
+		BIN_NAME = "FW98538A";
+		BIN_NAME_T = "FW98538T";
+		RTOS_APP_MAIN = "demo"; /* Optional, if OS type is Linux, dont care it. */
+		/* EMBMEM_BLK_SIZE, Normally, 2KPageNand=0x20000, 512PageNand=0x4000, SPI=0x10000 */
+		EMBMEM_BLK_SIZE = "0x10000";
+
+		/**
+		 * [EMBMEM]
+		 * EMBMEM_NONE
+		 * EMBMEM_SPI_NOR
+		 * EMBMEM_SPI_NOR_NAND
+		 * EMBMEM_SPI_NAND
+		 * EMBMEM_EMMC
+		 */
+		EMBMEM = "EMBMEM_SPI_NOR";
+
+		/**
+		 * Flash Dual Transfer Rate
+		 * need to confirm your flash hardware spec
+		 * only for spi-nor currently
+		 * [EMBMEM_DTR]
+		 * EMBMEM_DTR_NONE
+		 * EMBMEM_DTR_4_BIT (not supported)
+		 * EMBMEM_DTR_8_BIT (not supported)
+		 */
+		EMBMEM_DTR = "EMBMEM_DTR_NONE";
+
+		/**
+		 * [FW_TYPE]
+		 * FW_TYPE_NORMAL
+		 * FW_TYPE_COMPRESS
+		 * FW_TYPE_PARTIAL
+		 * FW_TYPE_PARTIAL_COMPRESS
+		 * FW_TYPE_LZMA
+		 */
+		FW_TYPE = "FW_TYPE_PARTIAL";
+
+		/**
+		 * [LCD1]
+		 * disp_off
+		 * disp_if8b_lcd1_wm08001_sn75lvds83b
+		 * disp_if8b_lcd1_aucn01
+		 * disp_ifdsi_lcd1_nt35510
+		 * disp_if8b_lcd1_pw35p00
+		 * disp_if8b_lcd1_psd300_ili8961
+		 */
+		LCD1 = "disp_off";
+
+		/**
+		 * [SENSOR]
+		 * sen_off
+		 * sen_os02k10
+		 * sen_os04a10
+		 * sen_os04c10
+		 * sen_os04e10
+		 * sen_sc450ai
+		 * sen_nt99436
+		 */
+		SENSOR1 = "sen_os04c10";
+		SENSOR2 = "sen_off";
+		SENSOR_CFG_SUFFIX = "_538";
+
+		/**
+		 * [RTOS2A]
+		 * RTOS2A_NONE
+		 * RTOS2A_FAST2A
+		 * RTOS2A_PREROLL
+		 */
+		RTOS2A = "RTOS2A_NONE";
+
+		/* disable unused rtos's package */
+		PACKAGE_VIDEO    = "0";
+		PACKAGE_AUDIO    = "0";
+		PACKAGE_FILESYS  = "0";
+		PACKAGE_SDCARD   = "0";
+		PACKAGE_DISPLAY  = "0";
+		PACKAGE_SAMPLES  = "0";
+		PACKAGE_CMDSYS   = "0";
+
+		/**
+		* [BOOT_OS]
+		* BOOT_OS_LINUX
+		* BOOT_OS_RTOS
+		* BOOT_OS_RTOS_BOOT_LINUX
+		*/
+		BOOT_OS = "BOOT_OS_RTOS_BOOT_LINUX";
+
+		/**
+		* === ATF boot message setting ===
+		* [NVT_ATF_BOOT_MSG]
+		* NVT_ATF_BOOT_MSG_ON
+		* NVT_ATF_BOOT_MSG_OFF
+		*/
+		NVT_ATF_BOOT_MSG = "NVT_ATF_BOOT_MSG_OFF";
+
+		/**
+		 * ======= Linux common =========
+		 * application/external
+		 */
+		NVT_CFG_APP_EXTERNAL = "dtc";
+		/* application include list */
+		NVT_CFG_APP = "mem isp_demon memcpy drystone-2.0";
+		/* rootfs etc folder */
+		NVT_ROOTFS_ETC = "RTOS_BOOT_LINUX_EVB";
+		/* strip executable binary and library files: yes/no */
+		NVT_BINARY_FILE_STRIP = "yes";
+		/* Using customized kernel config */
+		NVT_CFG_KERNEL_CFG = "ns02302_ipc_a64_evb_defconfig_rtos_539a_nor_release";
+		/* run script befor making rootfs for 'make post' */
+		NVT_MAKE_POST = "make_post.sh";
+		/* disable make install on sample, hdal/samples, hdal/test_cases */
+		NVT_SAMPLES_INSTALL = "DISABLE";
+		/* Using customized uboot config */
+		NVT_CFG_UBOOT_CFG = "nvt-ns02302_a64_nor_defconfig";
+		/* indicate whether optee to be built and installed */
+		NVT_OPTEE_INSTALL = "DISABLE";
+
+		/**
+		 * ======= Linux for different code setting =========
+		 * [NVT_LINUX_SMP]
+		 * NVT_LINUX_SMP_ON
+		 * NVT_LINUX_SMP_OFF
+		 */
+		NVT_LINUX_SMP = "NVT_LINUX_SMP_ON";
+
+		/**
+		 * ======= FPGA emulation  =========
+		 * [NVT_FPGA_EMULATION]
+		 * NVT_FPGA_EMULATION_ON
+		 * NVT_FPGA_EMULATION_OFF
+		*/
+		NVT_FPGA_EMULATION = "NVT_FPGA_EMULATION_OFF";
+
+		/**
+		 * [NVT_CHIP_ID]
+		 * CHIP_NT98538  (NT98538, NT98539)
+		 * CHIP_NT98539A (NT98539A)
+		 */
+		NVT_CHIP_ID = "CHIP_NT98539A";
+
+		/*
+		 * [NVT_LINUX_COMPRESS]
+		 * NVT_LINUX_COMPRESS_AUTO , by linux config
+		 * NVT_LINUX_COMPRESS_GZ , for fastboot option
+		 * NVT_LINUX_COMPRESS_NONE , for fastboot option
+		 */
+		NVT_LINUX_COMPRESS = "NVT_LINUX_COMPRESS_NONE";
+
+		/**
+		 * [NVT_RAMDISK_COMPRESS]
+		 * NVT_RAMDISK_COMPRESS_AUTO , by system default lzop
+		 * NVT_RAMDISK_COMPRESS_GZ , for fastboot option
+		 * NVT_RAMDISK_COMPRESS_LZ77 , for fastboot option
+		 * NVT_RAMDISK_COMPRESS_NONE , for fastboot option
+		 */
+		NVT_RAMDISK_COMPRESS = "NVT_RAMDISK_COMPRESS_NONE";
+
+		/**
+		 * [NVT_DEFAULT_NETWORK_BOOT_PROTOCOL]
+		 * NVT_DEFAULT_NETWORK_BOOT_PROTOCOL_DHCP_SERVER
+		 * NVT_DEFAULT_NETWORK_BOOT_PROTOCOL_DHCP_CLIENT
+		 * NVT_DEFAULT_NETWORK_BOOT_PROTOCOL_STATIC_IP
+		 */
+		NVT_DEFAULT_NETWORK_BOOT_PROTOCOL = "NVT_DEFAULT_NETWORK_BOOT_PROTOCOL_STATIC_IP";
+
+		/**
+		 * [NVT_ROOTFS_TYPE]
+		 * NVT_ROOTFS_TYPE_NAND_UBI
+		 * NVT_ROOTFS_TYPE_NAND_SQUASH_NEW
+		 * NVT_ROOTFS_TYPE_NAND_JFFS2
+		 * NVT_ROOTFS_TYPE_NOR_SQUASH
+		 * NVT_ROOTFS_TYPE_NOR_JFFS2
+		 * NVT_ROOTFS_TYPE_RAMDISK
+		 * NVT_ROOTFS_TYPE_EXT4
+		 */
+		NVT_ROOTFS_TYPE = "NVT_ROOTFS_TYPE_RAMDISK";
+
+		/**
+		 * [NVT_ETHERNET]
+		 * NVT_ETHERNET_NONE
+		 * NVT_ETHERNET_EQOS
+		 */
+		NVT_ETHERNET = "NVT_ETHERNET_EQOS";
+
+		/**
+		 * [NVT_SDIO_WIFI]: Remember to update root-fs/rootfs/etc/init.d/S05_Net
+		 * NVT_SDIO_WIFI_NONE
+		 * NVT_SDIO_WIFI_RTK
+		 * NVT_SDIO_WIFI_BRCM
+		 * NVT_SDIO_WIFI_NVT
+		 */
+		NVT_SDIO_WIFI = "NVT_SDIO_WIFI_NONE";
+
+		/**
+		 * [NVT_USB_WIFI]
+		 * NVT_USB_WIFI_NONE
+		 */
+		NVT_USB_WIFI = "NVT_USB_WIFI_NONE";
+
+		/**
+		 * [NVT_USB_4G]
+		 * NVT_USB_4G_NONE
+		 */
+		NVT_USB_4G = "NVT_USB_4G_NONE";
+
+		/**
+		 * [WIFI_RTK_MDL]  : sub item for NVT_SDIO_WIFI_RTK
+		 * WIFI_RTK_MDL_NONE
+		 * WIFI_RTK_MDL_8189
+		 */
+		WIFI_RTK_MDL = "WIFI_RTK_MDL_8189";
+
+		/**
+		 * [WIFI_BRCM_MDL]  : sub item for NVT_SDIO_WIFI_BRCM
+		 * WIFI_BRCM_MDL_43438a1_ampk6212axtal26
+		 * WIFI_BRCM_MDL_43455c0_ampk6255c0
+		 */
+		WIFI_BRCM_MDL = "WIFI_BRCM_MDL_43438a1_ampk6212axtal26";
+
+		/**
+		 * [WIFI_NVT_MDL]  : sub item for NVT_SDIO_WIFI_NVT
+		 * WIFI_NVT_MDL_18202
+		 * WIFI_NVT_MDL_18211
+		 */
+		WIFI_NVT_MDL = "WIFI_NVT_MDL_18211";
+
+		/**
+		 * [NVT_CURL_SSL]
+		 * NVT_CURL_SSL_OPENSSL
+		 * NVT_CURL_SSL_WOLFSSL
+		 */
+		NVT_CURL_SSL = "NVT_CURL_SSL_OPENSSL";
+
+		/**
+		 * [NVT_UBOOT_ENV_IN_STORG_SUPPORT]
+		 * NVT_UBOOT_ENV_IN_STORG_SUPPORT_NAND
+		 * NVT_UBOOT_ENV_IN_STORG_SUPPORT_NOR
+		 * NVT_UBOOT_ENV_IN_STORG_SUPPORT_MMC
+		 * NVT_UBOOT_ENV_IN_STORG_SUPPORT_OFF
+		 */
+		NVT_UBOOT_ENV_IN_STORG_SUPPORT = "NVT_UBOOT_ENV_IN_STORG_SUPPORT_OFF";
+
+		/**
+		* [SIGNATUREMETHOD] (only vaild on ENCRYPT_xxx_ON)
+		* SIGNATUREMETHOD_NONE
+		* SIGNATUREMETHOD_AES128
+		* SIGNATUREMETHOD_RSA2048
+		* SIGNATUREMETHOD_ECDSA
+		*/
+		SIGNATUREMETHOD = "SIGNATUREMETHOD_NONE";
+
+		/**
+		* [ENCRYPT_UBOOT]
+		* ENCRYPT_UBOOT_ON
+		* ENCRYPT_UBOOT_OFF
+		*/
+		ENCRYPT_UBOOT = "ENCRYPT_UBOOT_OFF";
+
+		/**
+		* [ENCRYPT_KERNEL]
+		* ENCRYPT_KERNEL_ON
+		* ENCRYPT_KERNEL_OFF
+		*/
+		ENCRYPT_KERNEL = "ENCRYPT_KERNEL_OFF";
+
+		/**
+		* [ENCRYPT_DTS] (FDT)
+		* ENCRYPT_DTS_ON
+		* ENCRYPT_DTS_OFF
+		*/
+		ENCRYPT_DTS = "ENCRYPT_DTS_OFF";
+
+		/**
+		* [ENCRYPT_RTOS]
+		* ENCRYPT_RTOS_ON
+		* ENCRYPT_RTOS_OFF
+		*/
+		ENCRYPT_RTOS = "ENCRYPT_RTOS_OFF";
+	};
+};

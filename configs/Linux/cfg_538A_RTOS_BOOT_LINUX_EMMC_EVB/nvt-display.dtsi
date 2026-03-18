@@ -1,0 +1,15 @@
+/*
+ * Novatek Ltd. BSP part of dts
+ */
+
+/ {
+	display {
+		type = "lcd";
+		lcd_ctrl = <1>;
+		sif_channel = <2>;
+		gpio_cs = <L_GPIO(22)>;
+		gpio_clk = <L_GPIO(23)>;
+		gpio_data = <L_GPIO(24)>;
+	};
+	logo { enable = <0>; lcd_type=<0>; };
+};

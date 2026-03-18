@@ -1,0 +1,3 @@
+add_subdirectory(capture_cli)
+add_subdirectory(rtsp_client)
+add_subdirectory(webipc_client)

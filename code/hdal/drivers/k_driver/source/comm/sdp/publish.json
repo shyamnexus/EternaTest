@@ -1,0 +1,10 @@
+{
+	"jsontype": "module_publish",
+	"publish_src": [
+		"sdp_platform.c",
+		"sdp_export.c",
+		"sdp_drv.c",
+		"sdp_main.c",
+		"sdp.c"
+	]
+}

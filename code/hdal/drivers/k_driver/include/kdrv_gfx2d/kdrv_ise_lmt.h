@@ -1,0 +1,242 @@
+#ifndef __ISE_DRV_LIMIT_H__
+#define __ISE_DRV_LIMIT_H__
+
+//=====================================================
+// input limitation for Y-8bit
+#define ISE_SRCBUF_Y8BIT_WMIN         8//8//ISE_SRCBUF_W_MIN
+#define ISE_SRCBUF_Y8BIT_WMAX         65535//65503//ISE_SRCBUF_W_MAX
+#define ISE_SRCBUF_Y8BIT_WALIGN       1//ISE_SRCBUF_Y8_W_ALIGN
+
+#define ISE_SRCBUF_Y8BIT_HMIN         8//8//ISE_SRCBUF_H_MIN
+#define ISE_SRCBUF_Y8BIT_HMAX         65535//65535//ISE_SRCBUF_H_MAX
+#define ISE_SRCBUF_Y8BIT_HALIGN       1//ISE_SRCBUF_Y8_H_ALIGN
+
+#define ISE_SRCBUF_Y8BIT_LOFF_ALIGN   4//ISE_SRCBUF_LOFS_ALIGN
+#define ISE_SRCBUF_Y8BIT_ADDR_ALIGN   1//ISE_SRCBUF_Y8_BUF_ADDR_ALIGN
+
+//=====================================================
+// input limitation for Y-4bit
+#define ISE_SRCBUF_Y4BIT_WMIN         8//ISE_SRCBUF_W_MIN
+#define ISE_SRCBUF_Y4BIT_WMAX         65535//ISE_SRCBUF_W_MAX
+#define ISE_SRCBUF_Y4BIT_WALIGN       2//ISE_SRCBUF_Y4_W_ALIGN
+
+#define ISE_SRCBUF_Y4BIT_HMIN         8//ISE_SRCBUF_H_MIN
+#define ISE_SRCBUF_Y4BIT_HMAX         65535//ISE_SRCBUF_H_MAX
+#define ISE_SRCBUF_Y4BIT_HALIGN       1//ISE_SRCBUF_Y4_H_ALIGN
+
+#define ISE_SRCBUF_Y4BIT_LOFF_ALIGN   4//ISE_SRCBUF_LOFS_ALIGN
+#define ISE_SRCBUF_Y4BIT_ADDR_ALIGN   1//ISE_SRCBUF_Y4_BUF_ADDR_ALIGN
+
+
+//=====================================================
+// input limitation for Y-1bit
+#define ISE_SRCBUF_Y1BIT_WMIN         8
+#define ISE_SRCBUF_Y1BIT_WMAX         65535
+#define ISE_SRCBUF_Y1BIT_WALIGN       8
+
+#define ISE_SRCBUF_Y1BIT_HMIN         8
+#define ISE_SRCBUF_Y1BIT_HMAX         65535
+#define ISE_SRCBUF_Y1BIT_HALIGN       1
+
+#define ISE_SRCBUF_Y1BIT_LOFF_ALIGN   4
+#define ISE_SRCBUF_Y1BIT_ADDR_ALIGN   4
+
+//=====================================================
+// input limitation for UV-packing
+#define ISE_SRCBUF_UVP_WMIN         8//ISE_SRCBUF_W_MIN
+#define ISE_SRCBUF_UVP_WMAX         65535//ISE_SRCBUF_W_MAX
+#define ISE_SRCBUF_UVP_WALIGN       1//ISE_SRCBUF_UV_W_ALIGN
+
+#define ISE_SRCBUF_UVP_HMIN         8//ISE_SRCBUF_H_MIN
+#define ISE_SRCBUF_UVP_HMAX         65535//ISE_SRCBUF_H_MAX
+#define ISE_SRCBUF_UVP_HALIGN       1//ISE_SRCBUF_UV_H_ALIGN
+
+#define ISE_SRCBUF_UVP_LOFF_ALIGN   4//ISE_SRCBUF_LOFS_ALIGN
+#define ISE_SRCBUF_UVP_ADDR_ALIGN   2//ISE_SRCBUF_UV_BUF_ADDR_ALIGN
+
+//=====================================================
+// input limitation for RGB565
+#define ISE_SRCBUF_RGB565_WMIN         8//ISE_SRCBUF_W_MIN
+#define ISE_SRCBUF_RGB565_WMAX         65503//ISE_SRCBUF_W_MAX
+#define ISE_SRCBUF_RGB565_WALIGN       1//ISE_SRCBUF_RGB565_W_ALIGN
+
+#define ISE_SRCBUF_RGB565_HMIN         8//ISE_SRCBUF_H_MIN
+#define ISE_SRCBUF_RGB565_HMAX         65535//ISE_SRCBUF_H_MAX
+#define ISE_SRCBUF_RGB565_HALIGN       1//ISE_SRCBUF_RGB565_H_ALIGN
+
+#define ISE_SRCBUF_RGB565_LOFF_ALIGN   4//ISE_SRCBUF_LOFS_ALIGN
+#define ISE_SRCBUF_RGB565_ADDR_ALIGN   2//ISE_SRCBUF_RGB565_BUF_ADDR_ALIGN
+
+//=====================================================
+// input limitation for RGB1555
+#define ISE_SRCBUF_RGB1555_WMIN         8//ISE_SRCBUF_W_MIN
+#define ISE_SRCBUF_RGB1555_WMAX         65535//ISE_SRCBUF_W_MAX
+#define ISE_SRCBUF_RGB1555_WALIGN       1//ISE_SRCBUF_ARGB1555_W_ALIGN
+
+#define ISE_SRCBUF_RGB1555_HMIN         8//ISE_SRCBUF_H_MIN
+#define ISE_SRCBUF_RGB1555_HMAX         65535//ISE_SRCBUF_H_MAX
+#define ISE_SRCBUF_RGB1555_HALIGN       1//ISE_SRCBUF_ARGB1555_H_ALIGN
+
+#define ISE_SRCBUF_RGB1555_LOFF_ALIGN   4//ISE_SRCBUF_LOFS_ALIGN
+#define ISE_SRCBUF_RGB1555_ADDR_ALIGN   2//ISE_SRCBUF_ARGB1555_BUF_ADDR_ALIGN
+
+//=====================================================
+// input limitation for RGB4444
+#define ISE_SRCBUF_RGB4444_WMIN         8//ISE_SRCBUF_W_MIN
+#define ISE_SRCBUF_RGB4444_WMAX         65503//ISE_SRCBUF_W_MAX
+#define ISE_SRCBUF_RGB4444_WALIGN       1//ISE_SRCBUF_ARGB4444_W_ALIGN
+
+#define ISE_SRCBUF_RGB4444_HMIN         8//ISE_SRCBUF_H_MIN
+#define ISE_SRCBUF_RGB4444_HMAX         65535//ISE_SRCBUF_H_MAX
+#define ISE_SRCBUF_RGB4444_HALIGN       1//ISE_SRCBUF_ARGB4444_H_ALIGN
+
+#define ISE_SRCBUF_RGB4444_LOFF_ALIGN   4//ISE_SRCBUF_LOFS_ALIGN
+#define ISE_SRCBUF_RGB4444_ADDR_ALIGN   2//ISE_SRCBUF_ARGB4444_BUF_ADDR_ALIGN
+
+//=====================================================
+// input limitation for RGB8888
+#define ISE_SRCBUF_RGB8888_WMIN         8//ISE_SRCBUF_W_MIN
+#define ISE_SRCBUF_RGB8888_WMAX         65535//ISE_SRCBUF_W_MAX
+#define ISE_SRCBUF_RGB8888_WALIGN       1//ISE_SRCBUF_ARGB8888_W_ALIGN
+
+#define ISE_SRCBUF_RGB8888_HMIN         8//ISE_SRCBUF_H_MIN
+#define ISE_SRCBUF_RGB8888_HMAX         65535//ISE_SRCBUF_H_MAX
+#define ISE_SRCBUF_RGB8888_HALIGN       1//ISE_SRCBUF_ARGB8888_H_ALIGN
+
+#define ISE_SRCBUF_RGB8888_LOFF_ALIGN   4//ISE_SRCBUF_LOFS_ALIGN
+#define ISE_SRCBUF_RGB8888_ADDR_ALIGN   4//ISE_SRCBUF_ARGB8888_BUF_ADDR_ALIGN
+
+//=====================================================
+// input limitation for YUV-packing
+#define ISE_SRCBUF_YUVP_WMIN         8
+#define ISE_SRCBUF_YUVP_WMAX         65535
+#define ISE_SRCBUF_YUVP_WALIGN       1
+
+#define ISE_SRCBUF_YUVP_HMIN         8
+#define ISE_SRCBUF_YUVP_HMAX         65535
+#define ISE_SRCBUF_YUVP_HALIGN       1
+
+#define ISE_SRCBUF_YUVP_LOFF_ALIGN   4
+#define ISE_SRCBUF_YUVP_ADDR_ALIGN   4
+
+//=====================================================
+// output limitation for Y-8bit
+#define ISE_DSTBUF_Y8BIT_WMIN         8//ISE_DSTBUF_W_MIN
+#define ISE_DSTBUF_Y8BIT_WMAX         65535//ISE_DSTBUF_W_MAX
+#define ISE_DSTBUF_Y8BIT_WALIGN       1//ISE_DSTBUF_Y8_W_ALIGN
+
+#define ISE_DSTBUF_Y8BIT_HMIN         8//ISE_DSTBUF_H_MIN
+#define ISE_DSTBUF_Y8BIT_HMAX         65535//ISE_DSTBUF_H_MAX
+#define ISE_DSTBUF_Y8BIT_HALIGN       1//ISE_DSTBUF_Y8_H_ALIGN
+
+#define ISE_DSTBUF_Y8BIT_LOFF_ALIGN   4//ISE_DSTBUF_LOFS_ALIGN
+#define ISE_DSTBUF_Y8BIT_ADDR_ALIGN   1//ISE_DSTBUF_Y8_BUF_ADDR_ALIGN
+
+//=====================================================
+// output limitation for Y-4bit
+#define ISE_DSTBUF_Y4BIT_WMIN         8//ISE_DSTBUF_W_MIN
+#define ISE_DSTBUF_Y4BIT_WMAX         65535//ISE_DSTBUF_W_MAX
+#define ISE_DSTBUF_Y4BIT_WALIGN       2//ISE_DSTBUF_Y4_W_ALIGN
+
+#define ISE_DSTBUF_Y4BIT_HMIN         8//ISE_DSTBUF_H_MIN
+#define ISE_DSTBUF_Y4BIT_HMAX         65535//ISE_DSTBUF_H_MAX
+#define ISE_DSTBUF_Y4BIT_HALIGN       1//ISE_DSTBUF_Y4_H_ALIGN
+
+#define ISE_DSTBUF_Y4BIT_LOFF_ALIGN   4//ISE_DSTBUF_LOFS_ALIGN
+#define ISE_DSTBUF_Y4BIT_ADDR_ALIGN   1//ISE_DSTBUF_Y4_BUF_ADDR_ALIGN
+
+//=====================================================
+// output limitation for Y-1bit
+#define ISE_DSTBUF_Y1BIT_WMIN         8
+#define ISE_DSTBUF_Y1BIT_WMAX         65535
+#define ISE_DSTBUF_Y1BIT_WALIGN       8
+
+#define ISE_DSTBUF_Y1BIT_HMIN         8
+#define ISE_DSTBUF_Y1BIT_HMAX         65535
+#define ISE_DSTBUF_Y1BIT_HALIGN       1
+
+#define ISE_DSTBUF_Y1BIT_LOFF_ALIGN   4
+#define ISE_DSTBUF_Y1BIT_ADDR_ALIGN   4
+
+//=====================================================
+// output limitation for UV-packing
+#define ISE_DSTBUF_UVP_WMIN         8//ISE_DSTBUF_W_MIN
+#define ISE_DSTBUF_UVP_WMAX         65535//ISE_DSTBUF_W_MAX
+#define ISE_DSTBUF_UVP_WALIGN       1//ISE_DSTBUF_UV_W_ALIGN
+
+#define ISE_DSTBUF_UVP_HMIN         8//ISE_DSTBUF_H_MIN
+#define ISE_DSTBUF_UVP_HMAX         65535//ISE_DSTBUF_H_MAX
+#define ISE_DSTBUF_UVP_HALIGN       1//ISE_DSTBUF_UV_H_ALIGN
+
+#define ISE_DSTBUF_UVP_LOFF_ALIGN   4//ISE_DSTBUF_LOFS_ALIGN
+#define ISE_DSTBUF_UVP_ADDR_ALIGN   2//ISE_DSTBUF_UV_BUF_ADDR_ALIGN
+
+//=====================================================
+// output limitation for RGB565
+#define ISE_DSTBUF_RGB565_WMIN         8//ISE_DSTBUF_W_MIN
+#define ISE_DSTBUF_RGB565_WMAX         65535//ISE_DSTBUF_W_MAX
+#define ISE_DSTBUF_RGB565_WALIGN       1//ISE_DSTBUF_RGB565_W_ALIGN
+
+#define ISE_DSTBUF_RGB565_HMIN         8//ISE_DSTBUF_H_MIN
+#define ISE_DSTBUF_RGB565_HMAX         65535//ISE_DSTBUF_H_MAX
+#define ISE_DSTBUF_RGB565_HALIGN       1//ISE_DSTBUF_RGB565_H_ALIGN
+
+#define ISE_DSTBUF_RGB565_LOFF_ALIGN   4//ISE_DSTBUF_LOFS_ALIGN
+#define ISE_DSTBUF_RGB565_ADDR_ALIGN   2//ISE_DSTBUF_RGB565_BUF_ADDR_ALIGN
+
+//=====================================================
+// output limitation for RGB1555
+#define ISE_DSTBUF_RGB1555_WMIN         8//ISE_DSTBUF_W_MIN
+#define ISE_DSTBUF_RGB1555_WMAX         65535//ISE_DSTBUF_W_MAX
+#define ISE_DSTBUF_RGB1555_WALIGN       1//ISE_DSTBUF_ARGB1555_W_ALIGN
+
+#define ISE_DSTBUF_RGB1555_HMIN         8//ISE_DSTBUF_H_MIN
+#define ISE_DSTBUF_RGB1555_HMAX         65535//ISE_DSTBUF_H_MAX
+#define ISE_DSTBUF_RGB1555_HALIGN       1//ISE_DSTBUF_ARGB1555_H_ALIGN
+
+#define ISE_DSTBUF_RGB1555_LOFF_ALIGN   4//ISE_DSTBUF_LOFS_ALIGN
+#define ISE_DSTBUF_RGB1555_ADDR_ALIGN   2//ISE_DSTBUF_ARGB1555_BUF_ADDR_ALIGN
+
+//=====================================================
+// output limitation for RGB4444
+#define ISE_DSTBUF_RGB4444_WMIN         8//ISE_DSTBUF_W_MIN
+#define ISE_DSTBUF_RGB4444_WMAX         65535//ISE_DSTBUF_W_MAX
+#define ISE_DSTBUF_RGB4444_WALIGN       1//ISE_DSTBUF_ARGB4444_W_ALIGN
+
+#define ISE_DSTBUF_RGB4444_HMIN         8//ISE_DSTBUF_H_MIN
+#define ISE_DSTBUF_RGB4444_HMAX         65535//ISE_DSTBUF_H_MAX
+#define ISE_DSTBUF_RGB4444_HALIGN       1//ISE_DSTBUF_ARGB4444_H_ALIGN
+
+#define ISE_DSTBUF_RGB4444_LOFF_ALIGN   4//ISE_DSTBUF_LOFS_ALIGN
+#define ISE_DSTBUF_RGB4444_ADDR_ALIGN   2//ISE_DSTBUF_ARGB4444_BUF_ADDR_ALIGN
+
+//=====================================================
+// output limitation for RGB8888
+#define ISE_DSTBUF_RGB8888_WMIN         8//ISE_DSTBUF_W_MIN
+#define ISE_DSTBUF_RGB8888_WMAX         65535//ISE_DSTBUF_W_MAX
+#define ISE_DSTBUF_RGB8888_WALIGN       1//ISE_DSTBUF_ARGB8888_W_ALIGN
+
+#define ISE_DSTBUF_RGB8888_HMIN         8//ISE_DSTBUF_H_MIN
+#define ISE_DSTBUF_RGB8888_HMAX         65535//ISE_DSTBUF_H_MAX
+#define ISE_DSTBUF_RGB8888_HALIGN       1//ISE_DSTBUF_ARGB8888_H_ALIGN
+
+#define ISE_DSTBUF_RGB8888_LOFF_ALIGN   4//ISE_DSTBUF_LOFS_ALIGN
+#define ISE_DSTBUF_RGB8888_ADDR_ALIGN   4//ISE_DSTBUF_ARGB8888_BUF_ADDR_ALIGN
+
+//=====================================================
+// output limitation for YUV-packing
+#define ISE_DSTBUF_YUVP_WMIN         8
+#define ISE_DSTBUF_YUVP_WMAX         65535
+#define ISE_DSTBUF_YUVP_WALIGN       1
+
+#define ISE_DSTBUF_YUVP_HMIN         8
+#define ISE_DSTBUF_YUVP_HMAX         65535
+#define ISE_DSTBUF_YUVP_HALIGN       1
+
+#define ISE_DSTBUF_YUVP_LOFF_ALIGN   4
+#define ISE_DSTBUF_YUVP_ADDR_ALIGN   4
+//=====================================================
+
+#define ISE_DRV_MAX_SCALE_RATIO		(16)	//(in_size - 1) / (out_size - 1) < ISE_DRV_MAX_SCALE_RATIO
+#define ISE_DRV_ALIGN_DMA_LLC		(4)
+#endif /* __ISE_DRV_LIMIT_H__ */

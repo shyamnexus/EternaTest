@@ -1,0 +1,9 @@
+{
+	"jsontype": "module_publish",
+	"publish_src": [
+		"jpeg_main.c",
+		"jpeg_proc.c",
+		"jpeg_enc_sim.c",
+		"jpeg_dec_sim.c"
+	]
+}

@@ -1,0 +1,265 @@
+openapi: 3.0.3
+info:
+  title: IP Camera API - Audio Settings
+  version: 1.0.0
+paths:
+  /audio:
+    get:
+      summary: Get Audio Configuration
+      description: |
+        Returns audio input/output configuration including codec, 
+        sample rate, and audio processing settings (AEC, ANR, AGC).
+      operationId: getAudioSettings
+      tags: [Audio]
+      responses:
+        '200':
+          description: Audio settings retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AudioConfig'
+        '500':
+          $ref: '#/components/responses/InternalError'
+    put:
+      summary: Update Audio Configuration
+      description: Update audio input/output settings
+      operationId: updateAudioSettings
+      tags: [Audio]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AudioConfig'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /audio/capabilities:
+    get:
+      summary: Get Audio Capabilities
+      description: |
+        Returns supported audio codecs, sample rates, channels,
+        and available audio processing features.
+      operationId: getAudioCapabilities
+      tags: [Audio]
+      responses:
+        '200':
+          description: Audio capabilities retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AudioCapabilities'
+
+  /audio/test:
+    post:
+      summary: Test Audio
+      description: |
+        Perform an audio test to verify microphone and speaker functionality.
+        This can be used to test the audio pipeline before deployment.
+      operationId: testAudio
+      tags: [Audio]
+      responses:
+        '200':
+          description: Audio test completed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [ok, failed]
+                  message:
+                    type: string
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /audio/reset:
+    post:
+      summary: Reset Audio to Defaults
+      description: Reset all audio settings to factory defaults
+      operationId: resetAudioSettings
+      tags: [Audio]
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+components:
+  schemas:
+    AudioConfig:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+          default: true
+          description: Enable audio capture and streaming
+        codec:
+          type: string
+          enum: [pcm, aac, g711_ulaw, g711_alaw, adpcm]
+          default: aac
+          description: Audio codec
+        sample_rate:
+          type: integer
+          enum: [8000, 16000, 32000, 44100, 48000]
+          default: 16000
+          description: Audio sample rate in Hz
+        bitrate:
+          type: integer
+          minimum: 8000
+          maximum: 320000
+          default: 64000
+          description: Audio bitrate in bps (for compressed codecs)
+        channels:
+          type: integer
+          enum: [1, 2]
+          default: 1
+          description: Number of audio channels (1=mono, 2=stereo)
+        bit_width:
+          type: integer
+          enum: [8, 16, 32]
+          default: 16
+          description: Audio bit width/depth
+        aec_enabled:
+          type: boolean
+          default: false
+          description: Enable Acoustic Echo Cancellation
+        anr_enabled:
+          type: boolean
+          default: false
+          description: Enable Automatic Noise Reduction
+        anr_level:
+          type: integer
+          minimum: 1
+          maximum: 10
+          default: 3
+          description: Noise reduction strength level
+        agc_enabled:
+          type: boolean
+          default: false
+          description: Enable Automatic Gain Control
+        input_gain:
+          type: integer
+          minimum: 0
+          maximum: 100
+          default: 80
+          description: Microphone input gain (0-100)
+        output_gain:
+          type: integer
+          minimum: 0
+          maximum: 100
+          default: 80
+          description: Speaker output gain (0-100)
+      example:
+        enabled: true
+        codec: aac
+        sample_rate: 16000
+        bitrate: 64000
+        channels: 1
+        bit_width: 16
+        aec_enabled: false
+        anr_enabled: false
+        anr_level: 3
+        agc_enabled: false
+        input_gain: 80
+        output_gain: 80
+
+    AudioCapabilities:
+      type: object
+      properties:
+        codecs:
+          type: array
+          items:
+            type: string
+          description: Supported audio codecs
+          example: [pcm, aac, g711_ulaw, g711_alaw]
+        sample_rates:
+          type: array
+          items:
+            type: integer
+          description: Supported sample rates in Hz
+          example: [8000, 16000, 32000, 44100, 48000]
+        bit_widths:
+          type: array
+          items:
+            type: integer
+          description: Supported bit widths
+          example: [8, 16, 32]
+        max_channels:
+          type: integer
+          description: Maximum number of audio channels
+          example: 2
+        gain_range:
+          type: object
+          properties:
+            min:
+              type: integer
+              example: 0
+            max:
+              type: integer
+              example: 100
+          description: Supported gain range
+        anr_level_range:
+          type: object
+          properties:
+            min:
+              type: integer
+              example: 1
+            max:
+              type: integer
+              example: 10
+          description: Supported ANR level range
+        features:
+          type: object
+          properties:
+            aec:
+              type: boolean
+              description: AEC (Acoustic Echo Cancellation) supported
+            anr:
+              type: boolean
+              description: ANR (Automatic Noise Reduction) supported
+            agc:
+              type: boolean
+              description: AGC (Automatic Gain Control) supported
+          example:
+            aec: true
+            anr: true
+            agc: true
+
+  responses:
+    Success:
+      description: Operation completed successfully
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: ok
+              message:
+                type: string
+    BadRequest:
+      description: Invalid request parameters
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+    InternalError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string

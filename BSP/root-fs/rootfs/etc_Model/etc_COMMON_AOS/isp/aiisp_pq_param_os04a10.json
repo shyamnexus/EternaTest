@@ -1,0 +1,21 @@
+{
+    "version": 2,
+    "mode": 0,
+    "reserved_common": 0,
+    "_2dnr_still_str_manual": 128,
+    "reserved_1_manual": 128,
+    "reserved_2_manual": 128,
+    "reserved_3_manual": 128,
+    "coef_a_manual": 0,
+    "coef_b_manual": 0,
+    "_2dnr_still_str_auto": [0,0,0,0,0,0,0,20,70,100,100,170,128,128,128,128],
+    "reserved_1_auto": [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+    "reserved_2_auto": [190,190,190,190,190,190,190,190,190,190,190,200,128,128,128,128],
+    "reserved_3_auto": [0,0,0,0,0,0,0,0,0,0,0,190,128,128,128,128],
+    "coef_a_auto": [0,0,0,0,76,139,238,402,679,1253,2510,5749,11191,0,0,0],
+    "coef_b_auto": [0,0,0,0,1,1,1,3,13,45,131,397,1233,0,0,0],
+    "coef_a_min": 0,
+    "coef_a_max": 65535,
+    "coef_b_min": 0,
+    "coef_b_max": 65535
+}

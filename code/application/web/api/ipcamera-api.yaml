@@ -1,0 +1,812 @@
+openapi: 3.0.3
+info:
+  title: IP Camera API
+  description: |
+    Complete REST API for the IP Camera device.
+    
+    This API provides:
+    - **Image**: ISP/Image settings (brightness, contrast, white balance, orientation, anti-flicker, exposure, day/night, BLC, enhancement)
+    - **Video**: Video encoder settings (resolution, codec, bitrate, GOP, profiles, rate control)
+    - **Audio**: Audio settings (codec, sample rate, AEC, ANR, AGC, gain)
+    - **OSD**: On-Screen Display configuration (timestamp, text, logo, privacy masks)
+    - **SMTP**: Email notification configuration and testing
+    - **SNMP**: SNMP daemon configuration and control (SNMPv1/v2c/v3)
+    - **UPnP**: UPnP IGD discovery and port mapping management
+    - **SSL**: SSL/TLS certificate management (upload, generate, info)
+    - **Analytics**: AI-powered video analytics (motion detection, tampering, smart detection, line crossing, zone intrusion, face detection/recognition, license plate recognition, heat map, pose estimation, audio classification)
+    - **Events**: Event management, automation rules, statistics, and test triggers
+    - **Notifications**: Notification server configuration (MQTT, Email, FTP) with test delivery
+    - **Recording**: SD card recording management (start/stop, channels, storage)
+    - **Playback**: Recorded video search, playback, and download
+    - **RTSP**: RTSP server configuration and client management
+    - **IR Control**: IR LED and IR-cut filter control for day/night operation
+    - **Authentication**: Login, logout, password management, session management
+    - **Security Questions**: Password recovery using security questions
+    - **Forgot Password**: Self-service password reset using security questions
+    - **Users**: User account management (create, read, update, delete)
+    - **System**: Device info, time/NTP/DST, reboot, shutdown, factory reset, diagnostics, maintenance, watchdog, backup/restore, alarms
+    - **Logging**: Multi-source log retrieval, security/audit/access logs, remote syslog, system logger control, diagnostic bundle
+    - **Firmware**: Firmware version, upload, validate, upgrade, cancel
+    
+    All configuration changes are persisted to disk and some trigger automatic service reloads.
+    
+    ## Changelog
+    
+    ### Version 1.6.0 (2026-03-05)
+    - **NEW**: Face Detection & Recognition API — detection model config, recognition gallery, face attribute analysis
+    - **NEW**: License Plate Recognition (LPR) API — ANPR/ALPR with region support and event actions
+    - **NEW**: Heat Map API — spatial activity density grid with configurable decay
+    - **NEW**: Pose Estimation API — human body keypoint detection with YOLO model
+    - **NEW**: Audio Classification API — YAMNet-based environmental sound event detection
+    - **UPDATED**: Analytics overview table reflects all available AI modules
+    
+    ### Version 1.5.0 (2026-02-25)
+    - **SECURITY**: AES-256-GCM replaces AES-256-CBC for password transit encryption
+    - **SECURITY**: PBKDF2-HMAC-SHA256 with 210K iterations for password hashing
+    - **SECURITY**: Per-device random salt for SQLCipher key derivation
+    - **SECURITY**: WSSE storage upgraded from XOR to AES-256-GCM
+    - **SECURITY**: Hardcoded default password fallback removed
+    - **SECURITY**: Shell command injection protection added
+    - **SECURITY**: Constant-time comparison for password verification
+    - **SECURITY**: std::rand() replaced with RAND_bytes() for all RNG
+    - **UPDATED**: Auth API v1.4.0 — EncryptedPassword schema adds `auth_tag` field for GCM
+    - **UPDATED**: Auth API — PublicKeyResponse `aes_algorithm` now returns `AES-256-GCM`
+    - **UPDATED**: Users API — EncryptedPassword schema adds `auth_tag` field for GCM
+    - **BACKWARD COMPAT**: Clients omitting `auth_tag` still work via AES-256-CBC fallback
+    
+    ### Version 1.4.0 (2026-02-22)
+    - **NEW**: System API — device info, time/NTP/DST, reboot, shutdown, factory reset, diagnostics, maintenance, watchdog, backup/restore, alarm thresholds
+    - **NEW**: Logging API — multi-source log retrieval (kernel, thermal, sysdiag, boot, nginx, security, audit, access), log config, remote syslog forwarding, system logger control with per-source intervals and per-destination enable
+    - **NEW**: Firmware API — version info, binary upload, validation, upgrade with progress tracking, cancel
+    - **NEW**: Diagnostic bundle download (`.tar.gz` with network, hardware, config, logs)
+    - **NEW**: Security log with login failure tracking (IP, user, reason)
+    - **NEW**: Audit log with config change tracking (IP, user, target, new values)
+    - **NEW**: Access log with per-request metrics (IP, method, URI, status, timing)
+    - **NEW**: System logger background service — collects kernel dmesg diffs, thermal readings, system diagnostics snapshots to flash and optional SD card
+    
+    ### Version 1.3.0 (2026-02-17)
+    - **BREAKING**: User endpoints now use numeric `{id}` instead of `{username}` in paths
+    - **BREAKING**: `PUT /users/{id}` no longer accepts `password` field (use `/auth/reset-password`)
+    - **BREAKING**: `POST /users/create` response returns `user_id` (int64) instead of `username`
+    - **NEW**: Encrypted password support in `POST /users/create` (RSA-OAEP + AES-256-CBC)
+    - **NEW**: Self-deletion prevention on `DELETE /users/{id}`
+    - **NEW**: New users created with `password_must_change=true` for mandatory initial setup
+    - **NEW**: Unified REST router for `/users` dispatching GET/POST/PUT/DELETE by method and URL
+    - **FIX**: SQL column mapping in `ListUsers` and `GetUser` (enabled/last_login/last_login_ip were shifted)
+    - **FIX**: Individual user GET/PUT/DELETE routes were not reachable (missing registrations)
+    - **FIX**: `POST /auth/rotate-keys` was using wrong database path for authentication
+    - **UPDATED**: Auth API v1.3.1 with HandleRotateKeys database path fix
+    - **UPDATED**: Events API v1.1.0 with security audit notes
+    
+    ### Version 1.2.0 (2026-02-17)
+    - **NEW**: Analytics v2 modular handlers (motion, tampering, smart, linecross, intrusion)
+    - **NEW**: Video tampering detection API (defocus, masking, scene change, exposure)
+    - **NEW**: Smart detection API (pedestrian, vehicle, animal classification)
+    - **NEW**: Line crossing detection API with counting
+    - **NEW**: Zone intrusion detection API
+    - **NEW**: Notification servers configuration (MQTT, Email, FTP) with test endpoint
+    - **NEW**: Events management API (query, rules CRUD, statistics, test triggers)
+    - **NEW**: Analytics capabilities and toggles endpoints
+    - **UPDATED**: Analytics overview with unified config and engine control
+    
+    ### Version 1.1.0 (2026-01-23)
+    - **NEW**: Security Questions system for password recovery
+    - **NEW**: Forgot Password self-service flow
+    - **NEW**: Initial Setup endpoint for first-time login
+    - **UPDATED**: Login response includes setup status flags
+    
+    ### Version 1.0.0 (2025-11-15)
+    - Initial release
+    
+    **Security**: All endpoints require HTTPS and authentication via Bearer token obtained from `/auth/login`.
+    Sensitive credentials are encrypted using AES-256-GCM and stored in SQLCipher database.
+  version: 1.6.0
+  contact:
+    name: HON-BA
+
+servers:
+  - url: https://{camera_ip}/api/v1
+    description: Camera HTTPS endpoint
+    variables:
+      camera_ip:
+        default: 192.168.1.100
+        description: IP address of the camera
+
+security:
+  - bearerAuth: []
+
+paths:
+  /smtp:
+    $ref: './smtp.yaml#/paths/~1smtp'
+  
+  /smtp/test:
+    $ref: './smtp.yaml#/paths/~1smtp~1test'
+
+  /snmp:
+    $ref: './snmp.yaml#/paths/~1snmp'
+  
+  /snmp/control:
+    $ref: './snmp.yaml#/paths/~1snmp~1control'
+
+  /upnp:
+    $ref: './upnp.yaml#/paths/~1upnp'
+  
+  /upnp/discover:
+    $ref: './upnp.yaml#/paths/~1upnp~1discover'
+  
+  /upnp/portmappings:
+    $ref: './upnp.yaml#/paths/~1upnp~1portmappings'
+
+  /ssl:
+    $ref: './ssl.yaml#/paths/~1ssl'
+  
+  /ssl/upload:
+    $ref: './ssl.yaml#/paths/~1ssl~1upload'
+  
+  /ssl/generate:
+    $ref: './ssl.yaml#/paths/~1ssl~1generate'
+
+  /auth/login:
+    $ref: './auth.yaml#/paths/~1auth~1login'
+  
+  /auth/logout:
+    $ref: './auth.yaml#/paths/~1auth~1logout'
+  
+  /auth/change-password:
+    $ref: './auth.yaml#/paths/~1auth~1change-password'
+  
+  /auth/initial-setup:
+    $ref: './auth.yaml#/paths/~1auth~1initial-setup'
+  
+  /auth/reset-password:
+    $ref: './auth.yaml#/paths/~1auth~1reset-password'
+  
+  /auth/verify:
+    $ref: './auth.yaml#/paths/~1auth~1verify'
+  
+  /auth/sessions:
+    $ref: './auth.yaml#/paths/~1auth~1sessions'
+  
+  # Security Questions
+  /auth/security-questions/available:
+    $ref: './auth.yaml#/paths/~1auth~1security-questions~1available'
+  
+  /auth/security-questions/setup:
+    $ref: './auth.yaml#/paths/~1auth~1security-questions~1setup'
+  
+  /auth/security-questions/status:
+    $ref: './auth.yaml#/paths/~1auth~1security-questions~1status'
+  
+  # Forgot Password
+  /auth/forgot-password/questions:
+    $ref: './auth.yaml#/paths/~1auth~1forgot-password~1questions'
+  
+  /auth/forgot-password/verify:
+    $ref: './auth.yaml#/paths/~1auth~1forgot-password~1verify'
+  
+  /auth/forgot-password/reset:
+    $ref: './auth.yaml#/paths/~1auth~1forgot-password~1reset'
+
+  /users:
+    $ref: './users.yaml#/paths/~1users'
+  
+  /users/create:
+    $ref: './users.yaml#/paths/~1users~1create'
+  
+  /users/current:
+    $ref: './users.yaml#/paths/~1users~1current'
+  
+  /users/{id}:
+    $ref: './users.yaml#/paths/~1users~1{id}'
+
+  # Image/ISP Settings
+  /image:
+    $ref: './image.yaml#/paths/~1image'
+  
+  /image/adjustment:
+    $ref: './image.yaml#/paths/~1image~1adjustment'
+  
+  /image/whitebalance:
+    $ref: './image.yaml#/paths/~1image~1whitebalance'
+  
+  /image/orientation:
+    $ref: './image.yaml#/paths/~1image~1orientation'
+  
+  /image/antiflicker:
+    $ref: './image.yaml#/paths/~1image~1antiflicker'
+  
+  /image/exposure:
+    $ref: './image.yaml#/paths/~1image~1exposure'
+  
+  /image/daynight:
+    $ref: './image.yaml#/paths/~1image~1daynight'
+  
+  /image/blc:
+    $ref: './image.yaml#/paths/~1image~1blc'
+  
+  /image/enhancement:
+    $ref: './image.yaml#/paths/~1image~1enhancement'
+  
+  /image/reset:
+    $ref: './image.yaml#/paths/~1image~1reset'
+  
+  /snapshot:
+    $ref: './image.yaml#/paths/~1snapshot'
+  
+  /snapshot/config:
+    $ref: './image.yaml#/paths/~1snapshot~1config'
+
+  # Video Settings
+  /video:
+    $ref: './video.yaml#/paths/~1video'
+  
+  /video/stream:
+    $ref: './video.yaml#/paths/~1video~1stream'
+  
+  /video/capabilities:
+    $ref: './video.yaml#/paths/~1video~1capabilities'
+
+  # Audio Settings
+  /audio:
+    $ref: './audio.yaml#/paths/~1audio'
+  
+  /audio/capabilities:
+    $ref: './audio.yaml#/paths/~1audio~1capabilities'
+  
+  /audio/test:
+    $ref: './audio.yaml#/paths/~1audio~1test'
+  
+  /audio/reset:
+    $ref: './audio.yaml#/paths/~1audio~1reset'
+
+  # SD Card Management
+  /sdcard:
+    $ref: './storage.yaml#/paths/~1sdcard'
+  
+  /sdcard/mount:
+    $ref: './storage.yaml#/paths/~1sdcard~1mount'
+  
+  /sdcard/unmount:
+    $ref: './storage.yaml#/paths/~1sdcard~1unmount'
+  
+  /sdcard/format:
+    $ref: './storage.yaml#/paths/~1sdcard~1format'
+
+  # NAS Storage
+  /storage/nas:
+    $ref: './storage.yaml#/paths/~1storage~1nas'
+  
+  /storage/nas/test:
+    $ref: './storage.yaml#/paths/~1storage~1nas~1test'
+  
+  /storage/nas/mount:
+    $ref: './storage.yaml#/paths/~1storage~1nas~1mount'
+  
+  /storage/nas/unmount:
+    $ref: './storage.yaml#/paths/~1storage~1nas~1unmount'
+
+  # FTP Upload
+  /storage/ftp:
+    $ref: './storage.yaml#/paths/~1storage~1ftp'
+  
+  /storage/ftp/test:
+    $ref: './storage.yaml#/paths/~1storage~1ftp~1test'
+  
+  /storage/ftp/upload:
+    $ref: './storage.yaml#/paths/~1storage~1ftp~1upload'
+  
+  /storage/ftp/queue:
+    $ref: './storage.yaml#/paths/~1storage~1ftp~1queue'
+  
+  /storage/ftp/history:
+    $ref: './storage.yaml#/paths/~1storage~1ftp~1history'
+
+  # Schedule Recording
+  /recording/schedules:
+    $ref: './storage.yaml#/paths/~1recording~1schedules'
+  
+  /recording/schedules/{id}:
+    $ref: './storage.yaml#/paths/~1recording~1schedules~1{id}'
+  
+  /recording/schedule/config:
+    $ref: './storage.yaml#/paths/~1recording~1schedule~1config'
+
+  # Playback
+  /playback/search:
+    $ref: './playback.yaml#/paths/~1playback~1search'
+  
+  /playback/calendar:
+    $ref: './playback.yaml#/paths/~1playback~1calendar'
+  
+  /playback/timeline:
+    $ref: './playback.yaml#/paths/~1playback~1timeline'
+  
+  /playback/dates:
+    $ref: './playback.yaml#/paths/~1playback~1dates'
+  
+  /playback/download/{id}:
+    $ref: './playback.yaml#/paths/~1playback~1download~1{id}'
+  
+  /playback/thumbnail/{id}:
+    $ref: './playback.yaml#/paths/~1playback~1thumbnail~1{id}'
+  
+  /playback/stream/{id}:
+    $ref: './playback.yaml#/paths/~1playback~1stream~1{id}'
+
+  # Analytics (AI Video Analytics)
+  /analytics:
+    $ref: './analytics.yaml#/paths/~1analytics'
+
+  /analytics/status:
+    $ref: './analytics.yaml#/paths/~1analytics~1status'
+
+  /analytics/capabilities:
+    $ref: './analytics.yaml#/paths/~1analytics~1capabilities'
+
+  /analytics/toggles:
+    $ref: './analytics.yaml#/paths/~1analytics~1toggles'
+
+  # Motion Detection
+  /analytics/motion:
+    $ref: './analytics.yaml#/paths/~1analytics~1motion'
+
+  /analytics/motion/zones:
+    $ref: './analytics.yaml#/paths/~1analytics~1motion~1zones'
+
+  /analytics/motion/zones/{zoneId}:
+    $ref: './analytics.yaml#/paths/~1analytics~1motion~1zones~1{zoneId}'
+
+  /analytics/motion/schedule:
+    $ref: './analytics.yaml#/paths/~1analytics~1motion~1schedule'
+
+  /analytics/motion/actions:
+    $ref: './analytics.yaml#/paths/~1analytics~1motion~1actions'
+
+  # Video Tampering
+  /analytics/tampering:
+    $ref: './analytics.yaml#/paths/~1analytics~1tampering'
+
+  /analytics/tampering/status:
+    $ref: './analytics.yaml#/paths/~1analytics~1tampering~1status'
+
+  /analytics/tampering/schedule:
+    $ref: './analytics.yaml#/paths/~1analytics~1tampering~1schedule'
+
+  /analytics/tampering/actions:
+    $ref: './analytics.yaml#/paths/~1analytics~1tampering~1actions'
+
+  # Smart Detection
+  /analytics/smart:
+    $ref: './analytics.yaml#/paths/~1analytics~1smart'
+
+  /analytics/smart/zones:
+    $ref: './analytics.yaml#/paths/~1analytics~1smart~1zones'
+
+  /analytics/smart/schedule:
+    $ref: './analytics.yaml#/paths/~1analytics~1smart~1schedule'
+
+  /analytics/smart/actions:
+    $ref: './analytics.yaml#/paths/~1analytics~1smart~1actions'
+
+  # Line Crossing
+  /analytics/linecross:
+    $ref: './analytics.yaml#/paths/~1analytics~1linecross'
+
+  /analytics/linecross/lines:
+    $ref: './analytics.yaml#/paths/~1analytics~1linecross~1lines'
+
+  /analytics/linecross/lines/{lineId}:
+    $ref: './analytics.yaml#/paths/~1analytics~1linecross~1lines~1{lineId}'
+
+  /analytics/linecross/counts:
+    $ref: './analytics.yaml#/paths/~1analytics~1linecross~1counts'
+
+  /analytics/linecross/schedule:
+    $ref: './analytics.yaml#/paths/~1analytics~1linecross~1schedule'
+
+  /analytics/linecross/actions:
+    $ref: './analytics.yaml#/paths/~1analytics~1linecross~1actions'
+
+  # Zone Intrusion
+  /analytics/intrusion:
+    $ref: './analytics.yaml#/paths/~1analytics~1intrusion'
+
+  /analytics/intrusion/zones:
+    $ref: './analytics.yaml#/paths/~1analytics~1intrusion~1zones'
+
+  /analytics/intrusion/zones/{zoneId}:
+    $ref: './analytics.yaml#/paths/~1analytics~1intrusion~1zones~1{zoneId}'
+
+  /analytics/intrusion/schedule:
+    $ref: './analytics.yaml#/paths/~1analytics~1intrusion~1schedule'
+
+  /analytics/intrusion/actions:
+    $ref: './analytics.yaml#/paths/~1analytics~1intrusion~1actions'
+
+  # Face Detection & Recognition
+  /analytics/face:
+    $ref: './analytics.yaml#/paths/~1analytics~1face'
+
+  /analytics/face/gallery:
+    $ref: './analytics.yaml#/paths/~1analytics~1face~1gallery'
+
+  # License Plate Recognition
+  /analytics/lpr:
+    $ref: './analytics.yaml#/paths/~1analytics~1lpr'
+
+  # Heat Map
+  /analytics/heatmap:
+    $ref: './analytics.yaml#/paths/~1analytics~1heatmap'
+
+  /analytics/heatmap/grid:
+    $ref: './analytics.yaml#/paths/~1analytics~1heatmap~1grid'
+
+  /analytics/heatmap/reset:
+    $ref: './analytics.yaml#/paths/~1analytics~1heatmap~1reset'
+
+  # Pose Estimation
+  /analytics/pose:
+    $ref: './analytics.yaml#/paths/~1analytics~1pose'
+
+  # Audio Classification
+  /analytics/audio_classification:
+    $ref: './analytics.yaml#/paths/~1analytics~1audio'
+
+  # Notification Servers
+  /analytics/notifications:
+    $ref: './analytics.yaml#/paths/~1analytics~1notifications'
+
+  /analytics/notifications/mqtt:
+    $ref: './analytics.yaml#/paths/~1analytics~1notifications~1mqtt'
+
+  /analytics/notifications/email:
+    $ref: './analytics.yaml#/paths/~1analytics~1notifications~1email'
+
+  /analytics/notifications/ftp:
+    $ref: './analytics.yaml#/paths/~1analytics~1notifications~1ftp'
+
+  /analytics/notifications/test:
+    $ref: './analytics.yaml#/paths/~1analytics~1notifications~1test'
+
+  # Legacy Analytics Endpoints
+  /analytics/counts:
+    $ref: './analytics.yaml#/paths/~1analytics~1counts'
+
+  /analytics/events:
+    $ref: './analytics.yaml#/paths/~1analytics~1events'
+
+  # Events Management
+  /events:
+    $ref: './events.yaml#/paths/~1events'
+
+  /events/{id}:
+    $ref: './events.yaml#/paths/~1events~1{id}'
+
+  /events/rules:
+    $ref: './events.yaml#/paths/~1events~1rules'
+
+  /events/rules/{id}:
+    $ref: './events.yaml#/paths/~1events~1rules~1{id}'
+
+  /events/stats:
+    $ref: './events.yaml#/paths/~1events~1stats'
+
+  /events/test:
+    $ref: './events.yaml#/paths/~1events~1test'
+
+  # OSD Settings
+  /osd:
+    $ref: './osd.yaml#/paths/~1osd'
+
+  /osd/stream/{stream_id}:
+    $ref: './osd.yaml#/paths/~1osd~1stream~1{stream_id}'
+
+  /osd/global:
+    $ref: './osd.yaml#/paths/~1osd~1global'
+
+  /osd/privacy_mask:
+    $ref: './osd.yaml#/paths/~1osd~1privacy_mask'
+
+  /osd/stream/{stream_id}/privacy_mask:
+    $ref: './osd.yaml#/paths/~1osd~1stream~1{stream_id}~1privacy_mask'
+
+  /osd/global_privacy_mask:
+    $ref: './osd.yaml#/paths/~1osd~1global_privacy_mask'
+
+  /osd/auto_scaling:
+    $ref: './osd.yaml#/paths/~1osd~1auto_scaling'
+
+  # Recording
+  /recording:
+    $ref: './recording.yaml#/paths/~1recording'
+
+  /recording/sessions:
+    $ref: './recording.yaml#/paths/~1recording~1sessions'
+
+  /recording/start:
+    $ref: './recording.yaml#/paths/~1recording~1start'
+
+  /recording/stop:
+    $ref: './recording.yaml#/paths/~1recording~1stop'
+
+  /recording/storage:
+    $ref: './recording.yaml#/paths/~1recording~1storage'
+
+  /recording/config:
+    $ref: './recording.yaml#/paths/~1recording~1config'
+
+  /recording/channels/{id}:
+    $ref: './recording.yaml#/paths/~1recording~1channels~1{id}'
+
+  /recordings:
+    $ref: './recording.yaml#/paths/~1recordings'
+
+  /recordings/{id}:
+    $ref: './recording.yaml#/paths/~1recordings~1{id}'
+
+  # RTSP Server
+  /rtsp:
+    $ref: './rtsp.yaml#/paths/~1rtsp'
+
+  /rtsp/auth:
+    $ref: './rtsp.yaml#/paths/~1rtsp~1auth'
+
+  /rtsp/control:
+    $ref: './rtsp.yaml#/paths/~1rtsp~1control'
+
+  /rtsp/status:
+    $ref: './rtsp.yaml#/paths/~1rtsp~1status'
+
+  /rtsp/clients:
+    $ref: './rtsp.yaml#/paths/~1rtsp~1clients'
+
+  # IR Control
+  /ir:
+    $ref: './ir.yaml#/paths/~1ir'
+
+  /ir/led:
+    $ref: './ir.yaml#/paths/~1ir~1led'
+
+  /ir/led/brightness:
+    $ref: './ir.yaml#/paths/~1ir~1led~1brightness'
+
+  /ir/cut:
+    $ref: './ir.yaml#/paths/~1ir~1cut'
+
+  /ir/daynight:
+    $ref: './ir.yaml#/paths/~1ir~1daynight'
+
+  /ir/daynight/mode:
+    $ref: './ir.yaml#/paths/~1ir~1daynight~1mode'
+
+  /ir/status:
+    $ref: './ir.yaml#/paths/~1ir~1status'
+
+  /ir/action:
+    $ref: './ir.yaml#/paths/~1ir~1action'
+
+  # =====================================================================
+  # System API
+  # =====================================================================
+
+  /system/device:
+    $ref: './system.yaml#/paths/~1system~1device'
+
+  /system/time:
+    $ref: './system.yaml#/paths/~1system~1time'
+
+  /system/time/ntp:
+    $ref: './system.yaml#/paths/~1system~1time~1ntp'
+
+  /system/time/sync:
+    $ref: './system.yaml#/paths/~1system~1time~1sync'
+
+  /system/time/dst:
+    $ref: './system.yaml#/paths/~1system~1time~1dst'
+
+  /system/reboot:
+    $ref: './system.yaml#/paths/~1system~1reboot'
+
+  /system/shutdown:
+    $ref: './system.yaml#/paths/~1system~1shutdown'
+
+  /system/factory-reset:
+    $ref: './system.yaml#/paths/~1system~1factory-reset'
+
+  /system/diagnostics:
+    $ref: './system.yaml#/paths/~1system~1diagnostics'
+
+  /system/diagnostics/report:
+    $ref: './system.yaml#/paths/~1system~1diagnostics~1report'
+
+  /system/maintenance:
+    $ref: './system.yaml#/paths/~1system~1maintenance'
+
+  /system/watchdog:
+    $ref: './system.yaml#/paths/~1system~1watchdog'
+
+  /system/backup:
+    $ref: './system.yaml#/paths/~1system~1backup'
+
+  /system/restore:
+    $ref: './system.yaml#/paths/~1system~1restore'
+
+  /system/alarms:
+    $ref: './system.yaml#/paths/~1system~1alarms'
+
+  # =====================================================================
+  # Logging API
+  # =====================================================================
+
+  /system/logs:
+    $ref: './logging.yaml#/paths/~1system~1logs'
+
+  /system/logs/download:
+    $ref: './logging.yaml#/paths/~1system~1logs~1download'
+
+  /system/logs/config:
+    $ref: './logging.yaml#/paths/~1system~1logs~1config'
+
+  /system/logs/sources:
+    $ref: './logging.yaml#/paths/~1system~1logs~1sources'
+
+  /system/logs/security:
+    $ref: './logging.yaml#/paths/~1system~1logs~1security'
+
+  /system/logs/audit:
+    $ref: './logging.yaml#/paths/~1system~1logs~1audit'
+
+  /system/logs/access:
+    $ref: './logging.yaml#/paths/~1system~1logs~1access'
+
+  /system/logs/syslog:
+    $ref: './logging.yaml#/paths/~1system~1logs~1syslog'
+
+  /system/logger:
+    $ref: './logging.yaml#/paths/~1system~1logger'
+
+  /system/logger/collect:
+    $ref: './logging.yaml#/paths/~1system~1logger~1collect'
+
+  # =====================================================================
+  # Firmware Upgrade API
+  # =====================================================================
+
+  /firmware/version:
+    $ref: './firmware.yaml#/paths/~1firmware~1version'
+
+  /firmware/status:
+    $ref: './firmware.yaml#/paths/~1firmware~1status'
+
+  /firmware/upload:
+    $ref: './firmware.yaml#/paths/~1firmware~1upload'
+
+  /firmware/upgrade:
+    $ref: './firmware.yaml#/paths/~1firmware~1upgrade'
+
+  /firmware/validate:
+    $ref: './firmware.yaml#/paths/~1firmware~1validate'
+
+  /firmware/cancel:
+    $ref: './firmware.yaml#/paths/~1firmware~1cancel'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: |
+        Authentication token obtained from /auth/login endpoint.
+        Include in the Authorization header as: Bearer <token>
+
+  schemas:
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error message
+
+    SmtpConfig:
+      $ref: './smtp.yaml#/components/schemas/SmtpConfig'
+
+    SnmpConfig:
+      $ref: './snmp.yaml#/components/schemas/SnmpConfig'
+
+    SnmpStatus:
+      $ref: './snmp.yaml#/components/schemas/SnmpStatus'
+
+    UpnpConfig:
+      $ref: './upnp.yaml#/components/schemas/UpnpConfig'
+
+    UpnpDeviceInfo:
+      $ref: './upnp.yaml#/components/schemas/UpnpDeviceInfo'
+
+    UpnpPortMapping:
+      $ref: './upnp.yaml#/components/schemas/UpnpPortMapping'
+
+  responses:
+    Unauthorized:
+      description: Authentication required or token expired
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: error
+              message:
+                type: string
+                example: Authentication required
+    
+    BadRequest:
+      description: Invalid request body
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    
+    ServerError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+tags:
+  - name: Networking
+    description: SMTP, SNMP, UPnP and other networking protocols
+  - name: Image
+    description: ISP and image quality settings
+  - name: Video
+    description: Video encoder configuration
+  - name: Audio
+    description: Audio input/output configuration
+  - name: OSD
+    description: On-Screen Display configuration (timestamp, text, logo)
+  - name: Privacy Mask
+    description: Privacy mask region configuration
+  - name: Recording
+    description: Video recording control and management
+  - name: SD Card
+    description: SD card management (mount, unmount, format)
+  - name: NAS Storage
+    description: Network Attached Storage configuration
+  - name: FTP Upload
+    description: FTP upload configuration and queue management
+  - name: Schedule Recording
+    description: Recording schedule profiles and configuration
+  - name: Playback
+    description: Video playback, search, and download
+  - name: Analytics
+    description: AI video analytics (motion, tampering, smart detection, line crossing, intrusion)
+  - name: Video Tampering
+    description: Camera tampering detection (defocus, masking, scene change, exposure)
+  - name: Smart Detection
+    description: AI-based pedestrian, vehicle, and animal detection
+  - name: Line Crossing
+    description: Virtual tripwire detection and counting
+  - name: Zone Intrusion
+    description: Region-based intrusion detection (enter, exit, loiter)
+  - name: Notifications
+    description: Notification server configuration (MQTT, Email, FTP)
+  - name: Events
+    description: Event management, automation rules, and statistics
+  - name: Event Rules
+    description: Event automation rule CRUD
+  - name: RTSP
+    description: RTSP server configuration and client management
+  - name: IR Control
+    description: IR LED and IR-cut filter control for day/night operation
+  - name: Authentication
+    description: User authentication and session management
+  - name: Users
+    description: User account management
+  - name: System
+    description: Device info, time/NTP/DST, reboot, shutdown, factory reset, diagnostics, maintenance, watchdog, backup/restore, alarms
+  - name: Logging
+    description: Multi-source log retrieval, security/audit/access logs, remote syslog, system logger control
+  - name: Firmware
+    description: Firmware version info, upload, validation, upgrade with progress, cancel

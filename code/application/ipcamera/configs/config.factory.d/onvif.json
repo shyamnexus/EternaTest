@@ -1,0 +1,29 @@
+{
+  "_comment": "ONVIF module configuration",
+  "_description": "Settings for ONVIF WS-Discovery and device services for NVR integration",
+  
+  "enabled": true,
+  
+  "discovery": {
+    "_comment": "WS-Discovery settings for automatic camera detection",
+    "enabled": true,
+    "udp_port": 3702
+  },
+  
+  "services": {
+    "_comment": "ONVIF web services settings",
+    "tcp_port": 5000,
+    "timeout_sec": 10
+  },
+  
+  "device_info": {
+    "_comment": "Device information returned to ONVIF clients",
+    "manufacturer": "Honeywell",
+    "model": "IPCAM-5MP",
+    "firmware_version": "v1.0.0",
+    "serial_number": "",
+    "hardware_id": "Rev C"
+  },
+  
+  "interface_name": "eth0"
+}

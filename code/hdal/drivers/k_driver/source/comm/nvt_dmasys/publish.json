@@ -1,0 +1,8 @@
+{
+	"jsontype": "module_publish",
+	"publish_src": [
+		 "dma_util.c",
+		 "dma_nvt.c",
+		 "dma_proc.c"
+	]
+}

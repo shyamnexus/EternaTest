@@ -1,0 +1,715 @@
+openapi: 3.0.3
+info:
+  title: IP Camera API - Image/ISP Settings
+  version: 1.0.0
+paths:
+  /image:
+    get:
+      summary: Get All Image Settings
+      description: |
+        Returns all image/ISP settings including adjustment, white balance,
+        orientation, anti-flicker, exposure, day/night, BLC, and enhancement.
+      operationId: getImageSettings
+      tags: [Image]
+      responses:
+        '200':
+          description: Image settings retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImageSettings'
+        '500':
+          $ref: '#/components/responses/InternalError'
+    put:
+      summary: Update Image Settings
+      description: Update multiple image settings at once
+      operationId: updateImageSettings
+      tags: [Image]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ImageSettings'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /image/adjustment:
+    get:
+      summary: Get Image Adjustment Settings
+      description: Get brightness, contrast, saturation, sharpness, hue, gamma
+      operationId: getImageAdjustment
+      tags: [Image]
+      responses:
+        '200':
+          description: Adjustment settings retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImageAdjustment'
+    put:
+      summary: Update Image Adjustment
+      operationId: updateImageAdjustment
+      tags: [Image]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ImageAdjustment'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /image/whitebalance:
+    get:
+      summary: Get White Balance Settings
+      operationId: getWhiteBalance
+      tags: [Image]
+      responses:
+        '200':
+          description: White balance settings retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WhiteBalance'
+    put:
+      summary: Update White Balance Settings
+      operationId: updateWhiteBalance
+      tags: [Image]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WhiteBalance'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /image/orientation:
+    get:
+      summary: Get Orientation Settings
+      description: Get mirror, flip, and rotation settings
+      operationId: getOrientation
+      tags: [Image]
+      responses:
+        '200':
+          description: Orientation settings retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Orientation'
+    put:
+      summary: Update Orientation Settings
+      operationId: updateOrientation
+      tags: [Image]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Orientation'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /image/antiflicker:
+    get:
+      summary: Get Anti-Flicker Settings
+      operationId: getAntiFlicker
+      tags: [Image]
+      responses:
+        '200':
+          description: Anti-flicker settings retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AntiFlicker'
+    put:
+      summary: Update Anti-Flicker Settings
+      operationId: updateAntiFlicker
+      tags: [Image]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AntiFlicker'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /image/exposure:
+    get:
+      summary: Get Exposure Settings
+      operationId: getExposure
+      tags: [Image]
+      responses:
+        '200':
+          description: Exposure settings retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Exposure'
+    put:
+      summary: Update Exposure Settings
+      operationId: updateExposure
+      tags: [Image]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Exposure'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /image/daynight:
+    get:
+      summary: Get Day/Night Settings
+      operationId: getDayNight
+      tags: [Image]
+      responses:
+        '200':
+          description: Day/night settings retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DayNight'
+    put:
+      summary: Update Day/Night Settings
+      operationId: updateDayNight
+      tags: [Image]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DayNight'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /image/blc:
+    get:
+      summary: Get Backlight Compensation Settings
+      description: Get BLC, WDR, HDR, and HLC settings
+      operationId: getBLC
+      tags: [Image]
+      responses:
+        '200':
+          description: BLC settings retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BLC'
+    put:
+      summary: Update BLC Settings
+      operationId: updateBLC
+      tags: [Image]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BLC'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /image/enhancement:
+    get:
+      summary: Get Image Enhancement Settings
+      description: Get noise reduction, 3D NR, and defog settings
+      operationId: getEnhancement
+      tags: [Image]
+      responses:
+        '200':
+          description: Enhancement settings retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Enhancement'
+    put:
+      summary: Update Enhancement Settings
+      operationId: updateEnhancement
+      tags: [Image]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Enhancement'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  /image/reset:
+    post:
+      summary: Reset Image Settings to Defaults
+      operationId: resetImageSettings
+      tags: [Image]
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /snapshot:
+    get:
+      summary: Capture Snapshot
+      description: Capture and return a JPEG snapshot image
+      operationId: captureSnapshot
+      tags: [Image]
+      responses:
+        '200':
+          description: Snapshot captured successfully
+          content:
+            image/jpeg:
+              schema:
+                type: string
+                format: binary
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /snapshot/config:
+    get:
+      summary: Get Snapshot Configuration
+      operationId: getSnapshotConfig
+      tags: [Image]
+      responses:
+        '200':
+          description: Snapshot config retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SnapshotConfig'
+    put:
+      summary: Update Snapshot Configuration
+      operationId: updateSnapshotConfig
+      tags: [Image]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SnapshotConfig'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+components:
+  schemas:
+    ImageSettings:
+      type: object
+      properties:
+        adjustment:
+          $ref: '#/components/schemas/ImageAdjustment'
+        white_balance:
+          $ref: '#/components/schemas/WhiteBalance'
+        orientation:
+          $ref: '#/components/schemas/Orientation'
+        anti_flicker:
+          $ref: '#/components/schemas/AntiFlicker'
+        exposure:
+          $ref: '#/components/schemas/Exposure'
+        day_night:
+          $ref: '#/components/schemas/DayNight'
+        blc:
+          $ref: '#/components/schemas/BLC'
+        enhancement:
+          $ref: '#/components/schemas/Enhancement'
+
+    ImageAdjustment:
+      type: object
+      properties:
+        brightness:
+          type: integer
+          minimum: 0
+          maximum: 100
+          default: 50
+          description: Image brightness level
+        contrast:
+          type: integer
+          minimum: 0
+          maximum: 100
+          default: 50
+          description: Image contrast level
+        saturation:
+          type: integer
+          minimum: 0
+          maximum: 100
+          default: 50
+          description: Color saturation level
+        sharpness:
+          type: integer
+          minimum: 0
+          maximum: 100
+          default: 50
+          description: Image sharpness level
+        hue:
+          type: integer
+          minimum: 0
+          maximum: 100
+          default: 50
+          description: Color hue adjustment
+        gamma:
+          type: integer
+          minimum: 0
+          maximum: 100
+          default: 50
+          description: Gamma correction level
+      example:
+        brightness: 50
+        contrast: 50
+        saturation: 50
+        sharpness: 50
+        hue: 50
+        gamma: 50
+
+    WhiteBalance:
+      type: object
+      properties:
+        mode:
+          type: string
+          enum: [auto, manual, preset]
+          default: auto
+          description: White balance mode
+        preset:
+          type: string
+          enum: [daylight, cloudy, shade, tungsten, fluorescent, flash, custom]
+          default: daylight
+          description: White balance preset (when mode is preset)
+        color_temperature:
+          type: integer
+          minimum: 2800
+          maximum: 6500
+          default: 5500
+          description: Color temperature in Kelvin (when mode is manual)
+        r_gain:
+          type: integer
+          minimum: 0
+          maximum: 255
+          default: 128
+          description: Red channel gain
+        g_gain:
+          type: integer
+          minimum: 0
+          maximum: 255
+          default: 128
+          description: Green channel gain
+        b_gain:
+          type: integer
+          minimum: 0
+          maximum: 255
+          default: 128
+          description: Blue channel gain
+      example:
+        mode: auto
+        preset: daylight
+        color_temperature: 5500
+        r_gain: 128
+        g_gain: 128
+        b_gain: 128
+
+    Orientation:
+      type: object
+      properties:
+        mirror:
+          type: boolean
+          default: false
+          description: Horizontal mirror (flip left-right)
+        flip:
+          type: boolean
+          default: false
+          description: Vertical flip (flip top-bottom)
+        rotation:
+          type: integer
+          enum: [0, 90, 180, 270]
+          default: 0
+          description: Image rotation in degrees
+      example:
+        mirror: false
+        flip: false
+        rotation: 0
+
+    AntiFlicker:
+      type: object
+      properties:
+        mode:
+          type: string
+          enum: [off, 50hz, 60hz, auto]
+          default: auto
+          description: Anti-flicker mode for fluorescent lighting
+      example:
+        mode: auto
+
+    Exposure:
+      type: object
+      properties:
+        mode:
+          type: string
+          enum: [auto, manual, shutter_priority, gain_priority]
+          default: auto
+          description: Exposure control mode
+        metering_mode:
+          type: string
+          enum: [center, average, spot]
+          default: center
+          description: Light metering mode
+        auto_gain_enabled:
+          type: boolean
+          default: true
+          description: Enable automatic gain control
+        ev_compensation:
+          type: integer
+          minimum: -128
+          maximum: 127
+          default: 0
+          description: Exposure value compensation
+        max_gain:
+          type: integer
+          minimum: 1
+          maximum: 100
+          default: 100
+          description: Maximum gain limit
+        min_gain:
+          type: integer
+          minimum: 1
+          maximum: 100
+          default: 1
+          description: Minimum gain limit
+      example:
+        mode: auto
+        metering_mode: center
+        auto_gain_enabled: true
+        ev_compensation: 0
+        max_gain: 100
+        min_gain: 1
+
+    DayNight:
+      type: object
+      properties:
+        mode:
+          type: string
+          enum: [auto, day, night, schedule]
+          default: auto
+          description: Day/night switching mode
+        ir_mode:
+          type: string
+          enum: [auto, on, off]
+          default: auto
+          description: IR LED control mode
+        sensitivity:
+          type: integer
+          minimum: 1
+          maximum: 10
+          default: 5
+          description: Auto switch sensitivity level
+        start_time:
+          type: string
+          format: time
+          default: "18:00:00"
+          description: Night mode start time (for schedule mode)
+        end_time:
+          type: string
+          format: time
+          default: "06:00:00"
+          description: Night mode end time (for schedule mode)
+      example:
+        mode: auto
+        ir_mode: auto
+        sensitivity: 5
+        start_time: "18:00:00"
+        end_time: "06:00:00"
+
+    BLC:
+      type: object
+      description: Backlight Compensation and Dynamic Range settings
+      properties:
+        blc_enabled:
+          type: boolean
+          default: false
+          description: Enable Backlight Compensation
+        blc_level:
+          type: integer
+          minimum: 0
+          maximum: 10
+          default: 1
+          description: BLC strength level
+        wdr_enabled:
+          type: boolean
+          default: false
+          description: Enable Wide Dynamic Range
+        wdr_level:
+          type: integer
+          minimum: 0
+          maximum: 10
+          default: 0
+          description: WDR strength level
+        hdr_enabled:
+          type: boolean
+          default: false
+          description: Enable High Dynamic Range
+        hdr_level:
+          type: integer
+          minimum: 0
+          maximum: 10
+          default: 1
+          description: HDR strength level
+        hlc_enabled:
+          type: boolean
+          default: false
+          description: Enable Highlight Compensation
+        hlc_level:
+          type: integer
+          minimum: 0
+          maximum: 10
+          default: 0
+          description: HLC strength level
+        dark_boost_level:
+          type: integer
+          minimum: 0
+          maximum: 10
+          default: 0
+          description: Dark area boost level
+      example:
+        blc_enabled: false
+        blc_level: 1
+        wdr_enabled: false
+        wdr_level: 0
+        hdr_enabled: false
+        hdr_level: 1
+        hlc_enabled: false
+        hlc_level: 0
+        dark_boost_level: 0
+
+    Enhancement:
+      type: object
+      description: Image enhancement and noise reduction settings
+      properties:
+        nr_enabled:
+          type: boolean
+          default: true
+          description: Enable 2D Noise Reduction
+        nr_level:
+          type: integer
+          minimum: 0
+          maximum: 10
+          default: 5
+          description: 2D NR strength level
+        nr_3d_enabled:
+          type: boolean
+          default: true
+          description: Enable 3D Noise Reduction
+        nr_3d_level:
+          type: integer
+          minimum: 0
+          maximum: 10
+          default: 5
+          description: 3D NR strength level
+        defog_enabled:
+          type: boolean
+          default: false
+          description: Enable Defog/Dehaze
+        defog_level:
+          type: integer
+          minimum: 0
+          maximum: 10
+          default: 5
+          description: Defog strength level
+      example:
+        nr_enabled: true
+        nr_level: 5
+        nr_3d_enabled: true
+        nr_3d_level: 5
+        defog_enabled: false
+        defog_level: 5
+
+    SnapshotConfig:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+          default: true
+          description: Enable snapshot capture
+        width:
+          type: integer
+          minimum: 320
+          maximum: 3840
+          default: 1920
+          description: Snapshot width in pixels
+        height:
+          type: integer
+          minimum: 240
+          maximum: 2160
+          default: 1080
+          description: Snapshot height in pixels
+        quality:
+          type: integer
+          minimum: 1
+          maximum: 100
+          default: 85
+          description: JPEG quality (1-100)
+      example:
+        enabled: true
+        width: 1920
+        height: 1080
+        quality: 85
+
+  responses:
+    Success:
+      description: Operation completed successfully
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: ok
+              message:
+                type: string
+    BadRequest:
+      description: Invalid request parameters
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+    InternalError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string

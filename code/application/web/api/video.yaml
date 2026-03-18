@@ -1,0 +1,452 @@
+openapi: 3.0.3
+info:
+  title: IP Camera API - Video Settings
+  version: 1.0.0
+paths:
+  /video:
+    get:
+      summary: Get All Video Stream Settings
+      description: |
+        Returns configuration for all video streams (main, sub, third) 
+        and snapshot settings.
+      operationId: getVideoSettings
+      tags: [Video]
+      responses:
+        '200':
+          description: Video settings retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VideoSettings'
+        '500':
+          $ref: '#/components/responses/InternalError'
+    put:
+      summary: Update Video Stream Settings
+      description: Update multiple video stream configurations at once
+      operationId: updateVideoSettings
+      tags: [Video]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VideoSettingsUpdate'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /video/stream:
+    get:
+      summary: Get Single Stream Configuration
+      description: Get configuration for a specific video stream
+      operationId: getVideoStream
+      tags: [Video]
+      parameters:
+        - name: stream_id
+          in: query
+          required: true
+          description: Stream identifier (video1, video2, video3)
+          schema:
+            type: string
+            enum: [video1, video2, video3]
+      responses:
+        '200':
+          description: Stream configuration retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VideoStreamConfig'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          description: Stream not found
+    put:
+      summary: Update Single Stream Configuration
+      operationId: updateVideoStream
+      tags: [Video]
+      parameters:
+        - name: stream_id
+          in: query
+          required: true
+          description: Stream identifier (video1, video2, video3)
+          schema:
+            type: string
+            enum: [video1, video2, video3]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VideoStreamConfig'
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          description: Stream not found
+    delete:
+      summary: Disable Stream
+      description: Disable a video stream
+      operationId: disableVideoStream
+      tags: [Video]
+      parameters:
+        - name: stream_id
+          in: query
+          required: true
+          description: Stream identifier (video1, video2, video3)
+          schema:
+            type: string
+            enum: [video1, video2, video3]
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          description: Stream not found
+
+  /video/reset:
+    post:
+      summary: Reset Video Settings
+      description: Reset all video settings to factory defaults
+      operationId: resetVideoSettings
+      tags: [Video]
+      responses:
+        '200':
+          $ref: '#/components/responses/Success'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /video/capabilities:
+    get:
+      summary: Get Video Capabilities
+      description: |
+        Returns supported video codecs, profiles, resolutions, 
+        and other hardware capabilities.
+      operationId: getVideoCapabilities
+      tags: [Video]
+      responses:
+        '200':
+          description: Video capabilities retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VideoCapabilities'
+
+components:
+  schemas:
+    VideoSettings:
+      type: object
+      properties:
+        streams:
+          type: array
+          items:
+            $ref: '#/components/schemas/VideoStreamConfig'
+          description: Array of video stream configurations
+        snapshot:
+          $ref: '#/components/schemas/SnapshotConfig'
+      example:
+        streams:
+          - stream_id: video1
+            stream_type: mainStream
+            enabled: true
+            width: 1920
+            height: 1080
+            fps: 30
+            codec: h264
+            profile: main
+            level: "4.1"
+            bitrate: 4096
+            rc_mode: CBR
+            gop: 50
+          - stream_id: video2
+            stream_type: subStream
+            enabled: true
+            width: 640
+            height: 480
+            fps: 15
+            codec: h264
+            profile: baseline
+            level: "3.1"
+            bitrate: 512
+            rc_mode: CBR
+            gop: 30
+        snapshot:
+          enabled: true
+          width: 1920
+          height: 1080
+          quality: 85
+
+    VideoSettingsUpdate:
+      type: object
+      properties:
+        streams:
+          type: array
+          items:
+            $ref: '#/components/schemas/VideoStreamConfig'
+        snapshot:
+          $ref: '#/components/schemas/SnapshotConfig'
+
+    VideoStreamConfig:
+      type: object
+      properties:
+        stream_id:
+          type: string
+          description: Stream identifier
+          example: video1
+        stream_type:
+          type: string
+          enum: [mainStream, subStream, thirdStream]
+          description: Stream type/purpose
+        enabled:
+          type: boolean
+          default: true
+          description: Stream enabled state
+        width:
+          type: integer
+          minimum: 320
+          maximum: 3840
+          description: Video width in pixels
+          example: 1920
+        height:
+          type: integer
+          minimum: 240
+          maximum: 2160
+          description: Video height in pixels
+          example: 1080
+        fps:
+          type: integer
+          minimum: 1
+          maximum: 60
+          description: Frames per second
+          example: 30
+        codec:
+          type: string
+          enum: [h264, h265, mjpeg]
+          description: Video codec
+          example: h264
+        profile:
+          type: string
+          enum: [baseline, main, high]
+          description: H.264/H.265 encoding profile
+          example: main
+        level:
+          type: string
+          description: H.264/H.265 level (e.g., "3.1", "4.0", "4.1", "5.1")
+          example: "4.1"
+        entropy_mode:
+          type: string
+          enum: [cavlc, cabac]
+          default: cabac
+          description: H.264 entropy coding mode
+        gop:
+          type: integer
+          minimum: 1
+          maximum: 300
+          description: GOP (Group of Pictures) size
+          example: 50
+        idr_interval:
+          type: integer
+          minimum: 1
+          maximum: 10
+          default: 1
+          description: IDR frame interval (in GOPs)
+        rc_mode:
+          type: string
+          enum: [CBR, VBR, AVBR, FIXQP]
+          description: Rate control mode
+          example: CBR
+        bitrate:
+          type: integer
+          minimum: 64
+          maximum: 16384
+          description: Target bitrate in kbps
+          example: 4096
+        max_bitrate:
+          type: integer
+          minimum: 64
+          maximum: 16384
+          description: Maximum bitrate in kbps (for VBR)
+          example: 6144
+        min_bitrate:
+          type: integer
+          minimum: 64
+          maximum: 16384
+          description: Minimum bitrate in kbps (for VBR)
+          example: 1024
+        quality:
+          type: integer
+          minimum: 1
+          maximum: 100
+          description: Quality level for VBR (1-100)
+          example: 50
+        init_qp:
+          type: integer
+          minimum: 0
+          maximum: 51
+          default: 26
+          description: Initial QP value
+        min_qp:
+          type: integer
+          minimum: 0
+          maximum: 51
+          default: 10
+          description: Minimum QP value
+        max_qp:
+          type: integer
+          minimum: 0
+          maximum: 51
+          default: 51
+          description: Maximum QP value
+
+    SnapshotConfig:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+          default: true
+          description: Enable snapshot capture
+        width:
+          type: integer
+          minimum: 320
+          maximum: 3840
+          default: 1920
+          description: Snapshot width in pixels
+        height:
+          type: integer
+          minimum: 240
+          maximum: 2160
+          default: 1080
+          description: Snapshot height in pixels
+        quality:
+          type: integer
+          minimum: 1
+          maximum: 100
+          default: 85
+          description: JPEG quality (1-100)
+      example:
+        enabled: true
+        width: 1920
+        height: 1080
+        quality: 85
+
+    VideoCapabilities:
+      type: object
+      properties:
+        codecs:
+          type: array
+          items:
+            type: string
+          description: Supported video codecs
+          example: [h264, h265, mjpeg]
+        h264_profiles:
+          type: array
+          items:
+            type: string
+          description: Supported H.264 profiles
+          example: [baseline, main, high]
+        h265_profiles:
+          type: array
+          items:
+            type: string
+          description: Supported H.265 profiles
+          example: [main]
+        levels:
+          type: array
+          items:
+            type: string
+          description: Supported H.264/H.265 levels
+          example: ["3.0", "3.1", "4.0", "4.1", "5.0", "5.1"]
+        rc_modes:
+          type: array
+          items:
+            type: string
+          description: Supported rate control modes
+          example: [CBR, VBR, AVBR, FIXQP]
+        resolutions:
+          type: array
+          items:
+            type: object
+            properties:
+              width:
+                type: integer
+              height:
+                type: integer
+          description: Supported resolutions
+          example:
+            - width: 3840
+              height: 2160
+            - width: 1920
+              height: 1080
+            - width: 1280
+              height: 720
+            - width: 640
+              height: 480
+        limits:
+          type: object
+          properties:
+            fps:
+              type: object
+              properties:
+                min:
+                  type: integer
+                max:
+                  type: integer
+            bitrate:
+              type: object
+              properties:
+                min:
+                  type: integer
+                max:
+                  type: integer
+            gop:
+              type: object
+              properties:
+                min:
+                  type: integer
+                max:
+                  type: integer
+            qp:
+              type: object
+              properties:
+                min:
+                  type: integer
+                max:
+                  type: integer
+
+  responses:
+    Success:
+      description: Operation completed successfully
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: ok
+              message:
+                type: string
+    BadRequest:
+      description: Invalid request parameters
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+    InternalError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string

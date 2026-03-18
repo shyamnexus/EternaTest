@@ -1,0 +1,12 @@
+if ARCH_NOVATEK
+
+config PINCTRL_NTK
+	depends on PINCTRL_GENERIC
+	bool
+
+config PINCTRL_NS02302
+	bool "Novatek NS02302 pin control"
+	depends on TARGET_NS02302_A64
+	select PINCTRL_NTK
+
+endif

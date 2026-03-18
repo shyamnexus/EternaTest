@@ -1,0 +1,208 @@
+{
+  "media": {
+    "sensor": {
+      "driver_name": "nvt_sen_gc5603",
+      "interface": "mipi_csi",
+      "pinmux": 0,
+      "data_lanes": 2,
+      "vcap_id": 0,
+      "raw_format": "raw10",
+      "native_width": 2960,
+      "native_height": 1664,
+      "crop": {
+        "enabled": true,
+        "x": 8,
+        "y": 0,
+        "width": 2944,
+        "height": 1664,
+        "_comment": "GC5603: crop 2960->2944 for BNR 32-alignment"
+      }
+    },
+    "isp_tuning": {
+      "config_path": "/mnt/app/isp",
+      "config_name": "isp_gc5603_0",
+      "color_temperature": 4700,
+      "hdr_enabled": false
+    },
+    "videoproc": {
+      "pipe": "rawall",
+      "ae_enabled": true,
+      "awb_enabled": true,
+      "af_enabled": true,
+      "wdr_enabled": true,
+      "defog_enabled": true,
+      "nr_3d_enabled": true,
+      "nr_3d_ref_path": 4
+    },
+    "memory": {
+      "ddr_id": 0,
+      "raw_buffer_count": 9,
+      "yuv_buffer_count": 6,
+      "audio_buffer_size": 16384
+    },
+    "video1": {
+      "enabled": true,
+      "stream_type": "mainStream",
+      "width": 2944,
+      "height": 1664,
+      "fps": 30,
+      "codec": "h265",
+      "profile": "main",
+      "level": "5.0",
+      "gop": 30,
+      "idr_interval": 1,
+      "iframe_interval": 30,
+      "rc_mode": "CBR",
+      "bitrate": 6144,
+      "max_bitrate": 16000,
+      "min_bitrate": 1024,
+      "quality": 50,
+      "init_qp": 26,
+      "min_qp": 10,
+      "max_qp": 45,
+      "entropy_mode": "cabac",
+      "audio_enabled": true,
+      "buffer_size": 3000,
+      "buffer_count": 3
+    },
+    "video2": {
+      "enabled": true,
+      "stream_type": "subStream",
+      "width": 1280,
+      "height": 720,
+      "fps": 30,
+      "codec": "h264",
+      "profile": "main",
+      "level": "4.1",
+      "gop": 30,
+      "idr_interval": 1,
+      "iframe_interval": 30,
+      "rc_mode": "CBR",
+      "bitrate": 1024,
+      "max_bitrate": 4000,
+      "min_bitrate": 128,
+      "quality": 50,
+      "init_qp": 26,
+      "min_qp": 10,
+      "max_qp": 45,
+      "entropy_mode": "cabac",
+      "audio_enabled": true,
+      "buffer_size": 3000,
+      "buffer_count": 3
+    },
+    "video3": {
+      "enabled": true,
+      "stream_type": "thirdStream",
+      "width": 640,
+      "height": 480,
+      "fps": 30,
+      "codec": "h264",
+      "profile": "main",
+      "level": "3.1",
+      "gop": 30,
+      "idr_interval": 1,
+      "iframe_interval": 30,
+      "rc_mode": "CBR",
+      "bitrate": 512,
+      "max_bitrate": 2000,
+      "min_bitrate": 8,
+      "quality": 50,
+      "init_qp": 26,
+      "min_qp": 10,
+      "max_qp": 45,
+      "entropy_mode": "cabac",
+      "audio_enabled": true,
+      "buffer_size": 3000,
+      "buffer_count": 3
+    },
+    "video4": {
+      "enabled": false,
+      "stream_type": "fourthStream",
+      "width": 640,
+      "height": 360,
+      "fps": 15,
+      "codec": "h264",
+      "profile": "baseline",
+      "level": "3.1",
+      "gop": 15,
+      "idr_interval": 1,
+      "rc_mode": "CBR",
+      "bitrate": 512,
+      "max_bitrate": 1024,
+      "min_bitrate": 128,
+      "quality": 50,
+      "init_qp": 28,
+      "min_qp": 12,
+      "max_qp": 48,
+      "entropy_mode": "cavlc",
+      "buffer_size": 3000,
+      "buffer_count": 3
+    },
+    "snapshot": {
+      "enabled": true,
+      "width": 2944,
+      "height": 1664,
+      "quality": 85,
+      "codec": "jpeg"
+    },
+    "audio": {
+      "enabled": true,
+      "codec": "g711u",
+      "sample_rate": 8000,
+      "bitrate": 64000,
+      "channels": 1,
+      "bit_width": 16,
+      
+      "boost_gain": "20db",
+      "volume": 100,
+      "alc_enabled": false,
+      
+      "agc_enabled": false,
+      "agc_target_db": -6,
+      "agc_noise_gate_db": -50,
+      
+      "anr_enabled": false,
+      "anr_level": 3,
+      "noise_gate_db": -58,
+      
+      "aec_enabled": false,
+      
+      "input_gain": 80,
+      "output_gain": 80,
+      
+      "processing": {
+        "hpf": {
+          "enabled": false,
+          "frequency": 100,
+          "q": 0.5,
+          "_comment": "High-pass filter: removes low-frequency rumble (freq 20-500Hz, Q 0.1-10)"
+        },
+        "notch": {
+          "enabled": false,
+          "frequency": 60,
+          "q": 5.0,
+          "gain_db": -40,
+          "_comment": "Notch filter: removes power line hum (freq: 50 or 60Hz, Q 1-30, gain -60 to 0dB)"
+        },
+        "ns": {
+          "enabled": false,
+          "level_db": -20,
+          "_comment": "Userspace noise suppression using libaec. Requires sample_rate=8000. Level -40 to -3dB"
+        }
+      },
+      
+      "_options": {
+        "codec": ["g711u", "g711a", "g726_16", "g726_24", "g726_32", "g726_40", "aac", "pcm"],
+        "sample_rate": [8000, 16000, 48000],
+        "bitrate": [32000, 64000, 96000, 128000],
+        "channels": [1, 2],
+        "boost_gain": ["0db", "10db", "20db", "30db"],
+        "volume": "0-160 (100=0dB)",
+        "agc_target_db": "-40 to -3",
+        "agc_noise_gate_db": "-80 to -20",
+        "anr_level": [0, 1, 2, 3],
+        "noise_gate_db": "-80 to -20"
+      }
+    }
+  }
+}

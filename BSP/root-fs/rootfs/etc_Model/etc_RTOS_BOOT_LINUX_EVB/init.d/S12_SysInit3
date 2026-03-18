@@ -1,0 +1,49 @@
+#!/bin/sh
+KERVER=5.10.168
+
+if [[ -f /lib/modules/$KERVER/hdal/kdrv_videoout/ide/nvt_ide.ko ]]; then
+insmod /lib/modules/$KERVER/hdal/kdrv_videoout/ide/nvt_ide.ko
+insmod /lib/modules/$KERVER/hdal/kdrv_videoout/mi/nvt_mi.ko
+insmod /lib/modules/$KERVER/hdal/kdrv_videoout/dsiphy/nvt_dsiphy.ko
+insmod /lib/modules/$KERVER/hdal/kdrv_videoout/dsi/nvt_dsi.ko
+insmod /lib/modules/$KERVER/hdal/kdrv_videoout/display_obj/kdrv_videoout.ko
+#insmod /lib/modules/$KERVER/hdal/kdrv_videoout/hdmitx/nvt_hdmitx.ko
+insmod /lib/modules/$KERVER/hdal/kflow_videoout/unit/kflow_videoout.ko
+fi
+
+# panel device
+insmod /lib/modules/$KERVER/hdal/display_panel/nvt_dispdev_panel.ko
+case "${LCD1}" in
+	disp_off)
+		;;
+	disp_if8b_lcd1_pw35p00)
+		insmod /lib/modules/$KERVER/hdal/display_panel/${LCD1}_hx8238d/$LCD1.ko
+		;;
+	*)
+		insmod /lib/modules/$KERVER/hdal/display_panel/${LCD1}/${LCD1}.ko
+		;;
+esac
+
+#ai
+insmod /lib/modules/$KERVER/hdal/kdrv_ai/kdrv_ai.ko
+insmod /lib/modules/$KERVER/hdal/kflow_ai/kflow_ai.ko
+
+if [[ ! -d /sys/firmware/devicetree/base/hd_devnum ]]; then
+mknod /dev/nvt_ai_module0 c `cat /sys/class/kdrv_ai/nvt_ai_module0/dev | sed "s/:/\ /g"`
+mknod /dev/kflow_ai_net c `cat /sys/class/kflow_ai_net/kflow_ai_net/dev | sed "s/:/\ /g"`
+mknod /dev/kflow_ai_net1 c `cat /sys/class/kflow_ai_net/kflow_ai_net1/dev | sed "s/:/\ /g"`
+mknod /dev/kflow_ai_net129 c `cat /sys/class/kflow_ai_net/kflow_ai_net129/dev | sed "s/:/\ /g"`
+fi
+
+# isf vdodec
+insmod /lib/modules/$KERVER/hdal/kflow_videodec/unit/kflow_videodec.ko
+
+#fb
+# fd for nvt_fb
+if [[ -f /lib/modules/$KERVER/kernel/drivers/video/fbdev/core/fb.ko ]]; then
+	insmod /lib/modules/$KERVER/kernel/drivers/video/fbdev/core/fb.ko
+	insmod /lib/modules/$KERVER/kernel/drivers/video/fbdev/core/cfbcopyarea.ko
+	insmod /lib/modules/$KERVER/kernel/drivers/video/fbdev/core/cfbfillrect.ko
+	insmod /lib/modules/$KERVER/kernel/drivers/video/fbdev/core/cfbimgblt.ko
+	insmod /lib/modules/$KERVER/hdal/kdrv_videoout/fbdev/nvt_fb.ko
+fi

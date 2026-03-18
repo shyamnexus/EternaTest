@@ -1,0 +1,10 @@
+{
+	"jsontype": "module_publish",
+	"publish_src": [
+		"hdmitx_main.c",
+		"hdmitx_drv.c",
+		"hdmitx_proc.c",
+		"hdmitx_edid.c",
+		"dispdev_hdmi.c"
+	]
+}

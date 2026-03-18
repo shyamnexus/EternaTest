@@ -1,0 +1,1662 @@
+/**
+	@brief Sample code of video record with two streams.\n
+
+	@file video_record_with_2path.c
+
+	@author Boyan Huang
+
+	@ingroup mhdal
+
+	@note This file is modified from video_record.c.
+
+	Copyright Novatek Microelectronics Corp. 2018.  All rights reserved.
+*/
+
+
+#include <stdio.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <string.h>
+#include "hdal.h"
+#include "hd_debug.h"
+// platform dependent
+#if defined(__LINUX)
+#include <signal.h>
+#include <pthread.h>			//for pthread API
+#define MAIN(argc, argv) 		int main(int argc, char** argv)
+#define GETCHAR()				getchar()
+#else
+#include <FreeRTOS_POSIX.h>
+#include <FreeRTOS_POSIX/signal.h>
+#include <FreeRTOS_POSIX/pthread.h> //for pthread API
+#include <kwrap/util.h>		//for sleep API
+#define sleep(x)    			vos_util_delay_ms(1000*(x))
+#define msleep(x)    			vos_util_delay_ms(x)
+#define usleep(x)   			vos_util_delay_us(x)
+#include <kwrap/examsys.h> 	//for MAIN(), GETCHAR() API
+#define MAIN(argc, argv) 		EXAMFUNC_ENTRY(hd_video_record_with_2path, argc, argv)
+#define GETCHAR()				NVT_EXAMSYS_GETCHAR()
+#endif
+
+#define DEBUG_MENU 		1
+
+#define CHKPNT			printf("\033[37mCHK: %s, %s: %d\033[0m\r\n",__FILE__,__func__,__LINE__)
+#define DBGH(x)			printf("\033[0;35m%s=0x%08X\033[0m\r\n", #x, x)
+#define DBGD(x)			printf("\033[0;35m%s=%d\033[0m\r\n", #x, x)
+
+#define SEN1_VCAP_ID 0
+
+///////////////////////////////////////////////////////////////////////////////
+
+//header
+#define DBGINFO_BUFSIZE()	(0x200)
+
+//RAW
+#define VDO_RAW_BUFSIZE(w, h, pxlfmt)   (ALIGN_CEIL_4((w) * HD_VIDEO_PXLFMT_BPP(pxlfmt) / 8) * (h))
+//NRX: RAW compress: Only support 12bit mode
+#define RAW_COMPRESS_RATIO 50
+#define VDO_NRX_BUFSIZE(w, h)           (ALIGN_CEIL_4(ALIGN_CEIL_64(w) / 64 * ((24*RAW_COMPRESS_RATIO+99)/100) * 4 * (h)))
+//CA for AWB
+#define VDO_CA_BUF_SIZE(win_num_w, win_num_h) ALIGN_CEIL_4((win_num_w * win_num_h << 3) << 1)
+//LA for AE
+#define VDO_LA_BUF_SIZE(win_num_w, win_num_h) ALIGN_CEIL_4((win_num_w * win_num_h << 1) << 1)
+
+//YUV
+#define VDO_YUV_BUFSIZE(w, h, pxlfmt)	(ALIGN_CEIL_4((w) * HD_VIDEO_PXLFMT_BPP(pxlfmt) / 8) * (h))
+//NVX: YUV compress
+#define YUV_COMPRESS_RATIO 75
+#define VDO_NVX_BUFSIZE(w, h, pxlfmt)	(VDO_YUV_BUFSIZE(w, h, pxlfmt) * YUV_COMPRESS_RATIO / 100)
+
+///////////////////////////////////////////////////////////////////////////////
+
+// GC5603 supports RAW10 and RAW8 formats (NOT RAW12)
+#define SEN_OUT_FMT		HD_VIDEO_PXLFMT_RAW10
+#define CAP_OUT_FMT		HD_VIDEO_PXLFMT_RAW10
+#define CA_WIN_NUM_W		32
+#define CA_WIN_NUM_H		32
+#define LA_WIN_NUM_W		32
+#define LA_WIN_NUM_H		32
+#define VA_WIN_NUM_W		16
+#define VA_WIN_NUM_H		16
+#define YOUT_WIN_NUM_W	128
+#define YOUT_WIN_NUM_H	128
+#define ETH_8BIT_SEL		0 //0: 2bit out, 1:8 bit out
+#define ETH_OUT_SEL		1 //0: full, 1: subsample 1/2
+
+#define VDO_SIZE_W		2960
+#define VDO_SIZE_H		1664
+
+#define SUB_VDO_SIZE_W	1920
+#define SUB_VDO_SIZE_H	1080
+
+#define THRID_VDO_SIZE_W	1280
+#define THRID_VDO_SIZE_H	720
+
+#define FOURTH_VDO_SIZE_W	640
+#define FOURTH_VDO_SIZE_H	360
+
+#define MAX_BITSTREAM_NUM   1
+#define BITSTREAM_SIZE      12800
+
+#define AUD_CHANNEL_COUNT(mode)	(mode == HD_AUDIO_SOUND_MODE_MONO) ? 1 : 2
+
+#define AUD_COMPRESSION_RATIO(codec)	(codec == HD_AUDIO_CODEC_PCM) ? 1 : 2
+
+///////////////////////////////////////////////////////////////////////////////
+
+
+typedef struct _VIDEO_RECORD {
+
+	// (1)
+	HD_VIDEOCAP_SYSCAPS cap_syscaps;
+	HD_PATH_ID cap_ctrl;
+	HD_PATH_ID cap_path;
+
+	HD_DIM  cap_dim;
+	HD_DIM  proc_max_dim;
+
+	// (2)
+	HD_VIDEOPROC_SYSCAPS proc_syscaps;
+	HD_PATH_ID proc_ctrl;
+	HD_PATH_ID proc_path;
+
+	HD_DIM  enc_max_dim;
+	HD_DIM  enc_dim;
+
+	// (3)
+	HD_VIDEOENC_SYSCAPS enc_syscaps;
+	HD_PATH_ID enc_path;
+
+	HD_PATH_ID acap_ctrl;
+	HD_PATH_ID acap_path;
+	HD_PATH_ID aenc_path;
+	UINT32 aenc_type;
+
+	// (4) user pull
+	pthread_t  enc_thread_id;
+	UINT32     enc_exit;
+	UINT32     aenc_exit;
+	UINT32     flow_start;
+
+} VIDEO_RECORD;
+
+
+static HD_RESULT mem_init(void)
+{
+	HD_RESULT              ret;
+	HD_COMMON_MEM_INIT_CONFIG mem_cfg = {0};
+
+	// config common pool (cap)
+	mem_cfg.pool_info[0].type = HD_COMMON_MEM_COMMON_POOL;
+	mem_cfg.pool_info[0].blk_size = DBGINFO_BUFSIZE()+VDO_RAW_BUFSIZE(VDO_SIZE_W, VDO_SIZE_H, CAP_OUT_FMT)
+														+VDO_CA_BUF_SIZE(CA_WIN_NUM_W, CA_WIN_NUM_H)
+														+VDO_LA_BUF_SIZE(LA_WIN_NUM_W, LA_WIN_NUM_H);
+	mem_cfg.pool_info[0].blk_cnt = 3;
+	mem_cfg.pool_info[0].ddr_id = DDR_ID0;
+	// config common pool (main)
+	mem_cfg.pool_info[1].type = HD_COMMON_MEM_COMMON_POOL;
+	mem_cfg.pool_info[1].blk_size = DBGINFO_BUFSIZE()+VDO_YUV_BUFSIZE(VDO_SIZE_W, VDO_SIZE_H, HD_VIDEO_PXLFMT_YUV420);
+	mem_cfg.pool_info[1].blk_cnt = 3;
+	mem_cfg.pool_info[1].ddr_id = DDR_ID0;
+	// config common pool (sub)
+	mem_cfg.pool_info[2].type = HD_COMMON_MEM_COMMON_POOL;
+	mem_cfg.pool_info[2].blk_size = DBGINFO_BUFSIZE()+VDO_YUV_BUFSIZE(SUB_VDO_SIZE_W, SUB_VDO_SIZE_H, HD_VIDEO_PXLFMT_YUV420);
+	mem_cfg.pool_info[2].blk_cnt = 3;
+	mem_cfg.pool_info[2].ddr_id = DDR_ID0;
+	// config common pool (third stream)
+	mem_cfg.pool_info[3].type = HD_COMMON_MEM_COMMON_POOL;
+	mem_cfg.pool_info[3].blk_size = DBGINFO_BUFSIZE()+VDO_YUV_BUFSIZE(THRID_VDO_SIZE_W, THRID_VDO_SIZE_H, HD_VIDEO_PXLFMT_YUV420);
+	mem_cfg.pool_info[3].blk_cnt = 3;
+	mem_cfg.pool_info[3].ddr_id = DDR_ID0;
+	// config common pool (fourth stream)
+	mem_cfg.pool_info[4].type = HD_COMMON_MEM_COMMON_POOL;
+	mem_cfg.pool_info[4].blk_size = DBGINFO_BUFSIZE()+VDO_YUV_BUFSIZE(FOURTH_VDO_SIZE_W, FOURTH_VDO_SIZE_H, HD_VIDEO_PXLFMT_YUV420);
+	mem_cfg.pool_info[4].blk_cnt = 3;
+	mem_cfg.pool_info[4].ddr_id = DDR_ID0;
+	//config common pool (audio)
+	mem_cfg.pool_info[5].type = HD_COMMON_MEM_COMMON_POOL;
+	mem_cfg.pool_info[5].blk_size = 0x4000; //4K for audio
+	mem_cfg.pool_info[5].blk_cnt = 1;
+	mem_cfg.pool_info[5].ddr_id = DDR_ID0;
+
+	ret = hd_common_mem_init(&mem_cfg);
+	return ret;
+}
+
+static HD_RESULT mem_exit(void)
+{
+	HD_RESULT ret = HD_OK;
+	hd_common_mem_uninit();
+	return ret;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+static HD_RESULT get_cap_caps(HD_PATH_ID video_cap_ctrl, HD_VIDEOCAP_SYSCAPS *p_video_cap_syscaps)
+{
+	HD_RESULT ret = HD_OK;
+	hd_videocap_get(video_cap_ctrl, HD_VIDEOCAP_PARAM_SYSCAPS, p_video_cap_syscaps);
+	return ret;
+}
+
+#if 0
+static HD_RESULT get_cap_sysinfo(HD_PATH_ID video_cap_ctrl)
+{
+	HD_RESULT ret = HD_OK;
+	HD_VIDEOCAP_SYSINFO sys_info = {0};
+
+	hd_videocap_get(video_cap_ctrl, HD_VIDEOCAP_PARAM_SYSINFO, &sys_info);
+	printf("sys_info.devid =0x%X, cur_fps[0]=%d/%d, vd_count=%llu\r\n", sys_info.dev_id, GET_HI_UINT16(sys_info.cur_fps[0]), GET_LO_UINT16(sys_info.cur_fps[0]), sys_info.vd_count);
+	return ret;
+}
+#endif
+
+static HD_RESULT set_cap_cfg(HD_PATH_ID *p_video_cap_ctrl)
+{
+	HD_RESULT ret = HD_OK;
+	HD_VIDEOCAP_DRV_CONFIG cap_cfg = {0};
+	HD_PATH_ID video_cap_ctrl = 0;
+	HD_VIDEOCAP_CTRL iq_ctl = {0};
+
+	// snprintf(cap_cfg.sen_cfg.sen_dev.driver_name, HD_VIDEOCAP_SEN_NAME_LEN-1, "nvt_sen_os02k10");
+	
+	snprintf(cap_cfg.sen_cfg.sen_dev.driver_name, HD_VIDEOCAP_SEN_NAME_LEN-1, "nvt_sen_gc5603");
+	cap_cfg.sen_cfg.sen_dev.if_type = HD_COMMON_VIDEO_IN_MIPI_CSI;
+	cap_cfg.sen_cfg.sen_dev.pin_cfg.pinmux.sensor_pinmux =  0;  //use @0 in peri-dev.dtsi
+	cap_cfg.sen_cfg.sen_dev.pin_cfg.clk_lane_sel = HD_VIDEOCAP_SEN_CLANE_CSI(0, 0);
+	cap_cfg.sen_cfg.sen_dev.pin_cfg.sen_2_serial_pin_map[0] = 0;
+	cap_cfg.sen_cfg.sen_dev.pin_cfg.sen_2_serial_pin_map[1] = 1;
+	cap_cfg.sen_cfg.sen_dev.pin_cfg.sen_2_serial_pin_map[2] = HD_VIDEOCAP_SEN_IGNORE;
+	cap_cfg.sen_cfg.sen_dev.pin_cfg.sen_2_serial_pin_map[3] = HD_VIDEOCAP_SEN_IGNORE;
+	cap_cfg.sen_cfg.sen_dev.pin_cfg.sen_2_serial_pin_map[4] = HD_VIDEOCAP_SEN_IGNORE;
+	cap_cfg.sen_cfg.sen_dev.pin_cfg.sen_2_serial_pin_map[5] = HD_VIDEOCAP_SEN_IGNORE;
+	cap_cfg.sen_cfg.sen_dev.pin_cfg.sen_2_serial_pin_map[6] = HD_VIDEOCAP_SEN_IGNORE;
+	cap_cfg.sen_cfg.sen_dev.pin_cfg.sen_2_serial_pin_map[7] = HD_VIDEOCAP_SEN_IGNORE;
+	ret = hd_videocap_open(0, HD_VIDEOCAP_CTRL(SEN1_VCAP_ID), &video_cap_ctrl); //open this for device control
+	if (ret != HD_OK) {
+		return ret;
+	}
+	ret |= hd_videocap_set(video_cap_ctrl, HD_VIDEOCAP_PARAM_DRV_CONFIG, &cap_cfg);
+	iq_ctl.func = HD_VIDEOCAP_FUNC_AE | HD_VIDEOCAP_FUNC_AWB;
+	ret |= hd_videocap_set(video_cap_ctrl, HD_VIDEOCAP_PARAM_CTRL, &iq_ctl);
+
+	*p_video_cap_ctrl = video_cap_ctrl;
+	return ret;
+}
+
+// static HD_RESULT set_audio_cap_cfg(HD_PATH_ID *p_audio_cap_ctrl)
+// {
+// 	HD_RESULT ret;
+// 	HD_PATH_ID audio_cap_ctrl = 0;
+// 	HD_AUDIOCAP_DEV_CONFIG audio_dev_cfg = {0};
+// 	HD_AUDIOCAP_DRV_CONFIG audio_drv_cfg = {0};
+
+// 	ret = hd_audiocap_open(0, HD_AUDIOCAP_0_CTRL, &audio_cap_ctrl); //open this for device control
+// 	if (ret != HD_OK) {
+// 		return ret;
+// 	}
+
+// 	// set audiocap dev parameter
+// 	audio_dev_cfg.in_max.sample_rate = HD_AUDIO_SR_48000;
+// 	audio_dev_cfg.in_max.sample_bit = HD_AUDIO_BIT_WIDTH_16;
+// 	audio_dev_cfg.in_max.mode = HD_AUDIO_SOUND_MODE_STEREO;
+// 	audio_dev_cfg.in_max.frame_sample = 1024;
+// 	audio_dev_cfg.frame_num_max = 10;
+// 	ret = hd_audiocap_set(audio_cap_ctrl, HD_AUDIOCAP_PARAM_DEV_CONFIG, &audio_dev_cfg);
+// 	if (ret != HD_OK) {
+// 		return ret;
+// 	}
+
+// 	// set audiocap drv parameter
+// 	audio_drv_cfg.mono = HD_AUDIO_MONO_RIGHT;
+// 	ret = hd_audiocap_set(audio_cap_ctrl, HD_AUDIOCAP_PARAM_DRV_CONFIG, &audio_drv_cfg);
+
+// 	*p_audio_cap_ctrl = audio_cap_ctrl;
+// 	return ret;
+// }
+
+static HD_RESULT set_cap_param(HD_PATH_ID video_cap_path, HD_DIM *p_dim)
+{
+	HD_RESULT ret = HD_OK;
+	{//select sensor mode, manually or automatically
+		HD_VIDEOCAP_IN video_in_param = {0};
+
+		video_in_param.sen_mode = HD_VIDEOCAP_SEN_MODE_AUTO; //auto select sensor mode by the parameter of HD_VIDEOCAP_PARAM_OUT
+		video_in_param.frc = HD_VIDEO_FRC_RATIO(30,1);
+		video_in_param.dim.w = p_dim->w;
+		video_in_param.dim.h = p_dim->h;
+		video_in_param.pxlfmt = SEN_OUT_FMT;
+		video_in_param.out_frame_num = HD_VIDEOCAP_SEN_FRAME_NUM_1;
+		ret = hd_videocap_set(video_cap_path, HD_VIDEOCAP_PARAM_IN, &video_in_param);
+		//printf("set_cap_param MODE=%d\r\n", ret);
+		if (ret != HD_OK) {
+			return ret;
+		}
+	}
+	#if 1 //no crop, full frame
+	{
+		HD_VIDEOCAP_CROP video_crop_param = {0};
+
+		video_crop_param.mode = HD_CROP_OFF;
+		ret = hd_videocap_set(video_cap_path, HD_VIDEOCAP_PARAM_IN_CROP, &video_crop_param);
+		//printf("set_cap_param CROP NONE=%d\r\n", ret);
+	}
+	#else //HD_CROP_ON
+	{
+		HD_VIDEOCAP_CROP video_crop_param = {0};
+
+		video_crop_param.mode = HD_CROP_ON;
+		video_crop_param.win.rect.x = 0;
+		video_crop_param.win.rect.y = 0;
+		video_crop_param.win.rect.w = 1920/2;
+		video_crop_param.win.rect.h= 1080/2;
+		video_crop_param.align.w = 4;
+		video_crop_param.align.h = 4;
+		ret = hd_videocap_set(video_cap_path, HD_VIDEOCAP_PARAM_IN_CROP, &video_crop_param);
+		//printf("set_cap_param CROP ON=%d\r\n", ret);
+	}
+	#endif
+	{
+		HD_VIDEOCAP_OUT video_out_param = {0};
+
+		//without setting dim for no scaling, using original sensor out size
+		video_out_param.pxlfmt = CAP_OUT_FMT;
+		video_out_param.dir = HD_VIDEO_DIR_NONE;
+		ret = hd_videocap_set(video_cap_path, HD_VIDEOCAP_PARAM_OUT, &video_out_param);
+		//printf("set_cap_param OUT=%d\r\n", ret);
+	}
+
+	return ret;
+}
+
+// static HD_RESULT set_audio_cap_param(HD_PATH_ID audio_cap_path)
+// {
+// 	HD_RESULT ret = HD_OK;
+// 	HD_AUDIOCAP_IN audio_cap_param = {0};
+
+// 	// set audiocap input parameter
+// 	audio_cap_param.sample_rate = HD_AUDIO_SR_48000;
+// 	audio_cap_param.sample_bit = HD_AUDIO_BIT_WIDTH_16;
+// 	audio_cap_param.mode = HD_AUDIO_SOUND_MODE_STEREO;
+// 	audio_cap_param.frame_sample = 1024;
+// 	ret = hd_audiocap_set(audio_cap_path, HD_AUDIOCAP_PARAM_IN, &audio_cap_param);
+
+// 	return ret;
+// }
+
+
+///////////////////////////////////////////////////////////////////////////////
+
+static HD_RESULT set_proc_cfg(HD_PATH_ID *p_video_proc_ctrl, HD_DIM* p_max_dim)
+{
+	HD_RESULT ret = HD_OK;
+	HD_VIDEOPROC_DEV_CONFIG video_cfg_param = {0};
+	HD_VIDEOPROC_CTRL video_ctrl_param = {0};
+	HD_PATH_ID video_proc_ctrl = 0;
+
+	ret = hd_videoproc_open(0, HD_VIDEOPROC_0_CTRL, &video_proc_ctrl); //open this for device control
+	if (ret != HD_OK)
+		return ret;
+
+	if (p_max_dim != NULL ) {
+		video_cfg_param.pipe = HD_VIDEOPROC_PIPE_RAWALL;
+		video_cfg_param.isp_id = SEN1_VCAP_ID;
+		video_cfg_param.ctrl_max.func = 0;
+		video_cfg_param.in_max.func = 0;
+		video_cfg_param.in_max.dim.w = p_max_dim->w;
+		video_cfg_param.in_max.dim.h = p_max_dim->h;
+		video_cfg_param.in_max.pxlfmt = CAP_OUT_FMT;
+		video_cfg_param.in_max.frc = HD_VIDEO_FRC_RATIO(1,1);
+		ret = hd_videoproc_set(video_proc_ctrl, HD_VIDEOPROC_PARAM_DEV_CONFIG, &video_cfg_param);
+		if (ret != HD_OK) {
+			return HD_ERR_NG;
+		}
+	}
+
+	video_ctrl_param.func = 0;
+	ret = hd_videoproc_set(video_proc_ctrl, HD_VIDEOPROC_PARAM_CTRL, &video_ctrl_param);
+
+	*p_video_proc_ctrl = video_proc_ctrl;
+
+	return ret;
+}
+
+static HD_RESULT set_proc_param(HD_PATH_ID video_proc_path, HD_DIM* p_dim)
+{
+	HD_RESULT ret = HD_OK;
+
+	if (p_dim != NULL) { //if videoproc is already binding to dest module, not require to setting this!
+		HD_VIDEOPROC_OUT video_out_param = {0};
+		video_out_param.func = 0;
+		video_out_param.dim.w = p_dim->w;
+		video_out_param.dim.h = p_dim->h;
+		video_out_param.pxlfmt = HD_VIDEO_PXLFMT_YUV420;
+		video_out_param.dir = HD_VIDEO_DIR_NONE;
+		video_out_param.frc = HD_VIDEO_FRC_RATIO(1,1);
+		ret = hd_videoproc_set(video_proc_path, HD_VIDEOPROC_PARAM_OUT, &video_out_param);
+	}
+
+	return ret;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+static HD_RESULT set_enc_cfg(HD_PATH_ID video_enc_path, HD_DIM *p_max_dim, UINT32 max_bitrate)
+{
+	HD_RESULT ret = HD_OK;
+	HD_VIDEOENC_PATH_CONFIG video_path_config = {0};
+
+	if (p_max_dim != NULL) {
+
+		//--- HD_VIDEOENC_PARAM_PATH_CONFIG ---
+		video_path_config.max_mem.codec_type = HD_CODEC_TYPE_H265;  // Fixed: Changed from H264 to match encoder param
+		video_path_config.max_mem.max_dim.w  = p_max_dim->w;
+		video_path_config.max_mem.max_dim.h  = p_max_dim->h;
+		video_path_config.max_mem.bitrate    = max_bitrate;
+		video_path_config.max_mem.enc_buf_ms = 3000;
+		video_path_config.max_mem.svc_layer  = HD_SVC_4X;
+		video_path_config.max_mem.ltr        = TRUE;
+		video_path_config.max_mem.rotate     = FALSE;
+		video_path_config.max_mem.source_output   = FALSE;
+		video_path_config.isp_id             = SEN1_VCAP_ID;
+		ret = hd_videoenc_set(video_enc_path, HD_VIDEOENC_PARAM_PATH_CONFIG, &video_path_config);
+		if (ret != HD_OK) {
+			printf("set_enc_path_config = %d\r\n", ret);
+			return HD_ERR_NG;
+		}
+	}
+
+	return ret;
+}
+
+// static HD_RESULT set_audio_enc_cfg(HD_PATH_ID audio_enc_path, UINT32 enc_type)
+// {
+// 	HD_RESULT ret = HD_OK;
+// 	HD_AUDIOENC_PATH_CONFIG audio_path_cfg = {0};
+
+// 	// set audioenc path config
+// 	audio_path_cfg.max_mem.codec_type = enc_type;
+// 	audio_path_cfg.max_mem.sample_rate = HD_AUDIO_SR_48000;
+// 	audio_path_cfg.max_mem.sample_bit = HD_AUDIO_BIT_WIDTH_16;
+// 	audio_path_cfg.max_mem.mode = HD_AUDIO_SOUND_MODE_STEREO;
+// 	ret = hd_audioenc_set(audio_enc_path, HD_AUDIOENC_PARAM_PATH_CONFIG, &audio_path_cfg);
+
+// 	return ret;
+// }
+
+static HD_RESULT set_enc_param(HD_PATH_ID video_enc_path, HD_DIM *p_dim, UINT32 enc_type, UINT32 bitrate)
+{
+	HD_RESULT ret = HD_OK;
+	HD_VIDEOENC_IN  video_in_param = {0};
+	HD_VIDEOENC_OUT video_out_param = {0};
+	HD_H26XENC_RATE_CONTROL rc_param = {0};
+
+	if (p_dim != NULL) {
+
+		//--- HD_VIDEOENC_PARAM_IN ---
+		video_in_param.dir           = HD_VIDEO_DIR_NONE;
+		video_in_param.pxl_fmt = HD_VIDEO_PXLFMT_YUV420;
+		video_in_param.dim.w   = p_dim->w;
+		video_in_param.dim.h   = p_dim->h;
+		video_in_param.frc     = HD_VIDEO_FRC_RATIO(1,1);
+		ret = hd_videoenc_set(video_enc_path, HD_VIDEOENC_PARAM_IN, &video_in_param);
+		if (ret != HD_OK) {
+			printf("set_enc_param_in = %d\r\n", ret);
+			return ret;
+		}
+
+		printf("enc_type=%d\r\n", enc_type);
+
+		if (enc_type == 0) {
+
+			//--- HD_VIDEOENC_PARAM_OUT_ENC_PARAM ---
+			video_out_param.codec_type         = HD_CODEC_TYPE_H265;
+			video_out_param.h26x.profile       = HD_H265E_MAIN_PROFILE;
+			video_out_param.h26x.level_idc     = HD_H265E_LEVEL_5;
+			video_out_param.h26x.gop_num       = 15;
+			video_out_param.h26x.ltr_interval  = 0;
+			video_out_param.h26x.ltr_pre_ref   = 0;
+			video_out_param.h26x.gray_en       = 0;
+			video_out_param.h26x.source_output = 0;
+			video_out_param.h26x.svc_layer     = HD_SVC_DISABLE;
+			video_out_param.h26x.entropy_mode  = HD_H265E_CABAC_CODING;
+			ret = hd_videoenc_set(video_enc_path, HD_VIDEOENC_PARAM_OUT_ENC_PARAM, &video_out_param);
+			if (ret != HD_OK) {
+				printf("set_enc_param_out = %d\r\n", ret);
+				return ret;
+			}
+
+			//--- HD_VIDEOENC_PARAM_OUT_RATE_CONTROL ---
+			rc_param.rc_mode             = HD_RC_MODE_CBR;
+			rc_param.cbr.bitrate         = bitrate;
+			rc_param.cbr.frame_rate_base = 30;
+			rc_param.cbr.frame_rate_incr = 1;
+			rc_param.cbr.init_i_qp       = 26;
+			rc_param.cbr.min_i_qp        = 10;
+			rc_param.cbr.max_i_qp        = 45;
+			rc_param.cbr.init_p_qp       = 26;
+			rc_param.cbr.min_p_qp        = 10;
+			rc_param.cbr.max_p_qp        = 45;
+			rc_param.cbr.static_time     = 4;
+			rc_param.cbr.ip_weight       = 0;
+			ret = hd_videoenc_set(video_enc_path, HD_VIDEOENC_PARAM_OUT_RATE_CONTROL, &rc_param);
+			if (ret != HD_OK) {
+				printf("set_enc_rate_control = %d\r\n", ret);
+				return ret;
+			}
+		} else if (enc_type == 1) {
+
+			//--- HD_VIDEOENC_PARAM_OUT_ENC_PARAM ---
+			video_out_param.codec_type         = HD_CODEC_TYPE_H264;
+			video_out_param.h26x.profile       = HD_H264E_HIGH_PROFILE;
+			video_out_param.h26x.level_idc     = HD_H264E_LEVEL_5_1;
+			video_out_param.h26x.gop_num       = 15;
+			video_out_param.h26x.ltr_interval  = 0;
+			video_out_param.h26x.ltr_pre_ref   = 0;
+			video_out_param.h26x.gray_en       = 0;
+			video_out_param.h26x.source_output = 0;
+			video_out_param.h26x.svc_layer     = HD_SVC_DISABLE;
+			video_out_param.h26x.entropy_mode  = HD_H264E_CABAC_CODING;
+			ret = hd_videoenc_set(video_enc_path, HD_VIDEOENC_PARAM_OUT_ENC_PARAM, &video_out_param);
+			if (ret != HD_OK) {
+				printf("set_enc_param_out = %d\r\n", ret);
+				return ret;
+			}
+
+			//--- HD_VIDEOENC_PARAM_OUT_RATE_CONTROL ---
+			rc_param.rc_mode             = HD_RC_MODE_CBR;
+			rc_param.cbr.bitrate         = bitrate;
+			rc_param.cbr.frame_rate_base = 30;
+			rc_param.cbr.frame_rate_incr = 1;
+			rc_param.cbr.init_i_qp       = 26;
+			rc_param.cbr.min_i_qp        = 10;
+			rc_param.cbr.max_i_qp        = 45;
+			rc_param.cbr.init_p_qp       = 26;
+			rc_param.cbr.min_p_qp        = 10;
+			rc_param.cbr.max_p_qp        = 45;
+			rc_param.cbr.static_time     = 4;
+			rc_param.cbr.ip_weight       = 0;
+			ret = hd_videoenc_set(video_enc_path, HD_VIDEOENC_PARAM_OUT_RATE_CONTROL, &rc_param);
+			if (ret != HD_OK) {
+				printf("set_enc_rate_control = %d\r\n", ret);
+				return ret;
+			}
+
+		} else if (enc_type == 2) {
+
+			//--- HD_VIDEOENC_PARAM_OUT_ENC_PARAM ---
+			video_out_param.codec_type         = HD_CODEC_TYPE_JPEG;
+			video_out_param.jpeg.retstart_interval = 0;
+			video_out_param.jpeg.image_quality = 50;
+			ret = hd_videoenc_set(video_enc_path, HD_VIDEOENC_PARAM_OUT_ENC_PARAM, &video_out_param);
+			if (ret != HD_OK) {
+				printf("set_enc_param_out = %d\r\n", ret);
+				return ret;
+			}
+
+		} else {
+
+			printf("not support enc_type\r\n");
+			return HD_ERR_NG;
+		}
+	}
+
+	return ret;
+}
+// static HD_RESULT set_acap_cfg(HD_PATH_ID *p_audio_cap_ctrl, UINT32 enc_type)
+// {
+//     HD_RESULT ret;
+//     HD_PATH_ID audio_cap_ctrl = 0;
+//     HD_AUDIOCAP_DEV_CONFIG audio_dev_cfg = {0};
+//     HD_AUDIOCAP_DRV_CONFIG audio_drv_cfg = {0};
+
+//     ret = hd_audiocap_open(0, HD_AUDIOCAP_0_CTRL, &audio_cap_ctrl);
+//     if (ret != HD_OK) {
+//         return ret;
+//     }
+
+//     // Configure device based on encoder type
+//     if (enc_type == HD_AUDIO_CODEC_ULAW || enc_type == HD_AUDIO_CODEC_ALAW) {
+//         audio_dev_cfg.in_max.sample_rate = HD_AUDIO_SR_48000;
+//         audio_dev_cfg.in_max.sample_bit = HD_AUDIO_BIT_WIDTH_16;
+//         audio_dev_cfg.in_max.mode = HD_AUDIO_SOUND_MODE_STEREO;
+//         audio_dev_cfg.in_max.frame_sample = 1024;
+//     } else {
+//         audio_dev_cfg.in_max.sample_rate = HD_AUDIO_SR_48000;
+//         audio_dev_cfg.in_max.sample_bit = HD_AUDIO_BIT_WIDTH_16;
+//         audio_dev_cfg.in_max.mode = HD_AUDIO_SOUND_MODE_STEREO;
+//         audio_dev_cfg.in_max.frame_sample = 1024;
+//     }
+    
+//     audio_dev_cfg.frame_num_max = 10;
+//     ret = hd_audiocap_set(audio_cap_ctrl, HD_AUDIOCAP_PARAM_DEV_CONFIG, &audio_dev_cfg);
+//     if (ret != HD_OK) {
+//         return ret;
+//     }
+
+//     audio_drv_cfg.mono = HD_AUDIO_MONO_RIGHT;
+//     ret = hd_audiocap_set(audio_cap_ctrl, HD_AUDIOCAP_PARAM_DRV_CONFIG, &audio_drv_cfg);
+
+//     *p_audio_cap_ctrl = audio_cap_ctrl;
+//     return ret;
+// }
+static HD_RESULT set_acap_cfg(HD_PATH_ID *p_audio_cap_ctrl)
+{
+	HD_RESULT ret;
+	HD_PATH_ID audio_cap_ctrl = 0;
+	HD_AUDIOCAP_DEV_CONFIG audio_dev_cfg = {0};
+	HD_AUDIOCAP_DRV_CONFIG audio_drv_cfg = {0};
+
+	ret = hd_audiocap_open(0, HD_AUDIOCAP_0_CTRL, &audio_cap_ctrl); //open this for device control
+	if (ret != HD_OK) {
+		return ret;
+	}
+
+	// set audiocap dev parameter
+	audio_dev_cfg.in_max.sample_rate = HD_AUDIO_SR_48000; 
+	audio_dev_cfg.in_max.sample_bit = HD_AUDIO_BIT_WIDTH_16;
+	audio_dev_cfg.in_max.mode = HD_AUDIO_SOUND_MODE_STEREO;
+	audio_dev_cfg.in_max.frame_sample = 1024;
+	audio_dev_cfg.frame_num_max = 10;
+	ret = hd_audiocap_set(audio_cap_ctrl, HD_AUDIOCAP_PARAM_DEV_CONFIG, &audio_dev_cfg);
+	if (ret != HD_OK) {
+		return ret;
+	}
+
+	// set audiocap drv parameter
+	audio_drv_cfg.mono = HD_AUDIO_MONO_RIGHT;
+	ret = hd_audiocap_set(audio_cap_ctrl, HD_AUDIOCAP_PARAM_DRV_CONFIG, &audio_drv_cfg);
+
+	*p_audio_cap_ctrl = audio_cap_ctrl;
+	return ret;
+}
+
+static HD_RESULT set_acap_param(HD_PATH_ID audio_cap_path)
+{
+	HD_RESULT ret = HD_OK;
+	HD_AUDIOCAP_IN audio_cap_param = {0};
+
+	// set audiocap input parameter
+	audio_cap_param.sample_rate = HD_AUDIO_SR_48000; 
+	audio_cap_param.sample_bit = HD_AUDIO_BIT_WIDTH_16;
+	audio_cap_param.mode = HD_AUDIO_SOUND_MODE_STEREO;
+	audio_cap_param.frame_sample = 1024;
+	ret = hd_audiocap_set(audio_cap_path, HD_AUDIOCAP_PARAM_IN, &audio_cap_param);
+
+	return ret;
+}
+
+// static HD_RESULT set_acap_param(HD_PATH_ID audio_cap_path, UINT32 enc_type)
+// {
+//     HD_RESULT ret = HD_OK;
+//     HD_AUDIOCAP_IN audio_cap_param = {0};
+
+//     // Match capture settings with encoder settings
+//     if (enc_type == HD_AUDIO_CODEC_ULAW || enc_type == HD_AUDIO_CODEC_ALAW) {
+//         audio_cap_param.sample_rate = HD_AUDIO_SR_48000;
+//         audio_cap_param.sample_bit = HD_AUDIO_BIT_WIDTH_16;
+//         audio_cap_param.mode = HD_AUDIO_SOUND_MODE_STEREO;
+//         audio_cap_param.frame_sample = 1024; // Suitable for G.711 at 8kHz (20ms frame)
+//     } else {
+//         audio_cap_param.sample_rate = HD_AUDIO_SR_48000;
+//         audio_cap_param.sample_bit = HD_AUDIO_BIT_WIDTH_16;
+//         audio_cap_param.mode = HD_AUDIO_SOUND_MODE_STEREO;
+//         audio_cap_param.frame_sample = 1024;
+//     }
+    
+//     ret = hd_audiocap_set(audio_cap_path, HD_AUDIOCAP_PARAM_IN, &audio_cap_param);
+
+	
+
+// 	return ret;
+// }
+
+static HD_RESULT set_aenc_cfg(HD_PATH_ID audio_enc_path, UINT32 enc_type)
+{
+	HD_RESULT ret = HD_OK;
+	HD_AUDIOENC_PATH_CONFIG audio_path_cfg = {0};
+
+	// set audioenc path config
+	audio_path_cfg.max_mem.codec_type = enc_type;
+	audio_path_cfg.max_mem.sample_rate = HD_AUDIO_SR_48000; 
+	audio_path_cfg.max_mem.sample_bit = HD_AUDIO_BIT_WIDTH_16;
+	audio_path_cfg.max_mem.mode = HD_AUDIO_SOUND_MODE_STEREO;
+	ret = hd_audioenc_set(audio_enc_path, HD_AUDIOENC_PARAM_PATH_CONFIG, &audio_path_cfg);
+
+	return ret;
+}
+
+// static HD_RESULT set_aenc_cfg(HD_PATH_ID audio_enc_path, UINT32 enc_type)
+// {
+//     HD_RESULT ret = HD_OK;
+//     HD_AUDIOENC_PATH_CONFIG audio_path_cfg = {0};
+
+//     // Configure sample rate appropriately based on codec type
+//     audio_path_cfg.max_mem.codec_type = enc_type;
+    
+//     // For G.711 codecs, use 8kHz sample rate and mono
+//     if (enc_type == HD_AUDIO_CODEC_ULAW || enc_type == HD_AUDIO_CODEC_ALAW) {
+//         audio_path_cfg.max_mem.sample_rate = HD_AUDIO_SR_48000; 
+//         audio_path_cfg.max_mem.sample_bit = HD_AUDIO_BIT_WIDTH_16;
+//         audio_path_cfg.max_mem.mode = HD_AUDIO_SOUND_MODE_STEREO;
+//         printf("Setting G.711 with 8kHz sample rate, mono\n");
+//     } else {
+//         // For PCM and AAC, use 48kHz and stereo
+//         audio_path_cfg.max_mem.sample_rate = HD_AUDIO_SR_48000; 
+//         audio_path_cfg.max_mem.sample_bit = HD_AUDIO_BIT_WIDTH_16;
+//         audio_path_cfg.max_mem.mode = HD_AUDIO_SOUND_MODE_STEREO;
+//         printf("Setting PCM/AAC with 48kHz sample rate, stereo\n");
+//     }
+    
+//     ret = hd_audioenc_set(audio_enc_path, HD_AUDIOENC_PARAM_PATH_CONFIG, &audio_path_cfg);
+//     return ret;
+// }
+
+
+static HD_RESULT set_aenc_param(HD_PATH_ID audio_enc_path, UINT32 enc_type)
+{
+	HD_RESULT ret = HD_OK;
+	HD_AUDIOENC_IN audio_in_param = {0};
+	HD_AUDIOENC_OUT audio_out_param = {0};
+
+	// set audioenc input parameter
+	audio_in_param.sample_rate = HD_AUDIO_SR_48000; 
+	audio_in_param.sample_bit = HD_AUDIO_BIT_WIDTH_16;
+	audio_in_param.mode = HD_AUDIO_SOUND_MODE_STEREO;
+	ret = hd_audioenc_set(audio_enc_path, HD_AUDIOENC_PARAM_IN, &audio_in_param);
+	if (ret != HD_OK) {
+		printf("set_enc_param_in = %d\r\n", ret);
+		return ret;
+	}
+
+	// set audioenc output parameter
+	audio_out_param.codec_type = enc_type;
+	audio_out_param.aac_adts = (enc_type == HD_AUDIO_CODEC_AAC) ? TRUE : FALSE;
+	ret = hd_audioenc_set(audio_enc_path, HD_AUDIOENC_PARAM_OUT, &audio_out_param);
+	if (ret != HD_OK) {
+		printf("set_enc_param_out = %d\r\n", ret);
+		return ret;
+	}
+
+	return ret;
+}
+
+// static HD_RESULT set_aenc_param(HD_PATH_ID audio_enc_path, UINT32 enc_type)
+// {
+//     HD_RESULT ret = HD_OK;
+//     HD_AUDIOENC_IN audio_in_param = {0};
+//     HD_AUDIOENC_OUT audio_out_param = {0};
+
+//     // Configure input parameters based on codec type
+//     if (enc_type == HD_AUDIO_CODEC_ULAW || enc_type == HD_AUDIO_CODEC_ALAW) {
+//         audio_in_param.sample_rate = HD_AUDIO_SR_8000;
+//         audio_in_param.sample_bit = HD_AUDIO_BIT_WIDTH_16;
+//         audio_in_param.mode = HD_AUDIO_SOUND_MODE_MONO;
+//     } else {
+//         audio_in_param.sample_rate = HD_AUDIO_SR_48000;
+//         audio_in_param.sample_bit = HD_AUDIO_BIT_WIDTH_16;
+//         audio_in_param.mode = HD_AUDIO_SOUND_MODE_STEREO;
+//     }
+    
+//     ret = hd_audioenc_set(audio_enc_path, HD_AUDIOENC_PARAM_IN, &audio_in_param);
+//     if (ret != HD_OK) {
+//         printf("set_enc_param_in = %d\r\n", ret);
+//         return ret;
+//     }
+
+//     // Configure output parameters
+//     audio_out_param.codec_type = enc_type;
+//     audio_out_param.aac_adts = (enc_type == HD_AUDIO_CODEC_AAC) ? TRUE : FALSE;
+//     ret = hd_audioenc_set(audio_enc_path, HD_AUDIOENC_PARAM_OUT, &audio_out_param);
+//     if (ret != HD_OK) {
+//         printf("set_enc_param_out = %d\r\n", ret);
+//         return ret;
+//     }
+
+//     return ret;
+// }
+
+// static HD_RESULT set_audio_enc_param(HD_PATH_ID audio_enc_path, UINT32 enc_type)
+// {
+// 	HD_RESULT ret = HD_OK;
+// 	HD_AUDIOENC_IN audio_in_param = {0};
+// 	HD_AUDIOENC_OUT audio_out_param = {0};
+
+// 	// set audioenc input parameter
+// 	audio_in_param.sample_rate = HD_AUDIO_SR_48000;
+// 	audio_in_param.sample_bit = HD_AUDIO_BIT_WIDTH_16;
+// 	audio_in_param.mode = HD_AUDIO_SOUND_MODE_STEREO;
+// 	ret = hd_audioenc_set(audio_enc_path, HD_AUDIOENC_PARAM_IN, &audio_in_param);
+// 	if (ret != HD_OK) {
+// 		printf("set_enc_param_in = %d\r\n", ret);
+// 		return ret;
+// 	}
+
+// 	// set audioenc output parameter
+// 	audio_out_param.codec_type = enc_type;
+// 	audio_out_param.aac_adts = (enc_type == HD_AUDIO_CODEC_AAC) ? TRUE : FALSE;
+// 	ret = hd_audioenc_set(audio_enc_path, HD_AUDIOENC_PARAM_OUT, &audio_out_param);
+// 	if (ret != HD_OK) {
+// 		printf("set_enc_param_out = %d\r\n", ret);
+// 		return ret;
+// 	}
+
+// 	return ret;
+// }
+
+///////////////////////////////////////////////////////////////////////////////
+
+// typedef struct _VIDEO_RECORD {
+
+// 	// (1)
+// 	HD_VIDEOCAP_SYSCAPS cap_syscaps;
+// 	HD_PATH_ID cap_ctrl;
+// 	HD_PATH_ID cap_path;
+
+// 	HD_DIM  cap_dim;
+// 	HD_DIM  proc_max_dim;
+
+// 	// (2)
+// 	HD_VIDEOPROC_SYSCAPS proc_syscaps;
+// 	HD_PATH_ID proc_ctrl;
+// 	HD_PATH_ID proc_path;
+
+// 	HD_DIM  enc_max_dim;
+// 	HD_DIM  enc_dim;
+
+// 	// (3)
+// 	HD_VIDEOENC_SYSCAPS enc_syscaps;
+// 	HD_PATH_ID enc_path;
+
+// 	// (4) user pull
+// 	pthread_t  enc_thread_id;
+// 	UINT32     enc_exit;
+// 	UINT32     flow_start;
+
+// } VIDEO_RECORD;
+
+
+
+
+typedef struct _AUDIO_RECORD {
+
+	// (1) audio cap
+	HD_PATH_ID cap_ctrl;
+	HD_PATH_ID cap_path;
+
+	// (2) audio enc
+	HD_PATH_ID enc_path;
+	UINT32 enc_type;
+
+	// (3) user pull
+	pthread_t  enc_thread_id;
+	UINT32     enc_exit;
+	UINT32     flow_start;
+
+} AUDIO_RECORD;
+
+static HD_RESULT init_module(void)
+{
+	HD_RESULT ret;
+	if ((ret = hd_videocap_init()) != HD_OK)
+		return ret;
+	if ((ret = hd_videoproc_init()) != HD_OK)
+		return ret;
+    if ((ret = hd_videoenc_init()) != HD_OK)
+		return ret;
+	//for audio
+	if((ret = hd_audiocap_init()) != HD_OK)
+	    return ret;
+	if((ret = hd_audioenc_init()) != HD_OK)
+    	return ret;
+
+	return HD_OK;
+}
+
+static HD_RESULT open_module(VIDEO_RECORD *p_stream, HD_DIM* p_proc_max_dim)
+{
+	HD_RESULT ret;
+	// set videocap config
+	ret = set_cap_cfg(&p_stream->cap_ctrl);
+	if (ret != HD_OK) {
+		printf("set cap-cfg fail=%d\n", ret);
+		return HD_ERR_NG;
+	}
+	// set videoproc config
+	ret = set_proc_cfg(&p_stream->proc_ctrl, p_proc_max_dim);
+	if (ret != HD_OK) {
+		printf("set proc-cfg fail=%d\n", ret);
+		return HD_ERR_NG;
+	}
+
+	if ((ret = hd_videocap_open(HD_VIDEOCAP_IN(SEN1_VCAP_ID, 0), HD_VIDEOCAP_OUT(SEN1_VCAP_ID, 0), &p_stream->cap_path)) != HD_OK)
+		return ret;
+	if ((ret = hd_videoproc_open(HD_VIDEOPROC_0_IN_0, HD_VIDEOPROC_0_OUT_0, &p_stream->proc_path)) != HD_OK)
+		return ret;
+	if ((ret = hd_videoenc_open(HD_VIDEOENC_0_IN_0, HD_VIDEOENC_0_OUT_0, &p_stream->enc_path)) != HD_OK)
+		return ret;
+
+	// set audiocap config
+	ret = set_acap_cfg(&p_stream->acap_path);
+	if (ret != HD_OK) {
+		printf("set cap-cfg fail\r\n");
+		return HD_ERR_NG;
+	}
+
+	if((ret = hd_audiocap_open(HD_AUDIOCAP_0_IN_0, HD_AUDIOCAP_0_OUT_0, &p_stream->acap_path)) != HD_OK)
+        return ret;
+	if((ret = hd_audioenc_open(HD_AUDIOENC_0_IN_0, HD_AUDIOENC_0_OUT_0, &p_stream->aenc_path)) != HD_OK)
+        return ret;
+
+	return HD_OK;
+}
+
+// static HD_RESULT open_audio_module(AUDIO_RECORD *p_stream)
+// {
+// 	HD_RESULT ret;
+// 	// set audiocap config
+// 	ret = set_audio_cap_cfg(&p_stream->cap_ctrl);
+// 	if (ret != HD_OK) {
+// 		printf("set cap-cfg fail\r\n");
+// 		return HD_ERR_NG;
+// 	}
+
+// 	if((ret = hd_audiocap_open(HD_AUDIOCAP_0_IN_0, HD_AUDIOCAP_0_OUT_0, &p_stream->cap_path)) != HD_OK)
+//         return ret;
+// 	if((ret = hd_audioenc_open(HD_AUDIOENC_0_IN_0, HD_AUDIOENC_0_OUT_0, &p_stream->enc_path)) != HD_OK)
+//         return ret;
+
+// 	return HD_OK;
+// }
+
+static HD_RESULT open_module_2(VIDEO_RECORD *p_stream, HD_DIM* p_proc_max_dim)
+{
+	HD_RESULT ret;
+	if ((ret = hd_videoproc_open(HD_VIDEOPROC_0_IN_0, HD_VIDEOPROC_0_OUT_1,  &p_stream->proc_path)) != HD_OK)
+		return ret;
+	if ((ret = hd_videoenc_open(HD_VIDEOENC_0_IN_1, HD_VIDEOENC_0_OUT_1,  &p_stream->enc_path)) != HD_OK)
+		return ret;
+
+	return HD_OK;
+}
+
+static HD_RESULT open_module_3(VIDEO_RECORD *p_stream, HD_DIM* p_proc_max_dim)
+{
+	HD_RESULT ret;
+	if ((ret = hd_videoproc_open(HD_VIDEOPROC_0_IN_0, HD_VIDEOPROC_0_OUT_2,  &p_stream->proc_path)) != HD_OK)
+		return ret;
+	if ((ret = hd_videoenc_open(HD_VIDEOENC_0_IN_2, HD_VIDEOENC_0_OUT_2,  &p_stream->enc_path)) != HD_OK)
+		return ret;
+
+	return HD_OK;
+}
+
+static HD_RESULT open_module_4(VIDEO_RECORD *p_stream, HD_DIM* p_proc_max_dim)
+{
+	HD_RESULT ret;
+	if ((ret = hd_videoproc_open(HD_VIDEOPROC_0_IN_0, HD_VIDEOPROC_0_OUT_3,  &p_stream->proc_path)) != HD_OK)
+		return ret;
+	if ((ret = hd_videoenc_open(HD_VIDEOENC_0_IN_3, HD_VIDEOENC_0_OUT_3,  &p_stream->enc_path)) != HD_OK)
+		return ret;
+
+	return HD_OK;
+}
+
+static HD_RESULT close_module(VIDEO_RECORD *p_stream)
+{
+	HD_RESULT ret;
+	if ((ret = hd_videocap_close(p_stream->cap_path)) != HD_OK)
+		return ret;
+	if ((ret = hd_videoproc_close(p_stream->proc_path)) != HD_OK)
+		return ret;
+	if ((ret = hd_videoenc_close(p_stream->enc_path)) != HD_OK)
+		return ret;
+	if ((ret = hd_audiocap_close(p_stream->acap_path)) != HD_OK)
+        	return ret;
+	if ((ret = hd_audioenc_close(p_stream->aenc_path)) != HD_OK)
+        	return ret;
+	return HD_OK;
+}
+
+static HD_RESULT close_audio_module(AUDIO_RECORD *p_stream)
+{
+    HD_RESULT ret;
+	if((ret = hd_audiocap_close(p_stream->cap_path)) != HD_OK)
+        return ret;
+	if((ret = hd_audioenc_close(p_stream->enc_path)) != HD_OK)
+        return ret;
+    return HD_OK;
+}
+
+static HD_RESULT close_module_2(VIDEO_RECORD *p_stream)
+{
+	HD_RESULT ret;
+	if ((ret = hd_videoproc_close(p_stream->proc_path)) != HD_OK)
+		return ret;
+	if ((ret = hd_videoenc_close(p_stream->enc_path)) != HD_OK)
+		return ret;
+	return HD_OK;
+}
+
+static HD_RESULT close_module_3(VIDEO_RECORD *p_stream)
+{
+	HD_RESULT ret;
+	if ((ret = hd_videoproc_close(p_stream->proc_path)) != HD_OK)
+		return ret;
+	if ((ret = hd_videoenc_close(p_stream->enc_path)) != HD_OK)
+		return ret;
+	return HD_OK;
+}
+
+static HD_RESULT close_module_4(VIDEO_RECORD *p_stream)
+{
+	HD_RESULT ret;
+	if ((ret = hd_videoproc_close(p_stream->proc_path)) != HD_OK)
+		return ret;
+	if ((ret = hd_videoenc_close(p_stream->enc_path)) != HD_OK)
+		return ret;
+	return HD_OK;
+}
+
+
+
+static HD_RESULT exit_module(void)
+{
+	HD_RESULT ret;
+	if ((ret = hd_videocap_uninit()) != HD_OK)
+		return ret;
+	if ((ret = hd_videoproc_uninit()) != HD_OK)
+		return ret;
+	if ((ret = hd_videoenc_uninit()) != HD_OK)
+		return ret;
+
+	if((ret = hd_audiocap_uninit()) != HD_OK)
+        return ret;
+	if((ret = hd_audioenc_uninit()) != HD_OK)
+        return ret;
+	return HD_OK;
+}
+
+static void *encode_thread(void *arg)
+{
+	VIDEO_RECORD* p_stream0 = (VIDEO_RECORD *)arg;
+	VIDEO_RECORD* p_stream1 = p_stream0 + 1;
+	HD_RESULT ret = HD_OK;
+	HD_VIDEOENC_BS  data_pull;
+	UINT32 j;
+	HD_VIDEOENC_POLL_LIST poll_list[4];
+
+	UINTPTR vir_addr_main;
+	HD_VIDEOENC_BUFINFO phy_buf_main;
+	char file_path_main[32] = "/mnt/sd/dump_bs_main.mp4";
+	FILE *f_out_main;
+	#define PHY2VIRT_MAIN(pa) (vir_addr_main + (pa - phy_buf_main.buf_info.phy_addr))
+	UINTPTR vir_addr_sub;
+	HD_VIDEOENC_BUFINFO phy_buf_sub;
+	char file_path_sub[32]  = "/mnt/sd/dump_bs_sub.mp4";
+	FILE *f_out_sub;
+	#define PHY2VIRT_SUB(pa) (vir_addr_sub + (pa - phy_buf_sub.buf_info.phy_addr))
+	UINTPTR vir_addr_third;
+	HD_VIDEOENC_BUFINFO phy_buf_third;
+	char file_path_third[32] = "/mnt/sd/dump_bs_third.mp4";
+	FILE *f_out_third;
+	#define PHY2VIRT_THIRD(pa) (vir_addr_third + (pa - phy_buf_third.buf_info.phy_addr))
+	UINTPTR vir_addr_fourth;
+	HD_VIDEOENC_BUFINFO phy_buf_fourth;
+	char file_path_fourth[32] = "/mnt/sd/dump_bs_fourth.mp4";
+	FILE *f_out_fourth;
+	#define PHY2VIRT_FOURTH(pa) (vir_addr_fourth + (pa - phy_buf_fourth.buf_info.phy_addr))
+
+	//------ wait flow_start ------
+	while (p_stream0->flow_start == 0) sleep(1);
+
+	// query physical address of bs buffer ( this can ONLY query after hd_videoenc_start() is called !! )
+	hd_videoenc_get(p_stream0->enc_path, HD_VIDEOENC_PARAM_BUFINFO, &phy_buf_main);
+	hd_videoenc_get(p_stream1->enc_path, HD_VIDEOENC_PARAM_BUFINFO, &phy_buf_sub);
+	hd_videoenc_get(p_stream0->enc_path + 1, HD_VIDEOENC_PARAM_BUFINFO, &phy_buf_third);
+	hd_videoenc_get(p_stream0->enc_path + 2, HD_VIDEOENC_PARAM_BUFINFO, &phy_buf_fourth);
+
+	// mmap for bs buffer (just mmap one time only, calculate offset to virtual address later)
+	vir_addr_main = (UINTPTR)hd_common_mem_mmap(HD_COMMON_MEM_MEM_TYPE_CACHE, phy_buf_main.buf_info.phy_addr, phy_buf_main.buf_info.buf_size);
+	vir_addr_sub  = (UINTPTR)hd_common_mem_mmap(HD_COMMON_MEM_MEM_TYPE_CACHE, phy_buf_sub.buf_info.phy_addr, phy_buf_sub.buf_info.buf_size);
+	vir_addr_third = (UINTPTR)hd_common_mem_mmap(HD_COMMON_MEM_MEM_TYPE_CACHE, phy_buf_third.buf_info.phy_addr, phy_buf_third.buf_info.buf_size);
+	vir_addr_fourth = (UINTPTR)hd_common_mem_mmap(HD_COMMON_MEM_MEM_TYPE_CACHE, phy_buf_fourth.buf_info.phy_addr, phy_buf_fourth.buf_info.buf_size);
+	//----- open output files -----
+	if ((f_out_main = fopen(file_path_main, "wb")) == NULL) {
+		HD_VIDEOENC_ERR("open file (%s) fail....\r\n", file_path_main);
+	} else {
+		printf("\r\ndump main bitstream to file (%s) ....\r\n", file_path_main);
+	}
+	if ((f_out_sub = fopen(file_path_sub, "wb")) == NULL) {
+		HD_VIDEOENC_ERR("open file (%s) fail....\r\n", file_path_sub);
+	} else {
+		printf("\r\ndump sub  bitstream to file (%s) ....\r\n", file_path_sub);
+	}
+	if ((f_out_third = fopen(file_path_third, "wb")) == NULL) {
+		HD_VIDEOENC_ERR("open file (%s) fail....\r\n", file_path_third);
+	} else {
+		printf("\r\ndump third bitstream to file (%s) ....\r\n", file_path_third);
+	}
+	if ((f_out_fourth = fopen(file_path_fourth, "wb")) == NULL) {
+		HD_VIDEOENC_ERR("open file (%s) fail....\r\n", file_path_fourth);
+	} else {
+		printf("\r\ndump fourth bitstream to file (%s) ....\r\n", file_path_fourth);
+	}
+
+	printf("\r\nif you want to stop, enter \"q\" to exit !!\r\n\r\n");
+
+	//--------- pull data test ---------
+	poll_list[0].path_id = p_stream0->enc_path;
+	poll_list[1].path_id = p_stream1->enc_path;
+	poll_list[2].path_id = p_stream0->enc_path + 1; //third stream
+	poll_list[3].path_id = p_stream0->enc_path + 2; //fourth stream
+
+	while (p_stream0->enc_exit == 0) {
+		if (HD_OK == hd_videoenc_poll_list(poll_list, 2, -1)) {    // multi path poll_list , -1 = blocking mode
+			if (TRUE == poll_list[0].revent.event) {
+				//pull data
+				ret = hd_videoenc_pull_out_buf(p_stream0->enc_path, &data_pull, 0); // 0 = non-blocking mode
+
+				if (ret == HD_OK) {
+					for (j=0; j< data_pull.pack_num; j++) {
+						UINT8 *ptr = (UINT8 *)PHY2VIRT_MAIN(data_pull.video_pack[j].phy_addr);
+						UINT32 len = data_pull.video_pack[j].size;
+						if (f_out_main) fwrite(ptr, 1, len, f_out_main);
+						if (f_out_main) fflush(f_out_main);
+					}
+
+					// release data
+					ret = hd_videoenc_release_out_buf(p_stream0->enc_path, &data_pull);
+					if (ret != HD_OK) {
+						printf("enc_release error=%d !!\r\n", ret);
+					}
+				}
+			}
+
+			if (TRUE == poll_list[1].revent.event) {
+				//pull data
+				ret = hd_videoenc_pull_out_buf(p_stream1->enc_path, &data_pull, 0); // 0 = non-blocking mode
+
+				if (ret == HD_OK) {
+					for (j=0; j< data_pull.pack_num; j++) {
+						UINT8 *ptr = (UINT8 *)PHY2VIRT_SUB(data_pull.video_pack[j].phy_addr);
+						UINT32 len = data_pull.video_pack[j].size;
+						if (f_out_sub) fwrite(ptr, 1, len, f_out_sub);
+						if (f_out_sub) fflush(f_out_sub);
+					}
+
+					// release data
+					ret = hd_videoenc_release_out_buf(p_stream1->enc_path, &data_pull);
+					if (ret != HD_OK) {
+						printf("enc_release error=%d !!\r\n", ret);
+					}
+				}
+			}
+		}
+	}
+
+	// mummap for bs buffer
+	if (vir_addr_main) hd_common_mem_munmap((void *)vir_addr_main, phy_buf_main.buf_info.buf_size);
+	if (vir_addr_sub)  hd_common_mem_munmap((void *)vir_addr_sub, phy_buf_sub.buf_info.buf_size);
+	if (vir_addr_third) hd_common_mem_munmap((void *)vir_addr_third, phy_buf_third.buf_info.buf_size);
+	if (vir_addr_fourth) hd_common_mem_munmap((void *)vir_addr_fourth, phy_buf_fourth.buf_info.buf_size);
+
+	// close output file
+	if (f_out_main) fclose(f_out_main);
+	if (f_out_sub) fclose(f_out_sub);
+	if (f_out_third) fclose(f_out_third);
+	if (f_out_fourth) fclose(f_out_fourth);
+
+	return 0;
+}
+
+static void *audio_buffer_manager(void *arg)
+{
+    VIDEO_RECORD* stream = (VIDEO_RECORD *)arg;
+    HD_RESULT ret = HD_OK;
+    HD_AUDIO_BS data_pull;
+    
+    printf("Audio buffer manager starting\n");
+    
+    // Wait for flow start
+    while (stream->flow_start == 0) sleep(1);
+    
+    // Main loop - continuously pull and release buffers to keep queue in sync
+    while (stream->aenc_exit == 0) {
+        // Pull with short timeout
+        ret = hd_audioenc_pull_out_buf(stream->aenc_path, &data_pull, 10);
+        if (ret == HD_OK) {
+            // Always immediately release audio buffers
+            ret = hd_audioenc_release_out_buf(stream->aenc_path, &data_pull);
+        }
+        
+        // Small sleep to prevent CPU hogging
+        usleep(5000); // 5ms
+    }
+    
+    printf("Audio buffer manager exiting\n");
+    return NULL;
+}
+
+MAIN(argc, argv)
+{
+	HD_RESULT ret;
+	INT key;
+	VIDEO_RECORD stream[4] = {0}; //0: main stream, 1: sub stream, 2: third stream, 3: fourth stream
+	AUDIO_RECORD audio_stream[1] = {0}; //0: main stream
+	UINT32 enc_type = 0;
+	HD_DIM main_dim;
+	HD_DIM sub_dim;
+	HD_DIM third_dim;
+	HD_DIM fourth_dim;
+	// UINT32 aenc_type = 2;
+	// query program options
+	if (argc == 2) {
+		enc_type = atoi(argv[1]);
+		printf("enc_type %d\r\n", enc_type);
+		if(enc_type > 2) {
+			printf("error: not support enc_type!\r\n");
+			return 0;
+		}
+	}
+
+	// init hdal
+	ret = hd_common_init(0);
+	if (ret != HD_OK) {
+		printf("common fail=%d\n", ret);
+		goto exit;
+	}
+
+	// init memory
+	ret = mem_init();
+	if (ret != HD_OK) {
+		printf("mem fail=%d\n", ret);
+		goto exit;
+	}
+
+	// init all modules
+	ret = init_module();
+	if (ret != HD_OK) {
+		printf("init fail=%d\n", ret);
+		goto exit;
+	}
+
+	// open video_record modules (main)
+	stream[0].proc_max_dim.w = VDO_SIZE_W; //assign by user
+	stream[0].proc_max_dim.h = VDO_SIZE_H; //assign by user
+	ret = open_module(&stream[0], &stream[0].proc_max_dim);
+	if (ret != HD_OK) {
+		printf("open fail=%d\n", ret);
+		goto exit;
+	}
+
+	// open audio_record modules
+	// ret = open_audio_module(&audio_stream[0]);
+    // if(ret != HD_OK) {
+    //     printf("open fail=%d\n", ret);
+    //     goto exit;
+    // }
+
+	// open video_record modules (sub)
+	stream[1].proc_max_dim.w = VDO_SIZE_W; //assign by user
+	stream[1].proc_max_dim.h = VDO_SIZE_H; //assign by user
+	ret = open_module_2(&stream[1], &stream[1].proc_max_dim);
+	if (ret != HD_OK) {
+		printf("open fail=%d\n", ret);
+		goto exit;
+	}
+
+	// open video_record modules (third)
+	stream[2].proc_max_dim.w = VDO_SIZE_W; //assign by user
+	stream[2].proc_max_dim.h = VDO_SIZE_H; //assign by user
+	ret = open_module_3(&stream[2], &stream[2].proc_max_dim);
+	if (ret != HD_OK) {
+		printf("open fail=%d\n", ret);
+		goto exit;
+	}
+
+	// open video_record modules (fourth)
+	stream[3].proc_max_dim.w = VDO_SIZE_W; //assign by user
+	stream[3].proc_max_dim.h = VDO_SIZE_H; //assign by user
+	ret = open_module_4(&stream[3], &stream[3].proc_max_dim);
+	if (ret != HD_OK) {
+		printf("open fail=%d\n", ret);
+		goto exit;
+	}
+
+	// get videocap capability
+	ret = get_cap_caps(stream[0].cap_ctrl, &stream[0].cap_syscaps);
+	if (ret != HD_OK) {
+		printf("get cap-caps fail=%d\n", ret);
+		goto exit;
+	}
+
+	// set videocap parameter
+	stream[0].cap_dim.w = VDO_SIZE_W; //assign by user
+	stream[0].cap_dim.h = VDO_SIZE_H; //assign by user
+	ret = set_cap_param(stream[0].cap_path, &stream[0].cap_dim);
+	if (ret != HD_OK) {
+		printf("set cap fail=%d\n", ret);
+		goto exit;
+	}
+
+	// set audiocap parameter
+	// ret = set_audio_cap_param(audio_stream[0].cap_path);
+	// if (ret != HD_OK) {
+	// 	printf("set cap fail=%d\n", ret);
+	// 	goto exit;
+	// }
+
+	// query encode type
+	// if (enc_type == 0) {
+	// 	audio_stream[0].enc_type = HD_AUDIO_CODEC_AAC;
+	// } else if (enc_type == 1) {
+	// 	audio_stream[0].enc_type = HD_AUDIO_CODEC_ULAW;
+	// } else if (enc_type == 2) {
+	// 	audio_stream[0].enc_type = HD_AUDIO_CODEC_ALAW;
+	// } else {
+	// 	audio_stream[0].enc_type = HD_AUDIO_CODEC_PCM;
+	// }
+	// audio_stream[0].enc_type = HD_AUDIO_CODEC_ALAW;
+	// // set audioenc config
+	// ret = set_audio_enc_cfg(audio_stream[0].enc_path, audio_stream[0].enc_type);
+	// if (ret != HD_OK) {
+	// 	printf("set audio enc-cfg fail=%d\n", ret);
+	// 	goto exit;
+	// }
+
+	// // set audioenc paramter
+	// ret = set_audio_enc_param(audio_stream[0].enc_path, audio_stream[0].enc_type);
+	// if (ret != HD_OK) {
+	// 	printf("set enc fail=%d\n", ret);
+	// 	goto exit;
+	// }
+
+
+
+	// assign parameter by program options
+	main_dim.w = VDO_SIZE_W;
+	main_dim.h = VDO_SIZE_H;
+	sub_dim.w = SUB_VDO_SIZE_W;
+	sub_dim.h = SUB_VDO_SIZE_H;
+	third_dim.w = THRID_VDO_SIZE_W;
+	third_dim.h = THRID_VDO_SIZE_H;
+	fourth_dim.w = FOURTH_VDO_SIZE_W;
+	fourth_dim.h = FOURTH_VDO_SIZE_H;
+
+	// set videoproc parameter (main)
+	ret = set_proc_param(stream[0].proc_path, NULL);
+	if (ret != HD_OK) {
+		printf("set proc fail=%d\n", ret);
+		goto exit;
+	}
+
+	// set videoproc parameter (sub)
+	ret = set_proc_param(stream[1].proc_path, NULL);
+	if (ret != HD_OK) {
+		printf("set proc fail=%d\n", ret);
+		goto exit;
+	}
+
+	// set videoproc parameter (third)
+	ret = set_proc_param(stream[2].proc_path, NULL);
+	if (ret != HD_OK) {
+		printf("set proc fail=%d\n", ret);
+		goto exit;
+	}
+
+	// set videoproc parameter (fourth)
+	ret = set_proc_param(stream[3].proc_path, NULL);
+	if (ret != HD_OK) {
+		printf("set proc fail=%d\n", ret);
+		goto exit;
+	}
+
+	stream[0].aenc_type = HD_AUDIO_CODEC_PCM;
+	// stream[0].aenc_type = HD_AUDIO_CODEC_ALAW;
+
+	// set audiocap parameter
+	ret = set_acap_param(stream[0].acap_path);
+	if (ret != HD_OK) {
+		printf("set cap fail=%d\n", ret);
+		goto exit;
+	}
+
+	// query encode type
+	// if (aenc_type == 0) {
+	// 	stream[0].aenc_type = HD_AUDIO_CODEC_PCM;
+	// } else if (aenc_type == 1) {
+	// 	stream[0].aenc_type = HD_AUDIO_CODEC_AAC;
+	// } else if (aenc_type == 2) {
+	// 	printf("codec is ulaw");
+	// 	stream[0].aenc_type = HD_AUDIO_CODEC_ULAW;
+	// } else {
+	// 	stream[0].aenc_type = HD_AUDIO_CODEC_ALAW;
+	// }
+	
+	// set videoenc config (main)
+	stream[0].enc_max_dim.w = main_dim.w;
+	stream[0].enc_max_dim.h = main_dim.h;
+	ret = set_enc_cfg(stream[0].enc_path, &stream[0].enc_max_dim, 2 * 1024 * 1024);
+	if (ret != HD_OK) {
+		printf("set enc-cfg fail=%d\n", ret);
+		goto exit;
+	}
+
+	// set videoenc parameter (main)
+	stream[0].enc_dim.w = main_dim.w;
+	stream[0].enc_dim.h = main_dim.h;
+	ret = set_enc_param(stream[0].enc_path, &stream[0].enc_dim, enc_type, 2 * 1024 * 1024);
+	if (ret != HD_OK) {
+		printf("set enc fail=%d\n", ret);
+		goto exit;
+	}
+
+	// set videoenc config (sub)
+	stream[1].enc_max_dim.w = sub_dim.w;
+	stream[1].enc_max_dim.h = sub_dim.h;
+	ret = set_enc_cfg(stream[1].enc_path, &stream[1].enc_max_dim, 1 * 1024 * 1024);
+	if (ret != HD_OK) {
+		printf("set enc-cfg fail=%d\n", ret);
+		goto exit;
+	}
+
+	// set videoenc parameter (sub)
+	stream[1].enc_dim.w = sub_dim.w;
+	stream[1].enc_dim.h = sub_dim.h;
+	ret = set_enc_param(stream[1].enc_path, &stream[1].enc_dim, enc_type, 1 * 1024 * 1024);
+	if (ret != HD_OK) {
+		printf("set enc fail=%d\n", ret);
+		goto exit;
+	}
+
+	// set videoenc config (third)
+	stream[2].enc_max_dim.w = third_dim.w;
+	stream[2].enc_max_dim.h = third_dim.h;
+	ret = set_enc_cfg(stream[2].enc_path, &stream[2].enc_max_dim, 1 * 1024 * 1024);
+	if (ret != HD_OK) {
+		printf("set enc-cfg fail=%d\n", ret);
+		goto exit;
+	}
+
+	// set videoenc parameter (third)
+	stream[2].enc_dim.w = third_dim.w;
+	stream[2].enc_dim.h = third_dim.h;
+	ret = set_enc_param(stream[2].enc_path, &stream[2].enc_dim, enc_type, 1 * 1024 * 1024);
+	if (ret != HD_OK) {
+		printf("set enc fail=%d\n", ret);
+		goto exit;
+	}
+
+	// set videoenc config (fourth)
+	stream[3].enc_max_dim.w = fourth_dim.w;
+	stream[3].enc_max_dim.h = fourth_dim.h;
+	ret = set_enc_cfg(stream[3].enc_path, &stream[3].enc_max_dim, 1 * 1024 * 1024);
+	if (ret != HD_OK) {
+		printf("set enc-cfg fail=%d\n", ret);
+		goto exit;
+	}
+
+	// set videoenc parameter (fourth)
+	stream[3].enc_dim.w = fourth_dim.w;
+	stream[3].enc_dim.h = fourth_dim.h;
+	ret = set_enc_param(stream[3].enc_path, &stream[3].enc_dim, enc_type, 1 * 1024 * 1024);
+	if (ret != HD_OK) {
+		printf("set enc fail=%d\n", ret);
+		goto exit;
+	}
+
+	// bind video_record modules (main)
+	hd_videocap_bind(HD_VIDEOCAP_OUT(SEN1_VCAP_ID, 0), HD_VIDEOPROC_0_IN_0);
+	hd_videoproc_bind(HD_VIDEOPROC_0_OUT_0, HD_VIDEOENC_0_IN_0);
+
+	// bind video_record modules (sub)
+	hd_videoproc_bind(HD_VIDEOPROC_0_OUT_1, HD_VIDEOENC_0_IN_1);
+	// bind video_record modules (third)
+	hd_videoproc_bind(HD_VIDEOPROC_0_OUT_2, HD_VIDEOENC_0_IN_2);
+	// bind video_record modules (fourth)
+	hd_videoproc_bind(HD_VIDEOPROC_0_OUT_3, HD_VIDEOENC_0_IN_3);
+
+
+	// bind audio_record modules
+	// hd_audiocap_bind(HD_AUDIOCAP_0_OUT_0, HD_AUDIOENC_0_IN_0);
+	// set audioenc config
+	ret = set_aenc_cfg(stream[0].aenc_path, stream[0].aenc_type);
+	if (ret != HD_OK) {
+		printf("set enc-cfg fail=%d\n", ret);
+		goto exit;
+	}
+
+	// set audioenc paramter
+	ret = set_aenc_param(stream[0].aenc_path, stream[0].aenc_type);
+	if (ret != HD_OK) {
+		printf("set enc fail=%d\n", ret);
+		goto exit;
+	}
+
+	// bind audio_record modules
+	hd_audiocap_bind(HD_AUDIOCAP_0_OUT_0, HD_AUDIOENC_0_IN_0);
+
+	// start audio_record modules
+	
+
+	// create encode_thread (pull_out bitstream)
+	ret = pthread_create(&stream[0].enc_thread_id, NULL, encode_thread, (void *)stream);
+	if (ret < 0) {
+		printf("create encode thread failed");
+		goto exit;
+	}
+	// Initialize exit flag
+	stream[0].aenc_exit = 0;
+
+	// Create audio buffer management thread
+	pthread_t audio_thread_id;
+	ret = pthread_create(&audio_thread_id, NULL, audio_buffer_manager, (void *)&stream[0]);
+	if (ret < 0) {
+		printf("Create audio buffer manager thread failed");
+	}
+	// start video_record modules (main)
+	hd_videocap_start(stream[0].cap_path);
+	hd_videoproc_start(stream[0].proc_path);
+
+	// hd_audiocap_start(audio_stream[0].cap_path);
+
+	// start video_record modules (sub)
+	hd_videoproc_start(stream[1].proc_path);
+
+	// start video_record modules (third)
+	hd_videoproc_start(stream[2].proc_path);
+
+	// start video_record modules (fourth)
+	hd_videoproc_start(stream[3].proc_path);
+
+	// just wait ae/awb stable for auto-test, if don't care, user can remove it
+	sleep(1);
+	hd_videoenc_start(stream[0].enc_path);
+	// start audio_record modules
+	hd_audioenc_start(stream[0].aenc_path);
+	hd_audiocap_start(stream[0].acap_path);
+	hd_videoenc_start(stream[1].enc_path);
+	hd_videoenc_start(stream[2].enc_path);
+	hd_videoenc_start(stream[3].enc_path);
+	
+
+	// hd_audioenc_start(audio_stream[0].enc_path);
+
+	// DISABLED: Don't start encode_thread - let nvtrtspd_ipc pull frames exclusively
+	// stream[0].flow_start= 1;
+	// Setting flow_start=0 keeps encode_thread waiting, so nvtrtspd_ipc has exclusive access
+	// to encoder buffers, avoiding frame drops and POC issues
+
+	system("nvtrtspd_ipc &");
+	printf("nvtrtspd_ipc (recording disabled for clean streaming)\n");
+
+	// query user key
+	printf("Enter q to exit\n");
+	while (1) {
+		key = GETCHAR();
+		if (key == 'q' || key == 0x3) {
+			// let encode_thread stop loop and exit
+			stream[0].enc_exit = 1;
+			// quit program
+			break;
+		}
+
+		#if (DEBUG_MENU == 1)
+		if (key == 'd') {
+			// enter debug menu
+			hd_debug_run_menu();
+			printf("\r\nEnter q to exit, Enter d to debug\r\n");
+		}
+		#endif
+	}
+
+	// destroy encode thread
+	pthread_join(stream[0].enc_thread_id, NULL);
+	// Signal audio thread to exit
+	stream[0].aenc_exit = 1;
+
+	// Wait for audio thread to finish
+	pthread_join(audio_thread_id, NULL);
+	// stop video_record modules (main)
+	hd_videocap_stop(stream[0].cap_path);
+	hd_videoproc_stop(stream[0].proc_path);
+	hd_videoenc_stop(stream[0].enc_path);
+
+	// stop video_record modules (sub)
+	hd_videoproc_stop(stream[1].proc_path);
+	hd_videoenc_stop(stream[1].enc_path);
+
+	// stop video_record modules (third)
+	hd_videoproc_stop(stream[2].proc_path);
+	hd_videoenc_stop(stream[2].enc_path);
+
+	// stop video_record modules (fourth)
+	hd_videoproc_stop(stream[3].proc_path);
+	hd_videoenc_stop(stream[3].enc_path);
+
+	// unbind video_record modules (main)
+	hd_videocap_unbind(HD_VIDEOCAP_OUT(SEN1_VCAP_ID, 0));
+	hd_videoproc_unbind(HD_VIDEOPROC_0_OUT_0);
+
+	// unbind video_record modules (sub)
+	hd_videoproc_unbind(HD_VIDEOPROC_0_OUT_1);
+
+	// unbind video_record modules (third)
+	hd_videoproc_unbind(HD_VIDEOPROC_0_OUT_2);
+
+	// unbind video_record modules (fourth)
+	hd_videoproc_unbind(HD_VIDEOPROC_0_OUT_3);
+
+
+exit:
+	// close video_record modules (main)
+	ret = close_module(&stream[0]);
+	if (ret != HD_OK) {
+		printf("close fail=%d\n", ret);
+	}
+
+	// close audio_record modules
+	ret = close_audio_module(&audio_stream[0]);
+	if (ret != HD_OK) {
+		printf("close fail=%d\n", ret);
+	}
+
+	// close video_record modules (sub)
+	ret = close_module_2(&stream[1]);
+	if (ret != HD_OK) {
+		printf("close fail=%d\n", ret);
+	}
+
+	// close video_record modules (third)
+	ret = close_module_3(&stream[2]);
+	if (ret != HD_OK) {
+		printf("close fail=%d\n", ret);
+	}
+
+	// close video_record modules (fourth)
+	ret = close_module_4(&stream[3]);
+	if (ret != HD_OK) {
+		printf("close fail=%d\n", ret);
+	}
+
+	// uninit all modules
+	ret = exit_module();
+	if (ret != HD_OK) {
+		printf("exit fail=%d\n", ret);
+	}
+
+	// uninit memory
+	ret = mem_exit();
+	if (ret != HD_OK) {
+		printf("mem fail=%d\n", ret);
+	}
+
+	// uninit hdal
+	ret = hd_common_uninit();
+	if (ret != HD_OK) {
+		printf("common fail=%d\n", ret);
+	}
+
+	return 0;
+}

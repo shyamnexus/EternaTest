@@ -1,0 +1,59 @@
+/*
+ * Novatek Ltd. NA51055 BSP part of dts
+ *
+ * Cortex-A9
+ *
+ */
+#if defined(_INDEPENDENT_FDT_)
+/dts-v1/;
+/plugin/;
+#endif
+
+/ {
+	aliases {
+		sensor0 = &sen_os04c10;
+	};
+	fastboot:fastboot {
+		enable = <1>;
+		generation = <2>;
+		csi {
+			stop-nowait = <1>;
+		};
+		sensor: sensor {
+
+		};
+		i2c: i2c {
+			sensor0 {
+				pinmux = <0x1>;
+				speed = <1000000>;
+			};
+			sensor1 {
+				pinmux = <0x1>;
+				speed = <1000000>;
+			};
+		};
+	};
+};
+
+#include "nvt-fastboot-hdal-mem.dtsi"
+#include "nvt-fastboot-ipp.dtsi"
+#include "nvt-fastboot-sie.dtsi"
+#include "nvt-fastboot-venc.dtsi"
+#include "nvt-fastboot-acap.dtsi"
+#include "nvt-fastboot-rtos-ai.dtsi"
+
+//#include <sensors/nvt-fastboot-sen_os04c10_30FPS.dtsi>
+//#include <sensors/nvt-fastboot-sen_os04c10_60FPS.dtsi>
+//#include <sensors/nvt-fastboot-sen_os04c10_120FPS.dtsi>
+#include <sensors/nvt-fastboot-sen_os04c10_240FPS.dtsi>
+//#include <sensors/nvt-fastboot-sen_os04e10_30FPS.dtsi>
+//#include <sensors/nvt-fastboot-sen_sc450ai_15FPS.dtsi>
+//#include <sensors/nvt-fastboot-sen_nt99436_30FPS.dtsi>
+//#include <sensors/nvt-fastboot-sen_os04c10_120FPS_HDR.dtsi>
+
+#include "nvt-fastboot-ae-os04c10.dtsi"
+#include "nvt-fastboot-awb-os04c10.dtsi"
+#include "nvt-fastboot-iq-os04c10.dtsi"
+//#include "nvt-fastboot-front-ae.dtsi"
+//#include "nvt-fastboot-front-awb.dtsi"
+#include "nvt-fastboot-front-iq.dtsi"

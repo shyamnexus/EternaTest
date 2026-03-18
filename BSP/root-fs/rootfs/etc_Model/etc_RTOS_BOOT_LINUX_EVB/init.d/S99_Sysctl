@@ -1,0 +1,4 @@
+[ -f /etc/sysctl.conf ] && sysctl -p >&-
+# incrase net tx window size to send 4K@P60,16Mb/s without EAGAIN
+echo 1572864 > /proc/sys/net/core/wmem_max
+

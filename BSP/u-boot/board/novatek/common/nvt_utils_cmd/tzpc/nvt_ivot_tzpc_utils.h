@@ -1,0 +1,608 @@
+/**
+    NVT OPTees utilities for command customization
+
+    @file       nvt_ivot_tzpc_utils.h
+    @ingroup
+    @note
+    Copyright   Novatek Microelectronics Corp. 2022.  All rights reserved.
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License version 2 as
+    published by the Free Software Foundation.
+*/
+
+#ifndef __NVT_TZPC_UTILS_H__
+#define __NVT_TZPC_UTILS_H__
+
+#ifdef CONFIG_TARGET_NA51102_A64
+typedef enum {
+	CPU_TZPC_NULL_CTRL          = 0x0,
+	CPU_TZPC_TOP_CTRL           = 0x1,
+	CPU_TZPC_CG_CTRL,
+	CPU_TZPC_PAD_CTRL,
+
+	CPU_TZPC_TIMER_CTRL,        //0x4
+	CPU_TZPC_WDT_CTRL,          //0x5
+	CPU_TZPC_RTC_CTRL,          //0x6
+	CPU_TZPC_GPIO_CTRL,         //0x7
+
+	CPU_TZPC_INTC_CTRL          = 0x8,
+	CPU_TZPC_CC_CTRL,           //0x9
+	CPU_TZPC_HEAVY_LOAD_CTRL,   //0xA
+	CPU_TZPC_DRTC_CTRL,         //0xB
+
+	CPU_TZPC_TZPC_CTRL,         //0xC
+	CPU_TZPC_MAU_CTRL,          //0xD
+	//0xE
+	CPU_TZPC_RTC_PWBC_CTRL      = 0x0F,
+
+
+	CPU_TZPC_TIMER2_CTRL        = 0x10,
+	CPU_TZPC_TIMER3_CTRL,       //0x11
+
+	CPU_TZPC_HEAVY_LOAD2_CTRL,  //0x12
+	CPU_TZPC_HEAVY_LOAD3_CTRL,  //0x13
+
+	//0x14
+	//0x15
+	//0x16
+	//0x17
+	//0x18
+	//0x19
+	//0x1A
+	//0x1B
+	//0x1C
+	//0x1D
+	//0x1E
+	//0x1F
+
+	CPU_TZPC_I2C6_CTRL          = 0x20,
+	CPU_TZPC_PWM_CTRL,          //0x21
+
+	CPU_TZPC_I2C_CTRL,          //0x22
+	CPU_TZPC_SPI_CTRL,          //0x23
+	CPU_TZPC_SIF_CTRL,          //0x24
+	CPU_TZPC_REMOTE_CTRL,       //0x25
+	CPU_TZPC_ADC_CTRL,          //0x26
+	CPU_TZPC_LVDS_CTRL,         //0x27
+	CPU_TZPC_MIPI_CSI_CTRL      = 0x28,
+	CPU_TZPC_UART_CTRL,         //0x29
+	CPU_TZPC_ADC2_CTRL,         //0x2A
+	CPU_TZPC_ETHERNET_CTRL,     //0x2B
+	CPU_TZPC_I2C7_CTRL,         //0x2C
+	CPU_TZPC_I2C8_CTRL,         //0x2D
+	CPU_TZPC_I2C9_CTRL,         //0x2E
+	CPU_TZPC_I2C10_CTRL,        //0x2F
+
+	CPU_TZPC_UART2_CTRL         = 0x30,
+	CPU_TZPC_UART3_CTRL,        //0x31
+	CPU_TZPC_SPI2_CTRL,         //0x32
+	CPU_TZPC_MIPI_CSI2_CTRL,    //0x33
+	CPU_TZPC_SPI3_CTRL,         //0x34
+	CPU_TZPC_I2C2_CTRL,         //0x35
+	CPU_TZPC_SPI4_CTRL,         //0x36
+	CPU_TZPC_LVDS2_CTRL,        //0x37
+
+	CPU_TZPC_UART4_CTRL         = 0x38,
+	CPU_TZPC_SDP_CTRL,          //0x39
+	CPU_TZPC_I2C3_CTRL,         //0x3A
+	CPU_TZPC_I2C4_CTRL,         //0x3B
+	CPU_TZPC_I2C5_CTRL,         //0x3C
+	CPU_TZPC_SPI5_CTRL,         //0x3D
+	CPU_TZPC_UART5_CTRL,        //0x3E
+	CPU_TZPC_UART6_CTRL,    //0x3F
+
+
+	CPU_TZPC_NAND_CTRL          = 0x40,
+	CPU_TZPC_I2C11_CTRL,        //0x41
+	CPU_TZPC_SDIO_CTRL,         //0x42
+	CPU_TZPC_ETHERNET2_CTRL,    //0x43
+	//0x44
+	//0x45
+	//0x46
+	CPU_TZPC_UART7_CTRL,        //0x47
+
+
+	CPU_TZPC_UART8_CTRL,        //0x48
+	CPU_TZPC_UART9_CTRL,        //0x49
+	CPU_TZPC_MIPI_CSI3_CTRL,    //0x4A
+	CPU_TZPC_MIPI_CSI4_CTRL,    //0x4B
+	CPU_TZPC_MIPI_CSI5_CTRL,    //0x4C
+	CPU_TZPC_LVDS3_CTRL,        //0x4D
+
+	CPU_TZPC_LVDS4_CTRL         = 0x4E,
+	CPU_TZPC_LVDS5_CTRL,        //0x4F
+
+	CPU_TZPC_SDIO2_CTRL         = 0x50,
+	CPU_TZPC_SDIO3_CTRL,        //0x51
+	//0x52
+	//0x53
+	//0x54
+	//0x55
+	//0x56
+	//0x57
+
+
+	CPU_TZPC_STBC_CKG_CTRL      = 0x58,
+	CPU_TZPC_SATA_CTRL,         //0x59
+	CPU_TZPC_USB2_CTRL,         //0x5A
+	CPU_TZPC_USB3_CTRL,         //0x5B
+	CPU_TZPC_PMC_CTRL,          //0x5C
+	CPU_TZPC_SATACTRL_CTRL,     //0x5D
+	CPU_TZPC_USB2PHY_CTRL,      //0x5E
+
+	CPU_TZPC_USB3PHY_CTRL       = 0x5F,
+
+
+
+	CPU_TZPC_HWCP_CTRL          = 0x61,
+	CPU_TZPC_SCE_CTRL,          //0x62
+	CPU_TZPC_DAI_CTRL,          //0x63
+	CPU_TZPC_EAC_CTRL,          //0x64
+	CPU_TZPC_TSE_CTRL,          //0x65
+	CPU_TZPC_EFUSE_CTRL,        //0x66
+	CPU_TZPC_HASG_CTRL,         //0x67
+	CPU_TZPC_TRNG_CTRL,         //0x68
+	CPU_TZPC_UVCP_CTRL,         //0x69
+	CPU_TZPC_RSA_CTRL,          //0x6A
+	CPU_TZPC_SENPHY_CTRL,       //0x6B
+	CPU_TZPC_SENPHY2_CTRL,      //0x6C
+	CPU_TZPC_SENPHY3_CTRL,      //0x6D
+	CPU_TZPC_DDR_PHY_CTRL       = 0x6E,
+	CPU_TZPC_DAI2_PHY_CTRL,     //0x6F
+
+	//0x70
+	//0x71
+	//0x72
+	//0x73
+	//0x74
+	//0x75
+	//0x76
+	//0x77
+	//0x78
+	//0x79
+	//0x7A
+	//0x7B
+	//0x7C
+	//0x7D
+	//0x7E
+	CPU_TZPC_VCAP2_CTRL         = 0x7F,
+
+	//0x74
+	//0x75
+	//0x76
+	//0x77
+
+
+	CPU_TZPC_IDE1_CTRL          = 0x80,
+	CPU_TZPC_MI_CTRL,           //0x81
+	CPU_TZPC_HDMI_CTRL,         //0x82
+	//0x83
+
+	CPU_TZPC_MIPI_DSI_CTRL      = 0x84,
+	CPU_TZPC_MIPI_CSI_TX_CTRL,  //0x85
+	CPU_TZPC_GPENC_CTRL,        //0x86
+	CPU_TZPC_GPENC2_CTRL,       //0x87
+
+
+	CPU_TZPC_IDE2_CTRL          = 0x90,
+	CPU_TZPC_TRKE_CTRL          = 0x9F,
+
+	CPU_TZPC_JPEG_CTRL          = 0xA0,
+	CPU_TZPC_VENC_CTRL,
+	CPU_TZPC_VDEC_CTRL,
+	CPU_TZPC_JPEG_LITE_CTRL,
+	CPU_TZPC_JPEG2_CTRL         = 0xB0,
+
+	CPU_TZPC_SIE_CTRL           = 0xC0,
+	CPU_TZPC_MDBC_CTRL,
+	CPU_TZPC_DCE_CTRL,
+
+	CPU_TZPC_IPE_CTRL           = 0x8B,
+	CPU_TZPC_IME_CTRL,
+	CPU_TZPC_DIS_CTRL,
+	CPU_TZPC_NUE_CTRL,
+	CPU_TZPC_IFE_CTRL,
+
+
+	CPU_TZPC_GRAPHIC_CTRL,
+	CPU_TZPC_ISE_CTRL,
+	CPU_TZPC_SIE6_CTRL,
+	CPU_TZPC_CNN_CTRL,
+	CPU_TZPC_TGE_CTRL,
+	CPU_TZPC_VPE_CTRL,
+	CPU_TZPC_ISE2_CTRL,
+
+
+	CPU_TZPC_DRE_CTRL,
+
+	CPU_TZPC_VPE_LITE_CTRL      = 0xD0,
+	CPU_TZPC_GRAPHIC2_CTRL,
+	CPU_TZPC_SIE2_CTRL,
+	CPU_TZPC_SIE3_CTRL,
+	CPU_TZPC_SIE4_CTRL,
+	CPU_TZPC_NUE2_CTRL,
+	CPU_TZPC_CNN2_CTRL,
+	CPU_TZPC_IVE_CTRL,
+	CPU_TZPC_SIE5_CTRL,
+	CPU_TZPC_SDE_CTRL,
+	CPU_TZPC_GRAPHIC3_CTRL,     //0xDA
+
+	CPU_TZPC_VIE_CTRL           = 0xDC,
+	CPU_TZPC_VIE2_CTRL,
+	CPU_TZPC_DSP_CTRL,
+
+
+	CPU_TZPC_MAX,
+
+} CPU_TZPC_MEMORY_MAP;
+#elif defined(CONFIG_TARGET_NS02201) || defined(CONFIG_TARGET_NS02201_A64)
+typedef enum {
+	CPU_TZPC_NULL_CTRL          = 0x0,
+	CPU_TZPC_TOP_CTRL           = 0x1,
+	CPU_TZPC_CG_CTRL,
+	CPU_TZPC_PAD_CTRL,
+	CPU_TZPC_GPIO_CTRL,         //0x4
+	//0x5
+	CPU_TZPC_WDT_CTRL           = 0x6,
+	//0x7
+
+	CPU_TZPC_TIMER_CTRL         = 0x10,
+	CPU_TZPC_CC_CTRL,           //0x11
+	CPU_TZPC_PWM_CTRL,          //0x12
+	CPU_TZPC_I2C_CTRL           = 0x14,
+	CPU_TZPC_EAC_CTRL           = 0x16,
+	CPU_TZPC_TSE_CTRL           = 0x17,
+
+	CPU_TZPC_N25_CTRL           = 0x18,
+	CPU_TZPC_AGE_CTRL           = 0x19,
+	CPU_TZPC_MAU_CTRL           = 0x20,
+	CPU_TZPC_MAU2_CTRL          = 0x21,
+	CPU_TZPC_TZPC_CTRL          = 0x22,
+	CPU_TZPC_HEAVY_LOAD_CTRL    = 0x23,
+	CPU_TZPC_EFUSE_CTRL         = 0x24,
+	CPU_TZPC_SCE_CTRL           = 0x25,
+	CPU_TZPC_HASH_CTRL          = 0x26,
+	CPU_TZPC_RSA_CTRL           = 0x27,
+	CPU_TZPC_HWCPY_CTRL         = 0x28,
+	CPU_TZPC_XOR_CTRL,          //0x29
+	CPU_TZPC_ISE_CTRL,          //0x2a
+	CPU_TZPC_ISE2_CTRL,         //0x2b
+	CPU_TZPC_DRE_CTRL,          //0x2c
+
+	CPU_TZPC_MIPI_CSI_CTRL      = 0x30,
+	CPU_TZPC_SLVSEC_CTRL        = 0x31,
+	CPU_TZPC_SENPHY_CTRL        = 0x32,
+	CPU_TZPC_SENPHY2_CTRL       = 0x33,
+
+	CPU_TZPC_TGE_CTRL,          //0x34
+	CPU_TZPC_SIE_CTRL,
+	CPU_TZPC_VIE_CTRL,
+	CPU_TZPC_SLVSEC2_CTRL,
+	CPU_TZPC_SLVSECPHY_CTRL,
+
+
+	CPU_TZPC_LCD_CTRL           = 0x40,
+	CPU_TZPC_LCD2_CTRL          = 0x41,
+	CPU_TZPC_LCD3_CTRL          = 0x42,
+	CPU_TZPC_MI_CTRL            = 0x43,
+
+	CPU_TZPC_HDMI_CTRL          = 0x48,
+	CPU_TZPC_HDMI2_CTRL         = 0x49,
+
+	CPU_TZPC_ETH_CTRL           = 0x4a,
+	CPU_TZPC_ETH2_CTRL          = 0x4b,
+
+	CPU_TZPC_CONV_CTRL          = 0x50,
+	CPU_TZPC_CONV2_CTRL         = 0x51,
+	CPU_TZPC_CONV3_CTRL         = 0x52,
+	CPU_TZPC_CONV4_CTRL         = 0x53,
+	CPU_TZPC_JOBM_CTRL          = 0x54,
+	CPU_TZPC_UTIL_CTRL          = 0x55,
+	CPU_TZPC_ROU_CTRL           = 0x56,
+	CPU_TZPC_CAL_CTRL           = 0x57,
+	CPU_TZPC_LSU_CTRL           = 0x58,
+	CPU_TZPC_LME_CTRL           = 0x59,
+	CPU_TZPC_SDE_CTRL           = 0x5a,
+	CPU_TZPC_IVE_CTRL           = 0x5b,
+	CPU_TZPC_MDBC_CTRL          = 0x5c,
+	CPU_TZPC_TRKE_CTRL          = 0x5d,
+	CPU_TZPC_NUE2_CTRL          = 0x5e,
+
+	CPU_TZPC_MALI_CTRL          = 0x60,
+	CPU_TZPC_DSP_CTRL           = 0x70,
+	CPU_TZPC_OCEM_CTRL          = 0x71,
+	CPU_TZPC_DSP2_CTRL          = 0x80,
+	CPU_TZPC_OCEM2_CTRL         = 0x81,
+	CPU_TZPC_VDEC_CTRL          = 0x90,
+	CPU_TZPC_JPEG_CTRL          = 0x91,
+	CPU_TZPC_JPEG2_CTRL         = 0x92,
+	CPU_TZPC_JPEG_LITE_CTRL     = 0x93,
+	CPU_TZPC_USB2_CTRL          = 0x94,
+	CPU_TZPC_USB3_CTRL          = 0x95,
+	CPU_TZPC_USB2_A_CTRL        = 0x96,
+	CPU_TZPC_USB3_A_CTRL        = 0x97,
+	CPU_TZPC_SDIO3_CTRL         = 0x98,
+	CPU_TZPC_NAND_CTRL          = 0x99,
+	CPU_TZPC_DSI_CTRL           = 0x9A,
+	CPU_TZPC_DSI2_CTRL          = 0x9B,
+	CPU_TZPC_CSITX_CTRL         = 0x9C,
+	CPU_TZPC_CSITX2_CTRL        = 0x9D,
+	CPU_TZPC_DSIPHY_CTRL        = 0x9E,
+	CPU_TZPC_VENC_CTRL          = 0xA0,
+	CPU_TZPC_VTRC_CTRL          = 0xA1,
+	CPU_TZPC_TSEN_CTRL          = 0xA2,
+	CPU_TZPC_VPE3_CTRL          = 0xB0,
+	CPU_TZPC_USB3_2_CTRL        = 0xB1,
+	CPU_TZPC_SATA_CTRL          = 0xB2,
+	CPU_TZPC_SATA2_CTRL         = 0xB3,
+	CPU_TZPC_PCIE_CTRL          = 0xB4,
+	CPU_TZPC_PCIE2_CTRL         = 0xB5,
+	CPU_TZPC_RTC_CTRL           = 0xB6,
+	CPU_TZPC_PWBC_CTRL          = 0xB7,
+	CPU_TZPC_USB3_2_A_CTRL      = 0xB8,
+	CPU_TZPC_SATA_A_CTRL        = 0xB9,
+	CPU_TZPC_SATA2_A_CTRL       = 0xBa,
+	CPU_TZPC_ADC_CTRL           = 0xBB,
+
+	CPU_TZPC_PCIEPHY_L0_CTRL    = 0xBD,
+	CPU_TZPC_PCIEPHY_L1_CTRL    = 0xBE,
+	CPU_TZPC_IFE_CTRL           = 0xC0,
+	CPU_TZPC_VPE_CTRL           = 0xC3,
+	CPU_TZPC_IPE_CTRL           = 0xC4,
+	CPU_TZPC_IME_CTRL           = 0xC5,
+
+	CPU_TZPC_SYS_SRAM_CTRL      = 0xD0,
+	CPU_TZPC_IFE_SRAM_CTRL      = 0xD4,
+	CPU_TZPC_IFE2_SRAM_CTRL     = 0xD5,
+	CPU_TZPC_IFE3_SRAM_CTRL     = 0xD6,
+	CPU_TZPC_IFE4_SRAM_CTRL     = 0xD7,
+	CPU_TZPC_IFE5_SRAM_CTRL     = 0xD8,
+	CPU_TZPC_IFE6_SRAM_CTRL     = 0xD9,
+	CPU_TZPC_IFE7_SRAM_CTRL     = 0xDA,
+	CPU_TZPC_IFE8_SRAM_CTRL     = 0xDB,
+
+	CPU_TZPC_IFE2_CTRL          = 0xE0,
+	CPU_TZPC_VPE2_CTRL          = 0xE2,
+	CPU_TZPC_SPECIAL_START      = 0x100,
+	CPU_TZPC_TCM_CTRL           = CPU_TZPC_SPECIAL_START,
+	CPU_TZPC_TCM2_CTRL,
+	CPU_TZPC_TCM3_CTRL,
+	CPU_TZPC_TCM4_CTRL,
+	CPU_TZPC_MALI_SRAM_CTRL,
+	CPU_TZPC_N25_SRAM_CTRL,
+	CPU_TZPC_PCIE_DBI1_CTRL,
+	CPU_TZPC_PCIE_DBI2_CTRL,
+	CPU_TZPC_EDAP1_CTRL,
+	CPU_TZPC_EDAP2_CTRL,
+	CPU_TZPC_MAX,
+
+} CPU_TZPC_MEMORY_MAP;
+#elif defined(CONFIG_TARGET_NS02302) || defined(CONFIG_TARGET_NS02302_A64)
+typedef enum {
+	CPU_TZPC_NULL_CTRL          = 0x0,
+	CPU_TZPC_TOP_CTRL           = 0x1,
+	CPU_TZPC_CG_CTRL,
+	CPU_TZPC_PAD_CTRL,
+	CPU_TZPC_GPIO_CTRL,         //0x4
+	//0x5
+	//0x6
+	CPU_TZPC_TEST_CTRL          = 0x7,
+
+	CPU_TZPC_TIMER_CTRL         = 0x10,
+	CPU_TZPC_UART_CTRL,         //0x11
+	CPU_TZPC_I2C_CTRL,          //0x12
+	CPU_TZPC_SPI_CTRL,			//0x13
+	CPU_TZPC_PWM_CTRL,          //0x14
+	CPU_TZPC_EAC_CTRL,          //0x15
+
+	CPU_TZPC_EFUSE_CTRL,        //0x16
+	CPU_TZPC_HVYLD_CTRL,        //0x17
+	CPU_TZPC_MAU_CTRL,          //0x18
+	CPU_TZPC_IDE_CTRL,          //0x19
+	CPU_TZPC_MI_CTRL,           //0x1a
+	CPU_TZPC_ETH_CTRL,			//0x1b
+	CPU_TZPC_MCU_CTRL			= 0x20,
+	CPU_TZPC_CC_CTRL,			//0x21
+	CPU_TZPC_MCU_SRAM_CTRL,		//0x22
+	CPU_TZPC_STBC_CG_CTRL,		//0x23
+	CPU_TZPC_WDT_CTRL,			//0x24
+	CPU_TZPC_USB3_CTRL          = 0x28,
+	CPU_TZPC_USB3_A_CTRL,		//0x29
+	CPU_TZPC_RTC_CTRL			= 0x2b,
+	CPU_TZPC_DSI_CTRL,          //0x2c
+	CPU_TZPC_CSI_TX_CTRL,       //0x2d
+	CPU_TZPC_DSI_PHY_CTRL,      //0x2e
+
+	CPU_TZPC_MIPI_CSI_CTRL      = 0x30,
+
+	CPU_TZPC_SIE_CTRL,          //0x31
+	CPU_TZPC_VIE_CTRL,			//0x32
+	CPU_TZPC_TGE_CTRL,			//0x33
+	CPU_TZPC_IFE_CTRL,			//0x34
+	CPU_TZPC_NAND_CTRL,			//0x35
+	CPU_TZPC_SD3_CTRL,			//0x36
+	CPU_TZPC_DRE_CTRL,			//0x37
+	CPU_TZPC_ISE_CTRL,			//0x38
+
+	CPU_TZPC_IPE_CTRL           = 0x40,
+	CPU_TZPC_IME_CTRL           = 0x41,
+	CPU_TZPC_SD_CTRL            = 0x42,
+	CPU_TZPC_SD2_CTRL           = 0x43,
+	CPU_TZPC_ADC_CTRL           = 0x44,
+	
+	CPU_TZPC_VPE_CTRL           = 0x50,
+
+	CPU_TZPC_VENC_CTRL          = 0x60,
+	
+	CPU_TZPC_JM_CTRL            = 0x70,
+	CPU_TZPC_JMISP_CTRL         = 0x71,
+	CPU_TZPC_UTL_CTRL           = 0x72,
+	CPU_TZPC_ROU_CTRL           = 0x73,
+	CPU_TZPC_CAL_CTRL           = 0x74,
+	CPU_TZPC_LSU_CTRL           = 0x75,
+	CPU_TZPC_PPU_CTRL           = 0x76,
+	
+	CPU_TZPC_CONV_CTRL          = 0x80,
+
+	CPU_TZPC_IFE_SRAM_CTRL      = 0xD4,
+	
+	CPU_TZPC_HWCP_CTRL     		= 0xE0,
+	CPU_TZPC_TSE_CTRL		    = 0xE1,
+	CPU_TZPC_UVCP_CTRL		    = 0xE2,
+	CPU_TZPC_GRPH_CTRL		    = 0xE3,
+	CPU_TZPC_GRPH2_CTRL		    = 0xE4,
+	CPU_TZPC_GRPH3_CTRL 	    = 0xE5,
+	
+	CPU_TZPC_JPG_CTRL     		= 0xE8,
+	CPU_TZPC_IVE_CTRL     		= 0xE9,
+	CPU_TZPC_MDBC_CTRL     		= 0xEA,
+	CPU_TZPC_TRKE_CTRL     		= 0xEB,
+	CPU_TZPC_NUE2_CTRL     		= 0xEC,
+
+	CPU_TZPC_TRICK_BOX_CTRL     = 0xF0,
+	CPU_TZPC_SPECIAL_START      = 0x100,
+	CPU_TZPC_TCM_CTRL           = CPU_TZPC_SPECIAL_START,
+	CPU_TZPC_TCM2_CTRL,
+	CPU_TZPC_MAX,
+
+} CPU_TZPC_MEMORY_MAP;
+#elif defined(CONFIG_TARGET_NS02301)
+typedef enum {
+	CPU_TZPC_DRAM_CTRL          = 0x0,
+	CPU_TZPC_TOP_CTRL           = 0x1,
+	CPU_TZPC_CG_CTRL,
+	CPU_TZPC_PAD_CTRL,
+	CPU_TZPC_TIMER_CTRL,        //0x4
+	CPU_TZPC_WDT_CTRL,			//0x5
+	CPU_TZPC_GPIO_CTRL          = 0x7,
+	CPU_TZPC_INTC_CTRL          = 0x8,
+	CPU_TZPC_DRTC_CTRL          = 0xB,
+	CPU_TZPC_HRTIMER_CTRL       = 0xC,
+	CPU_TZPC_CFE_CTRL      		= 0xD,
+	CPU_TZPC_TEST_CTRL     		= 0xE,
+
+	CPU_TZPC_PR_8051_CTRL       = 0x10,
+	CPU_TZPC_PR_TOP_CTRL,       //0x11
+	CPU_TZPC_PR_CG_CTRL,        //0x12
+	CPU_TZPC_PR_PAD_CTRL,   	//0x13
+	CPU_TZPC_PR_TIMER_CTRL,     //0x14
+	CPU_TZPC_PR_UART2_CTRL,     //0x15
+
+	CPU_TZPC_PR_SPI_CTRL,       //0x16
+	CPU_TZPC_PR_GPIO_CTRL,      //0x17
+	CPU_TZPC_PR_INTC_CTRL,      //0x18
+	CPU_TZPC_PR_PWM_CTRL,       //0x19
+	CPU_TZPC_PR_I2C_CTRL,       //0x1a
+	CPU_TZPC_PR_WEIGAND_CTRL,	//0x1b
+	CPU_TZPC_PR_UART_CTRL,		//0x1c
+	CPU_TZPC_PR_ADC_CTRL,		//0x1d
+	CPU_TZPC_PR_CC_CTRL,		//0x1e
+	CPU_TZPC_PR_ISP_CTRL,		//0x1f
+	CPU_TZPC_PWM_CTRL			= 0x21,
+	CPU_TZPC_I2C_CTRL,			//0x22
+	CPU_TZPC_SPI_CTRL,			//0x23
+	CPU_TZPC_SIF_CTRL,			//0x24
+	CPU_TZPC_REMOTE_CTRL,		//0x25
+	CPU_TZPC_THERMAL_CTRL,		//0x26
+	CPU_TZPC_LVDS_CTRL,			//0x27
+	CPU_TZPC_MIPI_CSI_CTRL      = 0x28,
+	CPU_TZPC_UART_CTRL,			//0x29
+	CPU_TZPC_ETH_CTRL			= 0x2b,
+
+	CPU_TZPC_UART2_CTRL     	= 0x30,
+	CPU_TZPC_UART3_CTRL,        //0x31
+	CPU_TZPC_SPI2_CTRL,			//0x32
+	
+	CPU_TZPC_SPI3_CTRL			= 0x34,
+	CPU_TZPC_I2C2_CTRL,			//0x35
+
+	CPU_TZPC_LVDS2_CTRL			= 0x37,
+	CPU_TZPC_SDP_CTRL			= 0x39,
+
+	CPU_TZPC_NAND_CTRL          = 0x40,
+
+	CPU_TZPC_SD_CTRL            = 0x42,
+	CPU_TZPC_SD2_CTRL           = 0x50,
+	CPU_TZPC_SD3_CTRL           = 0x51,
+
+	CPU_TZPC_USB_PHY_CTRL       = 0x60,
+	
+	CPU_TZPC_SCE_CTRL	        = 0x62,
+	CPU_TZPC_DAI_CTRL	        = 0x63,
+	CPU_TZPC_EAC_CTRL	        = 0x64,
+	CPU_TZPC_TSE_CTRL	        = 0x65,
+	CPU_TZPC_EFUSE_CTRL	        = 0x66,
+	CPU_TZPC_HASH_CTRL	        = 0x67,
+	CPU_TZPC_TRNG_CTRL	        = 0x68,
+	CPU_TZPC_UVCP_CTRL	        = 0x69,
+	CPU_TZPC_RSA_CTRL	        = 0x6A,
+	CPU_TZPC_SENPHY_CTRL        = 0x6B,
+	CPU_TZPC_ECDSA_CTRL	        = 0x6C,
+	
+	CPU_TZPC_IME_SRAM_CTRL      = 0x70,
+	CPU_TZPC_CNN_SRAM_CTRL      = 0x73,
+	CPU_TZPC_IPE_SRAM_CTRL      = 0x76,
+	
+	CPU_TZPC_IFE_SRAM_CTRL      = 0x7C,
+
+	
+	CPU_TZPC_IDE_CTRL           = 0x80,
+	
+	CPU_TZPC_PR_TCM_CTRL        = 0x90,
+	CPU_TZPC_8051_TCM_CTRL      = 0x9C,
+	
+	CPU_TZPC_JPEG_CTRL      	= 0xA0,
+	CPU_TZPC_VENC_CTRL      	= 0xA1,
+	CPU_TZPC_YDCC_DEC_CTRL    	= 0xA2,
+	
+	CPU_TZPC_SIE_CTRL	      	= 0xC0,
+	CPU_TZPC_MDBC_CTRL	      	= 0xC1,
+	CPU_TZPC_DCE_CTRL	      	= 0xC2,
+	CPU_TZPC_IPE_CTRL	      	= 0xC3,
+	CPU_TZPC_IME_CTRL	      	= 0xC4,
+	CPU_TZPC_DIS_CTRL	      	= 0xC5,
+	CPU_TZPC_NUE_CTRL	      	= 0xC6,
+	CPU_TZPC_IFE_CTRL	      	= 0xC7,
+	CPU_TZPC_GRPH_CTRL	      	= 0xC8,
+	CPU_TZPC_ISE_CTRL	      	= 0xC9,
+	CPU_TZPC_CNN_CTRL	      	= 0xCB,
+	CPU_TZPC_TGE_CTRL	      	= 0xCC,
+	CPU_TZPC_VPE_CTRL	      	= 0xCD,
+	
+	CPU_TZPC_GRPH2_CTRL	      	= 0xD1,
+	CPU_TZPC_SIE2_CTRL	      	= 0xD2,
+	CPU_TZPC_SIE3_CTRL	      	= 0xD3,
+	CPU_TZPC_NUE2_CTRL	      	= 0xD5,
+	CPU_TZPC_IVE_CTRL	      	= 0xD7,
+	CPU_TZPC_TZASC_CTRL	      	= 0xFE,
+	CPU_TZPC_TZPC_CTRL	      	= 0xFF,
+	CPU_TZPC_USB_CTRL	       = 0xF60,
+	
+	CPU_TZPC_MAX,
+
+} CPU_TZPC_MEMORY_MAP;
+#else
+typedef enum {
+	CPU_TZPC_SCE_CTRL       = 0x62,
+	CPU_TZPC_EFUSE_CTRL     = 0x66,
+	CPU_TZPC_TRNG_CTRL      = 0x68,
+	CPU_TZPC_RSA_CTRL       = 0x6a,
+
+	CPU_TZPC_HASH_CTRL      = 0x70,
+	CPU_TZPC_TZPC_CTRL      = 0xFF,
+
+	CPU_TZPC_MAX,
+
+} CPU_TZPC_MEMORY_MAP;
+#endif
+
+
+typedef struct {
+	CPU_TZPC_MEMORY_MAP     base_address;
+	char                   *module_name;
+
+} TZPC_NAME, *pTZPC_NAME;
+
+#endif /* __NVT_TZPC_UTILS_H__ */
+

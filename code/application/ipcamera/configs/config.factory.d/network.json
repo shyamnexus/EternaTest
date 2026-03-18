@@ -1,0 +1,159 @@
+{
+  "network": {
+    "interfaces": {
+      "loopback": {
+        "enabled": true,
+        "address": "127.0.0.1"
+      },
+      "eth0": {
+        "enabled": true,
+        "bring_up_at_boot": true
+      }
+    },
+    "rtmp": {
+      "enabled": true,
+      "port": 1935,
+      "max_connections": 10
+    },
+    "rtsp": {
+      "enabled": true,
+      "port": 554
+    },
+    "http": {
+      "enabled": true,
+      "port": 80,
+      "web_root": "/var/www/"
+    },
+    "https": {
+      "enabled": true,
+      "port": 443,
+      "ssl_certificate": "/etc/nginx/ssl/Server.crt",
+      "ssl_certificate_key": "/etc/nginx/ssl/Server.key",
+      "ssl_certs_dir": "/etc/nginx/ssl",
+      "generate_cert_on_boot": true,
+      "cert_validity_days": 365,
+      "cert_key_bits": 2048
+    },
+    "onvif": {
+      "enabled": true,
+      "port": 5000,
+      "discovery_enabled": true
+    },
+    "ipv4": {
+      "method": "static",
+      "interface": "eth0",
+      "address": "192.168.0.2",
+      "netmask": "255.255.255.0",
+      "gateway": "192.168.0.1",
+      "dhcp_options": {
+        "timeout": 30,
+        "retry_count": 3,
+        "send_hostname": true,
+        "pid_file": "/var/run/udhcpc_eth0.pid"
+      },
+      "fallback": {
+        "enabled": true,
+        "address": "169.254.1.1",
+        "netmask": "255.255.0.0"
+      },
+      "mtu": 1500,
+      "path_mtu_discovery": true,
+      "gratuitous_arp": {
+        "enabled": true,
+        "count": 3,
+        "interval_ms": 500
+      }
+    },
+    "ipv6": {
+      "enabled": true,
+      "method": "auto",
+      "interface": "eth0",
+      "address": "2001:db8::1",
+      "prefix_length": 64,
+      "gateway": "fe80::1",
+      "privacy_extensions": true,
+      "accept_ra": true,
+      "dhcp_options": {
+        "timeout": 30,
+        "request_prefix": true,
+        "rapid_commit": true
+      },
+      "fallback": {
+        "enabled": true,
+        "address": "fe80::1"
+      }
+    },
+    "hostname": {
+      "method": "auto",
+      "prefix": "hon",
+      "name": "ipcamera",
+      "interface": "eth0"
+    },
+    "mdns": {
+      "enabled": true,
+      "services": {
+        "http": true,
+        "https": true,
+        "rtsp": true,
+        "onvif": true
+      }
+    },
+    "dns": {
+      "method": "auto",
+      "dns1": "1.1.1.1",
+      "dns2": "8.8.8.8",
+      "dns1_ipv6": "2606:4700:4700::1111",
+      "dns2_ipv6": "2001:4860:4860::8888"
+    },
+    "multicast": {
+      "enabled": true,
+      "address": "239.255.255.255",
+      "port": 5353,
+      "ttl": 1,
+      "interface": "eth0",
+      "loopback": false
+    },
+    "ddns": {
+      "enabled": false,
+      "provider": "dyndns",
+      "username": "",
+      "password": "",
+      "hostname": ""
+    },
+    "email": {
+      "enabled": false,
+      "smtp_server": "smtp.gmail.com",
+      "smtp_port": 587,
+      "sender_name": "IPCamera",
+      "sender_mail": ""
+    },
+    "snmp": {
+      "enabled": false,
+      "port": 161,
+      "version": "v2c",
+      "sys_location": "",
+      "sys_contact": "",
+      "sys_name": "",
+      "listen_address": "0.0.0.0"
+    },
+    "upnp": {
+      "enabled": false,
+      "timeout_ms": 5000,
+      "auto_map": false
+    },
+    "smtp": {
+      "enabled": false,
+      "server": "",
+      "port": 587,
+      "use_ssl": true,
+      "from_email": "",
+      "from_name": "IPCamera",
+      "receiver_email_0": "",
+      "receiver_email_1": "",
+      "receiver_email_2": "",
+      "receiver_email_3": "",
+      "receiver_email_4": "",
+      "timeout_sec": 30
+    }
+  }
+}

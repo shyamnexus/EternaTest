@@ -1,0 +1,33 @@
+#
+# Phy drivers for Novatek platforms
+#
+config PHY_NOVATEK_PCIE_V1
+	bool "Novatek PCIe PHY (V1) driver"
+	depends on OF && (NVT_IVOT_PLAT_NA51090) && PCI
+        depends on ARCH_NVT_IVOT_V8 || COMPILE_TEST
+	select GENERIC_PHY
+	default y
+	help
+	  Enable this to support the Novatek PCIe PHY.
+
+config PHY_NOVATEK_PCIE_V2
+	bool "Novatek PCIe PHY (V2) driver"
+	depends on OF && (NVT_IVOT_PLAT_TC98110 || (NVT_IVOT_PLAT_NS02201&&NVT_OTP_SUPPORT)) && PCI
+	select GENERIC_PHY
+	default y
+	help
+	  Enable this to support the Novatek PCIe PHY.
+
+config PHY_NS02201_SATA
+	tristate "Novatek NS02201 SATA PHY driver"
+	depends on OF && (NVT_IVOT_PLAT_NS02201)
+	select GENERIC_PHY
+	help
+	  Enable this to support the Novatek SATA PHY.
+
+config PHY_TC98110_SATA
+	bool "Novatek TC98110 SATA PHY driver"
+	depends on OF && (NVT_IVOT_PLAT_TC98110)
+	select GENERIC_PHY
+	help
+	  Enable this to support the Novatek SATA PHY.

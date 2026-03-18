@@ -1,0 +1,501 @@
+openapi: 3.0.3
+info:
+  title: IP Camera API - Playback
+  version: 1.0.0
+  description: |
+    API for searching, browsing, and playing back recorded videos.
+    Provides endpoints for calendar view, timeline, search, and file downloads.
+
+paths:
+  # ============================================================================
+  # Playback Search & Browse
+  # ============================================================================
+  /playback/search:
+    get:
+      summary: Search Recordings
+      description: |
+        Search recordings with filters for date, channel, type, and text search.
+        Returns paginated results with recording metadata.
+      operationId: searchRecordings
+      tags: [Playback]
+      parameters:
+        - name: date
+          in: query
+          description: Filter by date (YYYY-MM-DD format)
+          schema:
+            type: string
+            format: date
+            example: '2025-12-21'
+        - name: start_time
+          in: query
+          description: Filter by start time (Unix timestamp in milliseconds)
+          schema:
+            type: integer
+            format: int64
+        - name: end_time
+          in: query
+          description: Filter by end time (Unix timestamp in milliseconds)
+          schema:
+            type: integer
+            format: int64
+        - name: channel
+          in: query
+          description: Filter by channel ID (-1 for all channels)
+          schema:
+            type: integer
+            default: -1
+        - name: type
+          in: query
+          description: Filter by recording type
+          schema:
+            type: string
+            enum: [all, manual, scheduled, event, continuous]
+            default: all
+        - name: search
+          in: query
+          description: Text search in filename
+          schema:
+            type: string
+        - name: offset
+          in: query
+          description: Pagination offset
+          schema:
+            type: integer
+            default: 0
+        - name: limit
+          in: query
+          description: Maximum results to return
+          schema:
+            type: integer
+            default: 100
+            maximum: 1000
+      responses:
+        '200':
+          description: Search results
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchResults'
+
+  /playback/calendar:
+    get:
+      summary: Get Calendar View
+      description: |
+        Returns recording counts grouped by date for calendar display.
+        Useful for highlighting dates with recordings in a calendar UI.
+      operationId: getCalendar
+      tags: [Playback]
+      parameters:
+        - name: year
+          in: query
+          required: true
+          schema:
+            type: integer
+            example: 2025
+        - name: month
+          in: query
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 12
+            example: 12
+        - name: channel
+          in: query
+          description: Filter by channel ID (-1 for all channels)
+          schema:
+            type: integer
+            default: -1
+      responses:
+        '200':
+          description: Calendar data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CalendarData'
+
+  /playback/timeline:
+    get:
+      summary: Get Day Timeline
+      description: |
+        Returns recording segments for a specific day, suitable for timeline visualization.
+        Includes gap detection between recordings.
+      operationId: getTimeline
+      tags: [Playback]
+      parameters:
+        - name: date
+          in: query
+          required: true
+          description: Date for timeline (YYYY-MM-DD format)
+          schema:
+            type: string
+            format: date
+            example: '2025-12-21'
+        - name: channel
+          in: query
+          description: Filter by channel ID (-1 for all channels)
+          schema:
+            type: integer
+            default: -1
+      responses:
+        '200':
+          description: Timeline data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TimelineData'
+
+  /playback/dates:
+    get:
+      summary: Get Dates with Recordings
+      description: |
+        Returns a list of all dates that have recordings.
+        Useful for quickly identifying which dates have content.
+      operationId: getDatesWithRecordings
+      tags: [Playback]
+      parameters:
+        - name: channel
+          in: query
+          description: Filter by channel ID (-1 for all channels)
+          schema:
+            type: integer
+            default: -1
+        - name: year
+          in: query
+          description: Filter by year
+          schema:
+            type: integer
+        - name: month
+          in: query
+          description: Filter by month (1-12)
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 12
+      responses:
+        '200':
+          description: List of dates with recordings
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DatesWithRecordings'
+
+  # ============================================================================
+  # Playback Download & Streaming
+  # ============================================================================
+  /playback/download/{id}:
+    get:
+      summary: Download Recording
+      description: |
+        Downloads the recording file. Returns the raw video file with
+        appropriate Content-Disposition header for download.
+      operationId: downloadRecording
+      tags: [Playback]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Recording ID
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Recording file
+          headers:
+            Content-Disposition:
+              description: Attachment with filename
+              schema:
+                type: string
+            Content-Length:
+              description: File size in bytes
+              schema:
+                type: integer
+          content:
+            video/mp4:
+              schema:
+                type: string
+                format: binary
+            video/x-matroska:
+              schema:
+                type: string
+                format: binary
+        '404':
+          description: Recording not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /playback/thumbnail/{id}:
+    get:
+      summary: Get Recording Thumbnail
+      description: |
+        Returns a thumbnail image for the recording.
+        If no thumbnail exists, returns a default placeholder.
+      operationId: getRecordingThumbnail
+      tags: [Playback]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Recording ID
+          schema:
+            type: string
+        - name: width
+          in: query
+          description: Desired thumbnail width
+          schema:
+            type: integer
+            default: 320
+        - name: height
+          in: query
+          description: Desired thumbnail height
+          schema:
+            type: integer
+            default: 180
+      responses:
+        '200':
+          description: Thumbnail image
+          content:
+            image/jpeg:
+              schema:
+                type: string
+                format: binary
+            image/png:
+              schema:
+                type: string
+                format: binary
+
+  /playback/stream/{id}:
+    get:
+      summary: Stream Recording
+      description: |
+        Streams the recording for playback. Supports range requests for seeking.
+      operationId: streamRecording
+      tags: [Playback]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Recording ID
+          schema:
+            type: string
+        - name: Range
+          in: header
+          description: Byte range for partial content
+          schema:
+            type: string
+            example: 'bytes=0-1048575'
+      responses:
+        '200':
+          description: Full video content
+          content:
+            video/mp4:
+              schema:
+                type: string
+                format: binary
+        '206':
+          description: Partial content (for range requests)
+          headers:
+            Content-Range:
+              description: Byte range of returned content
+              schema:
+                type: string
+          content:
+            video/mp4:
+              schema:
+                type: string
+                format: binary
+
+components:
+  schemas:
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+
+    RecordingInfo:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique recording identifier
+        filename:
+          type: string
+          description: Recording filename
+        channel:
+          type: integer
+          description: Channel ID (0, 1, 2)
+        type:
+          type: string
+          enum: [manual, scheduled, event, continuous]
+          description: Type of recording
+        start_time:
+          type: integer
+          format: int64
+          description: Start time (Unix timestamp in milliseconds)
+        end_time:
+          type: integer
+          format: int64
+          description: End time (Unix timestamp in milliseconds)
+        duration_ms:
+          type: integer
+          format: int64
+          description: Duration in milliseconds
+        file_size:
+          type: integer
+          format: int64
+          description: File size in bytes
+        file_size_human:
+          type: string
+          description: Human-readable file size
+        width:
+          type: integer
+          description: Video width in pixels
+        height:
+          type: integer
+          description: Video height in pixels
+        fps:
+          type: number
+          description: Frames per second
+        codec:
+          type: string
+          description: Video codec (H264, H265)
+        encrypted:
+          type: boolean
+          description: Whether the recording is encrypted
+        status:
+          type: string
+          enum: [complete, recording, corrupted]
+          description: Recording status
+        has_thumbnail:
+          type: boolean
+          description: Whether a thumbnail is available
+
+    SearchResults:
+      type: object
+      properties:
+        total:
+          type: integer
+          description: Total number of matching recordings
+        offset:
+          type: integer
+          description: Current pagination offset
+        limit:
+          type: integer
+          description: Maximum results returned
+        recordings:
+          type: array
+          items:
+            $ref: '#/components/schemas/RecordingInfo'
+
+    CalendarData:
+      type: object
+      properties:
+        year:
+          type: integer
+        month:
+          type: integer
+        days:
+          type: array
+          items:
+            type: object
+            properties:
+              day:
+                type: integer
+                description: Day of month (1-31)
+              date:
+                type: string
+                format: date
+                description: Full date (YYYY-MM-DD)
+              total_recordings:
+                type: integer
+                description: Total recordings on this day
+              total_duration_ms:
+                type: integer
+                format: int64
+                description: Total recording duration
+              by_type:
+                type: object
+                properties:
+                  manual:
+                    type: integer
+                  scheduled:
+                    type: integer
+                  event:
+                    type: integer
+                  continuous:
+                    type: integer
+
+    TimelineData:
+      type: object
+      properties:
+        date:
+          type: string
+          format: date
+        total_recordings:
+          type: integer
+        total_duration_ms:
+          type: integer
+          format: int64
+        coverage_percent:
+          type: number
+          description: Percentage of day covered by recordings
+        segments:
+          type: array
+          items:
+            type: object
+            properties:
+              recording_id:
+                type: string
+              start_time:
+                type: integer
+                format: int64
+              end_time:
+                type: integer
+                format: int64
+              start_percent:
+                type: number
+                description: Start position as percentage of day (0-100)
+              width_percent:
+                type: number
+                description: Width as percentage of day
+              type:
+                type: string
+                enum: [manual, scheduled, event, continuous]
+              channel:
+                type: integer
+        gaps:
+          type: array
+          items:
+            type: object
+            properties:
+              start_time:
+                type: integer
+                format: int64
+              end_time:
+                type: integer
+                format: int64
+              duration_ms:
+                type: integer
+                format: int64
+
+    DatesWithRecordings:
+      type: object
+      properties:
+        total_dates:
+          type: integer
+          description: Total number of dates with recordings
+        dates:
+          type: array
+          items:
+            type: object
+            properties:
+              date:
+                type: string
+                format: date
+              recording_count:
+                type: integer

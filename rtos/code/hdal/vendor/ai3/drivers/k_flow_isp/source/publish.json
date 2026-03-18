@@ -1,0 +1,8 @@
+{
+	"jsontype": "module_publish",
+	"publish_src": [
+		"kflow_isp/kflow_ai_isp_ioctl.c",
+		"kflow_isp/kflow_ai_isp_proc.c",
+		"kflow_isp/kflow_ai_isp_platform.c"
+	]
+}

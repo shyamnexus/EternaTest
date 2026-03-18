@@ -1,0 +1,1534 @@
+openapi: 3.0.3
+info:
+  title: IP Camera API - Recording & Storage
+  version: 1.0.0
+  description: |
+    API for managing SD card storage, recording sessions, and recorded files.
+    SD card must be formatted before recording can be enabled.
+
+paths:
+  # ============================================================================
+  # SD Card Management
+  # ============================================================================
+  /sdcard:
+    get:
+      summary: Get SD Card Status
+      description: |
+        Returns the current status of the SD card including whether it is inserted,
+        mounted, its filesystem type, capacity, and whether it needs formatting.
+      operationId: getSdCardStatus
+      tags: [SD Card]
+      responses:
+        '200':
+          description: SD card status retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SdCardStatus'
+              examples:
+                mounted:
+                  summary: SD card mounted and ready
+                  value:
+                    inserted: true
+                    mounted: true
+                    mount_point: "/mnt/sd"
+                    device: "/dev/mmcblk1p1"
+                    filesystem: "exfat"
+                    label: "IPCAM"
+                    total_bytes: 128849018880
+                    total_human: "120.0 GB"
+                    used_bytes: 34359738368
+                    used_human: "32.0 GB"
+                    free_bytes: 94489280512
+                    free_human: "88.0 GB"
+                    usage_percent: 27
+                    needs_format: false
+                    recording_enabled: true
+                not_inserted:
+                  summary: No SD card detected
+                  value:
+                    inserted: false
+                    mounted: false
+                    mount_point: ""
+                    device: ""
+                    filesystem: ""
+                    needs_format: false
+                    recording_enabled: false
+                needs_format:
+                  summary: SD card needs formatting
+                  value:
+                    inserted: true
+                    mounted: false
+                    mount_point: ""
+                    device: "/dev/mmcblk1"
+                    filesystem: "unknown"
+                    needs_format: true
+                    format_reason: "Unsupported filesystem or corrupted partition"
+                    recording_enabled: false
+
+  /sdcard/mount:
+    post:
+      summary: Mount SD Card
+      description: |
+        Attempts to mount the SD card. The card must be inserted and have a
+        supported filesystem (fat32, exfat, ext4).
+      operationId: mountSdCard
+      tags: [SD Card]
+      responses:
+        '200':
+          description: SD card mounted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResult'
+              example:
+                success: true
+                message: "SD card mounted at /mnt/sd"
+        '400':
+          description: Mount failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResult'
+              examples:
+                no_card:
+                  value:
+                    success: false
+                    error: "No SD card detected"
+                unsupported_fs:
+                  value:
+                    success: false
+                    error: "Unsupported filesystem. Please format the SD card."
+
+  /sdcard/unmount:
+    post:
+      summary: Unmount SD Card
+      description: |
+        Safely unmounts the SD card. If recording is active, it will be stopped
+        first before unmounting.
+      operationId: unmountSdCard
+      tags: [SD Card]
+      responses:
+        '200':
+          description: SD card unmounted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResult'
+              example:
+                success: true
+                message: "SD card safely unmounted"
+                recordings_stopped: true
+        '400':
+          description: Unmount failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResult'
+              example:
+                success: false
+                error: "Failed to unmount: device busy"
+
+  /sdcard/format:
+    post:
+      summary: Format SD Card
+      description: |
+        Formats the SD card with the specified filesystem. This will erase ALL
+        data on the card. Recording must be stopped and the card unmounted before
+        formatting. Requires confirmation flag to prevent accidental formatting.
+      operationId: formatSdCard
+      tags: [SD Card]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FormatRequest'
+            examples:
+              exfat:
+                summary: Format as exFAT (recommended for > 32GB)
+                value:
+                  filesystem: "exfat"
+                  label: "IPCAM"
+                  confirm: true
+              fat32:
+                summary: Format as FAT32 (for cards <= 32GB)
+                value:
+                  filesystem: "fat32"
+                  label: "IPCAM"
+                  confirm: true
+      responses:
+        '200':
+          description: Format completed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResult'
+              example:
+                success: true
+                message: "SD card formatted successfully as exfat"
+        '400':
+          description: Format failed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResult'
+              examples:
+                no_confirm:
+                  value:
+                    success: false
+                    error: "Confirmation required. Set 'confirm': true to proceed."
+                recording_active:
+                  value:
+                    success: false
+                    error: "Cannot format while recording is active. Stop recording first."
+                no_card:
+                  value:
+                    success: false
+                    error: "No SD card detected"
+
+  # ============================================================================
+  # Recording Status & Control
+  # ============================================================================
+  /recording:
+    get:
+      summary: Get Recording Status
+      description: |
+        Returns the overall recording system status including SD card state,
+        active channels, and storage statistics.
+      operationId: getRecordingStatus
+      tags: [Recording]
+      responses:
+        '200':
+          description: Recording status retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecordingStatus'
+              example:
+                enabled: true
+                storage_ready: true
+                channels:
+                  - id: 0
+                    name: "CH01"
+                    status: "recording"
+                    current_file: "/mnt/sd/DCIM/CH01/20250101_120000.mp4.enc"
+                    start_time: 1704110400000
+                    bytes_written: 52428800
+                  - id: 1
+                    name: "CH02"
+                    status: "idle"
+                storage:
+                  total_bytes: 128849018880
+                  used_bytes: 34359738368
+                  free_bytes: 94489280512
+                  usage_percent: 27
+
+  /recording/sessions:
+    get:
+      summary: Get Active Recording Sessions
+      description: Returns details about all currently active recording sessions.
+      operationId: getRecordingSessions
+      tags: [Recording]
+      responses:
+        '200':
+          description: Active sessions retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  sessions:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/RecordingSession'
+              example:
+                sessions:
+                  - channel: 0
+                    status: "recording"
+                    type: "manual"
+                    current_file: "/mnt/sd/DCIM/CH01/20250101_120000.mp4.enc"
+                    start_time: 1704110400000
+                    segment_start_time: 1704110400000
+                    bytes_written: 52428800
+                    bytes_written_human: "50.0 MB"
+                    segments_completed: 2
+
+  /recording/start:
+    post:
+      summary: Start Recording
+      description: |
+        Starts recording on the specified channel. SD card must be mounted and
+        formatted before recording can start.
+      operationId: startRecording
+      tags: [Recording]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RecordingStartRequest'
+            examples:
+              manual:
+                summary: Start manual recording
+                value:
+                  channel: 0
+                  type: "manual"
+              event:
+                summary: Start event-triggered recording
+                value:
+                  channel: 0
+                  type: "event"
+      responses:
+        '200':
+          description: Recording started
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResult'
+              example:
+                success: true
+                message: "Recording started on channel 0"
+                file: "/mnt/sd/DCIM/CH01/20250101_120000.mp4.enc"
+        '400':
+          description: Failed to start recording
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResult'
+              examples:
+                no_storage:
+                  value:
+                    success: false
+                    error: "SD card not mounted. Mount or format SD card first."
+                already_recording:
+                  value:
+                    success: false
+                    error: "Channel 0 is already recording"
+
+  /recording/stop:
+    post:
+      summary: Stop Recording
+      description: Stops recording on the specified channel.
+      operationId: stopRecording
+      tags: [Recording]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RecordingStopRequest'
+            example:
+              channel: 0
+      responses:
+        '200':
+          description: Recording stopped
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResult'
+              example:
+                success: true
+                message: "Recording stopped on channel 0"
+                file: "/mnt/sd/DCIM/CH01/20250101_120000.mp4.enc"
+                duration_ms: 360000
+                bytes_written: 52428800
+
+  # ============================================================================
+  # Recording Configuration
+  # ============================================================================
+  /recording/config:
+    get:
+      summary: Get Recording Configuration
+      description: Returns the global recording configuration settings.
+      operationId: getRecordingConfig
+      tags: [Recording Configuration]
+      responses:
+        '200':
+          description: Configuration retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecordingConfig'
+              example:
+                enabled: true
+                storage_path: "/mnt/sd/DCIM"
+                encryption_enabled: true
+                file_duration_sec: 300
+                max_files_per_channel: 1000
+                quota_mb: 0
+                overwrite_oldest: true
+                pre_record_sec: 5
+                post_record_sec: 10
+                channels:
+                  - id: 0
+                    enabled: true
+                    folder_name: "CH01"
+                    format: "mp4"
+                    stream_id: "stream0"
+
+    put:
+      summary: Update Recording Configuration
+      description: Updates the global recording configuration.
+      operationId: updateRecordingConfig
+      tags: [Recording Configuration]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RecordingConfigUpdate'
+            example:
+              file_duration_sec: 600
+              encryption_enabled: true
+              overwrite_oldest: true
+      responses:
+        '200':
+          description: Configuration updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResult'
+              example:
+                success: true
+                message: "Recording configuration updated"
+
+  /recording/channels/{id}:
+    get:
+      summary: Get Channel Recording Configuration
+      description: Returns the recording configuration for a specific channel.
+      operationId: getChannelConfig
+      tags: [Recording Configuration]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Channel ID (0-based)
+      responses:
+        '200':
+          description: Channel configuration retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ChannelConfig'
+              example:
+                id: 0
+                enabled: true
+                folder_name: "CH01"
+                format: "mp4"
+                file_duration_sec: 300
+                max_files: 1000
+                quota_mb: 0
+                stream_id: "stream0"
+        '404':
+          description: Channel not found
+
+    put:
+      summary: Update Channel Recording Configuration
+      description: Updates the recording configuration for a specific channel.
+      operationId: updateChannelConfig
+      tags: [Recording Configuration]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChannelConfigUpdate'
+            example:
+              enabled: true
+              file_duration_sec: 600
+              format: "mp4"
+      responses:
+        '200':
+          description: Channel configuration updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResult'
+
+  # ============================================================================
+  # Recordings Management
+  # ============================================================================
+  /recordings:
+    get:
+      summary: List Recordings
+      description: |
+        Returns a paginated list of recordings with optional filtering by channel,
+        time range, and recording type.
+      operationId: listRecordings
+      tags: [Recordings]
+      parameters:
+        - name: channel
+          in: query
+          schema:
+            type: integer
+          description: Filter by channel ID
+        - name: start_time
+          in: query
+          schema:
+            type: integer
+            format: int64
+          description: Filter recordings after this timestamp (milliseconds)
+        - name: end_time
+          in: query
+          schema:
+            type: integer
+            format: int64
+          description: Filter recordings before this timestamp (milliseconds)
+        - name: type
+          in: query
+          schema:
+            type: string
+            enum: [manual, scheduled, event, continuous]
+          description: Filter by recording type
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            default: 0
+          description: Pagination offset
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 50
+            maximum: 200
+          description: Maximum number of recordings to return
+      responses:
+        '200':
+          description: Recordings list retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecordingsList'
+              example:
+                total: 150
+                offset: 0
+                limit: 50
+                recordings:
+                  - id: "rec_20250101_120000_ch0"
+                    filename: "20250101_120000.mp4.enc"
+                    channel: 0
+                    type: "manual"
+                    start_time: 1704110400000
+                    end_time: 1704110700000
+                    duration_ms: 300000
+                    file_size: 52428800
+                    file_size_human: "50.0 MB"
+                    width: 1920
+                    height: 1080
+                    fps: 30
+                    codec: "h264"
+                    encrypted: true
+                    status: "completed"
+
+    delete:
+      summary: Delete Multiple Recordings
+      description: Deletes multiple recordings by IDs or by timestamp.
+      operationId: deleteRecordings
+      tags: [Recordings]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              oneOf:
+                - $ref: '#/components/schemas/DeleteByIds'
+                - $ref: '#/components/schemas/DeleteByTimestamp'
+            examples:
+              by_ids:
+                summary: Delete by recording IDs
+                value:
+                  ids: ["rec_1", "rec_2", "rec_3"]
+              by_timestamp:
+                summary: Delete recordings older than timestamp
+                value:
+                  before: 1704067200000
+      responses:
+        '200':
+          description: Recordings deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResult'
+              example:
+                success: true
+                message: "Deleted 3 recordings"
+                deleted_count: 3
+                freed_bytes: 157286400
+
+  /recordings/{id}:
+    get:
+      summary: Get Recording Details
+      description: Returns detailed information about a specific recording.
+      operationId: getRecording
+      tags: [Recordings]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Recording details retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecordingInfo'
+        '404':
+          description: Recording not found
+
+    delete:
+      summary: Delete Recording
+      description: Deletes a single recording by ID.
+      operationId: deleteRecording
+      tags: [Recordings]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Recording deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResult'
+        '404':
+          description: Recording not found
+
+  /recordings/{id}/stream:
+    get:
+      summary: Stream Recording
+      description: |
+        Streams the recording file with on-the-fly decryption (if encrypted).
+        Supports HTTP Range requests for seeking.
+      operationId: streamRecording
+      tags: [Recordings]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: Range
+          in: header
+          required: false
+          schema:
+            type: string
+          description: HTTP Range header for seeking (e.g., "bytes=0-1023")
+      responses:
+        '200':
+          description: Full file stream
+          headers:
+            Content-Type:
+              schema:
+                type: string
+              example: "video/mp4"
+            Content-Length:
+              schema:
+                type: integer
+            Accept-Ranges:
+              schema:
+                type: string
+              example: "bytes"
+          content:
+            video/mp4:
+              schema:
+                type: string
+                format: binary
+        '206':
+          description: Partial content (range request)
+          headers:
+            Content-Range:
+              schema:
+                type: string
+              example: "bytes 0-1023/52428800"
+          content:
+            video/mp4:
+              schema:
+                type: string
+                format: binary
+        '404':
+          description: Recording not found
+
+  # ============================================================================
+  # Storage Statistics
+  # ============================================================================
+  /recording/storage:
+    get:
+      summary: Get Storage Statistics
+      description: Returns detailed storage statistics for recordings.
+      operationId: getStorageStats
+      tags: [Storage]
+      responses:
+        '200':
+          description: Storage statistics retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StorageStats'
+              example:
+                status: "ready"
+                total_bytes: 128849018880
+                total_human: "120.0 GB"
+                used_bytes: 34359738368
+                used_human: "32.0 GB"
+                free_bytes: 94489280512
+                free_human: "88.0 GB"
+                recordings_bytes: 31138512896
+                recordings_human: "29.0 GB"
+                total_files: 156
+                oldest_file_age_hours: 168
+                filesystem_type: "exfat"
+                usage_percent: 27
+
+  /recording/storage/format:
+    post:
+      summary: Format Recording Storage
+      description: |
+        Alias for /sdcard/format. Formats the SD card for recording use.
+      operationId: formatStorage
+      tags: [Storage]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FormatRequest'
+      responses:
+        '200':
+          description: Format completed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResult'
+
+  # ============================================================================
+  # Recording Schedule Management
+  # ============================================================================
+  /recording/schedules:
+    get:
+      summary: Get All Schedule Profiles
+      description: Returns all configured recording schedule profiles.
+      operationId: getScheduleProfiles
+      tags: [Schedule]
+      responses:
+        '200':
+          description: Schedule profiles retrieved
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  profiles:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ScheduleProfile'
+    post:
+      summary: Create Schedule Profile
+      description: Creates a new recording schedule profile.
+      operationId: createScheduleProfile
+      tags: [Schedule]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ScheduleProfile'
+      responses:
+        '201':
+          description: Schedule profile created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScheduleProfile'
+
+  /recording/schedules/{id}:
+    get:
+      summary: Get Schedule Profile by ID
+      operationId: getScheduleProfile
+      tags: [Schedule]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Schedule profile retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScheduleProfile'
+        '404':
+          description: Schedule profile not found
+    put:
+      summary: Update Schedule Profile
+      operationId: updateScheduleProfile
+      tags: [Schedule]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ScheduleProfile'
+      responses:
+        '200':
+          description: Schedule profile updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResult'
+    delete:
+      summary: Delete Schedule Profile
+      operationId: deleteScheduleProfile
+      tags: [Schedule]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Schedule profile deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResult'
+
+  # ============================================================================
+  # NAS (Network Attached Storage) Configuration
+  # ============================================================================
+  /storage/nas:
+    get:
+      summary: Get NAS Configuration
+      description: Returns the current NAS/network drive configuration.
+      operationId: getNasConfig
+      tags: [NAS]
+      responses:
+        '200':
+          description: NAS configuration retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NasConfig'
+    put:
+      summary: Update NAS Configuration
+      description: Updates the NAS/network drive configuration.
+      operationId: updateNasConfig
+      tags: [NAS]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NasConfig'
+      responses:
+        '200':
+          description: NAS configuration updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResult'
+
+  /storage/nas/test:
+    post:
+      summary: Test NAS Connection
+      description: Tests connectivity to the configured NAS server.
+      operationId: testNasConnection
+      tags: [NAS]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NasConfig'
+      responses:
+        '200':
+          description: Connection test result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResult'
+
+  /storage/nas/mount:
+    post:
+      summary: Mount NAS Share
+      description: Mounts the configured NAS share to the local mount point.
+      operationId: mountNas
+      tags: [NAS]
+      responses:
+        '200':
+          description: NAS mounted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResult'
+
+  /storage/nas/unmount:
+    post:
+      summary: Unmount NAS Share
+      description: Unmounts the NAS share.
+      operationId: unmountNas
+      tags: [NAS]
+      responses:
+        '200':
+          description: NAS unmounted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResult'
+
+  # ============================================================================
+  # FTP Server Upload Configuration
+  # ============================================================================
+  /storage/ftp:
+    get:
+      summary: Get FTP Configuration
+      description: Returns the current FTP server upload configuration.
+      operationId: getFtpConfig
+      tags: [FTP]
+      responses:
+        '200':
+          description: FTP configuration retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FtpServerConfig'
+    put:
+      summary: Update FTP Configuration
+      description: Updates the FTP server upload configuration.
+      operationId: updateFtpConfig
+      tags: [FTP]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FtpServerConfig'
+      responses:
+        '200':
+          description: FTP configuration updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResult'
+
+  /storage/ftp/test:
+    post:
+      summary: Test FTP Connection
+      description: Tests connectivity to the configured FTP server.
+      operationId: testFtpConnection
+      tags: [FTP]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FtpServerConfig'
+      responses:
+        '200':
+          description: Connection test result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResult'
+
+  /storage/ftp/upload:
+    post:
+      summary: Trigger FTP Upload
+      description: Manually triggers an FTP upload of pending recordings.
+      operationId: triggerFtpUpload
+      tags: [FTP]
+      responses:
+        '200':
+          description: Upload started
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResult'
+
+components:
+  schemas:
+    # SD Card Schemas
+    SdCardStatus:
+      type: object
+      properties:
+        inserted:
+          type: boolean
+          description: Whether an SD card is physically inserted
+        mounted:
+          type: boolean
+          description: Whether the SD card is currently mounted
+        mount_point:
+          type: string
+          description: Mount path (e.g., /mnt/sd)
+        device:
+          type: string
+          description: Device node (e.g., /dev/mmcblk1p1)
+        filesystem:
+          type: string
+          description: Detected filesystem type
+        label:
+          type: string
+          description: Volume label
+        total_bytes:
+          type: integer
+          format: int64
+          description: Total capacity in bytes
+        total_human:
+          type: string
+          description: Human-readable total capacity
+        used_bytes:
+          type: integer
+          format: int64
+          description: Used space in bytes
+        used_human:
+          type: string
+          description: Human-readable used space
+        free_bytes:
+          type: integer
+          format: int64
+          description: Free space in bytes
+        free_human:
+          type: string
+          description: Human-readable free space
+        usage_percent:
+          type: integer
+          description: Usage percentage (0-100)
+        needs_format:
+          type: boolean
+          description: Whether card needs formatting before use
+        format_reason:
+          type: string
+          description: Reason why formatting is needed
+        recording_enabled:
+          type: boolean
+          description: Whether recording is currently enabled/possible
+
+    FormatRequest:
+      type: object
+      required:
+        - filesystem
+        - confirm
+      properties:
+        filesystem:
+          type: string
+          enum: [fat32, exfat, ext4]
+          description: Filesystem type to format as
+        label:
+          type: string
+          default: "IPCAM"
+          description: Volume label
+        confirm:
+          type: boolean
+          description: Must be true to confirm format operation
+
+    OperationResult:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+        error:
+          type: string
+
+    # Recording Schemas
+    RecordingStatus:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+          description: Whether recording system is enabled
+        storage_ready:
+          type: boolean
+          description: Whether storage is mounted and ready
+        channels:
+          type: array
+          items:
+            $ref: '#/components/schemas/ChannelStatus'
+        storage:
+          $ref: '#/components/schemas/StorageStats'
+
+    ChannelStatus:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        status:
+          type: string
+          enum: [idle, recording, paused, error]
+        current_file:
+          type: string
+        start_time:
+          type: integer
+          format: int64
+        bytes_written:
+          type: integer
+          format: int64
+
+    RecordingSession:
+      type: object
+      properties:
+        channel:
+          type: integer
+        status:
+          type: string
+        type:
+          type: string
+        current_file:
+          type: string
+        start_time:
+          type: integer
+          format: int64
+        segment_start_time:
+          type: integer
+          format: int64
+        bytes_written:
+          type: integer
+          format: int64
+        bytes_written_human:
+          type: string
+        segments_completed:
+          type: integer
+        error:
+          type: string
+
+    RecordingStartRequest:
+      type: object
+      required:
+        - channel
+      properties:
+        channel:
+          type: integer
+          description: Channel ID to start recording
+        type:
+          type: string
+          enum: [manual, scheduled, event, continuous]
+          default: manual
+          description: Recording type
+
+    RecordingStopRequest:
+      type: object
+      required:
+        - channel
+      properties:
+        channel:
+          type: integer
+          description: Channel ID to stop recording
+
+    RecordingConfig:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+        storage_path:
+          type: string
+        encryption_enabled:
+          type: boolean
+        file_duration_sec:
+          type: integer
+        max_files_per_channel:
+          type: integer
+        quota_mb:
+          type: integer
+          format: int64
+        overwrite_oldest:
+          type: boolean
+        pre_record_sec:
+          type: integer
+        post_record_sec:
+          type: integer
+        channels:
+          type: array
+          items:
+            $ref: '#/components/schemas/ChannelConfig'
+
+    RecordingConfigUpdate:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+        encryption_enabled:
+          type: boolean
+        file_duration_sec:
+          type: integer
+        max_files_per_channel:
+          type: integer
+        quota_mb:
+          type: integer
+        overwrite_oldest:
+          type: boolean
+        pre_record_sec:
+          type: integer
+        post_record_sec:
+          type: integer
+
+    ChannelConfig:
+      type: object
+      properties:
+        id:
+          type: integer
+        enabled:
+          type: boolean
+        folder_name:
+          type: string
+        format:
+          type: string
+          enum: [mp4, mkv, ts]
+        file_duration_sec:
+          type: integer
+        max_files:
+          type: integer
+        quota_mb:
+          type: integer
+          format: int64
+        stream_id:
+          type: string
+
+    ChannelConfigUpdate:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+        folder_name:
+          type: string
+        format:
+          type: string
+        file_duration_sec:
+          type: integer
+        max_files:
+          type: integer
+        quota_mb:
+          type: integer
+        stream_id:
+          type: string
+
+    RecordingsList:
+      type: object
+      properties:
+        total:
+          type: integer
+          description: Total number of recordings matching filters
+        offset:
+          type: integer
+        limit:
+          type: integer
+        recordings:
+          type: array
+          items:
+            $ref: '#/components/schemas/RecordingInfo'
+
+    RecordingInfo:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique recording identifier
+        filename:
+          type: string
+          description: Recording filename
+        channel:
+          type: integer
+          description: Channel ID
+        type:
+          type: string
+          enum: [manual, scheduled, event, continuous]
+        start_time:
+          type: integer
+          format: int64
+          description: Start timestamp in milliseconds
+        end_time:
+          type: integer
+          format: int64
+          description: End timestamp in milliseconds
+        duration_ms:
+          type: integer
+          format: int64
+          description: Duration in milliseconds
+        file_size:
+          type: integer
+          format: int64
+          description: File size in bytes
+        file_size_human:
+          type: string
+          description: Human-readable file size
+        width:
+          type: integer
+          description: Video width in pixels
+        height:
+          type: integer
+          description: Video height in pixels
+        fps:
+          type: number
+          description: Frames per second
+        codec:
+          type: string
+          description: Video codec (e.g., h264, h265)
+        encrypted:
+          type: boolean
+          description: Whether file is encrypted
+        status:
+          type: string
+          enum: [recording, completed, error]
+        thumbnail:
+          type: string
+          description: Base64 encoded thumbnail image
+
+    DeleteByIds:
+      type: object
+      required:
+        - ids
+      properties:
+        ids:
+          type: array
+          items:
+            type: string
+          description: Recording IDs to delete
+
+    DeleteByTimestamp:
+      type: object
+      required:
+        - before
+      properties:
+        before:
+          type: integer
+          format: int64
+          description: Delete all recordings before this timestamp (milliseconds)
+
+    StorageStats:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [ready, not_mounted, error, formatting]
+        total_bytes:
+          type: integer
+          format: int64
+        total_human:
+          type: string
+        used_bytes:
+          type: integer
+          format: int64
+        used_human:
+          type: string
+        free_bytes:
+          type: integer
+          format: int64
+        free_human:
+          type: string
+        recordings_bytes:
+          type: integer
+          format: int64
+        recordings_human:
+          type: string
+        total_files:
+          type: integer
+        oldest_file_age_hours:
+          type: integer
+        filesystem_type:
+          type: string
+        usage_percent:
+          type: integer
+
+    # Schedule Schemas
+    ScheduleProfile:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique schedule profile ID
+        name:
+          type: string
+          description: Profile name
+        enabled:
+          type: boolean
+          description: Whether this schedule is active
+        channels:
+          type: array
+          items:
+            type: integer
+          description: Channel IDs this schedule applies to
+        schedule:
+          type: array
+          items:
+            $ref: '#/components/schemas/DaySchedule'
+          description: Weekly schedule (7 days)
+        preRecordSeconds:
+          type: integer
+          description: Seconds to record before event trigger
+        postRecordSeconds:
+          type: integer
+          description: Seconds to record after event ends
+        created:
+          type: string
+          format: date-time
+        modified:
+          type: string
+          format: date-time
+
+    DaySchedule:
+      type: object
+      properties:
+        day:
+          type: string
+          description: Day name (Sunday, Monday, etc.)
+        dayIndex:
+          type: integer
+          description: Day index (0=Sunday, 6=Saturday)
+        enabled:
+          type: boolean
+          description: Whether recording is enabled for this day
+        slots:
+          type: array
+          items:
+            $ref: '#/components/schemas/TimeSlot'
+          description: 24 hourly time slots
+
+    TimeSlot:
+      type: object
+      properties:
+        hour:
+          type: integer
+          minimum: 0
+          maximum: 23
+          description: Hour of day (0-23)
+        enabled:
+          type: boolean
+          description: Whether recording is enabled for this hour
+        type:
+          type: string
+          enum: [normal, event, both]
+          description: Recording type for this slot
+
+    # NAS Configuration Schema
+    NasConfig:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+          description: Whether NAS storage is enabled
+        type:
+          type: string
+          enum: [smb, nfs, cifs]
+          description: Network share protocol
+        server:
+          type: string
+          description: NAS server hostname or IP address
+        share_path:
+          type: string
+          description: Share name or path on NAS server
+        mount_point:
+          type: string
+          description: Local mount point path
+        username:
+          type: string
+          description: Username for authentication (SMB/CIFS)
+        password:
+          type: string
+          format: password
+          description: Password for authentication (SMB/CIFS)
+        domain:
+          type: string
+          description: Domain/workgroup for SMB authentication
+        auto_mount:
+          type: boolean
+          description: Mount NAS automatically on startup
+        mounted:
+          type: boolean
+          description: Current mount status
+        status:
+          type: string
+          enum: [disconnected, connected, mounted, error]
+          description: Current connection status
+
+    # FTP Server Configuration Schema
+    FtpServerConfig:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+          description: Whether FTP upload is enabled
+        server:
+          type: string
+          description: FTP server hostname or IP
+        port:
+          type: integer
+          minimum: 1
+          maximum: 65535
+          default: 21
+          description: FTP server port
+        username:
+          type: string
+          description: FTP username
+        password:
+          type: string
+          format: password
+          description: FTP password
+        remote_path:
+          type: string
+          description: Remote directory path for uploads
+        use_ssl:
+          type: boolean
+          description: Use FTPS (FTP over SSL/TLS)
+        passive_mode:
+          type: boolean
+          default: true
+          description: Use passive mode (recommended for NAT)
+        upload_enabled:
+          type: boolean
+          description: Enable automatic uploads
+        upload_schedule:
+          type: string
+          enum: [immediate, hourly, daily]
+          description: When to upload recordings
+        upload_events_only:
+          type: boolean
+          description: Only upload event-triggered recordings
+        connection_status:
+          type: string
+          enum: [disconnected, connected, uploading, error]
+          description: Current connection status
+        last_upload:
+          type: string
+          format: date-time
+          description: Timestamp of last successful upload
+
+tags:
+  - name: SD Card
+    description: SD card management operations
+  - name: Recording
+    description: Recording session control
+  - name: Recording Configuration
+    description: Recording settings and channel configuration
+  - name: Recordings
+    description: Recorded file management
+  - name: Storage
+    description: Storage statistics and management
+  - name: Schedule
+    description: Recording schedule management
+  - name: NAS
+    description: Network Attached Storage configuration
+  - name: FTP
+    description: FTP server upload configuration

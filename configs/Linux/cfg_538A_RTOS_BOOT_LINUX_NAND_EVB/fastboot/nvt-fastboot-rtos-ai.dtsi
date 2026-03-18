@@ -1,0 +1,5 @@
+&fastboot {
+	ai_model {
+		bin_size = <1044480>;
+	};
+};

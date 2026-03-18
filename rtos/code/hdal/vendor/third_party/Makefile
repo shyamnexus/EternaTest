@@ -1,0 +1,30 @@
+NVT_TURNKEY_PVDCNN_AI2_PATH=$(NVT_HDAL_DIR)/vendor/third_party/pvdcnn
+NVT_TURNKEY_FDCNN_AI2_PATH=$(NVT_HDAL_DIR)/vendor/third_party/fdcnn
+NVT_TURNKEY_LIMIT_FDET_PATH=$(NVT_HDAL_DIR)/vendor/third_party/limit_fdet
+NVT_TURNKEY_SW_TRACKER_PATH=$(NVT_HDAL_DIR)/vendor/third_party/sw_tracker
+NVT_TURNKEY_MODULE_LIB_PATH=$(NVT_HDAL_DIR)/vendor/third_party/modules_lib
+NVT_TURNKEY_IPC_PATH=$(NVT_HDAL_DIR)/vendor/third_party/samples_ipc_lib
+
+all:
+	@$(MAKE) -C $(NVT_TURNKEY_PVDCNN_AI2_PATH)
+	@$(MAKE) -C $(NVT_TURNKEY_FDCNN_AI2_PATH)
+	@$(MAKE) -C $(NVT_TURNKEY_LIMIT_FDET_PATH)
+	@$(MAKE) -C $(NVT_TURNKEY_SW_TRACKER_PATH)
+	@$(MAKE) -C $(NVT_TURNKEY_MODULE_LIB_PATH)
+	@$(MAKE) -C $(NVT_TURNKEY_IPC_PATH)
+
+install:
+	@$(MAKE) -C $(NVT_TURNKEY_PVDCNN_AI2_PATH) install
+	@$(MAKE) -C $(NVT_TURNKEY_FDCNN_AI2_PATH) install
+	@$(MAKE) -C $(NVT_TURNKEY_LIMIT_FDET_PATH) install
+	@$(MAKE) -C $(NVT_TURNKEY_SW_TRACKER_PATH) install
+	@$(MAKE) -C $(NVT_TURNKEY_MODULE_LIB_PATH) install
+	@$(MAKE) -C $(NVT_TURNKEY_IPC_PATH) install
+
+clean:		
+	@$(MAKE) -C $(NVT_TURNKEY_PVDCNN_AI2_PATH) clean		
+	@$(MAKE) -C $(NVT_TURNKEY_FDCNN_AI2_PATH) clean		
+	@$(MAKE) -C $(NVT_TURNKEY_LIMIT_FDET_PATH) clean
+	@$(MAKE) -C $(NVT_TURNKEY_SW_TRACKER_PATH) clean
+	@$(MAKE) -C $(NVT_TURNKEY_MODULE_LIB_PATH) clean
+	@$(MAKE) -C $(NVT_TURNKEY_IPC_PATH) clean

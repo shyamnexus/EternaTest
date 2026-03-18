@@ -1,0 +1,889 @@
+{
+    "id": "default-24x7",
+    "name": "24/7 Continuous",
+    "enabled": true,
+    "channels": [
+        0
+    ],
+    "pre_record_seconds": 5,
+    "post_record_seconds": 10,
+    "weekly_schedule": [
+        {
+            "day_of_week": 0,
+            "slots": [
+                {
+                    "hour": 0,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 1,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 2,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 3,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 4,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 5,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 6,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 7,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 8,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 9,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 10,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 11,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 12,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 13,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 14,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 15,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 16,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 17,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 18,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 19,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 20,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 21,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 22,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 23,
+                    "enabled": true,
+                    "type": "continuous"
+                }
+            ]
+        },
+        {
+            "day_of_week": 1,
+            "slots": [
+                {
+                    "hour": 0,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 1,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 2,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 3,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 4,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 5,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 6,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 7,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 8,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 9,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 10,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 11,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 12,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 13,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 14,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 15,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 16,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 17,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 18,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 19,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 20,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 21,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 22,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 23,
+                    "enabled": true,
+                    "type": "continuous"
+                }
+            ]
+        },
+        {
+            "day_of_week": 2,
+            "slots": [
+                {
+                    "hour": 0,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 1,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 2,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 3,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 4,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 5,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 6,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 7,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 8,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 9,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 10,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 11,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 12,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 13,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 14,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 15,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 16,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 17,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 18,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 19,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 20,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 21,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 22,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 23,
+                    "enabled": true,
+                    "type": "continuous"
+                }
+            ]
+        },
+        {
+            "day_of_week": 3,
+            "slots": [
+                {
+                    "hour": 0,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 1,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 2,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 3,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 4,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 5,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 6,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 7,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 8,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 9,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 10,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 11,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 12,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 13,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 14,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 15,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 16,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 17,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 18,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 19,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 20,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 21,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 22,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 23,
+                    "enabled": true,
+                    "type": "continuous"
+                }
+            ]
+        },
+        {
+            "day_of_week": 4,
+            "slots": [
+                {
+                    "hour": 0,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 1,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 2,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 3,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 4,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 5,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 6,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 7,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 8,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 9,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 10,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 11,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 12,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 13,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 14,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 15,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 16,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 17,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 18,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 19,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 20,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 21,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 22,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 23,
+                    "enabled": true,
+                    "type": "continuous"
+                }
+            ]
+        },
+        {
+            "day_of_week": 5,
+            "slots": [
+                {
+                    "hour": 0,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 1,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 2,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 3,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 4,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 5,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 6,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 7,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 8,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 9,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 10,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 11,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 12,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 13,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 14,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 15,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 16,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 17,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 18,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 19,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 20,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 21,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 22,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 23,
+                    "enabled": true,
+                    "type": "continuous"
+                }
+            ]
+        },
+        {
+            "day_of_week": 6,
+            "slots": [
+                {
+                    "hour": 0,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 1,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 2,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 3,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 4,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 5,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 6,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 7,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 8,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 9,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 10,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 11,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 12,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 13,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 14,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 15,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 16,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 17,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 18,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 19,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 20,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 21,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 22,
+                    "enabled": true,
+                    "type": "continuous"
+                },
+                {
+                    "hour": 23,
+                    "enabled": true,
+                    "type": "continuous"
+                }
+            ]
+        }
+    ],
+    "created_at": "2024-01-01T00:00:00Z",
+    "updated_at": "2024-01-01T00:00:00Z"
+}

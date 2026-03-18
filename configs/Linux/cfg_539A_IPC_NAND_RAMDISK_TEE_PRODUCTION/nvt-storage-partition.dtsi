@@ -1,0 +1,23 @@
+/*
+ * Novatek Ltd. BSP part of dts
+ * Production configuration with TEE/Secure Boot
+ * Based on extracted device tree from running hardware
+ */
+
+&nand {
+    partition_loader {      label = "loader";       reg = <0x0 0x0000000 0x0 0x0040000>; }; /* 256 KB */
+    partition_fdt {         label = "fdt";          reg = <0x0 0x0040000 0x0 0x0080000>; }; /* 512 KB - doubled for secure boot */
+    partition_atf {         label = "atf";          reg = <0x0 0x00C0000 0x0 0x0040000>; }; /* 256 KB */
+    partition_teeos {       label = "teeos";        reg = <0x0 0x0100000 0x0 0x0100000>; }; /* 1 MB - TEE OS */
+    partition_uboot {       label = "uboot";        reg = <0x0 0x0200000 0x0 0x0200000>; }; /* 2 MB - larger for secure boot */
+    partition_uenv {        label = "uenv";         reg = <0x0 0x0400000 0x0 0x0040000>; }; /* 256 KB */
+    partition_kernel {      label = "kernel";       reg = <0x0 0x0440000 0x0 0x0500000>; }; /* 5 MB */
+    partition_rootfs {      label = "rootfs";       reg = <0x0 0x0940000 0x0 0x0A00000>; }; /* 10 MB - compressed ramdisk */
+    partition_app {         label = "app";          reg = <0x0 0x1340000 0x0 0x53C0000>; }; /* 83.75 MB - large app partition */
+    partition_www {         label = "www";          reg = <0x0 0x6700000 0x0 0x0B00000>; }; /* 11 MB - web content */
+    partition_para {        label = "para";         reg = <0x0 0x7200000 0x0 0x0400000>; }; /* 4 MB - system parameters */
+    partition_p2p {         label = "p2p";          reg = <0x0 0x7600000 0x0 0x0600000>; }; /* 6 MB - P2P configuration */
+    partition_log {         label = "log";          reg = <0x0 0x7C00000 0x0 0x0300000>; }; /* 3 MB - persistent logs */
+    partition_teeospara {   label = "teeospara";    reg = <0x0 0x7F00000 0x0 0x0100000>; }; /* 1 MB - TEE parameters */
+    partition_all {         label = "all";          reg = <0x0 0x0000000 0x0 0x8000000>; }; /* 128 MB total */
+};

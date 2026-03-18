@@ -1,0 +1,32 @@
+{
+    "ir": {
+        "led": {
+            "enabled": true,
+            "brightness": 80,
+            "pwm_channel": 11,
+            "pwm_frequency": 1000,
+            "auto_brightness": false
+        },
+        "cut": {
+            "enabled": true,
+            "gpio_pin_a": 115,
+            "gpio_pin_b": 114,
+            "switch_delay_ms": 100
+        },
+        "auto": {
+            "mode": "auto",
+            "day_to_night_threshold": 30,
+            "night_to_day_threshold": 60,
+            "switch_delay_sec": 5,
+            "schedule_night_start": "18:00",
+            "schedule_day_start": "06:00",
+            "sync_sensor_bw_mode": true,
+            "night_ev": 300,
+            "day_ev": 600,
+            "sensitivity": 5,
+            "max_ir_ev": 1200,
+            "night_brightness": 80,
+            "bw_mode_enabled": true
+        }
+    }
+}

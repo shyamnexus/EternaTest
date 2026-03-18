@@ -1,0 +1,7 @@
+{
+    "network": {
+      "ipv4": {
+        "method": "dhcp"
+      }
+    }
+}

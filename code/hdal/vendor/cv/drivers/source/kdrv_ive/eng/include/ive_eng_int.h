@@ -1,0 +1,14 @@
+#ifndef _IVE_ENG_INT_H_
+#define _IVE_ENG_INT_H_
+
+//#define IVE_ENG_REG_NUM	    		139
+
+#define IVE_GEN_FILT_COEF_MSK 0xFF
+
+#define IVE_EDGE_FILT_SHF_BIT_MSK 0x1F
+#define IVE_EDGE_FILT_COEF_MSK 0xFF
+
+#define IVE_STCORNER_NUM_MSK 0x1FF
+#define IVE_STCORNER_EIGVAL_MSK 0xFFFF
+
+#endif //_VPE_ENG_INT_H_

@@ -1,0 +1,112 @@
+/*
+ * Novatek Ltd. BSP part of dts
+ */
+/**
+ * config full secure boot example
+ * nvt-info.dtsi
+ *     FW_TYPE = "FW_TYPE_NORMAL";
+ *     NVT_CFG_UBOOT_CFG = "nvt-ns02301_a32_secboot_???_defconfig";
+ *     NVT_LINUX_COMPRESS = "NVT_LINUX_COMPRESS_NONE";
+ *     SIGNATUREMETHOD = "SIGNATUREMETHOD_ECDSA";
+ *     ENCRYPT_UBOOT = "ENCRYPT_UBOOT_ON";
+ *     ENCRYPT_KERNEL = "ENCRYPT_KERNEL_ON";
+ *     ENCRYPT_DTS = "ENCRYPT_DTS_ON";
+ *     ENCRYPT_RTOS = "ENCRYPT_RTOS_ON";
+ * nvt-nvtpack.dtsi
+ *     images use *.encrypted.bin verison
+ * loader
+ *     SECUREBOOT = Secure
+ *     ENCRYPTDATA = AES128
+ *     SECUREBOOT_DECRYPT_UBOOT = Secure
+ *     SECUREBOOT_DECRYPT_RTOS = Secure
+ *     SECUREBOOT_DECRYPT_FDT = Secure
+ *     FASTBOOT = ENABLE
+ */
+
+ /**
+ * config fast secure boot example
+ * nvt-info.dtsi
+ *     FW_TYPE = "FW_TYPE_PARTIAL";
+ *     NVT_CFG_UBOOT_CFG = "nvt-ns02301_a32_secboot_???_defconfig";
+ *     NVT_LINUX_COMPRESS = "NVT_LINUX_COMPRESS_NONE";
+ *     SIGNATUREMETHOD = "SIGNATUREMETHOD_ECDSA";
+ *     ENCRYPT_UBOOT = "ENCRYPT_UBOOT_ON";
+ *     ENCRYPT_KERNEL = "ENCRYPT_KERNEL_ON";
+ *     ENCRYPT_DTS = "ENCRYPT_DTS_ON";
+ *     ENCRYPT_RTOS = "ENCRYPT_RTOS_OFF";
+ * nvt-nvtpack.dtsi
+ *     images use *.encrypted.bin verison other than to rtos
+ * loader
+ *     SECUREBOOT = Secure
+ *     ENCRYPTDATA = Normal
+ *     SECUREBOOT_DECRYPT_UBOOT = Secure
+ *     SECUREBOOT_DECRYPT_RTOS = Normal
+ *     SECUREBOOT_DECRYPT_FDT = Secure
+ *     FASTBOOT = ENABLE
+ */
+
+/dts-v1/;
+#include <dt-bindings/nvt-dt-binding.h>
+#include "nvt-basic.dtsi"   /* cpu, timer, gic */
+#include "nvt-mem-tbl.dtsi" /* memory partition */
+#include "nvt-info.dtsi"    /* used for turnkey information */
+#include "nvt-peri.dtsi"    /* engine register definition */
+#include "nvt-peri-dev.dtsi"  /* device register definition */
+#include "nvt-top.dtsi"     /* pinmux, made from tool */
+#include "nvt-i2c.dtsi"     /* i2c */
+#include "nvt-gpio.dtsi"    /* gpio, made from tool */
+#include "nvt-audio.dtsi"   /* peripheral: audio */
+#include "nvt-display.dtsi" /* peripheral: display */
+#include "nvt-media.dtsi"   /* ko files relation */
+#include "nvt-storage-partition.dtsi" /* flash partition */
+#include "nvt-nvtpack.dtsi" /* used for turnkey to make all-in-one bin */
+#include "nvt-clock.dtsi" /* used for clock framework */
+#include "nvt-rtc.dtsi"  /* rtc device register definition */
+#include "nvt-amp-gic.dtsi"
+//#include "nvt-devnum.dtsi" /* static device node */
+
+
+&clk_uart1 {
+	keep_rate = <1>;
+	do_reset = <NOT_RESET>;
+};
+&sn_mclk1 {
+        keep_rate = <1>;
+        do_reset = <NOT_RESET>;
+};
+&sn_mclk2 {
+        keep_rate = <1>;
+        do_reset = <NOT_RESET>;
+};
+&clk_sie1 {
+	keep_rate = <1>;
+	do_reset = <NOT_RESET>;
+};
+&clk_sie2 {
+	keep_rate = <1>;
+	do_reset = <NOT_RESET>;
+};
+&clk_ife {
+	keep_rate = <1>;
+	do_reset = <NOT_RESET>;
+};
+&clk_ipe {
+	keep_rate = <1>;
+	do_reset = <NOT_RESET>;
+};
+&clk_ime {
+	keep_rate = <1>;
+	do_reset = <NOT_RESET>;
+};
+&clk_csi0 {
+	keep_rate = <1>;
+	do_reset = <NOT_RESET>;
+};
+&venc_clk {
+	keep_rate = <1>;
+	do_reset = <NOT_RESET>;
+};
+&ife_shared_sram {
+        keep_rate = <1>;
+        do_reset = <NOT_RESET>;
+};

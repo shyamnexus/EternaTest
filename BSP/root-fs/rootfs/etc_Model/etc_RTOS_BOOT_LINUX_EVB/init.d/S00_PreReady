@@ -1,0 +1,4 @@
+mkdir /var/run/lock
+mkdir /dev/pts
+mount -t devpts devpts /dev/pts
+mkdir -p /dev/shm

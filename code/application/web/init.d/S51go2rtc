@@ -1,0 +1,96 @@
+#!/bin/sh
+
+DAEMON=/bin/go2rtc_linux_arm64
+CONFIG=/etc/go2rtc.yaml
+NAME=go2rtc
+PIDFILE=/var/run/$NAME.pid
+
+test -x $DAEMON || exit 0
+
+# Don't auto-start go2rtc - let ipcamd manage it
+if [ -z "$1" ]; then
+    echo "Usage: $0 {start|stop|restart|status}"
+    exit 0
+fi
+
+start() {
+    echo "Starting $NAME..."
+    if [ -f $PIDFILE ]; then
+        PID=$(cat $PIDFILE)
+        if [ -d /proc/$PID ]; then
+            echo "$NAME is already running (PID: $PID)"
+            return 1
+        else
+            rm -f $PIDFILE
+        fi
+    fi
+    
+    if [ ! -f $DAEMON ]; then
+        echo "Error: $DAEMON not found"
+        return 1
+    fi
+    
+    if [ ! -f $CONFIG ]; then
+        echo "Warning: $CONFIG not found, starting without config"
+        start-stop-daemon -S -b -m -p $PIDFILE -x $DAEMON
+    else
+        start-stop-daemon -S -b -m -p $PIDFILE -x $DAEMON -- -c $CONFIG
+    fi
+    
+    echo "$NAME started"
+}
+
+stop() {
+    echo "Stopping $NAME..."
+    if [ ! -f $PIDFILE ]; then
+        echo "$NAME is not running"
+        return 1
+    fi
+    
+    start-stop-daemon -K -p $PIDFILE
+    rm -f $PIDFILE
+    echo "$NAME stopped"
+}
+
+restart() {
+    stop
+    sleep 1
+    start
+}
+
+status() {
+    if [ -f $PIDFILE ]; then
+        PID=$(cat $PIDFILE)
+        if [ -d /proc/$PID ]; then
+            echo "$NAME is running (PID: $PID)"
+            return 0
+        else
+            echo "$NAME is not running (stale PID file)"
+            return 1
+        fi
+    else
+        echo "$NAME is not running"
+        return 1
+    fi
+}
+
+case "$1" in
+    start)
+        start
+        ;;
+    stop)
+        stop
+        ;;
+    restart)
+        restart
+        ;;
+    status)
+        status
+        ;;
+    *)
+        echo "Usage: $0 {start|stop|restart|status}"
+        exit 1
+        ;;
+esac
+
+exit $?

@@ -1,0 +1,57 @@
+# Makefile for vqa_tamper_stream - Professional Tampering Detection (Live Stream)
+
+include $(NVT_PRJCFG_MODEL_CFG)
+
+MODULE_NAME = vqa_tamper_stream
+
+# DIRs
+HDAL_SAMPLE_DIR = $(NVT_HDAL_DIR)/samples
+VOS_DRIVER_DIR = $(NVT_VOS_DIR)/drivers
+CV_LIB_DIR = $(NVT_HDAL_DIR)/vendor/cv
+VENDOR_LIB_DIR = $(NVT_HDAL_DIR)/vendor
+
+# INCs
+VOS_INC_PATH = $(VOS_DRIVER_DIR)/include
+VOS_LIB_PATH = $(NVT_VOS_DIR)/output
+HDAL_INC_PATH = $(NVT_HDAL_DIR)/include
+HDAL_LIB_PATH = $(NVT_HDAL_DIR)/output
+CV_LIB_INC_PATH = $(CV_LIB_DIR)/include
+CV_LIB_OUT_PATH = $(NVT_HDAL_DIR)/vendor/output
+
+# INC FLAGs
+EXTRA_INCLUDE += -I$(HDAL_INC_PATH) -I$(VOS_INC_PATH) -I$(CV_LIB_INC_PATH)
+
+.PHONY: all clean
+
+###############################################################################
+# Linux Makefile                                                              #
+###############################################################################
+ifeq ($(NVT_PRJCFG_CFG),Linux)
+
+WARNING = -Wall -Wundef -Wsign-compare -Wno-missing-braces -Werror
+COMPILE_OPTS = -I. -O2 -fPIC -ffunction-sections -fdata-sections -D__LINUX
+
+C_CFLAGS = $(PLATFORM_CFLAGS) $(COMPILE_OPTS) $(WARNING) $(EXTRA_INCLUDE)
+
+LD_FLAGS += -L$(HDAL_LIB_PATH) -lhdal -lpthread -lm
+LD_FLAGS += -L$(CV_LIB_OUT_PATH) -lvendor_cv -lprebuilt_cv
+LD_FLAGS += -L$(VOS_LIB_PATH) -lvos
+
+SRC = vqa_tamper_stream.c
+OBJ = $(SRC:.c=.o)
+
+all: $(MODULE_NAME)
+	@echo "Built $(MODULE_NAME) successfully!"
+
+$(MODULE_NAME): $(OBJ)
+	@echo Creating $@...
+	@$(CC) -o $@ $(OBJ) $(LD_FLAGS)
+
+%.o: %.c
+	@echo Compiling $<
+	@$(CC) $(C_CFLAGS) -c $< -o $@
+
+clean:
+	rm -f $(OBJ) $(MODULE_NAME)
+
+endif

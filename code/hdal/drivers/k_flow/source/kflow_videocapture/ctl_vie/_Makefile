@@ -1,0 +1,76 @@
+MODULE_NAME = kflow_ctl_vie
+# DIRs
+VOS_DRIVER_DIR = $(NVT_VOS_DIR)/drivers
+KDRV_DIR = $(NVT_HDAL_DIR)/drivers/k_driver
+KFLOW_DIR = $(NVT_HDAL_DIR)/drivers/k_flow
+CURR_DRIVER_DIR = $(KFLOW_DIR)
+KFLOW_CTL_VIE_DIR = $(CURR_DRIVER_DIR)/source/kflow_videocapture/ctl_vie
+# INCs
+VOS_INC_PATH = $(VOS_DRIVER_DIR)/include
+KDRV_INC_PATH = $(KDRV_DIR)/include
+KFLOW_INC_PATH = $(KFLOW_DIR)/include
+CURR_DRIVER_INC_PATH = $(CURR_DRIVER_DIR)/include
+CTL_VIE_COM_INC_PATH = $(KFLOW_CTL_VIE_DIR)/include
+CTL_VIE_DBG_INC_PATH = $(KFLOW_CTL_VIE_DIR)/vie_debug
+CTL_VIE_UTI_INC_PATH = $(KFLOW_CTL_VIE_DIR)/vie_utility
+CTL_VIE_FLOW_INC_PATH = $(KFLOW_CTL_VIE_DIR)/vie_flow
+# INC FLAGs
+EXTRA_INCLUDE += \
+	-I$(VOS_INC_PATH) \
+	-I$(KDRV_INC_PATH) \
+	-I$(KFLOW_INC_PATH) \
+	-I$(CURR_DRIVER_INC_PATH) \
+	-I$(CTL_VIE_COM_INC_PATH) \
+	-I$(CTL_VIE_DBG_INC_PATH) \
+	-I$(CTL_VIE_UTI_INC_PATH) \
+	-I$(CTL_VIE_FLOW_INC_PATH) \
+
+###############################################################################
+# Linux Makefile                                                              #
+###############################################################################
+ifeq ($(NVT_PRJCFG_CFG),Linux)
+EXTRA_CFLAGS += -DDEBUG
+ifeq ($(NVT_FPGA),ON)
+EXTRA_CFLAGS += -D_NVT_FPGA_
+endif
+
+$(MODULE_NAME)-src :=\
+	ctl_vie_main.c \
+	ctl_vie_proc.c \
+	ctl_vie_drv.c \
+	ctl_vie_api.c \
+	vie_flow/kdf_vie.c \
+	vie_utility/ctl_vie_event_id.c \
+	vie_utility/ctl_vie_event.c \
+	vie_utility/ctl_vie_utility_int.c \
+	vie_debug/ctl_vie_debug_int.c \
+	vie_flow/ctl_vie_buf.c \
+	vie_flow/ctl_vie_iosize.c \
+	vie_flow/ctl_vie_id.c \
+	vie_flow/ctl_vie_isp_task.c \
+	vie_flow/ctl_vie.c \
+	vie_flow/ctl_vie_isp.c \
+	ctl_vie_ver.c
+
+###############################################################################
+# rtos Makefile                                                               #
+###############################################################################
+else ifeq ($(NVT_PRJCFG_CFG),rtos)
+SRC += \
+	ctl_vie_api.c \
+	vie_flow/kdf_vie.c \
+	vie_utility/ctl_vie_event_id.c \
+	vie_utility/ctl_vie_event.c \
+	vie_utility/ctl_vie_utility_int.c \
+	vie_debug/ctl_vie_debug_int.c \
+	vie_flow/ctl_vie_buf.c \
+	vie_flow/ctl_vie_iosize.c \
+	vie_flow/ctl_vie_id.c \
+	vie_flow/ctl_vie_isp_task.c \
+	vie_flow/ctl_vie.c \
+	vie_flow/ctl_vie_isp.c \
+	ctl_vie_ver.c
+
+endif
+
+include $(NVT_HDAL_DIR)/driver.mk

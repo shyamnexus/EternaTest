@@ -1,0 +1,1 @@
+../../../kdrv_builtin/audio/dai/dai_platform.c

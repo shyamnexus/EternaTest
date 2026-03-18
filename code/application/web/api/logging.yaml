@@ -1,0 +1,751 @@
+# =============================================================================
+# Logging API  –  Log retrieval, configuration, security/audit/access logs,
+#                 remote syslog, system logger control, log sources
+# =============================================================================
+
+paths:
+
+  # --------------------------------------------------------------------------
+  # 6a. Logs  –  Multi-source log retrieval and clearing
+  # --------------------------------------------------------------------------
+  /system/logs:
+    get:
+      tags: [Logging]
+      summary: Get log entries
+      description: >
+        Returns parsed log entries from any log source.  Supports filtering
+        by level, time range, search text, and pagination.
+        Use `?source=` to select kernel, thermal, system, application, etc.
+      operationId: getSystemLogs
+      parameters:
+        - name: source
+          in: query
+          schema:
+            type: string
+            enum: [application, kernel, thermal, system, boot, nginx, security, audit, access]
+          description: Log source to retrieve (default is application)
+        - name: level
+          in: query
+          schema:
+            type: string
+            enum: [debug, info, warning, error, critical]
+        - name: start
+          in: query
+          schema:
+            type: string
+            format: date-time
+          description: Start of time range (ISO-8601)
+        - name: end
+          in: query
+          schema:
+            type: string
+            format: date-time
+          description: End of time range (ISO-8601)
+        - name: search
+          in: query
+          schema:
+            type: string
+          description: Free-text search in log messages
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 100
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            default: 0
+      responses:
+        '200':
+          description: Log entries
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  source:
+                    type: string
+                  total:
+                    type: integer
+                  logs:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/LogEntry'
+    delete:
+      tags: [Logging]
+      summary: Clear logs
+      description: >
+        Clears log entries for a specific source or all sources.
+      operationId: clearSystemLogs
+      parameters:
+        - name: source
+          in: query
+          schema:
+            type: string
+          description: Log source to clear (omit to clear all)
+      responses:
+        '200':
+          description: Logs cleared
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                  source:
+                    type: string
+
+  # --------------------------------------------------------------------------
+  # 6b. Log Download
+  # --------------------------------------------------------------------------
+  /system/logs/download:
+    get:
+      tags: [Logging]
+      summary: Download raw log file
+      description: >
+        Downloads the raw log file for a given source as an octet-stream.
+      operationId: downloadSystemLogs
+      parameters:
+        - name: source
+          in: query
+          schema:
+            type: string
+            enum: [application, kernel, thermal, system, boot, nginx]
+          description: Log source to download (default is application)
+      responses:
+        '200':
+          description: Raw log file
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+          headers:
+            Content-Disposition:
+              schema:
+                type: string
+                example: 'attachment; filename="ipcamd.log"'
+        '404':
+          description: Log file not found
+
+  # --------------------------------------------------------------------------
+  # 6c. Log Configuration
+  # --------------------------------------------------------------------------
+  /system/logs/config:
+    get:
+      tags: [Logging]
+      summary: Get logging configuration
+      description: >
+        Returns the current application log settings including console/file
+        output levels, rotation, and format.
+      operationId: getSystemLogsConfig
+      responses:
+        '200':
+          description: Log configuration
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LogConfig'
+    put:
+      tags: [Logging]
+      summary: Update logging configuration
+      description: >
+        Modifies application logging settings.  Generates an audit log entry.
+      operationId: updateSystemLogsConfig
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LogConfig'
+      responses:
+        '200':
+          description: Configuration updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                    example: "Log configuration updated"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  # --------------------------------------------------------------------------
+  # 6d. Log Sources
+  # --------------------------------------------------------------------------
+  /system/logs/sources:
+    get:
+      tags: [Logging]
+      summary: List available log sources
+      description: >
+        Enumerates every log source on the device with metadata including
+        file path, size, availability, and optional SD card archive path.
+      operationId: getSystemLogsSources
+      responses:
+        '200':
+          description: Available log sources
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  sources:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/LogSource'
+
+  # --------------------------------------------------------------------------
+  # 6e. Security Log
+  # --------------------------------------------------------------------------
+  /system/logs/security:
+    get:
+      tags: [Logging]
+      summary: Get security log events
+      description: >
+        Returns security-related log entries such as login failures,
+        brute-force attempts, and authentication anomalies.
+      operationId: getSecurityLogs
+      parameters:
+        - $ref: '#/components/parameters/LogLevel'
+        - $ref: '#/components/parameters/LogStart'
+        - $ref: '#/components/parameters/LogEnd'
+        - $ref: '#/components/parameters/LogSearch'
+        - $ref: '#/components/parameters/LogLimit'
+        - $ref: '#/components/parameters/LogOffset'
+      responses:
+        '200':
+          description: Security log events
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  source:
+                    type: string
+                    example: security
+                  total:
+                    type: integer
+                  events:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/LogEntry'
+    delete:
+      tags: [Logging]
+      summary: Clear security log
+      operationId: clearSecurityLogs
+      responses:
+        '200':
+          description: Security log cleared
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+
+  # --------------------------------------------------------------------------
+  # 6f. Audit Log
+  # --------------------------------------------------------------------------
+  /system/logs/audit:
+    get:
+      tags: [Logging]
+      summary: Get audit log events
+      description: >
+        Returns audit trail entries: configuration changes, system actions
+        (reboot, factory reset), and administrative operations.
+        Each entry includes the IP, user, action, and new config values.
+      operationId: getAuditLogs
+      parameters:
+        - $ref: '#/components/parameters/LogLevel'
+        - $ref: '#/components/parameters/LogStart'
+        - $ref: '#/components/parameters/LogEnd'
+        - $ref: '#/components/parameters/LogSearch'
+        - $ref: '#/components/parameters/LogLimit'
+        - $ref: '#/components/parameters/LogOffset'
+      responses:
+        '200':
+          description: Audit log events
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  source:
+                    type: string
+                    example: audit
+                  total:
+                    type: integer
+                  events:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/LogEntry'
+    delete:
+      tags: [Logging]
+      summary: Clear audit log
+      operationId: clearAuditLogs
+      responses:
+        '200':
+          description: Audit log cleared
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+
+  # --------------------------------------------------------------------------
+  # 6g. Access Log
+  # --------------------------------------------------------------------------
+  /system/logs/access:
+    get:
+      tags: [Logging]
+      summary: Get API access log
+      description: >
+        Returns per-request access log entries.  Each entry includes
+        client IP, HTTP method, URI, status code, response time, user agent,
+        and request/response sizes.
+      operationId: getAccessLogs
+      parameters:
+        - $ref: '#/components/parameters/LogLevel'
+        - $ref: '#/components/parameters/LogStart'
+        - $ref: '#/components/parameters/LogEnd'
+        - $ref: '#/components/parameters/LogSearch'
+        - $ref: '#/components/parameters/LogLimit'
+        - $ref: '#/components/parameters/LogOffset'
+      responses:
+        '200':
+          description: Access log entries
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  source:
+                    type: string
+                    example: access
+                  total:
+                    type: integer
+                  requests:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/LogEntry'
+    delete:
+      tags: [Logging]
+      summary: Clear access log
+      operationId: clearAccessLogs
+      responses:
+        '200':
+          description: Access log cleared
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+
+  # --------------------------------------------------------------------------
+  # 6h. Remote Syslog Configuration
+  # --------------------------------------------------------------------------
+  /system/logs/syslog:
+    get:
+      tags: [Logging]
+      summary: Get remote syslog configuration
+      description: >
+        Returns the remote syslog forwarding settings.  When enabled,
+        security and audit events are forwarded to an external syslog server.
+      operationId: getSyslogConfig
+      responses:
+        '200':
+          description: Syslog configuration
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SyslogConfig'
+    put:
+      tags: [Logging]
+      summary: Update remote syslog configuration
+      description: >
+        Update syslog forwarding settings and reload the AuditLogger.
+        Generates an audit log entry.
+      operationId: updateSyslogConfig
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SyslogConfig'
+      responses:
+        '200':
+          description: Syslog configuration updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                    example: "Remote syslog configuration updated"
+        '400':
+          $ref: '#/components/responses/BadRequest'
+
+  # --------------------------------------------------------------------------
+  # System Logger Control
+  # --------------------------------------------------------------------------
+  /system/logger:
+    get:
+      tags: [Logging]
+      summary: Get system logger status
+      description: >
+        Returns the state of the background SystemLogger service including
+        all collection sources (kernel, thermal, sysdiag, app_mirror) and
+        storage destinations (flash, SD card) with space information.
+      operationId: getSystemLogger
+      responses:
+        '200':
+          description: System logger status
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SystemLoggerStatus'
+    put:
+      tags: [Logging]
+      summary: Update system logger configuration
+      description: >
+        Enable/disable the logger, configure per-source collection intervals,
+        and toggle storage destinations.  Generates an audit log entry.
+      operationId: updateSystemLogger
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                enabled:
+                  type: boolean
+                  description: Global enable/disable for logger
+                sources:
+                  type: object
+                  description: Per-source configuration
+                  additionalProperties:
+                    type: object
+                    properties:
+                      enabled:
+                        type: boolean
+                      interval_sec:
+                        type: integer
+                        minimum: 5
+                destinations:
+                  type: object
+                  description: Per-destination configuration
+                  additionalProperties:
+                    type: object
+                    properties:
+                      enabled:
+                        type: boolean
+              example:
+                enabled: true
+                sources:
+                  kernel:
+                    enabled: true
+                    interval_sec: 30
+                  thermal:
+                    enabled: true
+                    interval_sec: 60
+                destinations:
+                  sd_card:
+                    enabled: false
+      responses:
+        '200':
+          description: Configuration updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                    example: "System logger configuration updated"
+
+  /system/logger/collect:
+    post:
+      tags: [Logging]
+      summary: Trigger immediate log collection
+      description: >
+        Forces an immediate collection cycle.  Optionally specify a single
+        source via `?source=` to collect only that source.
+      operationId: triggerLogCollection
+      parameters:
+        - name: source
+          in: query
+          schema:
+            type: string
+            enum: [kernel, thermal, sysdiag, app_mirror]
+          description: Specific source to collect (omit for all)
+      responses:
+        '200':
+          description: Collection triggered
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                    example: "Collected kernel"
+
+# =============================================================================
+# Components
+# =============================================================================
+components:
+  parameters:
+    LogLevel:
+      name: level
+      in: query
+      schema:
+        type: string
+        enum: [debug, info, warning, error, critical]
+    LogStart:
+      name: start
+      in: query
+      schema:
+        type: string
+        format: date-time
+      description: Start of time range (ISO-8601)
+    LogEnd:
+      name: end
+      in: query
+      schema:
+        type: string
+        format: date-time
+      description: End of time range (ISO-8601)
+    LogSearch:
+      name: search
+      in: query
+      schema:
+        type: string
+      description: Free-text search in log messages
+    LogLimit:
+      name: limit
+      in: query
+      schema:
+        type: integer
+        default: 100
+    LogOffset:
+      name: offset
+      in: query
+      schema:
+        type: integer
+        default: 0
+
+  schemas:
+    LogEntry:
+      type: object
+      properties:
+        timestamp:
+          type: string
+          example: "2026-02-22 17:49:28.421"
+        level:
+          type: string
+          example: "info"
+        source:
+          type: string
+          example: "audit"
+        message:
+          type: string
+          example: 'ip=192.168.0.4 user=- action=config_change target="system.device" new="{\"device_name\":\"IPCamera01\"}"'
+
+    LogSource:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "application"
+        display_name:
+          type: string
+          example: "Application"
+        description:
+          type: string
+          example: "ipcamd application log — config, pipeline, NTP, API handlers"
+        file_path:
+          type: string
+          example: "/var/log/ipcamd.log"
+        file_size:
+          type: integer
+          format: int64
+          example: 56552
+        available:
+          type: boolean
+          example: true
+        sd_path:
+          type: string
+          description: SD card archive path (if applicable)
+          example: "/mnt/sd/logs/"
+
+    LogConfig:
+      type: object
+      properties:
+        level:
+          type: string
+          enum: [trace, debug, info, warning, error, critical, off]
+          example: "info"
+        format:
+          type: string
+          example: "[%Y-%m-%d %H:%M:%S.%e] [%n] [%l] %v"
+        console:
+          type: object
+          properties:
+            enabled:
+              type: boolean
+              example: true
+            level:
+              type: string
+              example: "info"
+        file:
+          type: object
+          properties:
+            enabled:
+              type: boolean
+              example: true
+            path:
+              type: string
+              example: "/var/log/ipcamd.log"
+            level:
+              type: string
+              example: "debug"
+            max_size_mb:
+              type: integer
+              example: 5
+            max_files:
+              type: integer
+              example: 3
+            flush_interval_sec:
+              type: integer
+              example: 5
+
+    SyslogConfig:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+          example: false
+        host:
+          type: string
+          description: Remote syslog server hostname or IP
+          example: "192.168.1.200"
+        port:
+          type: integer
+          example: 514
+        protocol:
+          type: string
+          enum: [udp, tcp]
+          example: "udp"
+        facility:
+          type: string
+          description: Syslog facility name
+          enum: [local0, local1, local2, local3, local4, local5, local6, local7, kern, user, daemon, auth, syslog, lpr, news, uucp]
+          example: "local0"
+        min_level:
+          type: string
+          enum: [debug, info, warning, error, critical]
+          example: "warning"
+        include_access:
+          type: boolean
+          example: false
+        include_security:
+          type: boolean
+          example: true
+        include_audit:
+          type: boolean
+          example: true
+
+    SystemLoggerStatus:
+      type: object
+      properties:
+        running:
+          type: boolean
+          example: true
+        enabled:
+          type: boolean
+          example: true
+        sources:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                example: "kernel"
+              enabled:
+                type: boolean
+              interval_sec:
+                type: integer
+                example: 30
+              last_collection:
+                type: string
+                example: "2026-02-22T17:49:37Z"
+              entries_collected:
+                type: integer
+        destinations:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                example: "flash"
+              path:
+                type: string
+                example: "/mnt/app/logs"
+              enabled:
+                type: boolean
+              available:
+                type: boolean
+              read_write:
+                type: boolean
+              free_bytes:
+                type: integer
+                format: int64
+              used_bytes:
+                type: integer
+                format: int64
+              total_bytes:
+                type: integer
+                format: int64
+
+  responses:
+    BadRequest:
+      description: Invalid request
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+                example: error
+              message:
+                type: string

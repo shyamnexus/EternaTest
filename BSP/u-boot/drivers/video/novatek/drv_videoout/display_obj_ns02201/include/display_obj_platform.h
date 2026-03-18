@@ -1,0 +1,120 @@
+#ifndef __IDE_PLATFORM_H_
+#define __IDE_PLATFORM_H__
+
+#include "display_int.h"
+#if (defined __UITRON || defined __ECOS)
+#include "NvtVerInfo.h"
+#include "kernel.h"
+#include "Debug.h"
+#include "nvtDrvProtected.h"
+#include "pll.h"
+#include "pll_protected.h"
+#include "hdmitx.h"
+#include "top.h"
+#include "mi.h"
+#include "dsi.h"
+
+
+// Default debug level
+#ifndef __DBGLVL__
+#define __DBGLVL__  1       // Output all message by default. __DBGLVL__ will be set to 1 via make parameter when release code.
+#endif
+
+// Default debug filter
+#ifndef __DBGFLT__
+#define __DBGFLT__  "*"     // Display everything when debug level is 2
+#endif
+
+// Default debug filter
+#ifndef __DBGFLT__
+#define __DBGFLT__  "*"     // Display everything when debug level is 2
+#endif
+
+
+
+
+#include "DebugModule.h"
+#elif defined __FREERTOS
+#include <stdlib.h>
+#include <kwrap/nvt_type.h>
+#include <kwrap/error_no.h>
+#include <compiler.h>
+#include <libfdt.h>
+#include <rtosfdt.h>
+#include "rcw_macro.h"
+#include "io_address.h"
+#include "interrupt.h"
+#include "pll.h"
+#include "pll_protected.h"
+#include "dma_protected.h"
+#include "dispdev_ioctrl.h"
+#include "ide_protected.h"
+#include "display_obj_dbg.h"
+
+extern UINT32 display_obj_platform_get_clksrc_from_dtsi(void);
+
+#else
+#include <common.h>
+#include <asm/arch/IOAddress.h>
+#include <asm/arch/dispctrl.h>
+#include <asm/arch/displyr.h>
+#include <asm/arch/display.h>
+#include <asm/arch/dsi.h>
+#include <asm/arch/dispdev_ioctrl.h>
+#include <asm/nvt-common/rcw_macro_bit.h>
+#include <asm/nvt-common/nvt_types.h>
+#include <asm/arch/dispdevctrl.h>
+#include <linux/delay.h>
+
+
+
+
+
+#define _FPGA_EMULATION_ 0
+
+#ifndef CHKPNT
+#define CHKPNT    printf("\033[37mCHK: %d, %s\033[0m\r\n", __LINE__, __func__)
+#endif
+	
+#ifndef DBGD
+#define DBGD(x)   printf("\033[0;35m%s=%d\033[0m\r\n", #x, x)
+#endif
+	
+#ifndef DBGH
+#define DBGH(x)   printf("\033[0;35m%s=0x%08X\033[0m\r\n", #x, x)
+#endif
+	
+#ifndef DBG_DUMP
+#define DBG_DUMP(fmtstr, args...) printf(fmtstr, ##args)
+#endif
+	
+#ifndef DBG_ERR
+#define DBG_ERR(fmtstr, args...)  printf("\033[0;31mERR:%s() \033[0m" fmtstr, __func__, ##args)
+#endif
+	
+#ifndef DBG_WRN
+#define DBG_WRN(fmtstr, args...)  printf("\033[0;33mWRN:%s() \033[0m" fmtstr, __func__, ##args)
+#endif
+	
+#if 0
+#define DBG_IND(fmtstr, args...) printf("%s(): " fmtstr, __func__, ##args)
+#else
+#ifndef DBG_IND
+#define DBG_IND(fmtstr, args...)
+#endif
+#endif
+
+#define Delay_DelayMs(ms) mdelay(ms)
+
+
+#endif
+
+
+
+
+
+extern void display_obj_platform_do_div(UINT64 *dividend, UINT32 divisor);
+extern ER display_obj_platform_pll_en(DISPCTRL_SRCCLK clk_src);
+extern ER display_obj_platform_set_clk_src(IDE_ID id, DISPCTRL_SRCCLK clk_src);
+extern IDEDATA_TYPE display_obj_platform_va2pa(IDEDATA_TYPE addr);
+#endif

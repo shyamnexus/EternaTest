@@ -1,0 +1,715 @@
+openapi: 3.0.3
+info:
+  title: IP Camera API - Storage Management
+  version: 1.0.0
+  description: |
+    API for managing storage including SD Card, NAS, FTP, and Schedule Recording.
+
+paths:
+  # ============================================================================
+  # SD Card Management
+  # ============================================================================
+  /sdcard:
+    get:
+      summary: Get SD Card Status
+      description: Returns the current status of the SD card including mount status, capacity, and usage.
+      operationId: getSdCardStatus
+      tags: [SD Card]
+      responses:
+        '200':
+          description: SD card status retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SdCardStatus'
+
+  /sdcard/mount:
+    post:
+      summary: Mount SD Card
+      description: Attempts to mount the SD card.
+      operationId: mountSdCard
+      tags: [SD Card]
+      responses:
+        '200':
+          description: SD card mounted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResult'
+
+  /sdcard/unmount:
+    post:
+      summary: Unmount SD Card
+      description: Safely unmounts the SD card.
+      operationId: unmountSdCard
+      tags: [SD Card]
+      responses:
+        '200':
+          description: SD card unmounted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResult'
+
+  /sdcard/format:
+    post:
+      summary: Format SD Card
+      description: Formats the SD card with the specified filesystem.
+      operationId: formatSdCard
+      tags: [SD Card]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                filesystem:
+                  type: string
+                  enum: [ext4, exfat, fat32]
+                  default: ext4
+                label:
+                  type: string
+                  maxLength: 16
+                  default: IPCAM
+      responses:
+        '200':
+          description: SD card formatted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResult'
+
+  # ============================================================================
+  # NAS Storage
+  # ============================================================================
+  /storage/nas:
+    get:
+      summary: Get NAS Configuration
+      description: Returns the current NAS (Network Attached Storage) configuration.
+      operationId: getNasConfig
+      tags: [NAS Storage]
+      responses:
+        '200':
+          description: NAS configuration retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NasConfig'
+    put:
+      summary: Update NAS Configuration
+      description: Updates the NAS configuration.
+      operationId: updateNasConfig
+      tags: [NAS Storage]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NasConfigUpdate'
+      responses:
+        '200':
+          description: NAS configuration updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResult'
+
+  /storage/nas/test:
+    post:
+      summary: Test NAS Connection
+      description: Tests connectivity to the configured NAS server.
+      operationId: testNasConnection
+      tags: [NAS Storage]
+      responses:
+        '200':
+          description: Connection test result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConnectionTestResult'
+
+  /storage/nas/mount:
+    post:
+      summary: Mount NAS Share
+      description: Mounts the configured NAS share.
+      operationId: mountNas
+      tags: [NAS Storage]
+      responses:
+        '200':
+          description: NAS mounted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResult'
+
+  /storage/nas/unmount:
+    post:
+      summary: Unmount NAS Share
+      description: Unmounts the NAS share.
+      operationId: unmountNas
+      tags: [NAS Storage]
+      responses:
+        '200':
+          description: NAS unmounted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResult'
+
+  # ============================================================================
+  # FTP Upload
+  # ============================================================================
+  /storage/ftp:
+    get:
+      summary: Get FTP Configuration
+      description: Returns the current FTP upload configuration.
+      operationId: getFtpConfig
+      tags: [FTP Upload]
+      responses:
+        '200':
+          description: FTP configuration retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FtpConfig'
+    put:
+      summary: Update FTP Configuration
+      description: Updates the FTP upload configuration.
+      operationId: updateFtpConfig
+      tags: [FTP Upload]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FtpConfigUpdate'
+      responses:
+        '200':
+          description: FTP configuration updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResult'
+
+  /storage/ftp/test:
+    post:
+      summary: Test FTP Connection
+      description: Tests connectivity to the configured FTP server.
+      operationId: testFtpConnection
+      tags: [FTP Upload]
+      responses:
+        '200':
+          description: Connection test result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConnectionTestResult'
+
+  /storage/ftp/upload:
+    post:
+      summary: Trigger Manual Upload
+      description: Triggers a manual upload of recordings to FTP server.
+      operationId: triggerFtpUpload
+      tags: [FTP Upload]
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                recording_ids:
+                  type: array
+                  items:
+                    type: string
+                  description: Specific recording IDs to upload. Empty for all pending.
+      responses:
+        '200':
+          description: Upload triggered
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResult'
+
+  /storage/ftp/queue:
+    get:
+      summary: Get FTP Upload Queue
+      description: Returns the current upload queue status.
+      operationId: getFtpQueue
+      tags: [FTP Upload]
+      responses:
+        '200':
+          description: Upload queue retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FtpQueue'
+
+  /storage/ftp/history:
+    get:
+      summary: Get FTP Upload History
+      description: Returns upload history.
+      operationId: getFtpHistory
+      tags: [FTP Upload]
+      parameters:
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 50
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            default: 0
+      responses:
+        '200':
+          description: Upload history retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FtpHistory'
+
+  # ============================================================================
+  # Schedule Recording
+  # ============================================================================
+  /recording/schedules:
+    get:
+      summary: Get Recording Schedules
+      description: Returns all recording schedule profiles.
+      operationId: getSchedules
+      tags: [Schedule Recording]
+      responses:
+        '200':
+          description: Schedules retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScheduleList'
+    post:
+      summary: Create Schedule Profile
+      description: Creates a new recording schedule profile.
+      operationId: createSchedule
+      tags: [Schedule Recording]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ScheduleProfile'
+      responses:
+        '201':
+          description: Schedule created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScheduleProfile'
+
+  /recording/schedules/{id}:
+    get:
+      summary: Get Schedule Profile
+      description: Returns a specific schedule profile.
+      operationId: getScheduleById
+      tags: [Schedule Recording]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Schedule retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScheduleProfile'
+    put:
+      summary: Update Schedule Profile
+      description: Updates an existing schedule profile.
+      operationId: updateSchedule
+      tags: [Schedule Recording]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ScheduleProfile'
+      responses:
+        '200':
+          description: Schedule updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScheduleProfile'
+    delete:
+      summary: Delete Schedule Profile
+      description: Deletes a schedule profile.
+      operationId: deleteSchedule
+      tags: [Schedule Recording]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Schedule deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResult'
+
+  /recording/schedule/config:
+    get:
+      summary: Get Schedule Recording Config
+      description: Returns global schedule recording configuration.
+      operationId: getScheduleConfig
+      tags: [Schedule Recording]
+      responses:
+        '200':
+          description: Config retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScheduleConfig'
+    put:
+      summary: Update Schedule Recording Config
+      description: Updates global schedule recording configuration.
+      operationId: updateScheduleConfig
+      tags: [Schedule Recording]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ScheduleConfig'
+      responses:
+        '200':
+          description: Config updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OperationResult'
+
+components:
+  schemas:
+    OperationResult:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+        error:
+          type: string
+
+    ConnectionTestResult:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+        latency_ms:
+          type: integer
+        server_info:
+          type: string
+
+    SdCardStatus:
+      type: object
+      properties:
+        inserted:
+          type: boolean
+        mounted:
+          type: boolean
+        mount_point:
+          type: string
+        device:
+          type: string
+        filesystem:
+          type: string
+        label:
+          type: string
+        total_bytes:
+          type: integer
+          format: int64
+        total_human:
+          type: string
+        used_bytes:
+          type: integer
+          format: int64
+        used_human:
+          type: string
+        free_bytes:
+          type: integer
+          format: int64
+        free_human:
+          type: string
+        usage_percent:
+          type: integer
+        needs_format:
+          type: boolean
+        format_reason:
+          type: string
+        recording_enabled:
+          type: boolean
+
+    NasConfig:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+        type:
+          type: string
+          enum: [smb, nfs, cifs]
+        server:
+          type: string
+        share_path:
+          type: string
+        mount_point:
+          type: string
+        username:
+          type: string
+        domain:
+          type: string
+        auto_mount:
+          type: boolean
+        mounted:
+          type: boolean
+        status:
+          type: string
+
+    NasConfigUpdate:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+        type:
+          type: string
+          enum: [smb, nfs, cifs]
+        server:
+          type: string
+        share_path:
+          type: string
+        mount_point:
+          type: string
+        username:
+          type: string
+        password:
+          type: string
+        domain:
+          type: string
+        auto_mount:
+          type: boolean
+
+    FtpConfig:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+        server:
+          type: string
+        port:
+          type: integer
+        username:
+          type: string
+        remote_path:
+          type: string
+        use_ssl:
+          type: boolean
+        passive_mode:
+          type: boolean
+        upload_enabled:
+          type: boolean
+        upload_schedule:
+          type: string
+          enum: [immediate, hourly, daily]
+        upload_events_only:
+          type: boolean
+        connection_status:
+          type: string
+        last_upload:
+          type: string
+          format: date-time
+
+    FtpConfigUpdate:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+        server:
+          type: string
+        port:
+          type: integer
+        username:
+          type: string
+        password:
+          type: string
+        remote_path:
+          type: string
+        use_ssl:
+          type: boolean
+        passive_mode:
+          type: boolean
+        upload_enabled:
+          type: boolean
+        upload_schedule:
+          type: string
+          enum: [immediate, hourly, daily]
+        upload_events_only:
+          type: boolean
+
+    FtpQueue:
+      type: object
+      properties:
+        pending_count:
+          type: integer
+        in_progress_count:
+          type: integer
+        total_size_bytes:
+          type: integer
+          format: int64
+        items:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              filename:
+                type: string
+              size_bytes:
+                type: integer
+                format: int64
+              status:
+                type: string
+                enum: [pending, uploading, completed, failed]
+              progress_percent:
+                type: integer
+              error:
+                type: string
+
+    FtpHistory:
+      type: object
+      properties:
+        total:
+          type: integer
+        offset:
+          type: integer
+        limit:
+          type: integer
+        items:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              filename:
+                type: string
+              size_bytes:
+                type: integer
+                format: int64
+              uploaded_at:
+                type: string
+                format: date-time
+              duration_ms:
+                type: integer
+              success:
+                type: boolean
+              error:
+                type: string
+
+    ScheduleList:
+      type: object
+      properties:
+        profiles:
+          type: array
+          items:
+            $ref: '#/components/schemas/ScheduleProfile'
+
+    ScheduleProfile:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        enabled:
+          type: boolean
+        channels:
+          type: array
+          items:
+            type: integer
+        recording_type:
+          type: string
+          enum: [continuous, event, scheduled]
+        schedule:
+          type: object
+          properties:
+            monday:
+              type: array
+              items:
+                $ref: '#/components/schemas/TimeSlot'
+            tuesday:
+              type: array
+              items:
+                $ref: '#/components/schemas/TimeSlot'
+            wednesday:
+              type: array
+              items:
+                $ref: '#/components/schemas/TimeSlot'
+            thursday:
+              type: array
+              items:
+                $ref: '#/components/schemas/TimeSlot'
+            friday:
+              type: array
+              items:
+                $ref: '#/components/schemas/TimeSlot'
+            saturday:
+              type: array
+              items:
+                $ref: '#/components/schemas/TimeSlot'
+            sunday:
+              type: array
+              items:
+                $ref: '#/components/schemas/TimeSlot'
+
+    TimeSlot:
+      type: object
+      properties:
+        id:
+          type: integer
+        start_time:
+          type: string
+          pattern: '^([01]?[0-9]|2[0-3]):[0-5][0-9]$'
+          example: '09:00'
+        end_time:
+          type: string
+          pattern: '^([01]?[0-9]|2[0-3]):[0-5][0-9]$'
+          example: '18:00'
+        enabled:
+          type: boolean
+          default: true
+
+    ScheduleConfig:
+      type: object
+      properties:
+        recording_type:
+          type: string
+          enum: [stop, manual, schedule]
+        full_storage_action:
+          type: string
+          enum: [stop, overwrite]
+        min_free_space_mb:
+          type: integer
+          minimum: 512

@@ -1,0 +1,435 @@
+
+
+#ifndef _IME_ENG_H_
+#define _IME_ENG_H_
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+
+
+#include "kwrap/type.h"
+#include "kwrap/semaphore.h"
+#include "kdrv_type.h"
+
+#include "ime_eng_comm.h"
+#include "ime_eng_3dnr_base.h"
+#include "ime_eng_control_base.h"
+#include "ime_eng_adas_base.h"
+#include "ime_eng_compression_base.h"
+#include "ime_eng_dbcs_base.h"
+#include "ime_eng_in_out_path_base.h"
+
+
+#include "ime_eng_pm_base.h"
+#include "ime_eng_fisheye_mask_base.h"
+#include "ime_eng_yuvcvt_base.h"
+#include "ime_eng_cal.h"
+#include "ime_eng_lca_base.h"
+#include "ime_eng_shp_base.h"
+#include "ime_eng_nn_isp_base.h"
+#include "ime_eng_limt.h"
+#include "ime_eng_cal_dual_params.h"
+//#include "ime_eng_osd_base.h"
+//#include "ime_eng_lcaf_base.h"
+//#include "ime_eng_va_base.h"
+//#include "ime_eng_mrnr_base.h"
+
+#define IME_ENG_REG_NUM         804 // for nt98539A
+
+#define IME_ENG_UTIL_BIT_ALL    (0xFFFFFFFF)
+#define IME_ENG_UTIL_BIT(n)     (1 << n)
+
+
+#define IME_LOADTYPE_START          0
+#define IME_LOADTYPE_FMEND          1
+#define IME_LOADTYPE_DIRECT_START   2
+
+
+
+/*****************************************************************************/
+
+
+
+
+typedef struct _IME_ENG_CTL_ {
+	UINT32 chip_num;
+	UINT32 eng_num;
+	UINT32 total_ch;
+	IME_ENG_HANDLE *p_eng;
+} IME_ENG_CTL;
+
+
+typedef struct _IME_IMG_SIZE_ {
+	UINT32    h_size;    ///< Horizontal image size
+	UINT32    v_size;    ///< Vertical image size
+} IME_IMG_SIZE;
+
+
+
+extern INT32 ime_eng_init(UINT32 chip_num, UINT32 eng_num);
+extern INT32 ime_eng_release(void);
+extern INT32 ime_eng_init_resource(IME_ENG_HANDLE *p_eng);
+
+IME_ENG_HANDLE *ime_eng_get_handle(UINT32 chip_id, UINT32 eng_id);
+extern VOID ime_eng_reg_isr_callback(IME_ENG_HANDLE *p_eng, IME_ISR_CB cb);
+extern INT32 ime_eng_open(IME_ENG_HANDLE *p_eng);
+extern INT32 ime_eng_close(IME_ENG_HANDLE *p_eng);
+
+extern VOID ime_eng_trig_single_hw_reg(IME_ENG_HANDLE *p_eng);
+extern VOID ime_eng_trig_ll_hw_reg(IME_ENG_HANDLE *p_eng, ULONG ll_addr);
+extern VOID ime_eng_write_hw_reg(IME_ENG_HANDLE *p_eng, ULONG reg_ofs, UINT32 val);
+extern VOID ime_eng_stop_single_hw_reg(IME_ENG_HANDLE *p_eng);
+extern VOID ime_eng_isr_hw_reg(UINT32 dev_id);
+extern VOID ime2_eng_isr_hw_reg(UINT32 dev_id);
+extern VOID ime_eng_load_hw_reg(IME_ENG_HANDLE *p_eng, UINT32 load_type);
+extern VOID ime_eng_get_single_output_hw_reg(IME_ENG_HANDLE *p_eng, UINT32 *p_get_en, UINT32 *p_get_ch);
+extern VOID ime_eng_hard_reset_hw_reg(IME_ENG_HANDLE *p_eng);
+extern VOID ime_eng_set_lca_sram_shutdown_enable_hw_reg(IME_ENG_HANDLE *p_eng, UINT8 set_en);
+extern VOID ime_eng_frame_start_reset_hw_reg(IME_ENG_HANDLE *p_eng, UINT32 set_en);
+
+//extern ULONG ime_eng_get_va_out_addr_hw_reg(IME_ENG_HANDLE *p_eng);
+//extern BOOL ime_eng_get_va_outsel_hw_reg(IME_ENG_HANDLE *p_eng);
+
+//extern VOID ime_eng_get_va_rslt_hw_reg(IME_ENG_HANDLE *p_eng, UINT32 *p_g1_h, UINT32 *p_g1_v, UINT32 *p_g1_hcnt, UINT32 *p_g1_vcnt, UINT32 *p_g2_h, UINT32 *p_g2_v, UINT32 *p_g2_hcnt, UINT32 *p_g2_vcnt, ULONG buff_addr);
+//extern VOID ime_eng_get_va_normalization_rslt_hw_reg(IME_ENG_HANDLE *p_eng, UINT32 *p_g1_h, UINT32 *p_g1_v, UINT32 *p_g1_hcnt, UINT32 *p_g1_vcnt, UINT32 *p_g2_h, UINT32 *p_g2_v, UINT32 *p_g2_hcnt, UINT32 *p_g2_vcnt, ULONG buff_addr);
+
+//extern IME_INDEP_VA_PARAM ime_eng_get_indep_win_info_hw_reg(IME_ENG_HANDLE *p_eng, UINT32 win_idx);
+//extern VOID ime_eng_get_indep_va_win_rslt_hw_reg(IME_ENG_HANDLE *p_eng, IME_INDEP_VA_WIN_RSLT *p_indepva_rslt, UINT32 win_idx);
+//extern VOID ime_eng_get_indep_va_win_normalization_rslt_hw_reg(IME_ENG_HANDLE *p_eng, IME_INDEP_VA_WIN_RSLT *p_indepva_rslt, UINT32 win_idx);
+
+
+//extern VOID ime_eng_get_va_result(IME_ENG_HANDLE *p_eng, IME_VA_SETTING *p_va_info, IME_VA_RSLT *p_va_rslt);
+//extern VOID ime_eng_get_va_normalization_result(IME_ENG_HANDLE *p_eng, IME_VA_SETTING *p_va_info, IME_IMG_SIZE size, IME_VA_RSLT *p_va_rslt);
+
+
+//extern VOID ime_eng_get_dual_va_result(IME_DUAL_VA_SETTING *p_va_info, IME_VA_RSLT *p_va_rslt);
+//extern VOID ime_eng_get_dual_va_normalization_result_buf_reg(IME_DUAL_VA_SETTING *p_va_info, IME_IMG_SIZE size, IME_VA_RSLT *p_va_rslt);
+
+//extern VOID ime_eng_get_merged_indep_va_win_rslt_hw_reg(IME_INDEP_VA_WIN_MERGE* indepva_rslt_left, IME_INDEP_VA_WIN_MERGE* indepva_rslt_right);
+/*****************************************************************************/
+
+/**
+    IME enum - system flag clear selection
+*/
+typedef enum _IME_FLAG_CLEAR_SEL {
+	IME_FLAG_NO_CLEAR = 0,    ///< No clear flag
+	IME_FLAG_CLEAR    = 1,    ///< Clear flag
+	ENUM_DUMMY4WORD(IME_FLAG_CLEAR_SEL)
+} IME_FLAG_CLEAR_SEL;
+
+
+typedef enum {
+	IME_ENG_INTERRUPT_LL_END                = 0x00000001,
+	IME_ENG_INTERRUPT_LL_ERR                = 0x00000002,
+	IME_ENG_INTERRUPT_LL_LATE               = 0x00000004,
+	IME_ENG_INTERRUPT_LL_JEND               = 0x00000008,
+
+	IME_ENG_INTERRUPT_BP1                   = 0x00000010,
+	IME_ENG_INTERRUPT_BP2                   = 0x00000020,
+	IME_ENG_INTERRUPT_BP3                   = 0x00000040,
+	IME_ENG_INTERRUPT_TMNR_SLICE_END        = 0x00000080,
+
+	IME_ENG_INTERRUPT_TMNR_MOT_END          = 0x00000100,
+	IME_ENG_INTERRUPT_TMNR_MV_END           = 0x00000200,
+	IME_ENG_INTERRUPT_TMNR_STA_END          = 0x00000400,
+	IME_ENG_INTERRUPT_VA_OUT_END            = 0x00000800,
+
+	IME_ENG_INTERRUPT_TMNR_ENC_OVR          = 0x00001000,
+	IME_ENG_INTERRUPT_TMNR_DEC_ERR          = 0x00002000,
+	IME_ENG_INTERRUPT_FRM_ERR               = 0x00004000,
+	IME_ENG_INTERRUPT_SLICE_END             = 0x00008000,
+
+	IME_ENG_INTERRUPT_P1_OUT_ENC_OVFL       = 0x00010000,
+	IME_ENG_INTERRUPT_P2_OUT_ENC_OVFL       = 0x00020000,
+	IME_ENG_INTERRUPT_P3_OUT_ENC_OVFL       = 0x00040000,
+	IME_ENG_INTERRUPT_P4_OUT_ENC_OVFL       = 0x00080000,
+
+	IME_ENG_INTERRUPT_IN_DEC_ERR                = 0x00100000,
+	IME_ENG_INTERRUPT_NN_ISP2CPU_P2_OUT_READY   = 0x00200000,
+	IME_ENG_INTERRUPT_NN_ISP2CPU_P2_IN_CLEAR    = 0x00400000,
+	IME_ENG_INTERRUPT_NN_ISP2CPU_P3_OUT_READY   = 0x00800000,
+	IME_ENG_INTERRUPT_NN_ISP2CPU_P3_IN_CLEAR    = 0x01000000,
+
+	IME_ENG_INTERRUPT_FRM_START             = 0x20000000,  ///< frame-start
+	IME_ENG_INTERRUPT_STRP_END              = 0x40000000,  ///< stripe-end
+	IME_ENG_INTERRUPT_FRM_END               = 0x80000000,  ///< frame-end
+
+	IME_ENG_INTERRUPT_ALL                 = (IME_ENG_INTERRUPT_LL_END | IME_ENG_INTERRUPT_LL_ERR | IME_ENG_INTERRUPT_LL_LATE | IME_ENG_INTERRUPT_LL_JEND | IME_ENG_INTERRUPT_BP1 |
+											IME_ENG_INTERRUPT_BP2 | IME_ENG_INTERRUPT_BP3 | IME_ENG_INTERRUPT_TMNR_SLICE_END | IME_ENG_INTERRUPT_TMNR_MOT_END | IME_ENG_INTERRUPT_TMNR_MV_END |
+											IME_ENG_INTERRUPT_TMNR_STA_END | IME_ENG_INTERRUPT_VA_OUT_END | IME_ENG_INTERRUPT_TMNR_ENC_OVR | IME_ENG_INTERRUPT_TMNR_DEC_ERR | IME_ENG_INTERRUPT_FRM_ERR |
+											IME_ENG_INTERRUPT_SLICE_END | IME_ENG_INTERRUPT_P1_OUT_ENC_OVFL | IME_ENG_INTERRUPT_P2_OUT_ENC_OVFL | IME_ENG_INTERRUPT_P3_OUT_ENC_OVFL | IME_ENG_INTERRUPT_P4_OUT_ENC_OVFL |
+											IME_ENG_INTERRUPT_FRM_START | IME_ENG_INTERRUPT_STRP_END | IME_ENG_INTERRUPT_FRM_END | IME_ENG_INTERRUPT_IN_DEC_ERR |
+											IME_ENG_INTERRUPT_NN_ISP2CPU_P2_OUT_READY | IME_ENG_INTERRUPT_NN_ISP2CPU_P2_IN_CLEAR | IME_ENG_INTERRUPT_NN_ISP2CPU_P3_OUT_READY | IME_ENG_INTERRUPT_NN_ISP2CPU_P3_IN_CLEAR),
+} IME_ENG_INTERRUPT;
+
+typedef enum {
+	IME_ENG_SINGLE_OUT_CH_PXLSUBOUT     = IME_ENG_UTIL_BIT(0),
+	IME_ENG_SINGLE_OUT_CH_REFOUT        = IME_ENG_UTIL_BIT(1),
+	IME_ENG_SINGLE_OUT_CH_3DNR_MS       = IME_ENG_UTIL_BIT(2),
+	IME_ENG_SINGLE_OUT_CH_3DNR_MS_ROI   = IME_ENG_UTIL_BIT(3),
+	IME_ENG_SINGLE_OUT_CH_3DNR_MV       = IME_ENG_UTIL_BIT(4),
+	IME_ENG_SINGLE_OUT_CH_3DNR_STA      = IME_ENG_UTIL_BIT(5),
+	IME_ENG_SINGLE_OUT_CH_PATH1         = IME_ENG_UTIL_BIT(6),
+	IME_ENG_SINGLE_OUT_CH_PATH2         = IME_ENG_UTIL_BIT(7),
+	IME_ENG_SINGLE_OUT_CH_PATH3         = IME_ENG_UTIL_BIT(8),
+	IME_ENG_SINGLE_OUT_CH_PATH4         = IME_ENG_UTIL_BIT(9),
+	IME_ENG_SINGLE_OUT_CH_3DNR_FCVG     = IME_ENG_UTIL_BIT(10),
+	IME_ENG_SINGLE_OUT_CH_VA            = IME_ENG_UTIL_BIT(11),
+} IME_ENG_SINGLE_OUT_CH;
+
+typedef enum {
+	IME_ENG_SCL_BICUBIC = 0,
+	IME_ENG_SCL_BILINEAR,
+	IME_ENG_SCL_NEAREST,
+	IME_ENG_SCL_INTEGRATION,
+	IME_ENG_SCL_MAX
+} IME_ENG_SCL_METHOD;
+
+typedef enum  {
+	IME_ENG_SCL_DOWN = 0,  ///< scaling down enable
+	IME_ENG_SCL_UP = 1,    ///< scaling up enable
+} IME_ENG_SCL_UD;
+
+
+
+typedef enum {
+	IME_ENG_PXLFMT_Y = 0,
+	IME_ENG_PXLFMT_YUV420,          ///< Y, UV-PACKED 420
+	IME_ENG_PXLFMT_YUV420_PLANAR,   ///< Y, U, V 420 Seperate plane
+	IME_ENG_PXLFMT_YUV420_COMPRESS, ///< Y, UV-PACKED 420 COMPRESS
+	IME_ENG_PXLFMT_YUV420_MB_COMPRESS, ///< Y, UV-PACKED 420 COMPRESS with MB format
+	IME_ENG_PXLFMT_MAX
+} IME_ENG_PXLFMT;
+
+typedef struct {
+	UINT32 ofs;
+	UINT32 val;
+} IME_ENG_REG;
+
+
+
+typedef struct {
+	UINT32 h_n;         ///< h stripe size in each stripe, used for fixed size mode
+	UINT32 h_l;         ///< h stripe size of last stripe, used for fixed size mode
+	UINT32 h_m;         ///< h stripe number
+	UINT32 v_n;         ///< v stripe size in each stripe, used for fixed size mode
+	UINT32 v_l;         ///< v stripe size of last stripe, used for fixed size mode
+	UINT32 v_m;         ///< v stripe number
+} IME_ENG_STRIPE_HV_INFO;
+
+typedef struct {
+	IME_ENG_STRIPE_HV_INFO hv_info; ///< calculate by api(ime_eng_cal_hv_stripe)
+	UINT32 h_varied_en; ///< h stripe varied size enable
+	UINT32 h_varied[8]; ///< h stripe size, 8 entries, used for varied size mode
+	UINT32 ovlp_h_size;
+	UINT32 prt_h_size;
+} IME_ENG_STRIPE_INFO;
+
+typedef struct {
+	UINT32 y_min;
+	UINT32 y_max;
+	UINT32 uv_min;
+	UINT32 uv_max;
+} IME_ENG_PATH_CLAMP_INFO;
+
+typedef struct {
+	UINT32 isd_coef_ctl;    ///< 0:without user coefficient control, 1:with user coefficient control
+	UINT32 h_scl_ud;        ///< 0:scale down, 1:scale up
+	UINT32 h_scl_dr;
+	UINT32 h_scl_ftr;
+	UINT32 isd_h_base;
+	UINT32 isd_h_adj;
+	//UINT32 isd_h_ftr[3];
+	//UINT32 isd_h_coef_nums;
+	//UINT32 isd_h_coefs[17];
+	//UINT32 isd_h_coefs_all_sum;
+	//UINT32 isd_h_coefs_half_sum;
+
+	UINT32 v_scl_ud;        ///< 0:scale down, 1:scale up
+	UINT32 v_scl_dr;
+	UINT32 v_scl_ftr;
+	UINT32 isd_v_base;
+	UINT32 isd_v_adj;
+	//UINT32 isd_v_ftr[3];
+	//UINT32 isd_v_coef_nums;
+	//UINT32 isd_v_coefs[17];
+	//UINT32 isd_v_coefs_all_sum;
+	//UINT32 isd_v_coefs_half_sum;
+
+	UINT32 isd_h_coefs[32];
+} IME_ENG_PATH_SCL_FACTOR;
+
+typedef struct {
+	BOOL h_en;
+	BOOL v_en;
+	UINT32 h_coef;
+	UINT32 v_coef;
+} IME_ENG_PATH_SCL_FILTER;
+
+typedef struct {
+	UINT32 dma_en;
+	ULONG addr[3];
+	UINT32 lofs[3];
+	IME_ENG_PXLFMT fmt;
+	USIZE scl_size;
+	URECT crp_window;
+	IME_ENG_PATH_CLAMP_INFO clamp;
+	IME_ENG_SCL_METHOD scl_method;
+	IME_ENG_PATH_SCL_FACTOR scl_factor;
+	IME_ENG_PATH_SCL_FILTER scl_filter;
+	UINT32 scl_enh_fact;
+	UINT32 scl_enh_bit;
+
+	UINT32 enc_smode;
+	UINT32 sprt_en;
+	UINT32 sprt_pos;
+	ULONG addr_2[3];
+	UINT32 lofs_2[3];
+} IME_ENG_PATH_INFO;
+
+
+typedef struct _IME_ENG_GET_STRIPE_OVERLAP_INFO_ {
+	UINT16 get_overlap_size;
+	UINT16 get_partition_size;
+	UINT16 get_stp_size_unit;
+} IME_ENG_GET_STRIPE_OVERLAP_INFO;
+
+typedef struct _IME_ENG_CAL_STRIPE_OVERLAP_INFO_ {
+	BOOL tmnr_en;           /// tmnr function enable
+	BOOL yuyv_en;           /// for path2/3/4 output YUV422 format (yuyv,yvyu, uyvy, vyuy cases)
+	BOOL ycc_comp_en;       /// for path1/2/3/4 and tmnr reference encoder
+	BOOL lca_en;            /// lca function enable
+	BOOL pxl_sub_out_en;    /// pixelation sub-image output enable
+	BOOL isd_en;            /// for path2/3/4 ISD scale method
+	BOOL mbf_en;            /// for path1 MB format output
+	BOOL mrnr_en;           /// for mrnr enable
+	UINT32 max_h_scale_down_rate;  /// for path2/3 and lca-subout horizontal scaling down rate; get max size of output path, max_scale_down_rate = ((in_size - 1) << 16) / (out_size - 1)
+
+	BOOL in_ycc_en;         /// for input YCC format
+} IME_ENG_CAL_STRIPE_OVERLAP_INFO;
+
+typedef struct _IME_ENG_CAL_STRIPE_INFO_ {
+	IME_IMG_SIZE in_img_size;
+
+	BOOL out_path1_en;
+	IME_IMG_SIZE path1_scl_img_size;
+	IME_ENG_SCL_METHOD path1_scl_method;
+	BOOL path1_out_fmt_mb;
+
+	BOOL out_path2_en;
+	IME_IMG_SIZE path2_scl_img_size;
+	IME_ENG_SCL_METHOD path2_scl_method;
+
+	BOOL out_path3_en;
+	IME_IMG_SIZE path3_scl_img_size;
+	IME_ENG_SCL_METHOD path3_scl_method;
+
+	BOOL out_path4_en;
+	IME_IMG_SIZE path4_scl_img_size;
+	IME_ENG_SCL_METHOD path4_scl_method;
+
+	UINT32 stp_overlap_size;
+	UINT32 stp_size_unit;
+} IME_ENG_CAL_STRIPE_INFO;
+
+extern ER ime_eng_cal_hv_stripe(IME_ENG_CAL_STRIPE_INFO *p_cal_info, IME_ENG_OPMODE mode, IME_ENG_STRIPE_HV_INFO *p_info);
+extern void ime_eng_cal_overlap_size(IME_ENG_OPMODE mode, IME_ENG_CAL_STRIPE_OVERLAP_INFO *p_stp_cal_info, IME_ENG_GET_STRIPE_OVERLAP_INFO *p_get_stp_overlap_info);
+extern ER ime_eng_cal_scl_filter(UINT32 in_w, UINT32 in_h, UINT32 out_w, UINT32 out_h, IME_ENG_PATH_SCL_FILTER *p_info);
+extern ER ime_eng_cal_scl_factor(UINT32 in_w, UINT32 in_h, UINT32 out_w, UINT32 out_h, UINT32 scl_method, IME_ENG_PATH_SCL_FACTOR *p_info);
+
+
+
+extern UINT32 ime_eng_get_reg_base_buf_size(IME_ENG_ID eng_id);
+extern UINT32 ime_eng_get_reg_flag_buf_size(IME_ENG_ID eng_id);
+extern VOID ime_eng_set_reg_buf(IME_ENG_HANDLE *p_eng, ULONG reg_base_addr, ULONG reg_flag_addr);
+
+
+
+extern VOID ime_eng_wait_flag_frame_end(IME_ENG_HANDLE *p_eng, IME_FLAG_CLEAR_SEL is_clear_flag);
+extern VOID ime_eng_clear_flag_frame_end(IME_ENG_HANDLE *p_eng);
+
+extern VOID ime_eng_wait_flag_linked_list_end(IME_ENG_HANDLE *p_eng, IME_FLAG_CLEAR_SEL is_clear_flag);
+extern VOID ime_eng_clear_flag_linked_list_end(IME_ENG_HANDLE *p_eng);
+
+extern VOID ime_eng_wait_flag_linked_list_job_end(IME_ENG_HANDLE *p_eng, IME_FLAG_CLEAR_SEL is_clear_flag);
+extern VOID ime_eng_clear_flag_linked_list_job_end(IME_ENG_HANDLE *p_eng);
+
+extern VOID ime_eng_wait_flag_breakpoint1(IME_ENG_HANDLE *p_eng, IME_FLAG_CLEAR_SEL is_clear_flag);
+extern VOID ime_eng_clear_flag_breakpoint1(IME_ENG_HANDLE *p_eng);
+
+extern VOID ime_eng_wait_flag_breakpoint2(IME_ENG_HANDLE *p_eng, IME_FLAG_CLEAR_SEL is_clear_flag);
+extern VOID ime_eng_clear_flag_breakpoint2(IME_ENG_HANDLE *p_eng);
+
+extern VOID ime_eng_wait_flag_breakpoint3(IME_ENG_HANDLE *p_eng, IME_FLAG_CLEAR_SEL is_clear_flag);
+extern VOID ime_eng_clear_flag_breakpoint3(IME_ENG_HANDLE *p_eng);
+
+extern VOID ime_eng_wait_flag_frame_start(IME_ENG_HANDLE *p_eng, IME_FLAG_CLEAR_SEL is_clear_flag);
+extern VOID ime_eng_clear_flag_frame_start(IME_ENG_HANDLE *p_eng);
+
+extern VOID ime_eng_wait_flag_slice_end(IME_ENG_HANDLE *p_eng, IME_FLAG_CLEAR_SEL is_clear_flag);
+extern VOID ime_eng_clear_flag_slice_end(IME_ENG_HANDLE *p_eng);
+
+extern VOID ime_eng_wait_flag_va_out_end(IME_ENG_HANDLE *p_eng, IME_FLAG_CLEAR_SEL is_clear_flag);
+extern VOID ime_eng_clear_flag_va_out_end(IME_ENG_HANDLE *p_eng);
+
+
+extern VOID ime_eng_wait_flag_nn_isp_path2_out_ready(IME_ENG_HANDLE *p_eng, IME_FLAG_CLEAR_SEL is_clear_flag);
+extern VOID ime_eng_clear_flag_nn_isp_path2_out_ready(IME_ENG_HANDLE *p_eng);
+extern VOID ime_eng_wait_flag_nn_isp_path2_in_clear(IME_ENG_HANDLE *p_eng, IME_FLAG_CLEAR_SEL is_clear_flag);
+extern VOID ime_eng_clear_flag_nn_isp_path2_in_clear(IME_ENG_HANDLE *p_eng);
+
+
+
+extern VOID ime_eng_wait_flag_nn_isp_path3_out_ready(IME_ENG_HANDLE *p_eng, IME_FLAG_CLEAR_SEL is_clear_flag);
+extern VOID ime_eng_clear_flag_nn_isp_path3_out_ready(IME_ENG_HANDLE *p_eng);
+extern VOID ime_eng_wait_flag_nn_isp_path3_in_clear(IME_ENG_HANDLE *p_eng, IME_FLAG_CLEAR_SEL is_clear_flag);
+extern VOID ime_eng_clear_flag_nn_isp_path3_in_clear(IME_ENG_HANDLE *p_eng);
+
+
+
+//extern UINT32 ime_eng_get_avg_u_hw_reg(IME_ENG_HANDLE *p_eng);
+//extern UINT32 ime_eng_get_avg_v_hw_reg(IME_ENG_HANDLE *p_eng);
+
+
+extern UINT32 ime_eng_get_dram_out_status_hw_reg(IME_ENG_HANDLE *p_eng);
+extern VOID ime_eng_clear_dram_out_status_hw_reg(IME_ENG_HANDLE *p_eng, UINT32 clr_bit);
+
+extern VOID ime_eng_global_load_hw_reg(IME_ENG_HANDLE *p_eng, UINT32 set_en);
+
+extern VOID ime_eng_set_dma_channel_enable_hw_reg(IME_ENG_HANDLE *p_eng, BOOL set_en);
+extern UINT8 ime_eng_get_dma_channel_status_hw_reg(IME_ENG_HANDLE *p_eng);
+
+extern VOID ime_eng_set_axi_dma_channel_enable_hw_reg(IME_ENG_HANDLE *p_eng, UINT32 set_en);
+extern UINT8 ime_eng_get_axi_dma_channel_status_hw_reg(IME_ENG_HANDLE *p_eng);
+
+extern void ime_eng_set_dbg_level(UINT32 level);
+
+
+extern UINT32 ime_eng_get_tmnr_sum_of_sad_value_hw_reg(IME_ENG_HANDLE *p_eng);
+extern UINT32 ime_eng_get_tmnr_sum_of_mv_length_hw_reg(IME_ENG_HANDLE *p_eng);
+extern UINT32 ime_eng_get_tmnr_total_sampling_number_hw_reg(IME_ENG_HANDLE *p_eng);
+extern UINT32 ime_eng_get_tmnr_motion_info_summation_hw_reg(IME_ENG_HANDLE *p_eng);
+extern UINT32 ime_eng_get_tmnr_gradient_info_summation_hw_reg(IME_ENG_HANDLE *p_eng);
+
+
+#if (defined(_NVT_EMULATION_) == ON)
+
+extern BOOL ime_end_time_out_status;
+//extern void ime_emu_set_dma_en(BOOL set_en);
+//extern UINT32 ime_emu_get_dma_status(void);
+extern UINT32 ime_isr_cnt, ime_isr_status;
+
+extern VOID ime_eng_emu_soft_reset_hw_reg(IME_ENG_HANDLE *p_eng);
+
+#endif
+
+
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif
+

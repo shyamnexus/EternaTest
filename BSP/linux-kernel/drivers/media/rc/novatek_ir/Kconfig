@@ -1,0 +1,6 @@
+config IR_NVT_FR
+	tristate "Novatek IR remote receiver"
+	depends on RC_CORE
+	depends on ARCH_NVT_IVOT_V7 || ARCH_NVT_IVOT_V8
+	help
+	   Say Y if you want to use Novatek IR remote receiver

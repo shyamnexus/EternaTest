@@ -1,0 +1,16 @@
+/*
+ * Novatek Ltd. BSP part of dts
+ */
+
+&emmc {
+    partition_loader {      label = "loader";                 reg = <0x0 0x00000000 0x0 0x00040000>; };  /* Fixed */
+    partition_fdt {         label = "fdt";                    reg = <0x0 0x00040000 0x0 0x00040000>; };  /* Fixed */
+    partition_fdt.restore { label = "fdt.restore";            reg = <0x0 0x00080000 0x0 0x00040000>; };  /* Fixed */
+    partition_atf {         label = "atf";                    reg = <0x0 0x000C0000 0x0 0x00040000>; };
+    partition_uboot {       label = "uboot";                  reg = <0x0 0x00100000 0x0 0x00200000>; };
+    partition_uenv {        label = "uenv";                   reg = <0x0 0x00300000 0x0 0x00040000>; };
+    partition_kernel {      label = "kernel";                 reg = <0x0 0x00340000 0x0 0x00400000>; };
+    partition_rootfs {      label = "rootfs";  active="true"; reg = <0x0 0x00740000 0x0 0x0A000000>; };  /* root-fs (active="true" is to assign rootfs partition device) */
+    partition_rootfs1 {     label = "rootfs1";                reg = <0x0 0x0A740000 0x0 0x0A000000>; };  /* cache ota partition */
+    partition_rootfs2 {     label = "app";                    reg = <0x0 0x14740000 0x0 0x0C000000>; };  /* reserved for user e.g: rescue disk */
+};

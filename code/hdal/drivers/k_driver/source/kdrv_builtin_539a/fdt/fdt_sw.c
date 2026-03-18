@@ -1,0 +1,1 @@
+../../kdrv_builtin/fdt/fdt_sw.c

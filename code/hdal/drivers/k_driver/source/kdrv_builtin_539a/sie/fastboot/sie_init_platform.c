@@ -1,0 +1,1 @@
+../../../kdrv_builtin/sie/fastboot/sie_init_platform.c

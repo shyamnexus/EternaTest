@@ -1,0 +1,5972 @@
+/*
+ * Novatek Ltd. BSP part of dts
+ */
+
+/ {
+	nvt-clk {
+		/* Fixed Clock */
+		reserved: reserved {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-fixed-clock";
+			clock-frequency = <0>;
+			clock-output-names = "reserved";
+		};
+
+		PAUTOGATING: PAUTOGATING {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-fixed-clock";
+			clock-frequency = <0>;
+			clock-output-names = "PAUTOGATING";
+		};
+
+		ext: ext {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-fixed-clock";
+			clock-frequency = <0>;
+			clock-output-names = "ext";
+		};
+
+		ext2: ext2 {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-fixed-clock";
+			clock-frequency = <0>;
+			clock-output-names = "ext2";
+		};
+
+		cnn_sram_cpu: cnn_sram_cpu {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-fixed-clock";
+			clock-frequency = <0>;
+			clock-output-names = "cnn_sram_cpu";
+		};
+
+		ife_sram_cpu: ife_sram_cpu {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-fixed-clock";
+			clock-frequency = <0>;
+			clock-output-names = "ife_sram_cpu";
+		};
+
+		ife_sram_ife: ife_sram_ife {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-fixed-clock";
+			clock-frequency = <0>;
+			clock-output-names = "ife_sram_ife";
+		};
+
+		cnn_sram_cnn: cnn_sram_cnn {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-fixed-clock";
+			clock-frequency = <0>;
+			clock-output-names = "cnn_sram_cnn";
+		};
+
+		cnn_sram_dce: cnn_sram_dce {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-fixed-clock";
+			clock-frequency = <0>;
+			clock-output-names = "cnn_sram_dce";
+		};
+
+		osc_in: osc_in {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-fixed-clock";
+			clock-frequency = <12000000>;
+			clock-output-names = "osc_in";
+		};
+
+		osc_rtc: osc_rtc{
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-fixed-clock";
+			clock-frequency = <32768>;
+			clock-output-names = "osc_rtc";
+		};
+
+		fix480m: fix480m {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-fixed-clock";
+			clock-frequency = <480000000>;
+			clock-output-names = "fix480m";
+		};
+
+		fix360m: fix360m{
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-fixed-clock";
+			clock-frequency = <360000000>;
+			clock-output-names = "fix360m";
+		};
+
+		fix240m: fix240m {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-fixed-clock";
+			clock-frequency = <240000000>;
+			clock-output-names = "fix240m";
+		};
+
+		fix192m: fix192m {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-fixed-clock";
+			clock-frequency = <192000000>; //Real Chip
+			clock-output-names = "fix192m";
+		};
+
+		fix160m: fix160m{
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-fixed-clock";
+			clock-frequency = <160000000>;
+			clock-output-names = "fix160m";
+		};
+
+		fix150m: fix150m{
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-fixed-clock";
+			clock-frequency = <150000000>;
+			clock-output-names = "fix150m";
+		};
+
+		fix120m: fix120m{
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-fixed-clock";
+			clock-frequency = <120000000>;
+			clock-output-names = "fix120m";
+		};
+
+		fix96m: fix96m{
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-fixed-clock";
+			clock-frequency = <96000000>;
+			clock-output-names = "fix96m";
+		};
+
+		fix80m: fix80m{
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-fixed-clock";
+			clock-frequency = <80000000>;
+			clock-output-names = "fix80m";
+		};
+
+		fix60m: fix60m{
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-fixed-clock";
+			clock-frequency = <60000000>;
+			clock-output-names = "fix60m";
+		};
+
+		fix48m: fix48m{
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-fixed-clock";
+			clock-frequency = <48000000>;
+			clock-output-names = "fix48m";
+		};
+
+		fix24m: fix24m{
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-fixed-clock";
+			clock-frequency = <24000000>;
+			clock-output-names = "fix24m";
+		};
+
+		fix16m: fix16m{
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-fixed-clock";
+			clock-frequency = <16000000>;
+			clock-output-names = "fix16m";
+		};
+
+		fix3m: fix3m{
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-fixed-clock";
+			clock-frequency = <3000000>;
+			clock-output-names = "fix3m";
+		};
+
+		fix32768: fix32768{
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-fixed-clock";
+			clock-frequency = <32768>;
+			clock-output-names = "fix32768";
+		};
+
+		fix32k: fix32k{
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-fixed-clock";
+			clock-frequency = <32000>;
+			clock-output-names = "fix32k";
+		};
+
+		clk_nand_fac: clk_nand_fac {
+			#clock-cells = <0>;
+			compatible = "fixed-factor-clock";
+			clocks = <&fix480m>;
+			clock-div = <2>;
+			clock-mult = <1>;
+		};
+
+		clkout_normal: clkout_normal {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-fixed-clock";
+			clock-frequency = <0>;
+			clock-output-names = "clkout_normal";
+		};
+
+		clkout_invert: clkout_invert {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-fixed-clock";
+			clock-frequency = <0>;
+			clock-output-names = "clkout_invert";
+		};
+
+		siex_pxclk: siex_pxclk {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-fixed-clock";
+			clock-frequency = <0>;
+			clock-output-names = "siex_pxclk";
+		};
+
+		siex_intclk0: siex_intclk0 {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-fixed-clock";
+			clock-frequency = <0>;
+			clock-output-names = "siex_intclk0";
+		};
+
+		siex_intclk1: siex_intclk1 {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-fixed-clock";
+			clock-frequency = <0>;
+			clock-output-names = "siex_intclk1";
+		};
+
+		siex_tsen_pxclk: siex_tsen_pxclk {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-fixed-clock";
+			clock-frequency = <0>;
+			clock-output-names = "siex_tsen_pxclk";
+		};
+
+		siex_tsen_mclk3: siex_tsen_mclk3 {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-fixed-clock";
+			clock-frequency = <0>;
+			clock-output-names = "siex_tsen_mclk3";
+		};
+
+		tge_clksrc: tge_clksrc {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-fixed-clock";
+			clock-frequency = <0>;
+			clock-output-names = "tge_clksrc";
+		};
+
+		vie_pxclkpad: vie_pxclkpad{
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-fixed-clock";
+			clock-frequency = <108000000>;
+			clock-output-names = "vie_pxclkpad";
+		};
+		
+		vie_padA_sgpio1: vie_padA_sgpio1{
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-fixed-clock";
+			clock-frequency = <0>;
+			clock-output-names = "vie_padA_sgpio1";
+		};
+		
+		vie_padA_pgpio0: vie_padA_pgpio0{
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-fixed-clock";
+			clock-frequency = <0>;
+			clock-output-names = "vie_padA_pgpio0";
+		};
+		
+		vcap_sm_sel_sie: vcap_sm_sel_sie{
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-fixed-clock";
+			clock-frequency = <0>;
+			clock-output-names = "vcap_sm_sel_sie";
+		};
+		
+		vcap_sm_sel_vie: vcap_sm_sel_vie{
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-fixed-clock";
+			clock-frequency = <0>;
+			clock-output-names = "vcap_sm_sel_vie";
+		};
+
+		csi_hsclk: csi_hsclk{
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-fixed-clock";
+			clock-frequency = <0>;
+			clock-output-names = "csi_hsclk";
+		};
+
+		cpu_clk: cpu_clk {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-mux";
+			clocks = <&fix80m>, <&pll8>, <&fix480m>;
+			current_rate = <1400000000>;
+			parent_idx = <1>;
+			mux_reg_offset = <CG_SYS_CLK_RATE_REG0_OFFSET>;
+			mux_bit_idx = <0>;
+			mux_bit_width = <2>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <1>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "cpu_clk";
+		};
+
+		/* PLL Clock */
+
+		pll0: pll0 {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-pll";
+			clocks = <&osc_in>;
+			default_value = <DEFAULT_PLL_DIV_VALUE>;
+			pll_ratio = <DEFAULT_PLL0_RATIO>;
+			gate_reg_offset = <CG_PLL_EN_REG_OFFSET>;
+			gate_bit_idx = <0>;
+			rate_reg_offset = <CG_PLL0_CLK_RATE0_REG_OFFSET>;
+			rate_bit_idx = <0>;
+			rate_bit_width = <8>;
+			clock-output-names = "pll0";
+		};
+
+		pll3: pll3 {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-pll";
+			clocks = <&osc_in>;
+			default_value = <DEFAULT_PLL_DIV_VALUE>;
+			pll_ratio = <DEFAULT_PLL3_RATIO>;
+			gate_reg_offset = <CG_PLL_EN_REG_OFFSET>;
+			gate_bit_idx = <3>;
+			rate_reg_offset = <CG_PLL3_CLK_RATE0_REG_OFFSET>;
+			rate_bit_idx = <0>;
+			rate_bit_width = <8>;
+			clock-output-names = "pll3";
+		};
+
+		pll4: pll4 {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-pll";
+			clocks = <&osc_in>;
+			default_value = <DEFAULT_PLL_DIV_VALUE>;
+			pll_ratio = <DEFAULT_PLL4_RATIO>;
+			gate_reg_offset = <CG_PLL_EN_REG_OFFSET>;
+			gate_bit_idx = <4>;
+			rate_reg_offset = <CG_PLL4_CLK_RATE0_REG_OFFSET>;
+			rate_bit_idx = <0>;
+			rate_bit_width = <8>;
+			clock-output-names = "pll4";
+		};
+
+		pll5: pll5 {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-pll";
+			clocks = <&osc_in>;
+			default_value = <DEFAULT_PLL_DIV_VALUE>;
+			pll_ratio = <DEFAULT_PLL5_RATIO>;
+			gate_reg_offset = <CG_PLL_EN_REG_OFFSET>;
+			gate_bit_idx = <5>;
+			rate_reg_offset = <CG_PLL5_CLK_RATE0_REG_OFFSET>;
+			rate_bit_idx = <0>;
+			rate_bit_width = <8>;
+			clock-output-names = "pll5";
+		};
+
+		pll6: pll6 {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-pll";
+			clocks = <&osc_in>;
+			default_value = <DEFAULT_PLL_DIV_VALUE>;
+			pll_ratio = <DEFAULT_PLL6_RATIO>;
+			gate_reg_offset = <CG_PLL_EN_REG_OFFSET>;
+			gate_bit_idx = <6>;
+			rate_reg_offset = <CG_PLL6_CLK_RATE0_REG_OFFSET>;
+			rate_bit_idx = <0>;
+			rate_bit_width = <8>;
+			clock-output-names = "pll6";
+		};
+
+		pll7: pll7 {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-pll";
+			clocks = <&osc_in>;
+			default_value = <DEFAULT_PLL_DIV_VALUE>;
+			pll_ratio = <DEFAULT_PLL7_RATIO>;
+			gate_reg_offset = <CG_PLL_EN_REG_OFFSET>;
+			gate_bit_idx = <7>;
+			rate_reg_offset = <CG_PLL7_CLK_RATE0_REG_OFFSET>;
+			rate_bit_idx = <0>;
+			rate_bit_width = <8>;
+			clock-output-names = "pll7";
+		};
+
+		pll8: pll8 {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-pll";
+			clocks = <&osc_in>;
+			default_value = <DEFAULT_PLL_DIV_VALUE>;
+			pll_ratio = <DEFAULT_PLL8_RATIO>;
+			gate_reg_offset = <CG_PLL_EN_REG_OFFSET>;
+			gate_bit_idx = <8>;
+			rate_reg_offset = <CG_PLL8_CLK_RATE0_REG_OFFSET>;
+			rate_bit_idx = <0>;
+			rate_bit_width = <8>;
+			clock-output-names = "pll8";
+		};
+
+		pll9: pll9 {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-pll";
+			clocks = <&osc_in>;
+			default_value = <DEFAULT_PLL_DIV_VALUE>;
+			pll_ratio = <DEFAULT_PLL9_RATIO>;
+			gate_reg_offset = <CG_PLL_EN_REG_OFFSET>;
+			gate_bit_idx = <9>;
+			rate_reg_offset = <CG_PLL9_CLK_RATE0_REG_OFFSET>;
+			rate_bit_idx = <0>;
+			rate_bit_width = <8>;
+			clock-output-names = "pll9";
+		};
+
+		pll10: pll10 {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-pll";
+			clocks = <&osc_in>;
+			default_value = <DEFAULT_PLL_DIV_VALUE>;
+			pll_ratio = <DEFAULT_PLL10_RATIO>;
+			gate_reg_offset = <CG_PLL_EN_REG_OFFSET>;
+			gate_bit_idx = <10>;
+			rate_reg_offset = <CG_PLL10_CLK_RATE0_REG_OFFSET>;
+			rate_bit_idx = <0>;
+			rate_bit_width = <8>;
+			clock-output-names = "pll10";
+		};
+
+		pll11: pll11 {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-pll";
+			clocks = <&osc_in>;
+			default_value = <DEFAULT_PLL_DIV_VALUE>;
+			pll_ratio = <DEFAULT_PLL11_RATIO>;
+			gate_reg_offset = <CG_PLL_EN_REG_OFFSET>;
+			gate_bit_idx = <11>;
+			rate_reg_offset = <CG_PLL11_CLK_RATE0_REG_OFFSET>;
+			rate_bit_idx = <0>;
+			rate_bit_width = <8>;
+			clock-output-names = "pll11";
+		};
+
+		pll12: pll12 {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-pll";
+			clocks = <&osc_in>;
+			default_value = <DEFAULT_PLL_DIV_VALUE>;
+			pll_ratio = <DEFAULT_PLL12_RATIO>;
+			gate_reg_offset = <CG_PLL_EN_REG_OFFSET>;
+			gate_bit_idx = <12>;
+			rate_reg_offset = <CG_PLL12_CLK_RATE0_REG_OFFSET>;
+			rate_bit_idx = <0>;
+			rate_bit_width = <8>;
+			clock-output-names = "pll12";
+		};
+
+		pll13: pll13 {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-pll";
+			clocks = <&osc_in>;
+			default_value = <DEFAULT_PLL_DIV_VALUE>;
+			pll_ratio = <DEFAULT_PLL13_RATIO>;
+			gate_reg_offset = <CG_PLL_EN_REG_OFFSET>;
+			gate_bit_idx = <13>;
+			rate_reg_offset = <CG_PLL13_CLK_RATE0_REG_OFFSET>;
+			rate_bit_idx = <0>;
+			rate_bit_width = <8>;
+			clock-output-names = "pll13";
+		};
+
+		pll14: pll14 {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-pll";
+			clocks = <&osc_in>;
+			default_value = <DEFAULT_PLL_DIV_VALUE>;
+			pll_ratio = <DEFAULT_PLL14_RATIO>;
+			gate_reg_offset = <CG_PLL_EN_REG_OFFSET>;
+			gate_bit_idx = <14>;
+			rate_reg_offset = <CG_PLL14_CLK_RATE0_REG_OFFSET>;
+			rate_bit_idx = <0>;
+			rate_bit_width = <8>;
+			clock-output-names = "pll14";
+		};
+
+		pll15: pll15 {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-pll";
+			clocks = <&osc_in>;
+			default_value = <DEFAULT_PLL_DIV_VALUE>;
+			pll_ratio = <DEFAULT_PLL15_RATIO>;
+			gate_reg_offset = <CG_PLL_EN_REG_OFFSET>;
+			gate_bit_idx = <15>;
+			rate_reg_offset = <CG_PLL15_CLK_RATE0_REG_OFFSET>;
+			rate_bit_idx = <0>;
+			rate_bit_width = <8>;
+			clock-output-names = "pll15";
+		};
+
+		pll16: pll16 {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-pll";
+			clocks = <&osc_in>;
+			default_value = <DEFAULT_PLL_DIV_VALUE>;
+			pll_ratio = <DEFAULT_PLL16_RATIO>;
+			gate_reg_offset = <CG_PLL_EN_REG_OFFSET>;
+			gate_bit_idx = <16>;
+			rate_reg_offset = <CG_PLL16_CLK_RATE0_REG_OFFSET>;
+			rate_bit_idx = <0>;
+			rate_bit_width = <8>;
+			clock-output-names = "pll16";
+		};
+
+		pll17: pll17 {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-pll";
+			clocks = <&osc_in>;
+			default_value = <DEFAULT_PLL_DIV_VALUE>;
+			pll_ratio = <DEFAULT_PLL17_RATIO>;
+			gate_reg_offset = <CG_PLL_EN_REG_OFFSET>;
+			gate_bit_idx = <17>;
+			rate_reg_offset = <CG_PLL17_CLK_RATE0_REG_OFFSET>;
+			rate_bit_idx = <0>;
+			rate_bit_width = <8>;
+			clock-output-names = "pll17";
+		};
+
+		fix320m: fix320m {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-pll";
+			clocks = <&osc_in>;
+			default_value = <DEFAULT_PLL_DIV_VALUE>;
+			pll_ratio = <DEFAULT_PLL_F320_RATIO>;
+			gate_reg_offset = <CG_PLL_EN_REG_OFFSET>;
+			gate_bit_idx = <18>;
+			rate_reg_offset = <CG_PLL18_CLK_RATE0_REG_OFFSET>;
+			rate_bit_idx = <0>;
+			rate_bit_width = <8>;
+			clock-output-names = "fix320m";
+		};
+
+		/* Gate Clock */
+		clk_adc: clk_adc {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&fix16m>;
+			current_rate = <16000000>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <CG_CLK_EN_REG1_OFFSET>;
+			gate_bit_idx = <13>;
+			do_enable = <NOT_ENABLE>;
+			reset_reg_offset = <CG_SYS_RESET_REG1_OFFSET>;
+			reset_bit_idx = <13>;
+			do_reset = <NOT_RESET>;
+			autogating_reg_offset = <CG_APB_CLK_AUTO_GATING_REG0_OFFSET>;
+			autogating_bit_idx = <31>;
+			do_autogating = <DO_AUTOGATING>;
+			clock-output-names = "2f0510000.adc";
+		};
+
+
+		sdio_pclk: sdio_pclk {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&osc_in>;
+			current_rate = <0>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <0>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "sdio_pclk";
+		};
+
+		sdio2_pclk: sdio2_pclk {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&osc_in>;
+			current_rate = <0>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <0>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "sdio2_pclk";
+		};
+
+		sdio3_pclk: sdio3_pclk {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&osc_in>;
+			current_rate = <0>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <0>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "sdio3_pclk";
+		};
+
+                clk_uart0: clk_uart0 {
+                        #clock-cells = <0>;
+                        compatible = "nvt,nvt-clk-gate";
+                        clocks = <&fix24m>;
+                        current_rate = <24000000>;
+                        div_reg_offset = <0>;
+                        div_bit_idx = <0>;
+                        div_bit_width = <0>;
+                        gate_reg_offset = <CG_CLK_EN_REG1_OFFSET>;
+                        gate_bit_idx = <10>;
+                        do_enable = <DO_ENABLE>;
+                        reset_reg_offset = <CG_SYS_RESET_REG1_OFFSET>;
+                        reset_bit_idx = <10>;
+                        do_reset = <NOT_RESET>;
+                        autogating_reg_offset = <0>;
+                        autogating_bit_idx = <0>;
+                        do_autogating = <0>;
+                        clock-output-names = "2f0110000.uart";
+                        max_rate = <60000000>;
+                };
+
+		clk_uart1: clk_uart1 {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+                        clocks = <&fix480m>;
+                        current_rate = <48000000>;
+			div_reg_offset = <CG_UART_CLK_DIV_REG0_OFFSET>;
+			div_bit_idx = <0>;
+			div_bit_width = <8>;
+			gate_reg_offset = <CG_CLK_EN_REG1_OFFSET>;
+			gate_bit_idx = <11>;
+			do_enable = <DO_ENABLE>;
+			reset_reg_offset = <CG_SYS_RESET_REG1_OFFSET>;
+			reset_bit_idx = <11>;
+			do_reset = <NOT_RESET>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "2f0111000.uart";
+			max_rate = <0>;
+		};
+
+		clk_uart2: clk_uart2 {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+                        clocks = <&fix480m>;
+                        current_rate = <48000000>;
+			div_reg_offset = <CG_UART_CLK_DIV_REG0_OFFSET>;
+			div_bit_idx = <8>;
+			div_bit_width = <8>;
+			gate_reg_offset = <CG_CLK_EN_REG1_OFFSET>;
+			gate_bit_idx = <22>;
+			do_enable = <DO_ENABLE>;
+			reset_reg_offset = <CG_SYS_RESET_REG1_OFFSET>;
+			reset_bit_idx = <22>;
+			do_reset = <NOT_RESET>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "2f0112000.uart";
+			max_rate = <0>;
+		};
+
+		clk_uart3: clk_uart3 {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+                        clocks = <&fix480m>;
+                        current_rate = <48000000>;
+			div_reg_offset = <CG_UART_CLK_DIV_REG0_OFFSET>;
+			div_bit_idx = <16>;
+			div_bit_width = <8>;
+			gate_reg_offset = <CG_CLK_EN_REG1_OFFSET>;
+			gate_bit_idx = <23>;
+			do_enable = <DO_ENABLE>;
+			reset_reg_offset = <CG_SYS_RESET_REG2_OFFSET>;
+			reset_bit_idx = <4>;
+			do_reset = <NOT_RESET>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "2f0113000.uart";
+			max_rate = <0>;
+		};
+
+		clk_uart4: clk_uart4 {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+                        clocks = <&fix480m>;
+                        current_rate = <48000000>;
+			div_reg_offset = <CG_UART_CLK_DIV_REG0_OFFSET>;
+			div_bit_idx = <24>;
+			div_bit_width = <8>;
+			gate_reg_offset = <CG_CLK_EN_REG1_OFFSET>;
+			gate_bit_idx = <24>;
+			do_enable = <DO_ENABLE>;
+			reset_reg_offset = <CG_SYS_RESET_REG2_OFFSET>;
+			reset_bit_idx = <5>;
+			do_reset = <NOT_RESET>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "2f0114000.uart";
+			max_rate = <0>;
+		};
+
+		clk_uart5: clk_uart5 {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+                        clocks = <&fix480m>;
+                        current_rate = <48000000>;
+			div_reg_offset = <CG_PERI_CLK_DIV_REG2_OFFSET>;
+			div_bit_idx = <16>;
+			div_bit_width = <8>;
+			gate_reg_offset = <CG_CLK_EN_REG1_OFFSET>;
+			gate_bit_idx = <25>;
+			do_enable = <DO_ENABLE>;
+			reset_reg_offset = <CG_SYS_RESET_REG2_OFFSET>;
+			reset_bit_idx = <6>;
+			do_reset = <NOT_RESET>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "2f0115000.uart";
+			max_rate = <0>;
+		};
+
+
+		clk_nand: clk_nand {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&clk_nand_fac>;
+			current_rate = <48000000>;
+			//current_rate = <0>; //Real Chip
+			div_reg_offset = <CG_PERI_CLK_DIV_REG1_OFFSET>;
+			div_bit_idx = <12>;
+			div_bit_width = <6>;
+			gate_reg_offset = <CG_CLK_EN_REG1_OFFSET>;
+			gate_bit_idx = <0>;
+			do_enable = <NOT_ENABLE>;
+			reset_reg_offset = <CG_SYS_RESET_REG1_OFFSET>;
+			reset_bit_idx = <10>;
+			do_reset = <NOT_RESET>;
+			autogating_reg_offset = <CG_CLK_AUTO_GATING_REG0_OFFSET>;
+			autogating_bit_idx = <19>;
+			do_autogating = <NOT_AUTOGATING>;
+			clock-output-names = "2f0350000.nand";
+			max_rate = <120000000>;
+		};
+
+		clk_usb20: clk_usb20 {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&osc_in>;
+			current_rate = <0>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <0>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "2f05a0000.usb20";
+		};
+
+		clk_usb3hst: clk_usb3hst {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&pll14>;
+			current_rate = <150000000>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <CG_STBC_CLK_EN_REG0_OFFSET>;
+			gate_bit_idx = <2>;
+			do_enable = <NOT_ENABLE>;
+			reset_reg_offset = <CG_STBC_CLK_RESET_REG0_OFFSET>;
+			reset_bit_idx = <15>;
+			do_reset = <DO_RESET>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "2f0290000.u3h";
+		};
+
+		clk_usb3dev: clk_usb3dev {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&pll14>;
+			current_rate = <150000000>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <CG_STBC_CLK_EN_REG0_OFFSET>;
+			gate_bit_idx = <2>;
+			do_enable = <NOT_ENABLE>;
+			reset_reg_offset = <CG_STBC_CLK_RESET_REG0_OFFSET>;
+			reset_bit_idx = <15>;
+			do_reset = <DO_RESET>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "2f0292000.u3d";
+		};
+
+                clk_u3phy: clk_u3phy {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&pll14>;
+			current_rate = <500000000>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <0>;
+			reset_reg_offset = <CG_STBC_CLK_RESET_REG0_OFFSET>;
+			reset_bit_idx = <16>;
+			do_reset = <NOT_RESET>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "u3phy";
+		};
+
+		clk_u3glue: clk_u3glue {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&pll14>;
+			current_rate = <150000000>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <NOT_ENABLE>;
+			reset_reg_offset = <CG_STBC_CLK_RESET_REG0_OFFSET>;
+			reset_bit_idx = <17>;
+			do_reset = <DO_RESET>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "u3glue";
+		};
+
+		clk_u3hi: clk_u3hi {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&pll14>;
+			current_rate = <150000000>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <NOT_ENABLE>;
+			reset_reg_offset = <CG_STBC_CLK_RESET_REG0_OFFSET>;
+			reset_bit_idx = <18>;
+			do_reset = <DO_RESET>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "u3hi";
+		};
+
+		clk_u2phy: clk_u2phy {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&fix24m>;
+			current_rate = <24000000>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <NOT_ENABLE>;
+			reset_reg_offset = <CG_STBC_CLK_RESET_REG0_OFFSET>;
+			reset_bit_idx = <19>;
+			do_reset = <DO_RESET>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "u2phy";
+		};
+
+		clk_wdt: clk_wdt {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&osc_in>;
+			current_rate = <12000000>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <CG_STBC_CLK_EN_REG0_OFFSET>;
+			gate_bit_idx = <0>;
+			do_enable = <DO_ENABLE>;
+			reset_reg_offset = <CG_STBC_CLK_RESET_REG0_OFFSET>;
+			reset_bit_idx = <9>;
+			do_reset = <NOT_RESET>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "2f0240000.wdt";
+		};
+
+		clk_uvcp: clk_uvcp {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-mux";
+			clocks = <&fix240m>, <&fix320m>, <&fix120m>;
+			current_rate = <240000000>;
+			parent_idx = <0>;
+			mux_reg_offset = <CG_PERI_CLK_RATE_REG1_OFFSET>;
+			mux_bit_idx = <2>;
+			mux_bit_width = <2>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <CG_CLK_EN_REG4_OFFSET>;
+			gate_bit_idx = <0>;
+			do_enable = <DO_ENABLE>;
+			reset_reg_offset = <CG_SYS_RESET_REG4_OFFSET>;
+			reset_bit_idx = <0>;
+			do_reset = <DO_RESET>;
+			autogating_reg_offset = <CG_APB_CLK_AUTO_GATING_REG2_OFFSET>;
+			autogating_bit_idx = <18>;
+			do_autogating = <NOT_AUTOGATING>;
+			clock-output-names = "2f0e20000.uvcp";
+			max_rate = <320000000>;
+		};
+
+		clk_rtc: clk_rtc {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&osc_in>;
+			current_rate = <32768>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <0>;
+			reset_reg_offset = <CG_STBC_CLK_RESET_REG0_OFFSET>;
+			reset_bit_idx = <8>;
+			do_reset = <NOT_RESET>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "2f02b0000.rtc";
+		};
+
+		clk_i2c0: clk_i2c0 {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&fix48m>;
+			current_rate = <48000000>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <CG_CLK_EN_REG1_OFFSET>;
+			gate_bit_idx = <4>;
+			do_enable = <NOT_ENABLE>;
+			reset_reg_offset = <CG_SYS_RESET_REG1_OFFSET>;
+			reset_bit_idx = <4>;
+			do_reset = <DO_RESET>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "2f0120000.i2c1";
+			max_rate = <48000000>;
+		};
+
+		clk_i2c1: clk_i2c1 {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&fix48m>;
+			current_rate = <48000000>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <CG_CLK_EN_REG1_OFFSET>;
+			gate_bit_idx = <5>;
+			do_enable = <NOT_ENABLE>;
+			reset_reg_offset = <CG_SYS_RESET_REG1_OFFSET>;
+			reset_bit_idx = <5>;
+			do_reset = <DO_RESET>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "2f0121000.i2c2";
+			max_rate = <48000000>;
+		};
+
+		clk_i2c2: clk_i2c2 {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&fix48m>;
+			current_rate = <48000000>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <CG_CLK_EN_REG1_OFFSET>;
+			gate_bit_idx = <31>;
+			do_enable = <NOT_ENABLE>;
+			reset_reg_offset = <CG_SYS_RESET_REG1_OFFSET>;
+			reset_bit_idx = <31>;
+			do_reset = <DO_RESET>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "2f0122000.i2c3";
+			max_rate = <48000000>;
+		};
+
+		clk_i2c3: clk_i2c3 {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&fix48m>;
+			current_rate = <48000000>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <CG_CLK_EN_REG1_OFFSET>;
+			gate_bit_idx = <26>;
+			do_enable = <NOT_ENABLE>;
+			reset_reg_offset = <CG_SYS_RESET_REG1_OFFSET>;
+			reset_bit_idx = <20>;
+			do_reset = <DO_RESET>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "2f0123000.i2c4";
+			max_rate = <48000000>;
+		};
+
+		clk_i2c4: clk_i2c4 {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&fix48m>;
+			current_rate = <48000000>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <CG_CLK_EN_REG1_OFFSET>;
+			gate_bit_idx = <27>;
+			do_enable = <NOT_ENABLE>;
+			reset_reg_offset = <CG_SYS_RESET_REG1_OFFSET>;
+			reset_bit_idx = <21>;
+			do_reset = <DO_RESET>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "2f0124000.i2c5";
+			max_rate = <48000000>;
+		};
+
+		clk_sif: clk_sif {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&fix96m>;
+			current_rate = <96000000>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <CG_CLK_EN_REG1_OFFSET>;
+			gate_bit_idx = <9>;
+			do_enable = <NOT_ENABLE>;
+			reset_reg_offset = <CG_SYS_RESET_REG1_OFFSET>;
+			reset_bit_idx = <9>;
+			do_reset = <NOT_RESET>;
+			autogating_reg_offset = <CG_CLK_AUTO_GATING_REG0_OFFSET>;
+			autogating_bit_idx = <27>;
+			do_autogating = <DO_AUTOGATING>;
+			clock-output-names = "2f0142000.sif";
+		};
+
+        clk_tse: clk_tse {
+            #clock-cells = <0>;
+            compatible = "nvt,nvt-clk-mux";
+            clocks = <&fix240m>, <&fix320m>, <&pll9>, <&reserved>;
+            current_rate = <320000000>;
+            parent_idx = <1>;
+            mux_reg_offset = <CG_PERI_CLK_RATE_REG1_OFFSET>;
+            mux_bit_idx = <4>;
+            mux_bit_width = <2>;
+            div_reg_offset = <0>;
+            div_bit_idx = <0>;
+            div_bit_width = <0>;
+            gate_reg_offset = <CG_CLK_EN_REG2_OFFSET>;
+            gate_bit_idx = <13>;
+            do_enable = <NOT_ENABLE>;
+            reset_reg_offset = <CG_SYS_RESET_REG2_OFFSET>;
+            reset_bit_idx = <13>;
+            do_reset = <NOT_RESET>;
+            autogating_reg_offset = <CG_CLK_AUTO_GATING_REG1_OFFSET>;
+            autogating_bit_idx = <25>;
+            do_autogating = <DO_AUTOGATING>;
+            clock-output-names = "2f0e10000.tse";
+            max_rate = <320000000>;
+        };
+
+		clk_spi0: clk_spi0 {
+            #clock-cells = <0>;
+            compatible = "nvt,nvt-clk-gate";
+            clocks = <&fix96m>;
+            current_rate = <12000000>;
+            div_reg_offset = <CG_SPI_CLK_DIV_REG0_OFFSET>;
+            div_bit_idx = <0>;
+            div_bit_width = <11>;
+            gate_reg_offset = <CG_CLK_EN_REG1_OFFSET>;
+            gate_bit_idx = <6>;
+            do_enable = <NOT_ENABLE>;
+            reset_reg_offset = <CG_SYS_RESET_REG1_OFFSET>;
+            reset_bit_idx = <6>;
+            do_reset = <DO_RESET>;
+            autogating_reg_offset = <CG_CLK_AUTO_GATING_REG0_OFFSET>;
+            autogating_bit_idx = <24>;
+            do_autogating = <DO_AUTOGATING>;
+            clock-output-names = "2f0130000.spi";
+            max_rate = <48000000>;
+        };
+
+		clk_spi1: clk_spi1 {
+            #clock-cells = <0>;
+            compatible = "nvt,nvt-clk-gate";
+            clocks = <&fix96m>;
+            current_rate = <12000000>;
+            div_reg_offset = <CG_SPI_CLK_DIV_REG0_OFFSET>;
+            div_bit_idx = <16>;
+            div_bit_width = <11>;
+            gate_reg_offset = <CG_CLK_EN_REG1_OFFSET>;
+            gate_bit_idx = <7>;
+            do_enable = <NOT_ENABLE>;
+            reset_reg_offset = <CG_SYS_RESET_REG1_OFFSET>;
+            reset_bit_idx = <7>;
+            do_reset = <DO_RESET>;
+            autogating_reg_offset = <CG_CLK_AUTO_GATING_REG0_OFFSET>;
+            autogating_bit_idx = <25>;
+            do_autogating = <DO_AUTOGATING>;
+            clock-output-names = "2f0131000.spi";
+            max_rate = <48000000>;
+		};
+
+		clk_spi2: clk_spi2 {
+            #clock-cells = <0>;
+            compatible = "nvt,nvt-clk-gate";
+            clocks = <&fix96m>;
+            current_rate = <12000000>;
+            div_reg_offset = <CG_SPI_CLK_DIV_REG1_OFFSET>;
+            div_bit_idx = <0>;
+            div_bit_width = <11>;
+            gate_reg_offset = <CG_CLK_EN_REG1_OFFSET>;
+            gate_bit_idx = <8>;
+            do_enable = <NOT_ENABLE>;
+            reset_reg_offset = <CG_SYS_RESET_REG1_OFFSET>;
+            reset_bit_idx = <8>;
+            do_reset = <DO_RESET>;
+            autogating_reg_offset = < CG_CLK_AUTO_GATING_REG0_OFFSET >;
+            autogating_bit_idx = <26>;
+            do_autogating = <DO_AUTOGATING>;
+            clock-output-names = "2f0132000.spi";
+            max_rate = <48000000>;
+        };
+
+		clk_spi3: clk_spi3 {
+			#clock-cells = <0>;
+            compatible = "nvt,nvt-clk-gate";
+            clocks = <&fix96m>;
+            current_rate = <12000000>;
+            div_reg_offset = <CG_SPI_CLK_DIV_REG1_OFFSET>;
+            div_bit_idx = <16>;
+            div_bit_width = <11>;
+            gate_reg_offset = <CG_CLK_EN_REG2_OFFSET>;
+            gate_bit_idx = <11>;
+            do_enable = <NOT_ENABLE>;
+            reset_reg_offset = <CG_SYS_RESET_REG2_OFFSET>;
+            reset_bit_idx = <11>;
+            do_reset = <DO_RESET>;
+            autogating_reg_offset = <CG_CLK_AUTO_GATING_REG0_OFFSET>;
+            autogating_bit_idx = <22>;
+            do_autogating = <DO_AUTOGATING>;
+            clock-output-names = "2f0133000.spi";
+            max_rate = <48000000>;
+        };
+
+        clk_spi4: clk_spi4 {
+            #clock-cells = <0>;
+            compatible = "nvt,nvt-clk-gate";
+            clocks = <&fix96m>;
+            current_rate = <12000000>;
+            div_reg_offset = <CG_PERI_CLK_DIV_REG3_OFFSET>;
+            div_bit_idx = <0>;
+            div_bit_width = <11>;
+            gate_reg_offset = <CG_CLK_EN_REG2_OFFSET>;
+            gate_bit_idx = <12>;
+            do_enable = <NOT_ENABLE>;
+            reset_reg_offset = <CG_SYS_RESET_REG2_OFFSET>;
+            reset_bit_idx = <12>;
+            do_reset = <DO_RESET>;
+            autogating_reg_offset = <CG_CLK_AUTO_GATING_REG0_OFFSET>;
+            autogating_bit_idx = <23>;
+            do_autogating = <DO_AUTOGATING>;
+            clock-output-names = "2f0134000.spi";
+            max_rate = <48000000>;
+        };
+
+		spi0_pclk: spi0_pclk {
+            #clock-cells = <0>;
+            compatible = "nvt,nvt-clk-gate";
+            clocks = <&PAUTOGATING>;
+            current_rate = <0>;
+            div_reg_offset = <0>;
+            div_bit_idx = <0>;
+            div_bit_width = <0>;
+            gate_reg_offset = <0>;
+            gate_bit_idx = <0>;
+            do_enable = <0>;
+            reset_reg_offset = <0>;
+            reset_bit_idx = <0>;
+            do_reset = <0>;
+            autogating_reg_offset = < CG_APB_CLK_AUTO_GATING_REG0_OFFSET>;
+            autogating_bit_idx = <24>;
+            do_autogating = <DO_AUTOGATING>;
+            clock-output-names = "spi0_pclk";
+        };
+
+		spi1_pclk: spi1_pclk {
+            #clock-cells = <0>;
+            compatible = "nvt,nvt-clk-gate";
+            clocks = <&PAUTOGATING>;
+            current_rate = <0>;
+            div_reg_offset = <0>;
+            div_bit_idx = <0>;
+            div_bit_width = <0>;
+            gate_reg_offset = <0>;
+            gate_bit_idx = <0>;
+            do_enable = <0>;
+            reset_reg_offset = <0>;
+            reset_bit_idx = <0>;
+            do_reset = <0>;
+            autogating_reg_offset = <CG_APB_CLK_AUTO_GATING_REG0_OFFSET>;
+            autogating_bit_idx = <25>;
+            do_autogating = <DO_AUTOGATING>;
+            clock-output-names = "spi1_pclk";
+        };
+
+		spi2_pclk: spi2_pclk {
+            #clock-cells = <0>;
+            compatible = "nvt,nvt-clk-gate";
+            clocks = <&PAUTOGATING>;
+            current_rate = <0>;
+            div_reg_offset = <0>;
+			div_bit_idx = <0>;
+            div_bit_width = <0>;
+            gate_reg_offset = <0>;
+            gate_bit_idx = <0>;
+            do_enable = <0>;
+            reset_reg_offset = <0>;
+            reset_bit_idx = <0>;
+            do_reset = <0>;
+            autogating_reg_offset = <CG_APB_CLK_AUTO_GATING_REG0_OFFSET>;
+            autogating_bit_idx = <26>;
+            do_autogating = <DO_AUTOGATING>;
+            clock-output-names = "spi2_pclk";
+        };
+
+        spi3_pclk: spi3_pclk {
+            #clock-cells = <0>;
+            compatible = "nvt,nvt-clk-gate";
+            clocks = <&PAUTOGATING>;
+            current_rate = <0>;
+            div_reg_offset = <0>;
+            div_bit_idx = <0>;
+            div_bit_width = <0>;
+            gate_reg_offset = <0>;
+            gate_bit_idx = <0>;
+            do_enable = <0>;
+            reset_reg_offset = <0>;
+            reset_bit_idx = <0>;
+            do_reset = <0>;
+            autogating_reg_offset = <CG_APB_CLK_AUTO_GATING_REG1_OFFSET>;
+            autogating_bit_idx = <30>;
+            do_autogating = <DO_AUTOGATING>;
+            clock-output-names = "spi3_pclk";
+        };
+
+		spi4_pclk: spi4_pclk {
+            #clock-cells = <0>;
+            compatible = "nvt,nvt-clk-gate";
+            clocks = <&PAUTOGATING>;
+            current_rate = <0>;
+            div_reg_offset = <0>;
+            div_bit_idx = <0>;
+            div_bit_width = <0>;
+            gate_reg_offset = <0>;
+            gate_bit_idx = <0>;
+            do_enable = <0>;
+            reset_reg_offset = <0>;
+            reset_bit_idx = <0>;
+            do_reset = <0>;
+            autogating_reg_offset = <CG_APB_CLK_AUTO_GATING_REG1_OFFSET>;
+            autogating_bit_idx = <31>;
+            do_autogating = <DO_AUTOGATING>;
+            clock-output-names = "spi4_pclk";
+        };
+
+	clk_sdp: clk_sdp {
+		#clock-cells = <0>;
+		compatible = "nvt,nvt-clk-gate";
+		clocks = <&fix96m>;
+		current_rate = <96000000>;
+		div_reg_offset = <0>;
+		div_bit_idx = <0>;
+		div_bit_width = <0>;
+		gate_reg_offset = <0x7C>;
+		gate_bit_idx = <16>;
+		do_enable = <NOT_ENABLE>;
+		reset_reg_offset = <0x98>;
+		reset_bit_idx = <20>;
+		do_reset = <NOT_RESET>;
+		autogating_reg_offset = <0>;
+		autogating_bit_idx = <0>;
+		do_autogating = <NOT_AUTOGATING>;
+		clock-output-names = "2f0135000.sdp";
+	};
+
+		/* Mux Clock */
+		clk_apb: clk_apb {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-mux";
+			clocks = <&fix48m>, <&fix60m>, <&fix80m>, <&fix120m>;
+			current_rate = <80000000>;
+			parent_idx = <2>;
+			mux_reg_offset = <CG_STBC_CLK_RATE_REG0_OFFSET>;
+			mux_bit_idx = <8>;
+			mux_bit_width = <2>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <0>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "apb_clk";
+		};
+		clk_timer: clk_timer {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&fix3m>;
+			current_rate = <3000000>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <CG_CLK_EN_REG1_OFFSET>;
+			gate_bit_idx = <18>;
+			do_enable = <DO_ENABLE>;
+			reset_reg_offset = <CG_SYS_RESET_REG1_OFFSET>;
+			reset_bit_idx = <18>;
+			do_reset = <NOT_RESET>;
+			autogating_reg_offset = <CG_CLK_AUTO_GATING_REG1_OFFSET>;
+			autogating_bit_idx = <0>;
+			do_autogating = <DO_AUTOGATING>;
+			clock-output-names = "2f0100000.timer";
+		};
+
+		clk_hrtimer1: clk_hrtimer1 {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&fix120m>;
+			current_rate = <120000000>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <CG_CLK_EN_REG3_OFFSET>;
+			gate_bit_idx = <12>;
+			do_enable = <NOT_ENABLE>;
+			reset_reg_offset = <CG_SYS_RESET_REG3_OFFSET>;
+			reset_bit_idx = <3>;
+			do_reset = <NOT_RESET>;
+			autogating_reg_offset = <CG_CLK_AUTO_GATING_REG2_OFFSET>;
+			autogating_bit_idx = <0>;
+			do_autogating = <DO_AUTOGATING>;
+		};
+
+		clk_hrtimer2: clk_hrtimer2 {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&fix120m>;
+			current_rate = <120000000>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <CG_CLK_EN_REG3_OFFSET>;
+			gate_bit_idx = <13>;
+			do_enable = <NOT_ENABLE>;
+			reset_reg_offset = <CG_SYS_RESET_REG3_OFFSET>;
+			reset_bit_idx = <4>;
+			do_reset = <NOT_RESET>;
+			autogating_reg_offset = <CG_CLK_AUTO_GATING_REG2_OFFSET>;
+			autogating_bit_idx = <1>;
+			do_autogating = <DO_AUTOGATING>;
+		};
+
+		clk_hrtimer3: clk_hrtimer3 {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&fix120m>;
+			current_rate = <120000000>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <CG_CLK_EN_REG3_OFFSET>;
+			gate_bit_idx = <14>;
+			do_enable = <NOT_ENABLE>;
+			reset_reg_offset = <CG_SYS_RESET_REG3_OFFSET>;
+			reset_bit_idx = <5>;
+			do_reset = <NOT_RESET>;
+			autogating_reg_offset = <CG_CLK_AUTO_GATING_REG2_OFFSET>;
+			autogating_bit_idx = <2>;
+			do_autogating = <DO_AUTOGATING>;
+		};
+
+		clk_hrtimer4: clk_hrtimer4 {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&fix120m>;
+			current_rate = <120000000>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <CG_CLK_EN_REG3_OFFSET>;
+			gate_bit_idx = <15>;
+			do_enable = <NOT_ENABLE>;
+			reset_reg_offset = <CG_SYS_RESET_REG3_OFFSET>;
+			reset_bit_idx = <6>;
+			do_reset = <NOT_RESET>;
+			autogating_reg_offset = <CG_CLK_AUTO_GATING_REG2_OFFSET>;
+			autogating_bit_idx = <3>;
+			do_autogating = <DO_AUTOGATING>;
+		};
+
+		clk_hrtimer5: clk_hrtimer5 {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&fix120m>;
+			current_rate = <120000000>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <CG_CLK_EN_REG3_OFFSET>;
+			gate_bit_idx = <17>;
+			do_enable = <NOT_ENABLE>;
+			reset_reg_offset = <CG_SYS_RESET_REG3_OFFSET>;
+			reset_bit_idx = <7>;
+			do_reset = <NOT_RESET>;
+			autogating_reg_offset = <CG_CLK_AUTO_GATING_REG2_OFFSET>;
+			autogating_bit_idx = <4>;
+			do_autogating = <DO_AUTOGATING>;
+		};
+
+		clk_hrtimer6: clk_hrtimer6 {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&fix120m>;
+			current_rate = <120000000>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <CG_CLK_EN_REG3_OFFSET>;
+			gate_bit_idx = <18>;
+			do_enable = <NOT_ENABLE>;
+			reset_reg_offset = <CG_SYS_RESET_REG3_OFFSET>;
+			reset_bit_idx = <8>;
+			do_reset = <NOT_RESET>;
+			autogating_reg_offset = <CG_CLK_AUTO_GATING_REG2_OFFSET>;
+			autogating_bit_idx = <5>;
+			do_autogating = <DO_AUTOGATING>;
+		};
+
+		clk_hrtimer7: clk_hrtimer7 {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&fix120m>;
+			current_rate = <120000000>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <CG_CLK_EN_REG3_OFFSET>;
+			gate_bit_idx = <19>;
+			do_enable = <NOT_ENABLE>;
+			reset_reg_offset = <CG_SYS_RESET_REG3_OFFSET>;
+			reset_bit_idx = <9>;
+			do_reset = <NOT_RESET>;
+			autogating_reg_offset = <CG_CLK_AUTO_GATING_REG2_OFFSET>;
+			autogating_bit_idx = <6>;
+			do_autogating = <DO_AUTOGATING>;
+		};
+
+		clk_hrtimer8: clk_hrtimer8 {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&fix120m>;
+			current_rate = <120000000>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <CG_CLK_EN_REG3_OFFSET>;
+			gate_bit_idx = <26>;
+			do_enable = <NOT_ENABLE>;
+			reset_reg_offset = <CG_SYS_RESET_REG3_OFFSET>;
+			reset_bit_idx = <10>;
+			do_reset = <NOT_RESET>;
+			autogating_reg_offset = <CG_CLK_AUTO_GATING_REG2_OFFSET>;
+			autogating_bit_idx = <7>;
+			do_autogating = <DO_AUTOGATING>;
+		};
+
+		clk_hrtimer9: clk_hrtimer9 {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&fix120m>;
+			current_rate = <120000000>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <CG_CLK_EN_REG3_OFFSET>;
+			gate_bit_idx = <27>;
+			do_enable = <NOT_ENABLE>;
+			reset_reg_offset = <CG_SYS_RESET_REG3_OFFSET>;
+			reset_bit_idx = <11>;
+			do_reset = <NOT_RESET>;
+			autogating_reg_offset = <CG_CLK_AUTO_GATING_REG2_OFFSET>;
+			autogating_bit_idx = <8>;
+			do_autogating = <DO_AUTOGATING>;
+		};
+
+		clk_hrtimer10: clk_hrtimer10 {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&fix120m>;
+			current_rate = <120000000>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <CG_CLK_EN_REG3_OFFSET>;
+			gate_bit_idx = <28>;
+			do_enable = <NOT_ENABLE>;
+			reset_reg_offset = <CG_SYS_RESET_REG3_OFFSET>;
+			reset_bit_idx = <12>;
+			do_reset = <NOT_RESET>;
+			autogating_reg_offset = <CG_CLK_AUTO_GATING_REG2_OFFSET>;
+			autogating_bit_idx = <9>;
+			do_autogating = <DO_AUTOGATING>;
+		};
+
+		clk_eth0: clk_eth0 {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&pll16>;
+			current_rate = <250000000>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <CG_CLK_EN_REG1_OFFSET>;
+			gate_bit_idx = <29>;
+			do_enable = <NOT_ENABLE>;
+			reset_reg_offset = <CG_SYS_RESET_REG1_OFFSET>;
+			reset_bit_idx = <29>;
+			do_reset = <NOT_RESET>;
+			autogating_reg_offset = <CG_CLK_AUTO_GATING_REG1_OFFSET>;
+			autogating_bit_idx = <27>;
+			do_autogating = <DO_AUTOGATING>;
+			clock-output-names = "2f01b0000.eth0";
+			max_rate = <250000000>;
+		};
+
+		eth0_ptp_clk: eth0_ptp_clk {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&fix480m>;
+			current_rate = <480000000>;
+			div_reg_offset = <CG_PERI_CLK_DIV_REG1_OFFSET>;
+			div_bit_idx = <20>;
+			div_bit_width = <2>;
+			gate_reg_offset = <CG_CLK_EN_REG4_OFFSET>;
+			gate_bit_idx = <29>;
+			do_enable = <NOT_ENABLE>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "eth0_ptp_clk";
+			max_rate = <480000000>;
+		};
+
+		clk_msi: clk_msi {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&osc_in>;
+			current_rate = <0>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <0>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "2f0140000.msi";
+		};
+
+		conv1_pclk: conv1_pclk {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&PAUTOGATING>;
+			current_rate = <0>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <0>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <CG_APB_CLK_AUTO_GATING_REG2_OFFSET>;
+			autogating_bit_idx = <24>;
+			do_autogating = <DO_AUTOGATING>;
+			clock-output-names = "conv1_pclk";
+		};
+
+		rou_pclk: rou_pclk {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&PAUTOGATING>;
+			current_rate = <0>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <0>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <CG_APB_CLK_AUTO_GATING_REG2_OFFSET>;
+			autogating_bit_idx = <27>;
+			do_autogating = <DO_AUTOGATING>;
+			clock-output-names = "rou_pclk";
+		};
+
+		lsu_pclk: lsu_pclk {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&PAUTOGATING>;
+			current_rate = <0>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <0>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <CG_APB_CLK_AUTO_GATING_REG2_OFFSET>;
+			autogating_bit_idx = <26>;
+			do_autogating = <DO_AUTOGATING>;
+			clock-output-names = "lsu_pclk";
+		};
+
+		jm_pclk: jm_pclk {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&PAUTOGATING>;
+			current_rate = <0>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <0>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <CG_APB_CLK_AUTO_GATING_REG2_OFFSET>;
+			autogating_bit_idx = <4>;
+			do_autogating = <DO_AUTOGATING>;
+			clock-output-names = "jm_pclk";
+		};
+
+		cal_pclk: cal_pclk {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&PAUTOGATING>;
+			current_rate = <0>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <0>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <CG_APB_CLK_AUTO_GATING_REG2_OFFSET>;
+			autogating_bit_idx = <25>;
+			do_autogating = <DO_AUTOGATING>;
+			clock-output-names = "cal_pclk";
+		};
+
+		util_pclk: util_pclk {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&PAUTOGATING>;
+			current_rate = <0>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <0>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <CG_APB_CLK_AUTO_GATING_REG2_OFFSET>;
+			autogating_bit_idx = <29>;
+			do_autogating = <DO_AUTOGATING>;
+			clock-output-names = "util_pclk";
+		};
+
+		jmisp_pclk: jmisp_pclk {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&PAUTOGATING>;
+			current_rate = <0>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <0>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <CG_APB_CLK_AUTO_GATING_REG1_OFFSET>;
+			autogating_bit_idx = <14>;
+			do_autogating = <DO_AUTOGATING>;
+			clock-output-names = "jmisp_pclk";
+		};
+
+		nue2_pclk: nue2_pclk {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&PAUTOGATING>;
+			current_rate = <0>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <0>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <CG_APB_CLK_AUTO_GATING_REG0_OFFSET>;
+			autogating_bit_idx = <12>;
+			do_autogating = <DO_AUTOGATING>;
+			clock-output-names = "nue2_pclk";
+		};
+
+		ppu_pclk: ppu_pclk {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&PAUTOGATING>;
+			current_rate = <0>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <0>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <CG_APB_CLK_AUTO_GATING_REG2_OFFSET>;
+			autogating_bit_idx = <28>;
+			do_autogating = <DO_AUTOGATING>;
+			clock-output-names = "ppu_pclk";
+		};
+
+		gpenc_pclk: gpenc_pclk {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&osc_in>;
+			current_rate = <0>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <0>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "gpenc_pclk";
+		};
+
+		gpenc2_pclk: gpenc2_pclk {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&osc_in>;
+			current_rate = <0>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <0>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "gpenc2_pclk";
+		};
+
+		jpeg_pclk: jpeg_pclk {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&osc_in>;
+			current_rate = <0>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <0>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "jpeg_pclk";
+		};
+
+		msi_pclk: msi_pclk {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&osc_in>;
+			current_rate = <0>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <0>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "msi_pclk";
+		};
+
+		venc_pclk: venc_pclk {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&PAUTOGATING>;
+			current_rate = <0>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <0>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <CG_APB_CLK_AUTO_GATING_REG0_OFFSET>;
+			autogating_bit_idx = <19>;
+			do_autogating = <DO_AUTOGATING>;
+			clock-output-names = "venc_pclk";
+		};
+
+		vecn2_pclk: vecn2_pclk {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&osc_in>;
+			current_rate = <0>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <0>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "vecn2_pclk";
+		};
+
+		hdmi_pclk: hdmi_pclk {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&osc_in>;
+			current_rate = <0>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <0>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "hdmi_pclk";
+		};
+
+		hwcp_pclk: hwcp_pclk {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&PAUTOGATING>;
+			current_rate = <0>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <0>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <CG_APB_CLK_AUTO_GATING_REG2_OFFSET>;
+			autogating_bit_idx = <17>;
+			do_autogating = <NOT_AUTOGATING>;
+			clock-output-names = "hwcp_pclk";
+		};
+
+		nand_pclk: nand_pclk {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&osc_in>;
+			current_rate = <0>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <0>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "nand_pclk";
+		};
+
+		crypto_pclk: crypto_pclk {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&PAUTOGATING>;
+			current_rate = <0>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <0>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <CG_APB_CLK_AUTO_GATING_REG2_OFFSET>;
+			autogating_bit_idx = <21>;
+			do_autogating = <NOT_AUTOGATING>;
+			clock-output-names = "crypto_pclk";
+		};
+
+		hash_pclk: hash_pclk {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&PAUTOGATING>;
+			current_rate = <0>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <0>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <CG_APB_CLK_AUTO_GATING_REG2_OFFSET>;
+			autogating_bit_idx = <22>;
+			do_autogating = <NOT_AUTOGATING>;
+			clock-output-names = "hash_pclk";
+		};
+
+        rsa_pclk: rsa_pclk {
+            #clock-cells = <0>;
+            compatible = "nvt,nvt-clk-gate";
+            clocks = <&PAUTOGATING>;
+            current_rate = <0>;
+            div_reg_offset = <0>;
+            div_bit_idx = <0>;
+            div_bit_width = <0>;
+            gate_reg_offset = <0>;
+            gate_bit_idx = <0>;
+            do_enable = <0>;
+            reset_reg_offset = <0>;
+            reset_bit_idx = <0>;
+            do_reset = <0>;
+            clock-output-names = "rsa_pclk";
+        };
+
+		ive_pclk: ive_pclk {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&PAUTOGATING>;
+			current_rate = <0>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <0>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <CG_APB_CLK_AUTO_GATING_REG1_OFFSET>;
+			autogating_bit_idx = <28>;
+			do_autogating = <DO_AUTOGATING>;
+			clock-output-names = "ive_pclk";
+		};
+
+		trke_pclk: trke_pclk {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&PAUTOGATING>;
+			current_rate = <0>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <0>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <CG_APB_CLK_AUTO_GATING_REG2_OFFSET>;
+			autogating_bit_idx = <30>;
+			do_autogating = <DO_AUTOGATING>;
+			clock-output-names = "trke_pclk";
+		};
+
+		mdbc_pclk: mdbc_pclk {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&PAUTOGATING>;
+			current_rate = <0>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <0>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <CG_APB_CLK_AUTO_GATING_REG0_OFFSET>;
+			autogating_bit_idx = <13>;
+			do_autogating = <DO_AUTOGATING>;
+			clock-output-names = "mdbc_pclk";
+		};
+
+		dis_pclk: dis_pclk {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&osc_in>;
+			current_rate = <0>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <0>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "dis_pclk";
+		};
+
+		sde_pclk: sde_pclk {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&osc_in>;
+			current_rate = <0>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <0>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "sde_pclk";
+		};
+
+		sie1_pclk: sie1_pclk {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&PAUTOGATING>;
+			current_rate = <0>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <0>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <CG_APB_CLK_AUTO_GATING_REG0_OFFSET>;
+			autogating_bit_idx = <0>;
+			do_autogating = <NOT_AUTOGATING>;
+			clock-output-names = "sie1_pclk";
+		};
+
+		sie2_pclk: sie2_pclk {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&PAUTOGATING>;
+			current_rate = <0>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <0>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <CG_APB_CLK_AUTO_GATING_REG1_OFFSET>;
+			autogating_bit_idx = <9>;
+			do_autogating = <NOT_AUTOGATING>;
+			clock-output-names = "sie2_pclk";
+		};
+
+		sie3_pclk: sie3_pclk {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&PAUTOGATING>;
+			current_rate = <0>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <0>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <CG_APB_CLK_AUTO_GATING_REG1_OFFSET>;
+			autogating_bit_idx = <10>;
+			do_autogating = <NOT_AUTOGATING>;
+			clock-output-names = "sie3_pclk";
+		};
+
+		sie4_pclk: sie4_pclk {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&PAUTOGATING>;
+			current_rate = <0>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <0>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <CG_APB_CLK_AUTO_GATING_REG1_OFFSET>;
+			autogating_bit_idx = <12>;
+			do_autogating = <NOT_AUTOGATING>;
+			clock-output-names = "sie4_pclk";
+		};
+
+		sie5_pclk: sie5_pclk {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&PAUTOGATING>;
+			current_rate = <0>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <0>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <CG_APB_CLK_AUTO_GATING_REG1_OFFSET>;
+			autogating_bit_idx = <13>;
+			do_autogating = <NOT_AUTOGATING>;
+			clock-output-names = "sie5_pclk";
+		};
+
+		vie1_pclk: vie1_pclk {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&PAUTOGATING>;
+			current_rate = <0>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <0>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <CG_APB_CLK_AUTO_GATING_REG2_OFFSET>;
+			autogating_bit_idx = <23>;
+			do_autogating = <DO_AUTOGATING>;
+			clock-output-names = "vie1_pclk";
+		};
+
+		tge_pclk: tge_pclk {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&PAUTOGATING>;
+			current_rate = <0>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <0>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <CG_APB_CLK_AUTO_GATING_REG1_OFFSET>;
+			autogating_bit_idx = <20>;
+			do_autogating = <DO_AUTOGATING>;
+			clock-output-names = "tge_pclk";
+		};
+
+		ife_pclk: ife_pclk {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&PAUTOGATING>;
+			current_rate = <0>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <0>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <CG_APB_CLK_AUTO_GATING_REG0_OFFSET>;
+			autogating_bit_idx = <7>;
+			do_autogating = <DO_AUTOGATING>;
+			clock-output-names = "ife_pclk";
+		};
+
+		dce_pclk: dce_pclk {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&osc_in>;
+			current_rate = <0>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <0>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "dce_pclk";
+		};
+
+		ipe_pclk: ipe_pclk {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&PAUTOGATING>;
+			current_rate = <0>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <0>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <CG_APB_CLK_AUTO_GATING_REG0_OFFSET>;
+			autogating_bit_idx = <2>;
+			do_autogating = <DO_AUTOGATING>;
+			clock-output-names = "ipe_pclk";
+		};
+
+		ime_pclk: ime_pclk {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&PAUTOGATING>;
+			current_rate = <0>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <0>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <CG_APB_CLK_AUTO_GATING_REG0_OFFSET>;
+			autogating_bit_idx = <3>;
+			do_autogating = <DO_AUTOGATING>;
+			clock-output-names = "ime_pclk";
+		};
+
+		ise_pclk: ise_pclk {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&PAUTOGATING>;
+			current_rate = <0>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <0>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <CG_APB_CLK_AUTO_GATING_REG1_OFFSET>;
+			autogating_bit_idx = <8>;
+			do_autogating = <DO_AUTOGATING>;
+			clock-output-names = "ise_pclk";
+		};
+
+		dre_pclk: dre_pclk {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&PAUTOGATING>;
+			current_rate = <0>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <0>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <CG_APB_CLK_AUTO_GATING_REG2_OFFSET>;
+			autogating_bit_idx = <31>;
+			do_autogating = <DO_AUTOGATING>;
+			clock-output-names = "dre_pclk";
+		};
+
+		vpe_pclk: vpe_pclk {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&PAUTOGATING>;
+			current_rate = <0>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <0>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <CG_APB_CLK_AUTO_GATING_REG0_OFFSET>;
+			autogating_bit_idx = <14>;
+			do_autogating = <DO_AUTOGATING>;
+			clock-output-names = "vpe_pclk";
+		};
+
+		i2c_pclk: i2c_pclk {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&PAUTOGATING>;
+			current_rate = <0>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <0>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <CG_APB_CLK_AUTO_GATING_REG0_OFFSET>;
+			autogating_bit_idx = <22>;
+			do_autogating = <DO_AUTOGATING>;
+			clock-output-names = "i2c_pclk";
+		};
+
+		i2c2_pclk: i2c2_pclk {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&PAUTOGATING>;
+			current_rate = <0>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <0>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <CG_APB_CLK_AUTO_GATING_REG0_OFFSET>;
+			autogating_bit_idx = <23>;
+			do_autogating = <DO_AUTOGATING>;
+			clock-output-names = "i2c2_pclk";
+		};
+
+		i2c3_pclk: i2c3_pclk {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&PAUTOGATING>;
+			current_rate = <0>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <0>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <CG_APB_CLK_AUTO_GATING_REG1_OFFSET>;
+			autogating_bit_idx = <24>;
+			do_autogating = <DO_AUTOGATING>;
+			clock-output-names = "i2c3_pclk";
+		};
+
+		i2c4_pclk: i2c4_pclk {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&PAUTOGATING>;
+			current_rate = <0>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <0>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <CG_APB_CLK_AUTO_GATING_REG1_OFFSET>;
+			autogating_bit_idx = <22>;
+			do_autogating = <DO_AUTOGATING>;
+			clock-output-names = "i2c4_pclk";
+		};
+
+		i2c5_pclk: i2c5_pclk {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&PAUTOGATING>;
+			current_rate = <0>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <0>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <CG_APB_CLK_AUTO_GATING_REG1_OFFSET>;
+			autogating_bit_idx = <23>;
+			do_autogating = <DO_AUTOGATING>;
+			clock-output-names = "i2c5_pclk";
+		};
+
+		uart_pclk: uart_pclk {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&osc_in>;
+			current_rate = <0>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <CG_CLK_PROG_EN_REG1_OFFSET>;
+			gate_bit_idx = <9>;
+			do_enable = <DO_ENABLE>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <CG_APB_CLK_AUTO_GATING_REG0_OFFSET>;
+			autogating_bit_idx = <28>;
+			do_autogating = <NOT_AUTOGATING>;
+			clock-output-names = "uart_pclk";
+		};
+
+		uart2_pclk: uart2_pclk {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&osc_in>;
+			current_rate = <0>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <0>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "uart2_pclk";
+		};
+
+		uart3_pclk: uart3_pclk {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&osc_in>;
+			current_rate = <0>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <0>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "uart3_pclk";
+		};
+
+		uart4_pclk: uart4_pclk {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&osc_in>;
+			current_rate = <0>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <0>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "uart4_pclk";
+		};
+
+		uart5_pclk: uart5_pclk {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&osc_in>;
+			current_rate = <0>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <0>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "uart5_pclk";
+		};
+
+		drtc_pclk: drtc_pclk {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&PAUTOGATING>;
+			current_rate = <0>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <0>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <CG_APB_CLK_AUTO_GATING_REG2_OFFSET>;
+			autogating_bit_idx = <15>;
+			do_autogating = <DO_AUTOGATING>;
+			clock-output-names = "drtc_pclk";
+		};
+
+		remote_pclk: remote_pclk {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&osc_in>;
+			current_rate = <0>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <CG_CLK_PROG_EN_REG1_OFFSET>;
+			gate_bit_idx = <1>;
+			do_enable = <DO_ENABLE>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <CG_APB_CLK_AUTO_GATING_REG0_OFFSET>;
+			autogating_bit_idx = <30>;
+			do_autogating = <DO_AUTOGATING>;
+			clock-output-names = "remote_pclk";
+		};
+
+		timer_pclk: timer_pclk {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&osc_in>;
+			current_rate = <0>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <0>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "timer_pclk";
+		};
+
+		thmal_pclk: thmal_pclk {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&osc_in>;
+			current_rate = <0>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <0>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "thmal_pclk";
+		};
+
+		pwm_pclk: pwm_pclk {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&PAUTOGATING>;
+			current_rate = <0>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <0>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <CG_APB_CLK_AUTO_GATING_REG1_OFFSET>;
+			autogating_bit_idx = <11>;
+			do_autogating = <DO_AUTOGATING>;
+			clock-output-names = "pwm_pclk";
+		};
+
+		clk_pwm0: clk_pwm0 {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&fix120m>;
+			current_rate = <30000000>;
+			div_reg_offset = <CG_PWM_CLK_DIV_REG0_OFFSET>;
+			div_bit_idx = <0>;
+			div_bit_width = <14>;
+			gate_reg_offset = <CG_CLK_EN_REG3_OFFSET>;
+			gate_bit_idx = <0>;
+			do_enable = <NOT_ENABLE>;
+			reset_reg_offset = <CG_SYS_RESET_REG2_OFFSET>;
+			reset_bit_idx = <8>;
+			do_reset = <NOT_RESET>;
+			autogating_reg_offset = <CG_CLK_AUTO_GATING_REG1_OFFSET>;
+			autogating_bit_idx = <11>;
+			do_autogating = <DO_AUTOGATING>;
+			clock-output-names = "2f0140000.pwm0";
+			max_rate = <30000000>;
+		};
+
+		clk_pwm1: clk_pwm1 {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&fix120m>;
+			current_rate = <30000000>;
+			div_reg_offset = <CG_PWM_CLK_DIV_REG0_OFFSET>;
+			div_bit_idx = <0>;
+			div_bit_width = <14>;
+			gate_reg_offset = <CG_CLK_EN_REG3_OFFSET>;
+			gate_bit_idx = <1>;
+			do_enable = <NOT_ENABLE>;
+			reset_reg_offset = <CG_SYS_RESET_REG2_OFFSET>;
+			reset_bit_idx = <8>;
+			do_reset = <NOT_RESET>;
+			autogating_shared = <&clk_pwm0>;
+			autogating_reg_offset = <CG_CLK_AUTO_GATING_REG1_OFFSET>;
+			autogating_bit_idx = <11>;
+			do_autogating = <DO_AUTOGATING>;
+			clock-output-names = "2f0140000.pwm1";
+			max_rate = <30000000>;
+		};
+
+		clk_pwm2: clk_pwm2 {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&fix120m>;
+			current_rate = <30000000>;
+			div_reg_offset = <CG_PWM_CLK_DIV_REG0_OFFSET>;
+			div_bit_idx = <0>;
+			div_bit_width = <14>;
+			gate_reg_offset = <CG_CLK_EN_REG3_OFFSET>;
+			gate_bit_idx = <2>;
+			do_enable = <NOT_ENABLE>;
+			reset_reg_offset = <CG_SYS_RESET_REG2_OFFSET>;
+			reset_bit_idx = <8>;
+			do_reset = <NOT_RESET>;
+			autogating_shared = <&clk_pwm0>;
+			autogating_reg_offset = <CG_CLK_AUTO_GATING_REG1_OFFSET>;
+			autogating_bit_idx = <11>;
+			do_autogating = <DO_AUTOGATING>;
+			clock-output-names = "2f0140000.pwm2";
+			max_rate = <30000000>;
+		};
+
+		clk_pwm3: clk_pwm3 {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&fix120m>;
+			current_rate = <30000000>;
+			div_reg_offset = <CG_PWM_CLK_DIV_REG0_OFFSET>;
+			div_bit_idx = <0>;
+			div_bit_width = <14>;
+			gate_reg_offset = <CG_CLK_EN_REG3_OFFSET>;
+			gate_bit_idx = <3>;
+			do_enable = <NOT_ENABLE>;
+			reset_reg_offset = <CG_SYS_RESET_REG2_OFFSET>;
+			reset_bit_idx = <8>;
+			do_reset = <NOT_RESET>;
+			autogating_shared = <&clk_pwm0>;
+			autogating_reg_offset = <CG_CLK_AUTO_GATING_REG1_OFFSET>;
+			autogating_bit_idx = <11>;
+			do_autogating = <DO_AUTOGATING>;
+			clock-output-names = "2f0140000.pwm3";
+			max_rate = <30000000>;
+		};
+
+		clk_pwm4: clk_pwm4 {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&fix120m>;
+			current_rate = <30000000>;
+			div_reg_offset = <CG_PWM_CLK_DIV_REG0_OFFSET>;
+			div_bit_idx = <16>;
+			div_bit_width = <14>;
+			gate_reg_offset = <CG_CLK_EN_REG3_OFFSET>;
+			gate_bit_idx = <4>;
+			do_enable = <NOT_ENABLE>;
+			reset_reg_offset = <CG_SYS_RESET_REG2_OFFSET>;
+			reset_bit_idx = <8>;
+			do_reset = <NOT_RESET>;
+			autogating_shared = <&clk_pwm0>;
+			autogating_reg_offset = <CG_CLK_AUTO_GATING_REG1_OFFSET>;
+			autogating_bit_idx = <11>;
+			do_autogating = <DO_AUTOGATING>;
+			clock-output-names = "2f0140000.pwm4";
+			max_rate = <30000000>;
+		};
+
+		clk_pwm5: clk_pwm5 {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&fix120m>;
+			current_rate = <30000000>;
+			div_reg_offset = <CG_PWM_CLK_DIV_REG0_OFFSET>;
+			div_bit_idx = <16>;
+			div_bit_width = <14>;
+			gate_reg_offset = <CG_CLK_EN_REG3_OFFSET>;
+			gate_bit_idx = <5>;
+			do_enable = <NOT_ENABLE>;
+			reset_reg_offset = <CG_SYS_RESET_REG2_OFFSET>;
+			reset_bit_idx = <8>;
+			do_reset = <NOT_RESET>;
+			autogating_shared = <&clk_pwm0>;
+			autogating_reg_offset = <CG_CLK_AUTO_GATING_REG1_OFFSET>;
+			autogating_bit_idx = <11>;
+			do_autogating = <DO_AUTOGATING>;
+			clock-output-names = "2f0140000.pwm5";
+			max_rate = <30000000>;
+		};
+
+		clk_pwm6: clk_pwm6 {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&fix120m>;
+			current_rate = <30000000>;
+			div_reg_offset = <CG_PWM_CLK_DIV_REG0_OFFSET>;
+			div_bit_idx = <16>;
+			div_bit_width = <14>;
+			gate_reg_offset = <CG_CLK_EN_REG3_OFFSET>;
+			gate_bit_idx = <6>;
+			do_enable = <NOT_ENABLE>;
+			reset_reg_offset = <CG_SYS_RESET_REG2_OFFSET>;
+			reset_bit_idx = <8>;
+			do_reset = <NOT_RESET>;
+			autogating_shared = <&clk_pwm0>;
+			autogating_reg_offset = <CG_CLK_AUTO_GATING_REG1_OFFSET>;
+			autogating_bit_idx = <11>;
+			do_autogating = <DO_AUTOGATING>;
+			clock-output-names = "2f0140000.pwm6";
+			max_rate = <30000000>;
+		};
+
+		clk_pwm7: clk_pwm7 {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&fix120m>;
+			current_rate = <30000000>;
+			div_reg_offset = <CG_PWM_CLK_DIV_REG0_OFFSET>;
+			div_bit_idx = <16>;
+			div_bit_width = <14>;
+			gate_reg_offset = <CG_CLK_EN_REG3_OFFSET>;
+			gate_bit_idx = <7>;
+			do_enable = <NOT_ENABLE>;
+			reset_reg_offset = <CG_SYS_RESET_REG2_OFFSET>;
+			reset_bit_idx = <8>;
+			do_reset = <NOT_RESET>;
+			autogating_shared = <&clk_pwm0>;
+			autogating_reg_offset = <CG_CLK_AUTO_GATING_REG1_OFFSET>;
+			autogating_bit_idx = <11>;
+			do_autogating = <DO_AUTOGATING>;
+			clock-output-names = "2f0140000.pwm7";
+			max_rate = <30000000>;
+		};
+
+		clk_pwm8: clk_pwm8 {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&fix120m>;
+			current_rate = <30000000>;
+			div_reg_offset = <CG_PWM_CLK_DIV_REG1_OFFSET>;
+			div_bit_idx = <0>;
+			div_bit_width = <14>;
+			gate_reg_offset = <CG_CLK_EN_REG3_OFFSET>;
+			gate_bit_idx = <8>;
+			do_enable = <NOT_ENABLE>;
+			reset_reg_offset = <CG_SYS_RESET_REG2_OFFSET>;
+			reset_bit_idx = <8>;
+			do_reset = <NOT_RESET>;
+			autogating_shared = <&clk_pwm0>;
+			autogating_reg_offset = <CG_CLK_AUTO_GATING_REG1_OFFSET>;
+			autogating_bit_idx = <11>;
+			do_autogating = <DO_AUTOGATING>;
+			clock-output-names = "2f0140000.pwm8";
+			max_rate = <30000000>;
+		};
+
+		clk_pwm9: clk_pwm9 {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&fix120m>;
+			current_rate = <30000000>;
+			div_reg_offset = <CG_PWM_CLK_DIV_REG1_OFFSET>;
+			div_bit_idx = <16>;
+			div_bit_width = <14>;
+			gate_reg_offset = <CG_CLK_EN_REG3_OFFSET>;
+			gate_bit_idx = <9>;
+			do_enable = <NOT_ENABLE>;
+			reset_reg_offset = <CG_SYS_RESET_REG2_OFFSET>;
+			reset_bit_idx = <8>;
+			do_reset = <NOT_RESET>;
+			autogating_shared = <&clk_pwm0>;
+			autogating_reg_offset = <CG_CLK_AUTO_GATING_REG1_OFFSET>;
+			autogating_bit_idx = <11>;
+			do_autogating = <DO_AUTOGATING>;
+			clock-output-names = "2f0140000.pwm9";
+			max_rate = <30000000>;
+		};
+
+		clk_pwm10: clk_pwm10 {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&fix120m>;
+			current_rate = <30000000>;
+			div_reg_offset = <CG_PWM_CLK_DIV_REG2_OFFSET>;
+			div_bit_idx = <0>;
+			div_bit_width = <14>;
+			gate_reg_offset = <CG_CLK_EN_REG3_OFFSET>;
+			gate_bit_idx = <10>;
+			do_enable = <NOT_ENABLE>;
+			reset_reg_offset = <CG_SYS_RESET_REG2_OFFSET>;
+			reset_bit_idx = <8>;
+			do_reset = <NOT_RESET>;
+			autogating_shared = <&clk_pwm0>;
+			autogating_reg_offset = <CG_CLK_AUTO_GATING_REG1_OFFSET>;
+			autogating_bit_idx = <11>;
+			do_autogating = <DO_AUTOGATING>;
+			clock-output-names = "2f0140000.pwm10";
+			max_rate = <30000000>;
+		};
+
+		clk_pwm11: clk_pwm11 {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&fix120m>;
+			current_rate = <30000000>;
+			div_reg_offset = <CG_PWM_CLK_DIV_REG2_OFFSET>;
+			div_bit_idx = <16>;
+			div_bit_width = <14>;
+			gate_reg_offset = <CG_CLK_EN_REG3_OFFSET>;
+			gate_bit_idx = <11>;
+			do_enable = <NOT_ENABLE>;
+			reset_reg_offset = <CG_SYS_RESET_REG2_OFFSET>;
+			reset_bit_idx = <8>;
+			do_reset = <NOT_RESET>;
+			autogating_shared = <&clk_pwm0>;
+			autogating_reg_offset = <CG_CLK_AUTO_GATING_REG1_OFFSET>;
+			autogating_bit_idx = <11>;
+			do_autogating = <DO_AUTOGATING>;
+			clock-output-names = "2f0140000.pwm11";
+			max_rate = <30000000>;
+		};
+
+		clk_ccnt0: clk_ccnt0 {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&fix3m>;
+			current_rate = <3000000>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <CG_CLK_EN_REG2_OFFSET>;
+			gate_bit_idx = <8>;
+			do_enable = <NOT_ENABLE>;
+			reset_reg_offset = <CG_SYS_RESET_REG2_OFFSET>;
+			reset_bit_idx = <8>;
+			do_reset = <NOT_RESET>;
+			autogating_shared = <&clk_pwm0>;
+			autogating_reg_offset = <CG_CLK_AUTO_GATING_REG1_OFFSET>;
+			autogating_bit_idx = <11>;
+			do_autogating = <DO_AUTOGATING>;
+			clock-output-names = "2f0140000.ccnt0";
+			max_rate = <3000000>;
+		};
+
+		clk_ccnt1: clk_ccnt1 {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&fix3m>;
+			current_rate = <3000000>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <CG_CLK_EN_REG2_OFFSET>;
+			gate_bit_idx = <9>;
+			do_enable = <NOT_ENABLE>;
+			reset_reg_offset = <CG_SYS_RESET_REG2_OFFSET>;
+			reset_bit_idx = <8>;
+			do_reset = <NOT_RESET>;
+			autogating_shared = <&clk_pwm0>;
+			autogating_reg_offset = <CG_CLK_AUTO_GATING_REG1_OFFSET>;
+			autogating_bit_idx = <11>;
+			do_autogating = <DO_AUTOGATING>;
+			clock-output-names = "2f0140000.ccnt1";
+			max_rate = <3000000>;
+		};
+
+		clk_ccnt2: clk_ccnt2 {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&fix3m>;
+			current_rate = <3000000>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <CG_CLK_EN_REG2_OFFSET>;
+			gate_bit_idx = <10>;
+			do_enable = <NOT_ENABLE>;
+			autogating_shared = <&clk_pwm0>;
+			reset_reg_offset = <CG_SYS_RESET_REG2_OFFSET>;
+			reset_bit_idx = <8>;
+			do_reset = <NOT_RESET>;
+			autogating_reg_offset = <CG_CLK_AUTO_GATING_REG1_OFFSET>;
+			autogating_bit_idx = <11>;
+			do_autogating = <DO_AUTOGATING>;
+			clock-output-names = "2f0140000.ccnt2";
+			max_rate = <3000000>;
+		};
+
+		wdt_pclk: wdt_pclk {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&PAUTOGATING>;
+			current_rate = <0>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <0>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <CG_STBC_CLK_AUTO_GATING_REG0_OFFSET>;
+			autogating_bit_idx = <0>;
+			do_autogating = <NOT_AUTOGATING>;
+			clock-output-names = "wdt_pclk";
+		};
+
+		gpio_pclk: gpio_pclk {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&osc_in>;
+			current_rate = <0>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <0>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "gpio_pclk";
+		};
+
+		dai_pclk: dai_pclk {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&PAUTOGATING>;
+			current_rate = <0>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <0>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <CG_APB_CLK_AUTO_GATING_REG0_OFFSET>;
+			autogating_bit_idx = <17>;
+			do_autogating = <DO_AUTOGATING>;
+			clock-output-names = "dai_pclk";
+		};
+
+		csi_ck0d4: csi_ck0d4 {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&csi_hsclk>;
+			current_rate = <0>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <CG_CLK_EN_REG2_OFFSET>;
+			gate_bit_idx = <29>;
+			do_enable = <NOT_ENABLE>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <NOT_AUTOGATING>;
+			clock-output-names = "csi_ck0d4";
+		};
+
+		csi_ck1d4: csi_ck1d4 {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&csi_hsclk>;
+			current_rate = <0>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <CG_CLK_EN_REG2_OFFSET>;
+			gate_bit_idx = <30>;
+			do_enable = <NOT_ENABLE>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <NOT_AUTOGATING>;
+			clock-output-names = "csi_ck1d4";
+		};
+
+		csi_ck2d4: csi_ck2d4 {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&csi_hsclk>;
+			current_rate = <0>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <CG_CLK_EN_REG4_OFFSET>;
+			gate_bit_idx = <24>;
+			do_enable = <NOT_ENABLE>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <NOT_AUTOGATING>;
+			clock-output-names = "csi_ck2d4";
+		};
+
+		csi_ck3d4: csi_ck3d4 {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&csi_hsclk>;
+			current_rate = <0>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <CG_CLK_EN_REG4_OFFSET>;
+			gate_bit_idx = <25>;
+			do_enable = <NOT_ENABLE>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <NOT_AUTOGATING>;
+			clock-output-names = "csi_ck3d4";
+		};
+
+		csi2_ck1d4: csi2_ck1d4 {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&osc_in>;
+			current_rate = <0>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <CG_CLK_EN_REG2_OFFSET>;
+			gate_bit_idx = <31>;
+			do_enable = <0>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "csi2_ck1d4";
+		};
+
+		csi3_ck2d4: csi3_ck2d4 {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&osc_in>;
+			current_rate = <0>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <CG_CLK_EN_REG4_OFFSET>;
+			gate_bit_idx = <6>;
+			do_enable = <0>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "csi3_ck2d4";
+		};
+
+		csi3_ck3d4: csi3_ck3d4 {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&osc_in>;
+			current_rate = <0>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <CG_CLK_EN_REG4_OFFSET>;
+			gate_bit_idx = <7>;
+			do_enable = <0>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "csi3_ck3d4";
+		};
+
+		csi4_ck3d4: csi4_ck3d4 {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&osc_in>;
+			current_rate = <0>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <CG_CLK_EN_REG4_OFFSET>;
+			gate_bit_idx = <8>;
+			do_enable = <0>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "csi4_ck3d4";
+		};
+
+
+		/* Mux Clock */
+ 		clk_ife: clk_ife {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-mux";
+			clocks = <&fix240m>, <&fix320m>, <&reserved>, <&pll13>;
+			current_rate = <450000000>;
+			parent_idx = <3>;
+			mux_reg_offset = <CG_IPP_CLK_RATE_REG1_OFFSET>;
+			mux_bit_idx = <0>;
+			mux_bit_width = <2>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <CG_CLK_EN_REG0_OFFSET>;
+			gate_bit_idx = <13>;
+			do_enable = <DO_ENABLE>;
+			reset_reg_offset = <CG_SYS_RESET_REG0_OFFSET>;
+			reset_bit_idx = <13>;
+			do_reset = <DO_RESET>;
+			autogating_reg_offset = <CG_CLK_AUTO_GATING_REG0_OFFSET>;
+			autogating_bit_idx = <7>;
+			do_autogating = <DO_AUTOGATING>;
+			clock-output-names = "2f0340000.ife";
+			max_rate = <450000000>;
+		};
+
+ 		clk_dce: clk_dce {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-mux";
+			clocks = <&osc_in>;
+			current_rate = <0>;
+			parent_idx = <0>;
+			mux_reg_offset = <0>;
+			mux_bit_idx = <0>;
+			mux_bit_width = <0>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <0>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "2f0c20000.dce";
+			max_rate = <0>;
+		};
+
+ 		clk_ipe: clk_ipe {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-mux";
+			clocks = <&fix240m>, <&fix320m>, <&reserved>, <&pll13>;
+			current_rate = <450000000>;
+			parent_idx = <3>;
+			mux_reg_offset = <CG_IPP_CLK_RATE_REG0_OFFSET>;
+			mux_bit_idx = <4>;
+			mux_bit_width = <2>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <CG_CLK_EN_REG0_OFFSET>;
+			gate_bit_idx = <7>;
+			do_enable = <DO_ENABLE>;
+			reset_reg_offset = <CG_SYS_RESET_REG0_OFFSET>;
+			reset_bit_idx = <7>;
+			do_reset = <DO_RESET>;
+			autogating_reg_offset = <CG_CLK_AUTO_GATING_REG0_OFFSET>;
+			autogating_bit_idx = <2>;
+			do_autogating = <DO_AUTOGATING>;
+			clock-output-names = "2f0400000.ipe";
+			max_rate = <450000000>;
+		};
+
+ 		clk_ime: clk_ime {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-mux";
+			clocks = <&fix240m>, <&fix320m>, <&reserved>, <&pll13>;
+			current_rate = <450000000>;
+			parent_idx = <3>;
+			mux_reg_offset = <CG_IPP_CLK_RATE_REG0_OFFSET>;
+			mux_bit_idx = <12>;
+			mux_bit_width = <2>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <CG_CLK_EN_REG0_OFFSET>;
+			gate_bit_idx = <9>;
+			do_enable = <DO_ENABLE>;
+			reset_reg_offset = <CG_SYS_RESET_REG0_OFFSET>;
+			reset_bit_idx = <9>;
+			do_reset = <DO_RESET>;
+			autogating_reg_offset = <CG_CLK_AUTO_GATING_REG0_OFFSET>;
+			autogating_bit_idx = <3>;
+			do_autogating = <DO_AUTOGATING>;
+			clock-output-names = "2f0410000.ime";
+			max_rate = <450000000>;
+		};
+
+		clk_ise: clk_ise {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-mux";
+			clocks = <&fix240m>, <&fix320m>, <&fix480m>, <&pll13>;
+			current_rate = <480000000>;
+			parent_idx = <2>;
+			mux_reg_offset = <CG_IPP_CLK_RATE_REG0_OFFSET>;
+			mux_bit_idx = <24>;
+			mux_bit_width = <2>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <CG_CLK_EN_REG0_OFFSET>;
+			gate_bit_idx = <11>;
+			do_enable = <DO_ENABLE>;
+			reset_reg_offset = <CG_SYS_RESET_REG0_OFFSET>;
+			reset_bit_idx = <11>;
+			do_reset = <DO_RESET>;
+			autogating_reg_offset = <CG_CLK_AUTO_GATING_REG1_OFFSET>;
+			autogating_bit_idx = <8>;
+			do_autogating = <DO_AUTOGATING>;
+			clock-output-names = "2f0380000.ise";
+			max_rate = <480000000>;
+		};
+
+		clk_dre: clk_dre {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-mux";
+			clocks = <&fix240m>, <&fix320m>, <&fix480m>, <&pll17>;
+			current_rate = <320000000>;
+			parent_idx = <1>;
+			mux_reg_offset = <CG_CODEC_CLK_RATE_REG0_OFFSET>;
+			mux_bit_idx = <2>;
+			mux_bit_width = <2>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <CG_CLK_EN_REG4_OFFSET>;
+			gate_bit_idx = <26>;
+			do_enable = <DO_ENABLE>;
+			reset_reg_offset = <CG_SYS_RESET_REG4_OFFSET>;
+			reset_bit_idx = <18>;
+			do_reset = <DO_RESET>;
+			autogating_reg_offset = <CG_CLK_AUTO_GATING_REG2_OFFSET>;
+			autogating_bit_idx = <27>;
+			do_autogating = <DO_AUTOGATING>;
+			clock-output-names = "2f0370000.dre";
+			max_rate = <320000000>;
+		};
+
+		clk_ai0: clk_ai0 {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-mux";
+			clocks = <&pll10>, <&fix240m>, <&fix320m>, <&fix480m>;
+			current_rate = <540000000>;
+			parent_idx = <0>;
+			mux_reg_offset = <CG_PERI_CLK_RATE_REG2_OFFSET>;
+			mux_bit_idx = <16>;
+			mux_bit_width = <2>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <CG_CLK_EN_REG2_OFFSET>;
+			gate_bit_idx = <14>;
+			do_enable = <NOT_ENABLE>;
+			reset_reg_offset = <CG_SYS_RESET_REG3_OFFSET>;
+			reset_bit_idx = <22>;
+			do_reset = <DO_RESET>;
+			autogating_reg_offset = <CG_CLK_AUTO_GATING_REG2_OFFSET>;
+			autogating_bit_idx = <19>;
+			do_autogating = <DO_AUTOGATING>;
+			clock-output-names = "2f0800000.ai";
+			max_rate = <600000000>;
+		};
+
+		clk_ai1: clk_ai1 {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-mux";
+			clocks = <&pll10>, <&fix240m>, <&fix320m>, <&fix480m>;
+			current_rate = <540000000>;
+			parent_idx = <0>;
+			mux_reg_offset = <CG_IPP_CLK_RATE_REG1_OFFSET>;
+			mux_bit_idx = <30>;
+			mux_bit_width = <2>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <CG_CLK_EN_REG3_OFFSET>;
+			gate_bit_idx = <21>;
+			do_enable = <NOT_ENABLE>;
+			reset_reg_offset = <CG_SYS_RESET_REG2_OFFSET>;
+			reset_bit_idx = <15>;
+			do_reset = <DO_RESET>;
+			autogating_reg_offset = <CG_CLK_AUTO_GATING_REG0_OFFSET>;
+			autogating_bit_idx = <12>;
+			do_autogating = <DO_AUTOGATING>;
+			clock-output-names = "2f0ec0000.ai";
+			max_rate = <600000000>;
+		};
+
+		clk_ai2: clk_ai2 {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-mux";
+			clocks = <&pll10>, <&fix240m>, <&fix320m>, <&fix480m>;
+			current_rate = <540000000>;
+			parent_idx = <0>;
+			mux_reg_offset = <CG_PERI_CLK_RATE_REG2_OFFSET>;
+			mux_bit_idx = <26>;
+			mux_bit_width = <2>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <CG_CLK_EN_REG2_OFFSET>;
+			gate_bit_idx = <20>;
+			do_enable = <NOT_ENABLE>;
+			reset_reg_offset = <CG_SYS_RESET_REG3_OFFSET>;
+			reset_bit_idx = <28>;
+			do_reset = <DO_RESET>;
+			autogating_reg_offset = <CG_CLK_AUTO_GATING_REG2_OFFSET>;
+			autogating_bit_idx = <23>;
+			do_autogating = <DO_AUTOGATING>;
+			clock-output-names = "2f0760000.ai";
+			max_rate = <600000000>;
+		};
+
+		clk_ai3: clk_ai3 {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-mux";
+			clocks = <&pll10>, <&fix240m>, <&fix320m>, <&fix480m>;
+			current_rate = <540000000>;
+			parent_idx = <0>;
+			mux_reg_offset = <CG_PERI_CLK_RATE_REG2_OFFSET>;
+			mux_bit_idx = <22>;
+			mux_bit_width = <2>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <CG_CLK_EN_REG2_OFFSET>;
+			gate_bit_idx = <18>;
+			do_enable = <NOT_ENABLE>;
+			reset_reg_offset = <CG_SYS_RESET_REG3_OFFSET>;
+			reset_bit_idx = <26>;
+			do_reset = <DO_RESET>;
+			autogating_reg_offset = <CG_CLK_AUTO_GATING_REG2_OFFSET>;
+			autogating_bit_idx = <21>;
+			do_autogating = <DO_AUTOGATING>;
+			clock-output-names = "2f0750000.ai";
+			max_rate = <600000000>;
+		};
+
+		clk_ai4: clk_ai4 {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-mux";
+			clocks = <&pll10>, <&fix240m>;
+			current_rate = <240000000>;
+			parent_idx = <1>;
+			mux_reg_offset = <CG_SYS_CLK_RATE_REG0_OFFSET>;
+			mux_bit_idx = <10>;
+			mux_bit_width = <1>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <NOT_ENABLE>;
+			reset_reg_offset = <CG_SYS_RESET_REG3_OFFSET>;
+			reset_bit_idx = <24>;
+			do_reset = <DO_RESET>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "2f0700000.ai";
+			max_rate = <240000000>;
+		};
+
+		clk_ai5: clk_ai5 {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-mux";
+			clocks = <&pll10>, <&fix240m>;
+			current_rate = <240000000>;
+			parent_idx = <1>;
+			mux_reg_offset = <CG_SYS_CLK_RATE_REG0_OFFSET>;
+			mux_bit_idx = <10>;
+			mux_bit_width = <1>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <NOT_ENABLE>;
+			reset_reg_offset = <CG_SYS_RESET_REG3_OFFSET>;
+			reset_bit_idx = <23>;
+			do_reset = <DO_RESET>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "2f0710000.ai";
+			max_rate = <240000000>;
+		};
+
+		clk_ai6: clk_ai6 {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-mux";
+			clocks = <&pll10>, <&fix240m>, <&fix320m>, <&fix480m>;
+			current_rate = <540000000>;
+			parent_idx = <0>;
+			mux_reg_offset = <CG_PERI_CLK_RATE_REG2_OFFSET>;
+			mux_bit_idx = <24>;
+			mux_bit_width = <2>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <CG_CLK_EN_REG2_OFFSET>;
+			gate_bit_idx = <19>;
+			do_enable = <NOT_ENABLE>;
+			reset_reg_offset = <CG_SYS_RESET_REG3_OFFSET>;
+			reset_bit_idx = <27>;
+			do_reset = <DO_RESET>;
+			autogating_reg_offset = <CG_CLK_AUTO_GATING_REG2_OFFSET>;
+			autogating_bit_idx = <22>;
+			do_autogating = <DO_AUTOGATING>;
+			clock-output-names = "2f0720000.ai";
+			max_rate = <600000000>;
+		};
+
+		clk_ive: clk_ive {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-mux";
+			clocks = <&fix240m>, <&fix320m>, <&fix480m>, <&pll13>;
+			current_rate = <480000000>;
+			parent_idx = <2>;
+			mux_reg_offset = <CG_IPP_CLK_RATE_REG0_OFFSET>;
+			mux_bit_idx = <2>;
+			mux_bit_width = <2>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <CG_CLK_EN_REG3_OFFSET>;
+			gate_bit_idx = <25>;
+			do_enable = <NOT_ENABLE>;
+			reset_reg_offset = <CG_SYS_RESET_REG0_OFFSET>;
+			reset_bit_idx = <12>;
+			do_reset = <DO_RESET>;
+			autogating_reg_offset = <CG_CLK_AUTO_GATING_REG1_OFFSET>;
+			autogating_bit_idx = <28>;
+			do_autogating = <DO_AUTOGATING>;
+			clock-output-names = "2f0e90000.ive";
+			max_rate = <480000000>;
+		};
+
+		clk_trke: clk_trke {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-mux";
+			clocks = <&fix320m>, <&fix240m>, <&reserved>, <&reserved>;
+			current_rate = <320000000>;
+			parent_idx = <0>;
+			mux_reg_offset = <CG_PERI_CLK_RATE_REG2_OFFSET>;
+			mux_bit_idx = <30>;
+			mux_bit_width = <2>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <CG_CLK_EN_REG0_OFFSET>;
+			gate_bit_idx = <15>;
+			do_enable = <NOT_ENABLE>;
+			reset_reg_offset = <CG_SYS_RESET_REG3_OFFSET>;
+			reset_bit_idx = <30>;
+			do_reset = <DO_RESET>;
+			autogating_reg_offset = <CG_CLK_AUTO_GATING_REG2_OFFSET>;
+			autogating_bit_idx = <26>;
+			do_autogating = <DO_AUTOGATING>;
+			clock-output-names = "2f0eb0000.trke";
+			max_rate = <320000000>;
+		};
+
+		clk_mdbc: clk_mdbc {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-mux";
+			clocks = <&fix240m>, <&fix320m>, <&reserved>, <&pll13>;
+			current_rate = <320000000>;
+			parent_idx = <1>;
+			mux_reg_offset = <CG_IPP_CLK_RATE_REG0_OFFSET>;
+			mux_bit_idx = <20>;
+			mux_bit_width = <2>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <CG_CLK_EN_REG3_OFFSET>;
+			gate_bit_idx = <22>;
+			do_enable = <NOT_ENABLE>;
+			reset_reg_offset = <CG_SYS_RESET_REG2_OFFSET>;
+			reset_bit_idx = <16>;
+			do_reset = <DO_RESET>;
+			autogating_reg_offset = <CG_CLK_AUTO_GATING_REG0_OFFSET>;
+			autogating_bit_idx = <13>;
+			do_autogating = <DO_AUTOGATING>;
+			clock-output-names = "2f0ea0000.mdbc";
+			max_rate = <320000000>;
+		};
+
+		clk_dis: clk_dis {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-mux";
+			clocks = <&osc_in>;
+			current_rate = <0>;
+			parent_idx = <0>;
+			mux_reg_offset = <0>;
+			mux_bit_idx = <0>;
+			mux_bit_width = <0>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <0>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "clk_dis";
+			max_rate = <0>;
+		};
+
+		csi3_pxclk: csi3_pxclk {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-mux";
+			clocks = <&clk_sie3>, <&clk_vie1>;
+			current_rate = <0>;
+			parent_idx = <0>;
+			mux_reg_offset = <CG_PERI_CLK_RATE_REG2_OFFSET>;
+			mux_bit_idx = <4>;
+			mux_bit_width = <1>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <0>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "csi3_pxclk";
+		};
+
+		ife_shared_sram: ife_shared_sram {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-mux";
+			clocks = <&ife_sram_cpu>, <&ife_sram_ife>;
+			current_rate = <0>;
+			parent_idx = <0>;
+			mux_reg_offset = <CG_IPP_CLK_RATE_REG1_OFFSET>;
+			mux_bit_idx = <2>;
+			mux_bit_width = <1>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <0>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "ife_shared_sram";
+		};
+
+		cnn_shared_sram: cnn_shared_sram {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-mux";
+			clocks = <&osc_in>;
+			current_rate = <0>;
+			parent_idx = <0>;
+			mux_reg_offset = <0>;
+			mux_bit_idx = <0>;
+			mux_bit_width = <0>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <0>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "cnn_shared_sram";
+		};
+
+		clk_eacdac: clk_eacdac {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-mux";
+			clocks = <&pll7>;
+			current_rate = <12288000>;
+			parent_idx = <0>;
+			mux_reg_offset = <0>;
+			mux_bit_idx = <0>;
+			mux_bit_width = <0>;
+			div_reg_offset = <CG_PERI_CLK_DIV_REG0_OFFSET>;
+			div_bit_idx = <24>;
+			div_bit_width = <8>;
+			gate_reg_offset = <CG_CLK_EN_REG0_OFFSET>;
+			gate_bit_idx = <31>;
+			do_enable = <NOT_ENABLE>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "clk_eacdac";
+		};
+
+		clk_eacadc: clk_eacadc {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-mux";
+			clocks = <&clk_eacdac>;
+			current_rate = <12288000>;
+			parent_idx = <0>;
+			mux_reg_offset = <0>;
+			mux_bit_idx = <0>;
+			mux_bit_width = <0>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <CG_CLK_EN_REG0_OFFSET>;
+			gate_bit_idx = <30>;
+			do_enable = <NOT_ENABLE>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "clk_eacadc";
+		};
+
+		clk_eac: clk_eac {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-mux";
+			clocks = <&clk_eacdac>;
+			current_rate = <12288000>;
+			parent_idx = <0>;
+			mux_reg_offset = <0>;
+			mux_bit_idx = <0>;
+			mux_bit_width = <0>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <CG_CLK_EN_REG1_OFFSET>;
+			gate_bit_idx = <20>;
+			do_enable = <NOT_ENABLE>;
+			reset_reg_offset = <CG_SYS_RESET_REG0_OFFSET>;
+			reset_bit_idx = <30>;
+			do_reset = <NOT_RESET>;
+			autogating_reg_offset = <CG_APB_CLK_AUTO_GATING_REG0_OFFSET>;
+			autogating_bit_idx = <18>;
+			do_autogating = <0>;
+			clock-output-names = "clk_eac";
+		};
+
+		clk_dai: clk_dai {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-mux";
+			clocks = <&clk_eacdac>;
+			current_rate = <12288000>;
+			parent_idx = <0>;
+			mux_reg_offset = <0>;
+			mux_bit_idx = <0>;
+			mux_bit_width = <0>;
+			div_reg_offset = <CG_PERI_CLK_DIV_REG0_OFFSET>;
+			div_bit_idx = <16>;
+			div_bit_width = <8>;
+			gate_reg_offset = <CG_CLK_EN_REG0_OFFSET>;
+			gate_bit_idx = <29>;
+			do_enable = <NOT_ENABLE>;
+			reset_reg_offset = <CG_SYS_RESET_REG0_OFFSET>;
+			reset_bit_idx = <29>;
+			do_reset = <NOT_RESET>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "clk_dai";
+		};
+
+		dai_mclk: dai_mclk {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-mux";
+			clocks = <&clk_dai>, <&pll7>;
+			current_rate = <12288000>;
+			parent_idx = <1>;
+			mux_reg_offset = <CG_PERI_CLK_RATE_REG0_OFFSET>;
+			mux_bit_idx = <22>;
+			mux_bit_width = <1>;
+			div_reg_offset = <CG_PERI_CLK_DIV_REG2_OFFSET>;
+			div_bit_idx = <24>;
+			div_bit_width = <8>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <0>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "dai_mclk";
+		};
+
+ 		clk_rng: clk_rng {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-mux";
+			clocks = <&fix160m>, <&fix240m>;
+			current_rate = <160000000>;
+			parent_idx = <0>;
+			mux_reg_offset = <0>;
+			mux_bit_idx = <0>;
+			mux_bit_width = <0>;
+			div_reg_offset = <CG_VIDEO_CLK_DIV_REG0_OFFSET>;
+			div_bit_idx = <24>;
+			div_bit_width = <8>;
+			gate_reg_offset = <CG_CLK_EN_REG2_OFFSET>;
+			gate_bit_idx = <25>;
+			do_enable = <0>;
+			reset_reg_offset = <CG_SYS_RESET_REG2_OFFSET>;
+			reset_bit_idx = <25>;
+			do_reset = <0>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "2f0165000.rng";
+		};
+
+ 		clk_rngro: clk_rngro {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-mux";
+			clocks = <&clk_stbc_ro_phy>, <&pll4>;
+			current_rate = <24000000>;
+			parent_idx = <0>;
+			mux_reg_offset = <0>;
+			mux_bit_idx = <0>;
+			mux_bit_width = <0>;
+			div_reg_offset = <CG_PERI_CLK_DIV_REG2_OFFSET>;
+			div_bit_idx = <0>;
+			div_bit_width = <8>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <0>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "2f0165000.rngro";
+		};
+
+		clk_mmc0: clk_mmc0 {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-mux";
+			clocks = <&fix192m>, <&fix480m>, <&pll9>, <&pll4>;
+			current_rate = <48000000>;
+			parent_idx = <1>;
+			mux_reg_offset = <CG_PERI_CLK_RATE_REG0_OFFSET>;
+			mux_bit_idx = <4>;
+			mux_bit_width = <2>;
+			div_reg_offset = <CG_SDIO_CLK_DIV_REG0_OFFSET>;
+			div_bit_idx = <0>;
+			div_bit_width = <11>;
+			gate_reg_offset = <CG_CLK_EN_REG1_OFFSET>;
+			gate_bit_idx = <2>;
+			do_enable = <NOT_ENABLE>;
+			reset_reg_offset = <CG_SYS_RESET_REG1_OFFSET>;
+			reset_bit_idx = <2>;
+			do_reset = <DO_RESET>;
+			autogating_reg_offset = <CG_CLK_AUTO_GATING_REG0_OFFSET>;
+			autogating_bit_idx = <20>;
+			do_autogating = <NOT_AUTOGATING>;
+			clock-output-names = "2f0420000.mmc";
+		};
+
+		clk_mmc1: clk_mmc1 {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-mux";
+			clocks = <&fix192m>, <&fix480m>, <&pll9>, <&pll4>;
+			current_rate = <0>;
+			parent_idx = <0>;
+			mux_reg_offset = <CG_PERI_CLK_RATE_REG0_OFFSET>;
+			mux_bit_idx = <8>;
+			mux_bit_width = <2>;
+			div_reg_offset = <CG_SDIO_CLK_DIV_REG0_OFFSET>;
+			div_bit_idx = <16>;
+			div_bit_width = <11>;
+			gate_reg_offset = <CG_CLK_EN_REG1_OFFSET>;
+			gate_bit_idx = <3>;
+			do_enable = <NOT_ENABLE>;
+			reset_reg_offset = <CG_SYS_RESET_REG1_OFFSET>;
+			reset_bit_idx = <3>;
+			do_reset = <DO_RESET>;
+			autogating_reg_offset = <CG_CLK_AUTO_GATING_REG0_OFFSET>;
+			autogating_bit_idx = <21>;
+			do_autogating = <NOT_AUTOGATING>;
+			clock-output-names = "2f0430000.mmc";
+		};
+
+		clk_mmc2: clk_mmc2 {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-mux";
+			clocks = <&fix192m>, <&fix480m>, <&pll9>, <&pll4>;
+			current_rate = <48000000>;
+			parent_idx = <1>;
+			mux_reg_offset = <CG_PERI_CLK_RATE_REG1_OFFSET>;
+			mux_bit_idx = <0>;
+			mux_bit_width = <2>;
+			div_reg_offset = <CG_PERI_CLK_DIV_REG1_OFFSET>;
+			div_bit_idx = <0>;
+			div_bit_width = <11>;
+			gate_reg_offset = <CG_CLK_EN_REG1_OFFSET>;
+			gate_bit_idx = <14>;
+			do_enable = <NOT_ENABLE>;
+			reset_reg_offset = <CG_SYS_RESET_REG1_OFFSET>;
+			reset_bit_idx = <14>;
+			do_reset = <DO_RESET>;
+			autogating_reg_offset = <CG_CLK_AUTO_GATING_REG1_OFFSET>;
+			autogating_bit_idx = <15>;
+			do_autogating = <NOT_AUTOGATING>;
+			clock-output-names = "2f0360000.mmc";
+		};
+
+		remote_clk: remote_clk {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-mux";
+			clocks = <&fix32768>, <&fix32k>, <&reserved>, <&fix3m>;
+			current_rate = <32000>;
+			parent_idx = <1>;
+			mux_reg_offset = <CG_PERI_CLK_RATE_REG1_OFFSET>;
+			mux_bit_idx = <21>;
+			mux_bit_width = <2>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <CG_CLK_EN_REG1_OFFSET>;
+			gate_bit_idx = <12>;
+			do_enable = <NOT_ENABLE>;
+			reset_reg_offset = <CG_SYS_RESET_REG1_OFFSET>;
+			reset_bit_idx = <12>;
+			do_reset = <DO_RESET>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "remote_clk";
+			max_rate = <3000000>;
+		};
+
+		clk_drtc: clk_drtc {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-mux";
+			clocks = <&osc_in>, <&osc_rtc>;
+			current_rate = <12000000>;
+			parent_idx = <0>;
+			mux_reg_offset = <CG_PERI_CLK_RATE_REG1_OFFSET>;
+			mux_bit_idx = <20>;
+			mux_bit_width = <1>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <CG_CLK_EN_REG2_OFFSET>;
+			gate_bit_idx = <22>;
+			do_enable = <NOT_ENABLE>;
+			reset_reg_offset = <CG_SYS_RESET_REG2_OFFSET>;
+			reset_bit_idx = <22>;
+			do_reset = <DO_RESET>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "2f0143000.drtc";
+			max_rate = <12000000>;
+		};
+
+		clk_grph: clk_grph {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-mux";
+			clocks = <&fix240m>,<&fix320m>, <&fix480m>, <&pll13> ;
+			current_rate = <480000000>;
+			parent_idx = <2>;
+			mux_reg_offset = <CG_CODEC_CLK_RATE_REG0_OFFSET>;
+			mux_bit_idx = <8>;
+			mux_bit_width = <2>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <CG_CLK_EN_REG0_OFFSET>;
+			gate_bit_idx = <27>;
+			do_enable = <NOT_ENABLE>;
+			reset_reg_offset = <CG_SYS_RESET_REG0_OFFSET>;
+			reset_bit_idx = <27>;
+			do_reset = <DO_RESET>;
+			autogating_reg_offset = <CG_CLK_AUTO_GATING_REG0_OFFSET>;
+			autogating_bit_idx = <8>;
+			do_autogating = <DO_AUTOGATING>;
+			clock-output-names = "2f0e30000.grph";
+		};
+
+		clk_grph2: clk_grph2 {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-mux";
+			clocks = <&fix240m>,<&fix320m>, <&fix480m>, <&pll13> ;
+			current_rate = <480000000>;
+			parent_idx = <2>;
+			mux_reg_offset = <CG_CODEC_CLK_RATE_REG0_OFFSET>;
+			mux_bit_idx = <12>;
+			mux_bit_width = <2>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <CG_CLK_EN_REG0_OFFSET>;
+			gate_bit_idx = <28>;
+			do_enable = <0>;
+			reset_reg_offset = <CG_SYS_RESET_REG0_OFFSET>;
+			reset_bit_idx = <28>;
+			do_reset = <DO_RESET>;
+			autogating_reg_offset = <CG_CLK_AUTO_GATING_REG0_OFFSET>;
+			autogating_bit_idx = <9>;
+			do_autogating = <DO_AUTOGATING>;
+			clock-output-names = "2f0e40000.grph";
+		};
+
+		clk_grph3: clk_grph3 {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-mux";
+			clocks = <&fix240m>,<&fix320m>, <&fix480m>, <&pll13> ;
+			current_rate = <480000000>;
+			parent_idx = <2>;
+			mux_reg_offset = <CG_CODEC_CLK_RATE_REG0_OFFSET>;
+			mux_bit_idx = <14>;
+			mux_bit_width = <2>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <CG_CLK_EN_REG0_OFFSET>;
+			gate_bit_idx = <22>;
+			do_enable = <0>;
+			reset_reg_offset = <CG_SYS_RESET_REG3_OFFSET>;
+			reset_bit_idx = <20>;
+			do_reset = <DO_RESET>;
+			autogating_reg_offset = <CG_CLK_AUTO_GATING_REG2_OFFSET>;
+			autogating_bit_idx = <12>;
+			do_autogating = <DO_AUTOGATING>;
+			clock-output-names = "2f0e50000.grph";
+		};
+		
+		grph_pclk: grph_pclk {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&PAUTOGATING>;
+			current_rate = <0>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <CG_CLK_PROG_EN_REG1_OFFSET>;
+			gate_bit_idx = <26>;
+			do_enable = <DO_ENABLE>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <CG_APB_CLK_AUTO_GATING_REG0_OFFSET>;
+			autogating_bit_idx = <8>;
+			do_autogating = <DO_AUTOGATING>;
+			clock-output-names = "grph_pclk";
+		};
+
+		grph2_pclk: grph2_pclk {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&PAUTOGATING>;
+			current_rate = <0>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <CG_CLK_PROG_EN_REG1_OFFSET>;
+			gate_bit_idx = <27>;
+			do_enable = <DO_ENABLE>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <CG_APB_CLK_AUTO_GATING_REG0_OFFSET>;
+			autogating_bit_idx = <9>;
+			do_autogating = <DO_AUTOGATING>;
+			clock-output-names = "grph2_pclk";
+		};
+
+		grph3_pclk: grph3_pclk {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&PAUTOGATING>;
+			current_rate = <0>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <CG_CLK_PROG_EN_REG1_OFFSET>;
+			gate_bit_idx = <28>;
+			do_enable = <DO_ENABLE>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <CG_APB_CLK_AUTO_GATING_REG2_OFFSET>;
+			autogating_bit_idx = <20>;
+			do_autogating = <DO_AUTOGATING>;
+			clock-output-names = "grph3_pclk";
+		};
+
+		clk_ide_src: clk_ide_src {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-mux";
+			clocks = <&fix480m>, <&pll6>, <&pll4>, <&pll9>;
+			current_rate = <297000000>;
+			parent_idx = <1>;
+			mux_reg_offset = <CG_PERI_CLK_RATE_REG0_OFFSET>;
+			mux_bit_idx = <16>;
+			mux_bit_width = <3>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <NOT_ENABLE>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <NOT_RESET>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "ide_clk_src";
+		};
+
+		clk_ide: clk_ide {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-mux";
+			clocks = <&clk_ide_src>;
+			current_rate = <297000000>;
+			parent_idx = <0>;
+			mux_reg_offset = <0>;
+			mux_bit_idx = <0>;
+			mux_bit_width = <0>;
+			div_reg_offset = <CG_VIDEO_CLK_DIV_REG0_OFFSET>;
+			div_bit_idx = <0>;
+			div_bit_width = <8>;
+			gate_reg_offset = <CG_CLK_EN_REG0_OFFSET>;
+			gate_bit_idx = <16>;
+			do_enable = <NOT_ENABLE>;
+			reset_reg_offset = <CG_SYS_RESET_REG0_OFFSET>;
+			reset_bit_idx = <16>;
+			do_reset = <NOT_RESET>;
+			autogating_reg_offset = <CG_APB_CLK_AUTO_GATING_REG0_OFFSET>;
+			autogating_bit_idx = <10>;
+			do_autogating = <DO_AUTOGATING>;
+			clock-output-names = "2f0190000.ide";
+			max_rate = <297000000>;
+		};
+
+		clk_ideif: clk_ideif {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-mux";
+			clocks = <&clk_ide_src>;
+			current_rate = <297000000>;
+			parent_idx = <0>;
+			mux_reg_offset = <0>;
+			mux_bit_idx = <0>;
+			mux_bit_width = <0>;
+			div_reg_offset = <CG_VIDEO_CLK_DIV_REG0_OFFSET>;
+			div_bit_idx = <8>;
+			div_bit_width = <8>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <0>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "clk_ideif";
+			max_rate = <300000000>;
+		};
+
+		clk_ide2_src: clk_ide2_src {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-mux";
+			clocks = <&osc_in>;
+			current_rate = <0>;
+			parent_idx = <0>;
+			mux_reg_offset = <0>;
+			mux_bit_idx = <0>;
+			mux_bit_width = <0>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <0>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "ide2_clk_src";
+		};
+
+		clk_ide2: clk_ide2 {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-mux";
+			clocks = <&osc_in>;
+			current_rate = <0>;
+			parent_idx = <0>;
+			mux_reg_offset = <0>;
+			mux_bit_idx = <0>;
+			mux_bit_width = <0>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <0>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "2f0900000.ide";
+			max_rate = <0>;
+		};
+
+		clk_ide2if: clk_ide2if {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-mux";
+			clocks = <&osc_in>;
+			current_rate = <0>;
+			parent_idx = <0>;
+			mux_reg_offset = <0>;
+			mux_bit_idx = <0>;
+			mux_bit_width = <0>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <0>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "clk_ide2if";
+			max_rate = <0>;
+		};
+
+		clk_dsi: clk_dsi {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-mux";
+			clocks = <&fix60m>, <&fix80m>, <&fix120m>, <&pll11>;
+			current_rate = <60000000>;
+			parent_idx = <0>;
+			mux_reg_offset = <CG_STBC_CLK_RATE_REG1_OFFSET>;
+			mux_bit_idx = <0>;
+			mux_bit_width = <2>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <CG_STBC_CLK_EN_REG0_OFFSET>;
+			gate_bit_idx = <3>;
+			do_enable = <NOT_ENABLE>;
+			reset_reg_offset = <CG_STBC_CLK_RESET_REG0_OFFSET>;
+			reset_bit_idx = <12>;
+			do_reset = <NOT_RESET>;
+			autogating_reg_offset = <CG_STBC_CLK_AUTO_GATING_REG0_OFFSET>;
+			autogating_bit_idx = <2>;
+			do_autogating = <DO_AUTOGATING>;
+			clock-output-names = "2f02c0000.dsi";
+			max_rate = <120000000>;
+		};
+
+		clk_dsi_reset: clk_dsi_reset {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-mux";
+			clocks = <&fix60m>, <&fix80m>;
+			current_rate = <60000000>;
+			parent_idx = <0>;
+			mux_reg_offset = <CG_STBC_CLK_RATE_REG1_OFFSET>;
+			mux_bit_idx = <0>;
+			mux_bit_width = <0>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <CG_STBC_CLK_EN_REG0_OFFSET>;
+			gate_bit_idx = <3>;
+			do_enable = <NOT_ENABLE>;
+			reset_reg_offset = <CG_STBC_CLK_RESET_REG0_OFFSET>;
+			reset_bit_idx = <12>;
+			do_reset = <DO_RESET>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <DO_AUTOGATING>;
+			clock-output-names = "dsi_reset";
+		};
+
+		clk_csi_tx: clk_csi_tx {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-mux";
+			clocks = <&fix60m>, <&fix80m>, <&fix120m>;
+			current_rate = <60000000>;
+			parent_idx = <0>;
+			mux_reg_offset = <CG_STBC_CLK_RATE_REG1_OFFSET>;
+			mux_bit_idx = <2>;
+			mux_bit_width = <2>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <CG_STBC_CLK_EN_REG0_OFFSET>;
+			gate_bit_idx = <4>;
+			do_enable = <NOT_ENABLE>;
+			reset_reg_offset = <CG_STBC_CLK_RESET_REG0_OFFSET>;
+			reset_bit_idx = <14>;
+			do_reset = <DO_RESET>;
+			autogating_reg_offset = <CG_STBC_CLK_AUTO_GATING_REG0_OFFSET>;
+			autogating_bit_idx = <3>;
+			do_autogating = <DO_AUTOGATING>;
+			clock-output-names = "clk_csi_tx";
+		};
+
+
+
+		clk_hwcp: clk_hwcp {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-mux";
+			clocks = <&fix240m>, <&pll0>;
+			current_rate = <480000000>;
+			parent_idx = <1>;
+			mux_reg_offset = <CG_PERI_CLK_RATE_REG0_OFFSET>;
+			mux_bit_idx = <19>;
+			mux_bit_width = <1>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <CG_CLK_EN_REG1_OFFSET>;
+			gate_bit_idx = <16>;
+			do_enable = <NOT_ENABLE>;
+			reset_reg_offset = <CG_SYS_RESET_REG3_OFFSET>;
+			reset_bit_idx = <19>;
+			do_reset = <DO_RESET>;
+			autogating_reg_offset = <CG_CLK_AUTO_GATING_REG2_OFFSET>;
+			autogating_bit_idx = <11>;
+			do_autogating = <DO_AUTOGATING>;
+			clock-output-names = "2f0e00000.hwcp";
+		};
+
+		clk_cypt: clk_crpt {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-mux";
+			clocks = <&fix240m>, <&fix320m>, <&pll9>;
+			current_rate = <240000000>;
+			parent_idx = <0>;
+			mux_reg_offset = <CG_CODEC_CLK_RATE_REG0_OFFSET>;
+			mux_bit_idx = <20>;
+			mux_bit_width = <2>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <CG_CLK_EN_REG0_OFFSET>;
+			gate_bit_idx = <23>;
+			do_enable = <NOT_ENABLE>;
+			reset_reg_offset = <CG_SYS_RESET_REG0_OFFSET>;
+			reset_bit_idx = <23>;
+			do_reset = <DO_RESET>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "2f0161000.cypt";
+			max_rate = <360000000>;
+		};
+
+		clk_hash: clk_hash {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-mux";
+			clocks = <&fix240m>, <&fix320m>, <&pll9>;
+			current_rate = <240000000>;
+			parent_idx = <0>;
+			mux_reg_offset = <CG_PERI_CLK_RATE_REG1_OFFSET>;
+			mux_bit_idx = <16>;
+			mux_bit_width = <2>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <CG_CLK_EN_REG2_OFFSET>;
+			gate_bit_idx = <27>;
+			do_enable = <NOT_ENABLE>;
+			reset_reg_offset = <CG_SYS_RESET_REG2_OFFSET>;
+			reset_bit_idx = <27>;
+			do_reset = <DO_RESET>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "2f0162000.hash";
+			max_rate = <360000000>;
+		};
+
+		clk_rsa: clk_rsa {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-mux";
+			clocks = <&fix240m>, <&fix320m>, <&pll9>;
+			current_rate = <240000000>;
+			parent_idx = <0>;
+			mux_reg_offset = <CG_CODEC_CLK_RATE_REG0_OFFSET>;
+			mux_bit_idx = <16>;
+			mux_bit_width = <2>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <CG_CLK_EN_REG2_OFFSET>;
+			gate_bit_idx = <26>;
+			do_enable = <NOT_ENABLE>;
+			reset_reg_offset = <CG_SYS_RESET_REG2_OFFSET>;
+			reset_bit_idx = <26>;
+			do_reset = <DO_RESET>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "2f0163000.rsa";
+			max_rate = <360000000>;
+		};
+
+		eth0_extphy_clk: eth0_extphy_clk {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-mux";
+			clocks = <&pll16>;
+			current_rate = <250000000>;
+			parent_idx = <0>;
+			mux_reg_offset = <CG_PERI_CLK_RATE_REG1_OFFSET>;
+			mux_bit_idx = <26>;
+			mux_bit_width = <2>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <CG_CLK_EN_REG2_OFFSET>;
+			gate_bit_idx = <24>;
+			do_enable = <NOT_ENABLE>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "eth0_extphy_clk";
+			max_rate = <250000000>;
+		};
+
+		h264d_pclk: h264d_pclk {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&osc_in>;
+			current_rate = <0>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <0>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "h264d_pclk";
+		};
+
+		/* h264d mclk */
+		h264d_mclk: h264d_mclk {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-mux";
+			clocks = <&osc_in>;
+			current_rate = <0>;
+			parent_idx = <0>;
+			mux_reg_offset = <0>;
+			mux_bit_idx = <0>;
+			mux_bit_width = <0>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <0>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "h264d_mclk";
+			max_rate = <0>;
+		};
+
+		clk_iop: clk_iop {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&osc_in>;
+			//clocks = <&osc_in>; //Real Chip
+			current_rate = <0>;
+			//current_rate = <0>; //Real Chip
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <0>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "clk_iop";
+		};
+		clk_edp: clk_edp {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&osc_in>;
+			//clocks = <&osc_in>; //Real Chip
+			current_rate = <0>;
+			//current_rate = <0>; //Real Chip
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <0>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "clk_edp";
+		};
+		clk_epp: clk_epp {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&osc_in>;
+			//clocks = <&osc_in>; //Real Chip
+			current_rate = <0>;
+			//current_rate = <0>; //Real Chip
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <0>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "clk_epp";
+		};
+		clk_edap: clk_edap {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&osc_in>;
+			//clocks = <&osc_in>; //Real Chip
+			current_rate = <0>;
+			//current_rate = <0>; //Real Chip
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <0>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "clk_edap";
+		};
+
+		/* h264d aclk */
+		h264d_aclk: h264d_aclk {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-mux";
+			clocks = <&osc_in>;
+			current_rate = <0>;
+			parent_idx = <0>;
+			mux_reg_offset = <0>;
+			mux_bit_idx = <0>;
+			mux_bit_width = <0>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <0>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "h264d_aclk";
+			max_rate = <0>;
+		};
+
+		/* h265d mclk */
+		h265d_mclk: h265d_mclk {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-mux";
+			clocks = <&osc_in>;
+			current_rate = <0>;
+			parent_idx = <0>;
+			mux_reg_offset = <0>;
+			mux_bit_idx = <0>;
+			mux_bit_width = <0>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <0>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "h265d_mclk";
+			max_rate = <0>;
+		};
+
+		h265d_aclk: h265d_aclk {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-mux";
+			clocks = <&osc_in>;
+			current_rate = <0>;
+			parent_idx = <0>;
+			mux_reg_offset = <0>;
+			mux_bit_idx = <0>;
+			mux_bit_width = <0>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <0>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "h265d_aclk";
+			max_rate = <0>;
+		};
+
+		/* Jpeg */
+		jpeg1_clk: jpeg1_clk {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-mux";
+			clocks = <&fix240m>, <&fix320m>, <&fix480m>, <&pll15>;
+			current_rate = <480000000>;
+			parent_idx = <2>;
+			mux_reg_offset = <CG_CODEC_CLK_RATE_REG0_OFFSET>;
+			mux_bit_idx = <0>;
+			mux_bit_width = <2>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <CG_CLK_EN_REG0_OFFSET>;
+			gate_bit_idx = <26>;
+			do_enable = <NOT_ENABLE>;
+			reset_reg_offset = <CG_SYS_RESET_REG0_OFFSET>;
+			reset_bit_idx = <26>;
+			do_reset = <DO_RESET>;
+			autogating_reg_offset = <CG_CLK_AUTO_GATING_REG0_OFFSET>;
+			autogating_bit_idx = <15>;
+			do_autogating = <NOT_AUTOGATING>;
+			clock-output-names = "jpeg1_clk";
+			max_rate = <480000000>;
+		};
+
+		/* Jpeg 2 */
+		//jpg2_clk: jpg2_clk {
+		//	#clock-cells = <0>;
+		//	compatible = "nvt,nvt-clk-mux";
+		//	clocks = <&osc_in>;
+		//	current_rate = <0>;
+		//	parent_idx = <0>;
+		//	mux_reg_offset = <0>;
+		//	mux_bit_idx = <0>;
+		//	mux_bit_width = <0>;
+		//	div_reg_offset = <0>;
+		//	div_bit_idx = <0>;
+		//	div_bit_width = <0>;
+		//	gate_reg_offset = <0>;
+		//	gate_bit_idx = <0>;
+		//	do_enable = <0>;
+		//	reset_reg_offset = <0>;
+		//	reset_bit_idx = <0>;
+		//	do_reset = <0>;
+		//	autogating_reg_offset = <0>;
+		//	autogating_bit_idx = <0>;
+		//	do_autogating = <0>;
+		//	clock-output-names = "jpg2_clk";
+		//	max_rate = <0>;
+		//};
+
+		/* Jpeg Lite */
+		//jpgl_clk: jpgl_clk {
+		//	#clock-cells = <0>;
+		//	compatible = "nvt,nvt-clk-mux";
+		//	clocks = <&osc_in>;
+		//	current_rate = <0>;
+		//	parent_idx = <0>;
+		//	mux_reg_offset = <0>;
+		//	mux_bit_idx = <0>;
+		//	mux_bit_width = <0>;
+		//	div_reg_offset = <0>;
+		//	div_bit_idx = <0>;
+		//	div_bit_width = <0>;
+		//	gate_reg_offset = <0>;
+		//	gate_bit_idx = <0>;
+		//	do_enable = <0>;
+		//	reset_reg_offset = <0>;
+		//	reset_bit_idx = <0>;
+		//	do_reset = <0>;
+		//	autogating_reg_offset = <0>;
+		//	autogating_bit_idx = <0>;
+		//	do_autogating = <0>;
+		//	clock-output-names = "jpgl_clk";
+		//	max_rate = <0>;
+		//};
+
+  		clk_vpe: clk_vpe {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-mux";
+			clocks = <&fix240m>, <&fix320m>, <&pll17>, <&fix480m>;
+			current_rate = <440000000>;
+			parent_idx = <2>;
+			mux_reg_offset = <CG_IPP_CLK_RATE_REG0_OFFSET>;
+			mux_bit_idx = <22>;
+			mux_bit_width = <2>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <CG_CLK_EN_REG0_OFFSET>;
+			gate_bit_idx = <21>;
+			do_enable = <DO_ENABLE>;
+			reset_reg_offset = <CG_SYS_RESET_REG0_OFFSET>;
+			reset_bit_idx = <21>;
+			do_reset = <DO_RESET>;
+			autogating_reg_offset = <CG_CLK_AUTO_GATING_REG2_OFFSET>;
+			autogating_bit_idx = <18>;
+			do_autogating = <DO_AUTOGATING>;
+			clock-output-names = "2f0500000.vpe";
+			max_rate = <450000000>;
+		};
+
+		clk_sde: clk_sde {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-mux";
+			clocks = <&osc_in>;
+			current_rate = <0>;
+			parent_idx = <0>;
+			mux_reg_offset = <0>;
+			mux_bit_idx = <0>;
+			mux_bit_width = <0>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <0>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "2f0d90000.sde";
+			max_rate = <0>;
+		};
+
+		clk_sie1: clk_sie1 {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-mux";
+			clocks = <&fix480m>, <&reserved>, <&pll5>, <&pll13>, <&pll12>, <&fix320m>, <&fix192m>, <&pll10>;
+			current_rate = <320000000>;
+			parent_idx = <5>;
+			mux_reg_offset = <CG_CODEC_CLK_RATE_REG0_OFFSET>;
+			mux_bit_idx = <24>;
+			mux_bit_width = <3>;
+			div_reg_offset = <CG_IPP_CLK_DIV_REG0_OFFSET>;
+			div_bit_idx = <16>;
+			div_bit_width = <8>;
+			gate_reg_offset = <CG_CLK_EN_REG0_OFFSET>;
+			gate_bit_idx = <4>;
+			do_enable = <NOT_ENABLE>;
+			reset_reg_offset = <CG_SYS_RESET_REG0_OFFSET>;
+			reset_bit_idx = <4>;
+			do_reset = <DO_RESET>;
+			autogating_reg_offset = <CG_CLK_AUTO_GATING_REG2_OFFSET>;
+			autogating_bit_idx = <13>;
+			do_autogating = <0>;
+			clock-output-names = "2f0310000.sie1";
+			max_rate = <400000000>;
+		};
+
+		clk_sie2: clk_sie2 {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-mux";
+			clocks = <&fix480m>, <&reserved>, <&pll5>, <&pll13>, <&pll12>, <&fix320m>, <&fix192m>, <&pll10>;
+			current_rate = <320000000>;
+			parent_idx = <5>;
+			mux_reg_offset = <CG_CODEC_CLK_RATE_REG0_OFFSET>;
+			mux_bit_idx = <28>;
+			mux_bit_width = <3>;
+			div_reg_offset = <CG_IPP_CLK_DIV_REG0_OFFSET>;
+			div_bit_idx = <24>;
+			div_bit_width = <8>;
+			gate_reg_offset = <CG_CLK_EN_REG0_OFFSET>;
+			gate_bit_idx = <5>;
+			do_enable = <NOT_ENABLE>;
+			reset_reg_offset = <CG_SYS_RESET_REG0_OFFSET>;
+			reset_bit_idx = <5>;
+			do_reset = <DO_RESET>;
+			autogating_reg_offset = <CG_CLK_AUTO_GATING_REG2_OFFSET>;
+			autogating_bit_idx = <14>;
+			do_autogating = <0>;
+			clock-output-names = "2f0311000.sie2";
+			max_rate = <400000000>;
+		};
+
+		clk_sie3: clk_sie3 {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-mux";
+			clocks = <&fix480m>, <&reserved>, <&pll5>, <&pll13>, <&pll12>, <&fix320m>, <&fix192m>, <&pll10>;
+			current_rate = <320000000>;
+			parent_idx = <5>;
+			mux_reg_offset = <CG_CODEC_CLK_RATE_REG0_OFFSET>;
+			mux_bit_idx = <16>;
+			mux_bit_width = <3>;
+			div_reg_offset = <CG_PERI_CLK_DIV_REG0_OFFSET>;
+			div_bit_idx = <8>;
+			div_bit_width = <8>;
+			gate_reg_offset = <CG_CLK_EN_REG0_OFFSET>;
+			gate_bit_idx = <17>;
+			do_enable = <NOT_ENABLE>;
+			reset_reg_offset = <CG_SYS_RESET_REG2_OFFSET>;
+			reset_bit_idx = <9>;
+			do_reset = <DO_RESET>;
+			autogating_reg_offset = <CG_CLK_AUTO_GATING_REG2_OFFSET>;
+			autogating_bit_idx = <15>;
+			do_autogating = <0>;
+			clock-output-names = "2f0312000.sie3";
+			max_rate = <400000000>;
+		};
+
+		clk_sie4: clk_sie4 {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-mux";
+			clocks = <&fix480m>, <&reserved>, <&pll5>, <&pll13>, <&pll12>, <&fix320m>, <&fix192m>, <&pll10>;
+			current_rate = <320000000>;
+			parent_idx = <5>;
+			mux_reg_offset = <CG_PERI_CLK_RATE_REG3_OFFSET>;
+			mux_bit_idx = <0>;
+			mux_bit_width = <3>;
+			div_reg_offset = <CG_PERI_CLK_RATE_REG3_OFFSET>;
+			div_bit_idx = <16>;
+			div_bit_width = <8>;
+			gate_reg_offset = <CG_CLK_EN_REG0_OFFSET>;
+			gate_bit_idx = <18>;
+			do_enable = <NOT_ENABLE>;
+			reset_reg_offset = <CG_SYS_RESET_REG0_OFFSET>;
+			reset_bit_idx = <18>;
+			do_reset = <DO_RESET>;
+			autogating_reg_offset = <CG_CLK_AUTO_GATING_REG2_OFFSET>;
+			autogating_bit_idx = <16>;
+			do_autogating = <0>;
+			clock-output-names = "2f0313000.sie4";
+			max_rate = <400000000>;
+		};
+
+		clk_sie5: clk_sie5 {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-mux";
+			clocks = <&fix480m>, <&reserved>, <&pll5>, <&pll13>, <&pll12>, <&fix320m>, <&fix192m>, <&pll10>;
+			current_rate = <320000000>;
+			parent_idx = <5>;
+			mux_reg_offset = <CG_PERI_CLK_RATE_REG3_OFFSET>;
+			mux_bit_idx = <4>;
+			mux_bit_width = <3>;
+			div_reg_offset = <CG_PERI_CLK_RATE_REG3_OFFSET>;
+			div_bit_idx = <24>;
+			div_bit_width = <8>;
+			gate_reg_offset = <CG_CLK_EN_REG0_OFFSET>;
+			gate_bit_idx = <19>;
+			do_enable = <NOT_ENABLE>;
+			reset_reg_offset = <CG_SYS_RESET_REG0_OFFSET>;
+			reset_bit_idx = <19>;
+			do_reset = <DO_RESET>;
+			autogating_reg_offset = <CG_CLK_AUTO_GATING_REG2_OFFSET>;
+			autogating_bit_idx = <17>;
+			do_autogating = <0>;
+			clock-output-names = "2f0314000.sie5";
+			max_rate = <400000000>;
+		};
+
+		sie2_intclk: sie2_intclk {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-mux";
+			clocks = <&siex_intclk0>, <&siex_intclk1>;
+			current_rate = <0>;
+			parent_idx = <0>;
+			mux_reg_offset = <CG_PERI_CLK_RATE_REG2_OFFSET>;
+			mux_bit_idx = <6>;
+			mux_bit_width = <1>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <NOT_ENABLE>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "sie2_intclk";
+		};
+
+		sie4_intclk: sie4_intclk {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-mux";
+			clocks = <&siex_intclk0>, <&siex_intclk1>;
+			current_rate = <0>;
+			parent_idx = <0>;
+			mux_reg_offset = <CG_PERI_CLK_RATE_REG2_OFFSET>;
+			mux_bit_idx = <7>;
+			mux_bit_width = <1>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <NOT_ENABLE>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "sie4_intclk";
+		};
+
+		sie5_tsen_rxclk: sie5_tsen_rxclk {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-mux";
+			clocks = <&siex_tsen_pxclk>, <&siex_tsen_mclk3>;
+			current_rate = <0>;
+			parent_idx = <0>;
+			mux_reg_offset = <CG_PERI_CLK_RATE_REG3_OFFSET>;
+			mux_bit_idx = <8>;
+			mux_bit_width = <1>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <CG_CLK_EN_REG4_OFFSET>;
+			gate_bit_idx = <28>;
+			do_enable = <NOT_ENABLE>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "sie5_tsen_rxclk";
+		};
+
+		sie1_pxclk: sie1_pxclk {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&siex_pxclk>;
+			current_rate = <0>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <CG_CLK_EN_REG2_OFFSET>;
+			gate_bit_idx = <4>;
+			do_enable = <NOT_ENABLE>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "sie1_pxclk";
+		};
+
+		sie3_pxclk: sie3_pxclk {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&siex_pxclk>;
+			current_rate = <0>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <CG_CLK_EN_REG2_OFFSET>;
+			gate_bit_idx = <6>;
+			do_enable = <NOT_ENABLE>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "sie3_pxclk";
+		};
+
+		sie5_pxclk: sie5_pxclk {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-gate";
+			clocks = <&siex_pxclk>;
+			current_rate = <0>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <CG_CLK_EN_REG4_OFFSET>;
+			gate_bit_idx = <27>;
+			do_enable = <NOT_ENABLE>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "sie5_pxclk";
+		};
+
+		sn_mclk1: sn_mclk1 {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-mux";
+			clocks = <&fix480m>, <&pll5>, <&pll6>, <&pll12>;
+			current_rate = <120000000>;
+			parent_idx = <0>;
+			mux_reg_offset = <CG_IPP_CLK_RATE_REG1_OFFSET>;
+			mux_bit_idx = <8>;
+			mux_bit_width = <2>;
+			div_reg_offset = <CG_IPP_CLK_DIV_REG0_OFFSET>;
+			div_bit_idx = <0>;
+			div_bit_width = <8>;
+			gate_reg_offset = <CG_CLK_EN_REG0_OFFSET>;
+			gate_bit_idx = <2>;
+			do_enable = <NOT_ENABLE>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "sn_mclk1";
+			max_rate = <150000000>;
+		};
+
+		sn_mclk2: sn_mclk2 {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-mux";
+			clocks = <&fix480m>, <&pll5>, <&pll6>, <&pll12>;
+			current_rate = <120000000>;
+			parent_idx = <0>;
+			mux_reg_offset = <CG_IPP_CLK_RATE_REG1_OFFSET>;
+			mux_bit_idx = <10>;
+			mux_bit_width = <2>;
+			div_reg_offset = <CG_IPP_CLK_DIV_REG0_OFFSET>;
+			div_bit_idx = <8>;
+			div_bit_width = <8>;
+			gate_reg_offset = <CG_CLK_EN_REG0_OFFSET>;
+			gate_bit_idx = <3>;
+			do_enable = <NOT_ENABLE>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "sn_mclk2";
+			max_rate = <150000000>;
+		};
+
+		sn_mclk3: sn_mclk3 {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-mux";
+			clocks = <&fix480m>, <&pll5>, <&pll6>, <&pll12>;
+			current_rate = <120000000>;
+			parent_idx = <0>;
+			mux_reg_offset = <CG_IPP_CLK_RATE_REG1_OFFSET>;
+			mux_bit_idx = <12>;
+			mux_bit_width = <2>;
+			div_reg_offset = <CG_VIDEO_CLK_DIV_REG0_OFFSET>;
+			div_bit_idx = <16>;
+			div_bit_width = <8>;
+			gate_reg_offset = <CG_CLK_EN_REG0_OFFSET>;
+			gate_bit_idx = <10>;
+			do_enable = <NOT_ENABLE>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "sn_mclk3";
+			max_rate = <150000000>;
+		};
+
+		sn_mclk4: sn_mclk4 {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-mux";
+			clocks = <&fix480m>, <&pll5>, <&pll6>, <&pll12>;
+			current_rate = <120000000>;
+			parent_idx = <0>;
+			mux_reg_offset = <CG_IPP_CLK_RATE_REG1_OFFSET>;
+			mux_bit_idx = <4>;
+			mux_bit_width = <2>;
+			div_reg_offset = <CG_PERI_CLK_DIV_REG4_OFFSET>;
+			div_bit_idx = <12>;
+			div_bit_width = <8>;
+			gate_reg_offset = <CG_CLK_EN_REG4_OFFSET>;
+			gate_bit_idx = <5>;
+			do_enable = <NOT_ENABLE>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "sn_mclk4";
+			max_rate = <150000000>;
+		};
+
+		sn_mclk1out: sn_mclk1out {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-mux";
+			clocks = <&clkout_normal>, <&clkout_invert>;
+			current_rate = <0>;
+			parent_idx = <0>;
+			mux_reg_offset = <CG_IPP_CLK_RATE_REG1_OFFSET>;
+			mux_bit_idx = <19>;
+			mux_bit_width = <1>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <0>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "sn_mclk1out";
+		};
+
+		sn_mclk2out: sn_mclk2out {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-mux";
+			clocks = <&clkout_normal>, <&clkout_invert>;
+			current_rate = <0>;
+			parent_idx = <0>;
+			mux_reg_offset = <CG_IPP_CLK_RATE_REG1_OFFSET>;
+			mux_bit_idx = <24>;
+			mux_bit_width = <1>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <0>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "sn_mclk2out";
+		};
+
+		sn_mclk3out: sn_mclk3out {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-mux";
+			clocks = <&clkout_normal>, <&clkout_invert>;
+			current_rate = <0>;
+			parent_idx = <0>;
+			mux_reg_offset = <CG_IPP_CLK_RATE_REG1_OFFSET>;
+			mux_bit_idx = <25>;
+			mux_bit_width = <1>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <0>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "sn_mclk3out";
+		};
+
+		sn_mclk4out: sn_mclk4out {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-mux";
+			clocks = <&clkout_normal>, <&clkout_invert>;
+			current_rate = <0>;
+			parent_idx = <0>;
+			mux_reg_offset = <CG_IPP_CLK_RATE_REG1_OFFSET>;
+			mux_bit_idx = <26>;
+			mux_bit_width = <1>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <0>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "sn_mclk4out";
+		};
+
+		clk_vie1: clk_vie1 {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-mux";
+			clocks = <&fix480m>, <&reserved>, <&pll5>, <&pll13>, <&pll12>, <&fix320m>, <&fix192m>, <&pll10>;
+			current_rate = <400000000>;
+			parent_idx = <5>;
+			mux_reg_offset = <CG_PERI_CLK_RATE_REG0_OFFSET>;
+			mux_bit_idx = <0>;
+			mux_bit_width = <3>;
+			div_reg_offset = <CG_PERI_CLK_DIV_REG3_OFFSET>;
+			div_bit_idx = <20>;
+			div_bit_width = <8>;
+			gate_reg_offset = <CG_CLK_EN_REG1_OFFSET>;
+			gate_bit_idx = <15>;
+			do_enable = <NOT_ENABLE>;
+			reset_reg_offset = <CG_SYS_RESET_REG3_OFFSET>;
+			reset_bit_idx = <21>;
+			do_reset = <DO_RESET>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "2f0320000.vie1";
+			max_rate = <400000000>;
+		};
+		/* SRAM switch, for 539A only*/
+		vie_sram_ctrl: vie_sram_ctrl {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-mux";
+			clocks = <&vcap_sm_sel_sie>, <&vcap_sm_sel_vie>;
+			current_rate = <0>;
+			parent_idx = <0>;
+			mux_reg_offset = <CG_IPP_CLK_RATE_REG1_OFFSET>;
+			mux_bit_idx = <16>;
+			mux_bit_width = <0>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <0>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "vie_sram_ctrl";
+		};
+
+		/* vie_pxclkA */
+		vie1_pxclk1: vie1_pxclk1 {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-mux";
+			clocks = <&vie_padA_sgpio1>, <&vie_padA_pgpio0>;
+			current_rate = <0>;
+			parent_idx = <0>;
+			mux_reg_offset = <CG_PERI_CLK_RATE_REG3_OFFSET>;
+			mux_bit_idx = <10>;
+			mux_bit_width = <1>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <CG_CLK_EN_REG4_OFFSET>;
+			gate_bit_idx = <30>;
+			do_enable = <NOT_ENABLE>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "vie1_pxclk1";
+		};
+		/* vie_pxclkB */
+		vie1_pxclk2: vie1_pxclk2 {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-mux";
+			clocks = <&osc_in>;
+			current_rate = <0>;
+			parent_idx = <0>;
+			mux_reg_offset = <0>;
+			mux_bit_idx = <0>;
+			mux_bit_width = <0>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <CG_CLK_EN_REG4_OFFSET>;
+			gate_bit_idx = <31>;
+			do_enable = <NOT_ENABLE>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "vie1_pxclk2";
+		};
+		/* vie2_pxclkA */
+		vie2_pxclk1: vie2_pxclk1 {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-mux";
+			clocks = <&osc_in>;
+			current_rate = <0>;
+			parent_idx = <0>;
+			mux_reg_offset = <0>;
+			mux_bit_idx = <0>;
+			mux_bit_width = <0>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <0>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "vie2_pxclk1";
+		};
+		/* vie2_pxclkB */
+		vie2_pxclk2: vie2_pxclk2 {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-mux";
+			clocks = <&osc_in>;
+			current_rate = <0>;
+			parent_idx = <0>;
+			mux_reg_offset = <0>;
+			mux_bit_idx = <0>;
+			mux_bit_width = <0>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <0>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "vie2_pxclk2";
+		};
+
+		clk_tge: clk_tge {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-mux";
+			clocks = <&tge_clksrc>;
+			current_rate = <0>;
+			parent_idx = <0>;
+			mux_reg_offset = <0>;
+			mux_bit_idx = <0>;
+			mux_bit_width = <0>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <CG_CLK_EN_REG0_OFFSET>;
+			gate_bit_idx = <6>;
+			do_enable = <NOT_ENABLE>;
+			reset_reg_offset = <CG_SYS_RESET_REG0_OFFSET>;
+			reset_bit_idx = <6>;
+			do_reset = <DO_RESET>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "2f0330000.tge";
+		};
+
+		clk_tgeflashA: clk_tgeflashA {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-mux";
+			clocks = <&sn_mclk1>, <&sn_mclk2>, <&sn_mclk3>, <&sn_mclk4>;
+			current_rate = <0>;
+			parent_idx = <0>;
+			mux_reg_offset = <CG_IPP_CLK_RATE_REG0_OFFSET>;
+			mux_bit_idx = <30>;
+			mux_bit_width = <2>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <NOT_ENABLE>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "clk_tgeflashA";
+		};
+
+		clk_tgemshA: clk_tgemshA {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-mux";
+			clocks = <&sn_mclk1>, <&sn_mclk2>, <&sn_mclk3>, <&sn_mclk4>;
+			current_rate = <0>;
+			parent_idx = <0>;
+			mux_reg_offset = <CG_IPP_CLK_RATE_REG0_OFFSET>;
+			mux_bit_idx = <28>;
+			mux_bit_width = <2>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <NOT_ENABLE>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "clk_tgemshA";
+		};
+
+		/* CSI-RX */
+		clk_csi0: clk_csi0 {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-mux";
+			clocks = <&fix60m>, <&fix120m>, <&fix240m>;
+			current_rate = <60000000>;
+			parent_idx = <0>;
+			mux_reg_offset = <CG_PERI_CLK_RATE_REG0_OFFSET>;
+			mux_bit_idx = <12>;
+			mux_bit_width = <2>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <CG_CLK_EN_REG2_OFFSET>;
+			gate_bit_idx = <1>;
+			do_enable = <NOT_ENABLE>;
+			reset_reg_offset = <CG_SYS_RESET_REG2_OFFSET>;
+			reset_bit_idx = <1>;
+			do_reset = <DO_RESET>;
+			autogating_reg_offset = <CG_APB_CLK_AUTO_GATING_REG1_OFFSET>;
+			autogating_bit_idx = <3>;
+			do_autogating = <DO_AUTOGATING>;
+			clock-output-names = "2f0300000.csi";
+		};
+
+		clk_csi1: clk_csi1 {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-mux";
+			clocks = <&fix60m>, <&fix120m>, <&fix240m>;
+			current_rate = <60000000>;
+			parent_idx = <0>;
+			mux_reg_offset = <CG_PERI_CLK_RATE_REG0_OFFSET>;
+			mux_bit_idx = <14>;
+			mux_bit_width = <2>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <CG_CLK_EN_REG2_OFFSET>;
+			gate_bit_idx = <2>;
+			do_enable = <NOT_ENABLE>;
+			reset_reg_offset = <CG_SYS_RESET_REG2_OFFSET>;
+			reset_bit_idx = <2>;
+			do_reset = <DO_RESET>;
+			autogating_reg_offset = <CG_APB_CLK_AUTO_GATING_REG1_OFFSET>;
+			autogating_bit_idx = <4>;
+			do_autogating = <DO_AUTOGATING>;
+			clock-output-names = "2f0302000.csi2";
+		};
+
+		clk_csi2: clk_csi2 {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-mux";
+			clocks = <&fix60m>, <&fix120m>, <&fix240m>;
+			current_rate = <60000000>;
+			parent_idx = <0>;
+			mux_reg_offset = <CG_PERI_CLK_RATE_REG0_OFFSET>;
+			mux_bit_idx = <28>;
+			mux_bit_width = <2>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <CG_CLK_EN_REG4_OFFSET>;
+			gate_bit_idx = <2>;
+			do_enable = <NOT_ENABLE>;
+			reset_reg_offset = <CG_SYS_RESET_REG4_OFFSET>;
+			reset_bit_idx = <1>;
+			do_reset = <DO_RESET>;
+			autogating_reg_offset = <CG_APB_CLK_AUTO_GATING_REG1_OFFSET>;
+			autogating_bit_idx = <5>;
+			do_autogating = <DO_AUTOGATING>;
+			clock-output-names = "2f0304000.csi3";
+		};
+
+		clk_csi3: clk_csi3 {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-mux";
+			clocks = <&fix60m>, <&fix120m>, <&fix240m>;
+			current_rate = <60000000>;
+			parent_idx = <0>;
+			mux_reg_offset = <CG_PERI_CLK_RATE_REG0_OFFSET>;
+			mux_bit_idx = <30>;
+			mux_bit_width = <2>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <CG_CLK_EN_REG4_OFFSET>;
+			gate_bit_idx = <3>;
+			do_enable = <NOT_ENABLE>;
+			reset_reg_offset = <CG_SYS_RESET_REG4_OFFSET>;
+			reset_bit_idx = <2>;
+			do_reset = <DO_RESET>;
+			autogating_reg_offset = <CG_APB_CLK_AUTO_GATING_REG1_OFFSET>;
+			autogating_bit_idx = <7>;
+			do_autogating = <DO_AUTOGATING>;
+			clock-output-names = "2f0306000.csi4";
+		};
+
+		/* venc clk */
+		venc_clk: venc_clk {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-mux";
+			clocks = <&fix240m>, <&fix320m>, <&pll15>, <&pll13>;
+			current_rate = <400000000>;
+			parent_idx = <2>;
+			mux_reg_offset = <CG_CODEC_CLK_RATE_REG0_OFFSET>;
+			mux_bit_idx = <4>;
+			mux_bit_width = <2>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <CG_CLK_EN_REG0_OFFSET>;
+			gate_bit_idx = <24>;
+			do_enable = <NOT_ENABLE>;
+			reset_reg_offset = <CG_SYS_RESET_REG0_OFFSET>;
+			reset_bit_idx = <24>;
+			do_reset = <DO_RESET>;
+			autogating_reg_offset = <CG_CLK_AUTO_GATING_REG0_OFFSET>;
+			autogating_bit_idx = <16>;
+			do_autogating = <DO_AUTOGATING>;
+			clock-output-names = "venc_clk";
+			max_rate = <400000000>;
+		};
+
+		/* ae clk */
+		ae_clk: ae_clk {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-mux";
+			clocks = <&osc_in>;
+			current_rate = <0>;
+			parent_idx = <0>;
+			mux_reg_offset = <0>;
+			mux_bit_idx = <0>;
+			mux_bit_width = <0>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <0>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "ae_clk";
+			max_rate = <0>;
+		};
+
+		/* vtrc clk */
+		vtrc_clk: vtrc_clk {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-mux";
+			clocks = <&osc_in>;
+			current_rate = <0>;
+			parent_idx = <0>;
+			mux_reg_offset = <0>;
+			mux_bit_idx = <0>;
+			mux_bit_width = <0>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <0>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "vtrc_clk";
+			max_rate = <0>;
+		};
+
+		/* hdmi */
+		clk_hdmi: clk_hdmi {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-mux";
+			clocks = <&osc_in>;
+			current_rate = <0>;
+			parent_idx = <0>;
+			mux_reg_offset = <0>;
+			mux_bit_idx = <0>;
+			mux_bit_width = <0>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <0>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "2f0820000.hdmi";
+		};
+
+		/* mi */
+		clk_mi: clk_mi {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-mux";
+			clocks = <&fix192m>, <&fix320m>;
+			current_rate = <96000000>;
+			parent_idx = <0>;
+			mux_reg_offset = <CG_CODEC_CLK_RATE_REG0_OFFSET>;
+			mux_bit_idx = <31>;
+			mux_bit_width = <1>;
+			div_reg_offset = <CG_PERI_CLK_DIV_REG3_OFFSET>;
+			div_bit_idx = <12>;
+			div_bit_width = <8>;
+			gate_reg_offset = <CG_CLK_EN_REG3_OFFSET>;
+			gate_bit_idx = <29>;
+			do_enable = <0>;
+			reset_reg_offset = <CG_SYS_RESET_REG3_OFFSET>;
+			reset_bit_idx = <14>;
+			do_reset = <0>;
+			autogating_reg_offset = <CG_CLK_AUTO_GATING_REG2_OFFSET>;
+			autogating_bit_idx = <10>;
+			do_autogating = <1>;
+			clock-output-names = "2f01a0000.mi";
+			max_rate = <96000000>;
+		};
+
+		/* gpenc */
+		clk_gpenc: clk_gpenc {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-mux";
+			clocks = <&osc_in>;
+			current_rate = <0>;
+			parent_idx = <0>;
+			mux_reg_offset = <0>;
+			mux_bit_idx = <0>;
+			mux_bit_width = <0>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <0>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "2f0860000.gpe";
+		};
+
+		/* gpenc2 */
+		clk_gpenc2: clk_gpenc2 {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-mux";
+			clocks = <&osc_in>;
+			current_rate = <0>;
+			parent_idx = <0>;
+			mux_reg_offset = <0>;
+			mux_bit_idx = <0>;
+			mux_bit_width = <0>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <0>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "2f0870000.gpe";
+		};
+
+		clk_stbc_ro_phy: clk_stbc_ro_phy {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-mux";
+			clocks = <&fix32768>;
+			current_rate = <32768>;
+			parent_idx = <0>;
+			mux_reg_offset = <0>;
+			mux_bit_idx = <0>;
+			mux_bit_width = <0>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <CG_STBC_CLK_EN_REG0_OFFSET>;
+			gate_bit_idx = <5>;
+			do_enable = <0>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "stbc_ro_phy";
+			max_rate = <32768>;
+		};
+
+		clk_stbc_ro_32k: clk_stbc_ro_32k {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-mux";
+			clocks = <&clk_stbc_ro_phy>;
+			current_rate = <32768>;
+			parent_idx = <0>;
+			mux_reg_offset = <0>;
+			mux_bit_idx = <0>;
+			mux_bit_width = <0>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <CG_STBC_CLK_EN_REG0_OFFSET>;
+			gate_bit_idx = <6>;
+			do_enable = <0>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "stbc_ro_32k";
+			max_rate = <32768>;
+		};
+
+		clk_stbc_32k: clk_stbc_32k {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-mux";
+			clocks = <&osc_rtc>, <&clk_stbc_ro_32k>;
+			current_rate = <32768>;
+			parent_idx = <1>;
+			mux_reg_offset = <CG_STBC_CLK_RATE_REG0_OFFSET>;
+			mux_bit_idx = <24>;
+			mux_bit_width = <1>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <0>;
+			gate_bit_idx = <0>;
+			do_enable = <0>;
+			reset_reg_offset = <0>;
+			reset_bit_idx = <0>;
+			do_reset = <0>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "stbc_32k";
+			max_rate = <32768>;
+		};
+
+		/* stbc/pmc */
+		clk_stbc: clk_stbc {
+			#clock-cells = <0>;
+			compatible = "nvt,nvt-clk-mux";
+			clocks = <&fix120m>, <&clk_stbc_32k>;
+			current_rate = <120000000>;
+			parent_idx = <0>;
+			mux_reg_offset = <CG_STBC_CLK_RATE_REG0_OFFSET>;
+			mux_bit_idx = <25>;
+			mux_bit_width = <1>;
+			div_reg_offset = <0>;
+			div_bit_idx = <0>;
+			div_bit_width = <0>;
+			gate_reg_offset = <CG_STBC_CLK_EN_REG0_OFFSET>;
+			gate_bit_idx = <1>;
+			do_enable = <DO_DISABLE>;
+			reset_reg_offset = <CG_STBC_CLK_RESET_REG0_OFFSET>;
+			reset_bit_idx = <4>;
+			do_reset = <DO_RESET>;
+			autogating_reg_offset = <0>;
+			autogating_bit_idx = <0>;
+			do_autogating = <0>;
+			clock-output-names = "2f0200000.stbc";
+			max_rate = <120000000>;
+		};
+	};
+};

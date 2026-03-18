@@ -1,0 +1,58 @@
+#
+# network device configuration
+#
+
+config NET_VENDOR_NOVATEK
+	tristate "Novatek DWC Ethernet QOS support"
+        select PHYLIB
+        select CRC32
+        select MII
+        select INET_LRO
+        depends on HAS_DMA
+        help
+          This driver supports the DWC Ethernet QoS
+
+if NET_VENDOR_NOVATEK
+
+config NOVATEK_DWC_ETH_QOS_HIGHDMA
+	bool "Novatek DWC Ethernet QOS support HIGH-DMA"
+    default n
+
+config TX_DESC
+	int
+	prompt "Tx Descriptor Number (minimum: 64)"
+	default 256
+	range 64 1024
+
+config RX_DESC
+	int
+	prompt "Rx Descriptor Number (minimum: 64)"
+	default 256
+	range 64 1024
+
+config MULTI_QUEUE
+	bool "Novatek DWC Ethernet multi queue support"
+    default n
+
+config MULTI_IRQ
+    bool "Novatek DWC Ethernet Multi IRQ support"
+    default n
+    depends on MULTI_QUEUE
+
+config TIMESTAMP
+	bool "Novatek DWC Ethernet Timestamp&ptp support"
+	default n
+
+config NOVATEK_TIMESTAMP_UPDATE_SYS_TIME
+	bool "Support Update sys-time Automatically"
+	default n
+	depends on TIMESTAMP
+
+config USAGECONTROL
+	bool "Novatek DWC Ethernet Lower CPU Usage support"
+	default n
+	depends on !MULTI_QUEUE
+	help
+        This function supports lower CPU usage and will loss some throughput
+
+endif #NET_VENDOR_NOVATEK

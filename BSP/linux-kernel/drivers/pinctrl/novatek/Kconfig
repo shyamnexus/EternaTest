@@ -1,0 +1,39 @@
+config PINCTRL_NA51102
+	bool "Novatek NA51102 pin control"
+	depends on OF && NVT_IVOT_PLAT_NA51102
+
+config PINCTRL_NS02201
+	bool "Novatek NS02201 pin control"
+	depends on OF && NVT_IVOT_PLAT_NS02201
+
+config PINCTRL_NA51055
+	bool "Novatek NA51055 pin control"
+	depends on OF && NVT_IVOT_PLAT_NA51055
+
+config PINCTRL_NS02302
+	bool "Novatek NS02302 pin control"
+	depends on OF && NVT_IVOT_PLAT_NS02302
+
+config PINCTRL_NS02301
+        bool "Novatek NS02301 pin control"
+        depends on OF && NVT_IVOT_PLAT_NS02301
+
+config PINCTRL_NA51089
+	bool "Novatek NA51089 pin control"
+	depends on OF && NVT_IVOT_PLAT_NA51089
+
+config PINCTRL_NA51090
+	bool "Novatek NA51090 pin control"
+	depends on NVT_IVOT_PLAT_NA51090
+
+config PINCTRL_NA51103
+	bool "Novatek NA51103 pin control"
+	depends on NVT_IVOT_PLAT_NA51103
+
+config PINCTRL_NS02401
+	bool "Novatek NS02401 pin control"
+	depends on NVT_IVOT_PLAT_NS02401
+
+config PINCTRL_NA51090_EP
+	tristate "Novatek NA51090 pin control EPs"
+	depends on NVT_IVOT_PLAT_NA51090

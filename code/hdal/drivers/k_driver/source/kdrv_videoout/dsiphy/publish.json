@@ -1,0 +1,13 @@
+{
+	"jsontype": "module_publish",
+	"publish_src": [
+		"dsiphy_api.c",
+		"dsiphy_drv.c",
+		"dsiphy_export.c",
+		"dsiphy_main.c",
+		"dsiphy_proc.c",
+		"dsiphy_platform.c",
+		"dsiphy.c",
+		"dsiphy_ver.c"
+	]
+}

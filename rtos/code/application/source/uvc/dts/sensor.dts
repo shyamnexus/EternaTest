@@ -1,0 +1,39 @@
+/*
+ * Novatek Ltd. NA51055 BSP part of dts
+ *
+ * Cortex-A9
+ *
+ */
+
+/dts-v1/;
+
+/ {
+	sensor {
+		/* label for sensor_cfg */
+		sen_cfg: sen_cfg {
+		};
+	};
+};
+
+/* Note: put include files in the tail since label should be declared first. */
+#include <dt-bindings/gpio/nvt-gpio.h>
+
+#define STRINGIFY(X) STRINGIFY2(X)
+#define STRINGIFY2(X) #X
+// Macros for concatenating tokens
+#define CAT(X,Y) CAT2(X,Y)
+#define CAT2(X,Y) X##Y
+#define CAT_2 CAT
+#define CAT_3(X,Y,Z) CAT(X,CAT(Y,Z))
+#define INCLUDE_FILE(HEAD,TAIL) STRINGIFY( CAT_3(HEAD,TAIL,.dtsi) )
+
+#if defined(_sen_imx290_)
+#include INCLUDE_FILE(imx290_cfg,_SEN_SUFFIX_)
+#endif
+#if defined(_sen_os02k10_)
+#include INCLUDE_FILE(os02k10_cfg,_SEN_SUFFIX_)
+#endif
+#if defined(_sen_gc4653_)
+#include INCLUDE_FILE(gc4653_cfg,_SEN_SUFFIX_)
+#endif
+

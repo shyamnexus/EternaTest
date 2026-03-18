@@ -1,0 +1,1 @@
+../../kdrv_builtin/isp/sensor_builtin_os04c10.c

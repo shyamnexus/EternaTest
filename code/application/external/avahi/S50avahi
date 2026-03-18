@@ -1,0 +1,147 @@
+#!/bin/sh
+#
+# Avahi mDNS/DNS-SD daemon init script
+# Provides .local hostname resolution and service discovery
+#
+
+DAEMON=/usr/sbin/avahi-daemon
+PIDFILE=/var/run/avahi-daemon/pid
+CONF_DIR=/etc/avahi
+SERVICES_DIR=/etc/avahi/services
+
+# Default to 'start' if no argument (for rcS compatibility)
+if [ -z "$1" ]; then
+    set -- start
+fi
+
+# Default service ports (can be overridden in /etc/avahi/ipcamera.conf)
+HTTP_PORT=80
+HTTPS_PORT=443
+RTSP_PORT=554
+SSH_PORT=22
+ADB_PORT=5555
+
+# Load custom config if exists
+[ -f /etc/avahi/ipcamera.conf ] && . /etc/avahi/ipcamera.conf
+
+# Get hostname from system
+get_hostname() {
+    if [ -f /etc/hostname ]; then
+        cat /etc/hostname
+    else
+        hostname 2>/dev/null || echo "ipcamera"
+    fi
+}
+
+# Generate service XML file for mDNS advertisement
+generate_service_file() {
+    local hostname=$(get_hostname)
+    local service_file="${SERVICES_DIR}/ipcamera.service"
+    
+    mkdir -p "${SERVICES_DIR}"
+    
+    cat > "${service_file}" << EOF
+<?xml version="1.0" standalone='no'?>
+<!DOCTYPE service-group SYSTEM "avahi-service.dtd">
+<service-group>
+  <name replace-wildcards="yes">${hostname}</name>
+  
+  <service>
+    <type>_http._tcp</type>
+    <port>${HTTP_PORT}</port>
+    <txt-record>path=/</txt-record>
+    <txt-record>manufacturer=Honeywell</txt-record>
+  </service>
+
+  <service>
+    <type>_https._tcp</type>
+    <port>${HTTPS_PORT}</port>
+    <txt-record>path=/</txt-record>
+  </service>
+
+  <service>
+    <type>_rtsp._tcp</type>
+    <port>${RTSP_PORT}</port>
+    <txt-record>path=/live</txt-record>
+  </service>
+
+  <service>
+    <type>_ssh._tcp</type>
+    <port>${SSH_PORT}</port>
+  </service>
+
+  <service>
+    <type>_adb._tcp</type>
+    <port>${ADB_PORT}</port>
+  </service>
+
+</service-group>
+EOF
+    
+    echo "Generated mDNS service file for: ${hostname}"
+}
+
+start() {
+    echo -n "Starting avahi-daemon: "
+    
+    # Create runtime directories
+    mkdir -p /var/run/avahi-daemon
+    
+    # Generate service file with current hostname
+    generate_service_file
+    
+    # Start daemon
+    start-stop-daemon -S -q -p "$PIDFILE" -x "$DAEMON" -- -D
+    
+    if [ $? -eq 0 ]; then
+        echo "OK"
+    else
+        echo "FAIL"
+    fi
+}
+
+stop() {
+    echo -n "Stopping avahi-daemon: "
+    start-stop-daemon -K -q -p "$PIDFILE"
+    if [ $? -eq 0 ]; then
+        echo "OK"
+    else
+        echo "FAIL"
+    fi
+}
+
+reload() {
+    echo -n "Reloading avahi-daemon: "
+    # Regenerate service file in case hostname changed
+    generate_service_file
+    # Send SIGHUP to reload services
+    if [ -f "$PIDFILE" ]; then
+        kill -HUP $(cat "$PIDFILE") 2>/dev/null
+        echo "OK"
+    else
+        echo "not running"
+    fi
+}
+
+case "$1" in
+    start)
+        start
+        ;;
+    stop)
+        stop
+        ;;
+    restart)
+        stop
+        sleep 1
+        start
+        ;;
+    reload)
+        reload
+        ;;
+    *)
+        echo "Usage: $0 {start|stop|restart|reload}"
+        exit 1
+        ;;
+esac
+
+exit 0

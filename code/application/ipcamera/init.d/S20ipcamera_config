@@ -1,0 +1,271 @@
+#!/bin/sh
+#
+# S20ipcamera_config - Initialize persistent ipcamera configuration
+# Must run after S07_APP_Overlay (which mounts /mnt/app)
+# Must run before S30ipcamd (which starts the main application)
+#
+# Storage Architecture:
+#   /mnt/app/ipcamera/     - NAND persistent storage (complete copy of /etc/ipcamera)
+#     ├── configs/         - All config files (factory defaults + user overrides)
+#     │   ├── config.json  - User settings (merged at runtime)
+#     │   ├── config.d/    - Config overrides
+#     │   └── config.factory.d/ - Factory defaults (read-only reference)
+#     ├── assets/          - Web assets, scripts, etc.
+#     ├── ssl/             - SSL certificates
+#     └── db/              - Auth databases (users.db, secure.db) [usermng.db removed - unified to users.db]
+#
+#   /etc/ipcamera          - Symlink to /mnt/app/ipcamera (after first boot)
+#
+#   /mnt/sd/.ipcamera/     - SD card storage (when available)
+#     └── recordings.db    - Recording metadata (tied to recording files)
+#
+#   /mnt/sd/DCIM/          - Recording files (standard DCIM folder)
+#     ├── CH01/            - Channel 1 recordings
+#     └── CH02/            - Channel 2 recordings
+#
+
+# Source directory (factory defaults in rootfs)
+FACTORY_DIR="/etc/ipcamera"
+FACTORY_MARKER="/etc/ipcamera/.factory"
+
+# Persistent storage on NAND
+PERSISTENT_DIR="/mnt/app/ipcamera"
+PERSISTENT_SSL="${PERSISTENT_DIR}/ssl"
+PERSISTENT_DB="${PERSISTENT_DIR}/db"
+NGINX_SSL_DIR="/etc/nginx/ssl"
+
+# SD card paths
+SDCARD_DIR="/mnt/sd"
+SDCARD_IPCAMERA="${SDCARD_DIR}/.ipcamera"
+SDCARD_RECORDINGS="${SDCARD_DIR}/DCIM"
+
+# Default to 'start' if no argument (rcS calls without args)
+if [ -z "$1" ]; then
+    set -- start
+fi
+
+# Helper function to check if a path is a mountpoint
+# Uses /proc/mounts instead of mountpoint command (not available in all busybox builds)
+is_mounted() {
+    local path="$1"
+    # Normalize path (remove trailing slash)
+    path="${path%/}"
+    # Check if path appears as a mount point in /proc/mounts
+    grep -q " ${path} " /proc/mounts 2>/dev/null
+}
+
+setup_persistent_config() {
+    # TODO: REMOVE before production - disabling ASLR for debugging/development only
+    echo 0 > /proc/sys/kernel/randomize_va_space
+
+    echo "Setting up persistent ipcamera config..."
+    
+    # Check if app partition is mounted
+    if ! is_mounted /mnt/app; then
+        echo "Warning: /mnt/app not mounted, config changes will not persist"
+        return 1
+    fi
+    
+    # Check if /etc/ipcamera is already a symlink to persistent storage
+    if [ -L "${FACTORY_DIR}" ]; then
+        # Already symlinked - check if target exists
+        if [ -d "${PERSISTENT_DIR}" ]; then
+            echo "Persistent config already setup (symlink exists)"
+            # Still need to ensure ssl and db dirs exist
+            mkdir -p "${PERSISTENT_SSL}"
+            mkdir -p "${PERSISTENT_DB}"
+            setup_persistent_ssl
+            setup_sdcard_storage
+            return 0
+        else
+            # Symlink exists but target is missing - broken state
+            echo "Warning: Symlink exists but persistent dir missing, recreating..."
+            rm -f "${FACTORY_DIR}"
+        fi
+    fi
+    
+    # First boot or recovery: /etc/ipcamera is a real directory
+    if [ -d "${FACTORY_DIR}" ] && [ ! -L "${FACTORY_DIR}" ]; then
+        echo "First boot detected - migrating /etc/ipcamera to persistent storage..."
+        
+        # Create persistent directory
+        mkdir -p "$(dirname ${PERSISTENT_DIR})"
+        
+        # Copy entire /etc/ipcamera to persistent storage
+        # Using cp -a to preserve permissions, timestamps, symlinks
+        if [ -d "${PERSISTENT_DIR}" ]; then
+            echo "Persistent directory already exists, merging..."
+            # Merge: copy new files but don't overwrite existing user configs
+            cp -an "${FACTORY_DIR}/." "${PERSISTENT_DIR}/"
+        else
+            echo "Copying factory defaults to persistent storage..."
+            cp -a "${FACTORY_DIR}" "${PERSISTENT_DIR}"
+        fi
+        
+        # Create additional directories not in factory image
+        mkdir -p "${PERSISTENT_SSL}"
+        mkdir -p "${PERSISTENT_DB}"
+        mkdir -p "${PERSISTENT_DIR}/configs/config.d"
+        
+        # Create empty config.json if it doesn't exist (for user overrides)
+        if [ ! -f "${PERSISTENT_DIR}/configs/config.json" ]; then
+            echo "{}" > "${PERSISTENT_DIR}/configs/config.json"
+        fi
+        
+        # Remove factory directory and create symlink
+        rm -rf "${FACTORY_DIR}"
+        ln -sf "${PERSISTENT_DIR}" "${FACTORY_DIR}"
+        
+        echo "Migration complete: /etc/ipcamera -> ${PERSISTENT_DIR}"
+    elif [ ! -e "${FACTORY_DIR}" ]; then
+        # /etc/ipcamera doesn't exist at all - create from scratch
+        echo "No factory config found, creating empty persistent structure..."
+        mkdir -p "${PERSISTENT_DIR}/configs/config.d"
+        mkdir -p "${PERSISTENT_DIR}/configs/config.factory.d"
+        mkdir -p "${PERSISTENT_DIR}/assets"
+        mkdir -p "${PERSISTENT_SSL}"
+        mkdir -p "${PERSISTENT_DB}"
+        echo "{}" > "${PERSISTENT_DIR}/configs/config.json"
+        ln -sf "${PERSISTENT_DIR}" "${FACTORY_DIR}"
+    fi
+    
+    # Setup persistent SSL certificates
+    setup_persistent_ssl
+    
+    # Setup SD card storage if available
+    setup_sdcard_storage
+    
+    echo "Persistent config setup complete"
+    return 0
+}
+
+setup_persistent_ssl() {
+    # Create nginx ssl directory if needed
+    mkdir -p "${NGINX_SSL_DIR}"
+    
+    # SSL certs are now stored in /mnt/app/ipcamera/ssl
+    # which is accessible via /etc/ipcamera/ssl after symlink setup
+    
+    # If persistent certs exist, symlink them to nginx ssl dir
+    if [ -f "${PERSISTENT_SSL}/Server.crt" ] && [ -f "${PERSISTENT_SSL}/Server.key" ]; then
+        ln -sf "${PERSISTENT_SSL}/Server.crt" "${NGINX_SSL_DIR}/Server.crt"
+        ln -sf "${PERSISTENT_SSL}/Server.key" "${NGINX_SSL_DIR}/Server.key"
+        echo "Using persistent SSL certificates"
+    else
+        # Certs don't exist yet - ipcamd will generate them
+        # Pre-create symlinks so ipcamd writes to persistent storage
+        ln -sf "${PERSISTENT_SSL}/Server.crt" "${NGINX_SSL_DIR}/Server.crt"
+        ln -sf "${PERSISTENT_SSL}/Server.key" "${NGINX_SSL_DIR}/Server.key"
+        echo "SSL certificates will be generated on first boot"
+    fi
+}
+
+setup_sdcard_storage() {
+    # Check if SD card is mounted
+    if ! is_mounted "${SDCARD_DIR}"; then
+        echo "SD card not mounted at ${SDCARD_DIR}, recording storage unavailable"
+        return 1
+    fi
+    
+    # Create hidden .ipcamera directory for metadata
+    # Using hidden dir to keep DCIM clean for users browsing via file manager
+    if [ ! -d "${SDCARD_IPCAMERA}" ]; then
+        mkdir -p "${SDCARD_IPCAMERA}"
+        echo "Created SD card metadata directory: ${SDCARD_IPCAMERA}"
+    fi
+    
+    # Create DCIM directory structure for recordings
+    # DCIM is standard directory name used by cameras (Digital Camera Images)
+    if [ ! -d "${SDCARD_RECORDINGS}" ]; then
+        mkdir -p "${SDCARD_RECORDINGS}"
+        echo "Created SD card recordings directory: ${SDCARD_RECORDINGS}"
+    fi
+    
+    # Create channel subdirectories
+    mkdir -p "${SDCARD_RECORDINGS}/CH01"
+    mkdir -p "${SDCARD_RECORDINGS}/CH02"
+    mkdir -p "${SDCARD_RECORDINGS}/CH03"
+    
+    echo "SD card storage ready at ${SDCARD_DIR}"
+    return 0
+}
+
+factory_reset() {
+    echo "Performing factory reset of ipcamera configuration..."
+    
+    # Check if app partition is mounted
+    if ! is_mounted /mnt/app; then
+        echo "Error: /mnt/app not mounted"
+        return 1
+    fi
+    
+    # Remove persistent config (keeps SSL certs and databases by default)
+    if [ -d "${PERSISTENT_DIR}/configs" ]; then
+        rm -rf "${PERSISTENT_DIR}/configs"
+        echo "Removed persistent configs"
+    fi
+    
+    # Remove assets to force refresh
+    if [ -d "${PERSISTENT_DIR}/assets" ]; then
+        rm -rf "${PERSISTENT_DIR}/assets"
+        echo "Removed persistent assets"
+    fi
+    
+    # Remove the symlink so next boot re-copies factory defaults
+    if [ -L "${FACTORY_DIR}" ]; then
+        rm -f "${FACTORY_DIR}"
+        echo "Removed /etc/ipcamera symlink"
+    fi
+    
+    echo "Factory reset complete. Reboot to apply."
+    return 0
+}
+
+factory_reset_full() {
+    echo "Performing FULL factory reset (including databases and SSL)..."
+    
+    # Check if app partition is mounted
+    if ! is_mounted /mnt/app; then
+        echo "Error: /mnt/app not mounted"
+        return 1
+    fi
+    
+    # Remove entire persistent directory
+    if [ -d "${PERSISTENT_DIR}" ]; then
+        rm -rf "${PERSISTENT_DIR}"
+        echo "Removed all persistent data"
+    fi
+    
+    # Remove the symlink
+    if [ -L "${FACTORY_DIR}" ]; then
+        rm -f "${FACTORY_DIR}"
+        echo "Removed /etc/ipcamera symlink"
+    fi
+    
+    echo "Full factory reset complete. Reboot to apply."
+    return 0
+}
+
+case "$1" in
+    start)
+        setup_persistent_config
+        ;;
+    stop)
+        # Nothing to do on stop
+        ;;
+    restart)
+        setup_persistent_config
+        ;;
+    factory-reset)
+        factory_reset
+        ;;
+    factory-reset-full)
+        factory_reset_full
+        ;;
+    *)
+        echo "Usage: $0 {start|stop|restart|factory-reset|factory-reset-full}"
+        exit 1
+        ;;
+esac
+
+exit 0

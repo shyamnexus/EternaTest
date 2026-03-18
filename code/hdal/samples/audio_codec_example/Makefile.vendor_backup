@@ -1,0 +1,97 @@
+# Makefile for Audio Recording with Vendor APIs Example
+MODULE_NAME = audio_vendor_record
+
+# DIRs
+VOS_DRIVER_DIR = $(NVT_VOS_DIR)/drivers
+HDAL_SAMPLE_DIR = $(NVT_HDAL_DIR)/samples
+OUTPUT_DIR = $(HDAL_SAMPLE_DIR)/output
+
+# INCs
+VOS_INC_PATH = $(VOS_DRIVER_DIR)/include
+HDAL_INC_PATH = $(NVT_HDAL_DIR)/include
+HDAL_LIB_PATH = $(NVT_HDAL_DIR)/output
+
+# Vendor media includes (for vendor_audiocapture.h, vendor_audioenc.h)
+VENDOR_MEDIA_INC_PATH = $(NVT_HDAL_DIR)/vendor/media/include
+VENDOR_MEDIA_LIB_PATH = $(NVT_HDAL_DIR)/vendor/media/source
+
+# INC FLAGs
+EXTRA_INCLUDE += \
+	-I$(HDAL_INC_PATH) \
+	-I$(VENDOR_MEDIA_INC_PATH) \
+	-I$(VOS_INC_PATH)
+
+###############################################################################
+# Linux Makefile                                                              #
+###############################################################################
+ifeq ($(NVT_PRJCFG_CFG),Linux)
+EXTRA_CFLAGS += $(NVT_ASAN)
+# Link against hdal, vendor_media (for vendor APIs), and pthread
+EXTRA_LDFLAGS = $(NVT_ASAN) \
+	-L$(HDAL_LIB_PATH) \
+	-L$(VENDOR_MEDIA_LIB_PATH) \
+	-lhdal \
+	-lvendor_media \
+	-lpthread
+
+SRC += audio_vendor_record.c
+
+###############################################################################
+# rtos Makefile                                                               #
+###############################################################################
+else ifeq ($(NVT_PRJCFG_CFG),rtos)
+
+# DIRs
+RTOS_KERNEL_DIR = $(KERNELDIR)/lib/FreeRTOS
+RTOS_LIB_DIR = $(KERNELDIR)/lib
+RTOS_CURR_DEMO_DIR = $(KERNELDIR)/demos/novatek/$(SDK_CODENAME)
+RTOS_POSIX_DIR = $(KERNELDIR)/lib/FreeRTOS-Plus-POSIX
+RTOS_POSIX_SRC_DIR = $(RTOS_POSIX_DIR)/source
+
+#INCs for EXTRA_CFLAGS
+EXTRA_INCLUDE += \
+	-I$(RTOS_LIB_DIR) \
+	-I$(RTOS_KERNEL_DIR)/portable/GCC/ARM_CA9 \
+	-I$(RTOS_KERNEL_DIR)/include \
+	-I$(RTOS_KERNEL_DIR)/include/private \
+	-I$(RTOS_CURR_DEMO_DIR)/include \
+	-I$(RTOS_POSIX_DIR)/include \
+	-I$(RTOS_POSIX_DIR)/include/portable/novatek \
+	-I$(LIBRARY_DIR)/include
+
+EXTRA_CFLAGS += -Wno-format
+SRC += audio_vendor_record.c
+
+endif
+
+include $(NVT_HDAL_DIR)/executable.mk
+
+# Debug build
+debug: CFLAGS += -g -DDEBUG
+debug: clean all
+
+# Help
+help:
+	@echo "Audio Recording with Vendor APIs Example"
+	@echo ""
+	@echo "This sample demonstrates using VENDOR APIs alongside HDAL"
+	@echo "to access chip-specific audio features:"
+	@echo "  - AGC (Automatic Gain Control)"
+	@echo "  - ALC (Automatic Level Control)"
+	@echo "  - Gain level configuration"
+	@echo "  - External codec support (I2S)"
+	@echo ""
+	@echo "Usage: audio_vendor_record [codec] [duration]"
+	@echo "  codec:    0=AAC, 1=G.711u, 2=G.711a, 3=PCM"
+	@echo "  duration: seconds (0=manual stop, press 'q' to quit)"
+	@echo ""
+	@echo "API Comparison:"
+	@echo "  HDAL APIs:   hd_audiocap_*, hd_audioenc_*"
+	@echo "  Vendor APIs: vendor_audiocap_set(), vendor_audioenc_set()"
+	@echo ""
+	@echo "Targets:"
+	@echo "  all     - Build the example (default)"
+	@echo "  clean   - Remove build artifacts"
+	@echo "  install - Install binary to bin directory"
+	@echo "  debug   - Build with debug symbols"
+	@echo "  help    - Show this help message"

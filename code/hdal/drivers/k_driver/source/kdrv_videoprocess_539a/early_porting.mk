@@ -1,0 +1,1 @@
+../kdrv_videoprocess/early_porting.mk

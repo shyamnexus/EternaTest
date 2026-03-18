@@ -1,0 +1,144 @@
+/*
+ * Novatek Ltd. BSP part of dts
+ */
+
+/ {
+	nvtmpp {
+		compatible = "nvt,nvtmpp";
+	};
+
+	isf_stream {
+		compatible = "nvt,isf_stream";
+	};
+
+	isf_flow {
+		compatible = "nvt,isf_flow";
+	};
+
+	isf_vdocap {
+		compatible = "nvt,isf_vdocap";
+	};
+
+	isf_vdoprc {
+		compatible = "nvt,isf_vdoprc";
+	};
+
+	isf_dummy {
+		compatible = "nvt,isf_dummy";
+	};
+
+	isf_vdoenc {
+		compatible = "nvt,isf_vdoenc";
+	};
+
+	isf_vdodec {
+		compatible = "nvt,isf_vdodec";
+	};
+
+	isf_vdoout {
+		compatible = "nvt,isf_vdoout";
+	};
+
+	dispobj {
+		compatible = "nvt,nvt_dispobj";
+	};
+
+	dispdev {
+		compatible = "nvt,nvt_dispdev";
+	};
+
+	audio {
+		compatible = "nvt,nvt_audio";
+	};
+
+	msdcnvt {
+		compatible = "nvt,msdcnvt";
+	};
+
+	msdcnvt_adj {
+		compatible = "nvt,msdcnvt_adj";
+	};
+
+	msdcnvt_custom_si {
+		compatible = "nvt,msdcnvt_custom_si";
+	};
+
+	wavstudio {
+		compatible = "nvt,wavstudio";
+	};
+
+	isf_audenc {
+		compatible = "nvt,isf_audenc";
+	};
+
+	isf_auddec {
+		compatible = "nvt,isf_auddec";
+	};
+
+	isf_audcap {
+		compatible = "nvt,isf_audcap";
+	};
+
+	isf_audout {
+		compatible = "nvt,isf_audout";
+	};
+
+	nvt_ipc {
+		compatible = "nvt,nvt_ipc";
+	};
+
+	nvt_gfx {
+		compatible = "nvt,nvt_gfx";
+	};
+
+	h26xdec: h26xd@2,f0a20000 {
+		compatible = "nvt,h26xdec";
+		reg = <0x2 0xf0a20000 0x0 0xA000>;
+		interrupts = <GIC_SPI 136 IRQ_TYPE_LEVEL_HIGH>;
+		clocks = <&h264d_mclk>, <&h264d_aclk>, <&h265d_mclk>, <&h265d_aclk>, <&h264d_pclk>;
+		clock-names = "h264d_mclk", "h264d_aclk", "h265d_mclk", "h265d_aclk", "h264d_pclk";
+		device-id = <0>;
+	};
+
+	nvt_osg: osg@2,f0300000 {
+		compatible = "nvt,nvt_osg";
+		reg = <0x2 0xf0300000 0x0 0x1000>;
+		interrupts = <GIC_SPI 10 IRQ_TYPE_LEVEL_HIGH>;
+	};
+
+	venc: venc@2,f0600000 {
+		compatible = "nvt,nvt_venc";
+		reg = <0x2 0xf0600000 0x0 0x4000>;
+		interrupts = <GIC_SPI 16 IRQ_TYPE_LEVEL_HIGH>;
+		clocks = <&venc_clk>;
+                clock-names = "venc_clk";
+		device-id = <0>;
+	};
+
+	jpeg_1: jpeg_1@2,f0e80000 {
+		compatible = "nvt,jpeg";
+		reg = <0x2 0xf0e80000 0x0 0x10000>;
+		interrupts = <GIC_SPI 17 IRQ_TYPE_LEVEL_HIGH>;
+		clocks = <&jpeg1_clk>;
+		clock-names = "jpeg1_clk";
+		device-id = <0>;
+	};
+
+	//jpeg_2: jpeg_2@2,f0b00000 {
+	//	compatible = "nvt,jpeg";
+	//	reg = <0x2 0xf0b00000 0x0 0x4000>;
+	//	interrupts = <GIC_SPI 81 IRQ_TYPE_LEVEL_HIGH>;
+	//	clocks = <&jpg2_clk>;
+	//	clock-names = "jpg2_clk";
+	//	device-id = <1>;
+	//};
+
+	//jpeg_lite: jpeg_lite@2,f0a30000 {
+	//	compatible = "nvt,jpeg";
+	//	reg = <0x2 0xf0a30000 0x0 0x4000>;
+	//	interrupts = <GIC_SPI 138 IRQ_TYPE_LEVEL_HIGH>;
+	//	clocks = <&jpgl_clk>;
+	//	clock-names = "jpgl_clk";
+	//	device-id = <2>;
+	//};
+};

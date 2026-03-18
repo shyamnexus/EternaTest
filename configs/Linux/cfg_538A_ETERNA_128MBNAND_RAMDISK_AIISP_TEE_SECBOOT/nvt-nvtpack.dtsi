@@ -1,0 +1,66 @@
+/*
+ * Novatek Ltd. BSP part of dts
+ *
+ * Configuration: cfg_538A_ETERNA_128MBNAND_RAMDISK_AIISP_TEE_SECBOOT
+ *
+ * NVTPack Configuration for Secure Boot with OP-TEE + Factory Partition
+ * 
+ * PARTITION INDEX MAPPING:
+ * ========================
+ * id0  -> loader       : Empty (programmed separately via secure boot utility)
+ * id1  -> fdt          : nvt-evb.encrypted.bin (Device Tree, encrypted)
+ * id2  -> fdt.restore  : Empty (backup partition)
+ * id3  -> atf          : atf.encrypted.bin (ARM Trusted Firmware, encrypted)
+ * id4  -> teeos        : tee.encrypted.bin (OP-TEE OS, encrypted)
+ * id5  -> uboot        : u-boot.encrypted.bin (U-Boot, encrypted)
+ * id6  -> uenv         : Empty (environment storage)
+ * id7  -> kernel       : Image.encrypted.bin (Linux kernel, encrypted)
+ * id8  -> rootfs       : rootfs.ramdisk.bin (Root filesystem)
+ * id9  -> rootfs1      : rootfs_1.rw.ubifs.bin (RW partition)
+ * id10 -> app          : appfs.ubifs.nand.bin (Application filesystem)
+ * id11 -> factory      : Empty (PROTECTED - device-specific data)
+ *
+ * ENCRYPTED COMPONENTS:
+ * - FDT (Device Tree)
+ * - ATF (ARM Trusted Firmware)
+ * - TEEOS (OP-TEE OS)
+ * - U-Boot
+ * - Kernel
+ *
+ * FACTORY PARTITION PROTECTION:
+ * =============================
+ * The factory partition (id11) is EXCLUDED from firmware packages (source_file = "")
+ * to preserve device-specific data across firmware upgrades:
+ *   - Primary MAC address (bytes 0-5)
+ *   - Secondary MAC address (bytes 6-11)
+ *   - Serial number (bytes 16-47, max 32 chars)
+ *   - Model name (bytes 48-79, max 32 chars)
+ *   - Hardware revision (bytes 80-83)
+ *   - Manufacturing date (bytes 84-87)
+ *   - Reserved (bytes 88-251)
+ *   - CRC32 checksum (bytes 252-255)
+ *
+ * This ensures that during OTA or manual firmware upgrades, the device identity
+ * and configuration data is NEVER overwritten.
+ */
+
+&nand {
+	nvtpack {
+		ver = "NVTPACK_FW_INI_16072017"; /* Fixed */
+		method = <1>; /* Fixed */
+		index {
+			id0  { partition_name = "loader";      source_file = ""; };                         /* Fixed - programmed separately */
+			id1  { partition_name = "fdt";         source_file = "nvt-evb.encrypted.bin"; };    /* Encrypted DTS */
+			id2  { partition_name = "fdt.restore"; source_file = ""; };                         /* Fixed - backup */
+			id3  { partition_name = "atf";         source_file = "atf.encrypted.bin"; };        /* Encrypted ATF */
+			id4  { partition_name = "teeos";       source_file = "tee.encrypted.bin"; };        /* Encrypted OP-TEE */
+			id5  { partition_name = "uboot";       source_file = "u-boot.encrypted.bin"; };     /* Encrypted U-Boot */
+			id6  { partition_name = "uenv";        source_file = ""; };                         /* U-Boot environment */
+			id7  { partition_name = "kernel";      source_file = "Image.encrypted.bin"; };      /* Encrypted Kernel */
+			id8  { partition_name = "rootfs";      source_file = "rootfs.ramdisk.bin"; };       /* Ramdisk rootfs */
+			id9  { partition_name = "rootfs1";     source_file = "rootfs_1.rw.ubifs.bin"; };    /* RW UBIFS */
+			id10 { partition_name = "app";         source_file = "appfs.ubifs.nand.bin"; };     /* App UBIFS */
+			id11 { partition_name = "factory";     source_file = ""; };                         /* PROTECTED - device identity */
+		};
+	};
+};

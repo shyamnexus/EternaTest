@@ -1,0 +1,131 @@
+BSP/linux-kernel/arch/arm64/boot/uImage.lzma
+code/hdal/vendor/output/libvendor_ai3_pub.a
+code/hdal/vendor/output/libvendor_ai3_pub2.a
+
+# ========================================
+# Machine-Specific Symlinks (absolute paths)
+# ========================================
+BSP/linux-kernel/drivers/soc/nvt/nvt_hdal/hdal
+BSP/linux-kernel/drivers/soc/nvt/nvt_hdal/vos
+
+# ========================================
+# Loader Build Outputs
+# ========================================
+../ns02302_ldr/ARC/Lib/Release/*.a
+../ns02302_ldr/Project/Model/Loader538_Data/Release/*.bin
+
+# ========================================
+# OP-TEE Build Outputs (generated files)
+# ========================================
+# OP-TEE OS build outputs
+BSP/optee/optee_os/out/
+
+# OP-TEE Client build outputs
+BSP/optee/optee_client/build/
+
+# OP-TEE Examples TA outputs
+BSP/optee/optee_client/optee_examples/*/ta/output/
+
+# OP-TEE Test TA outputs
+BSP/optee/optee_client/optee_test/ta/*/output/
+
+# ========================================
+# Rootfs Build Outputs (installed files)
+# ========================================
+# Kernel modules in rootfs
+BSP/root-fs/rootfs/lib/modules/
+
+# OP-TEE TAs installed
+BSP/root-fs/rootfs/lib/optee_armtz/
+
+# OP-TEE libraries and binaries
+BSP/root-fs/rootfs/usr/lib/libteec.so*
+BSP/root-fs/rootfs/usr/lib/tee-supplicant/
+BSP/root-fs/rootfs/usr/sbin/tee-supplicant
+BSP/root-fs/rootfs/usr/bin/optee_example_*
+BSP/root-fs/rootfs/usr/bin/xtest
+BSP/root-fs/rootfs/usr/bin/
+
+# YAML library (build artifact)
+BSP/root-fs/rootfs/usr/lib/libyaml.so*
+
+# ========================================
+# U-Boot Build Outputs
+# ========================================
+BSP/u-boot/include/config/
+BSP/u-boot/u-boot.encrypted.bin
+
+# ========================================
+# Linux Kernel Build Artifacts
+# ========================================
+BSP/linux-kernel/.config.old
+BSP/linux-kernel/defconfig
+BSP/linux-kernel/fs/hfs/hfs.mod
+BSP/linux-kernel/fs/hfs/hfs.mod.c
+
+# ========================================
+# Driver Build Outputs (binary artifacts)
+# ========================================
+# Kernel module binaries (.ko, .o, .mod.o)
+code/driver/source/**/*.ko
+code/driver/source/**/*.o
+code/driver/source/**/*.mod.o
+
+# ========================================
+# Build Configuration (machine-specific)
+# ========================================
+build/.nvt_default
+build/.nvt_modelcfg
+
+# ========================================
+# Secure Boot Keys (root level - NEVER commit)
+# ========================================
+n_key_hash
+xy_key_hash
+*.pem
+# NOTE: Keys in configs/Linux/*/ are tracked (test/dev keys from Novatek SDK)
+# Production keys should be managed separately outside of git
+
+# ========================================
+# Config Build Outputs
+# ========================================
+configs/**/*.dtb
+configs/**/nvt-evb.tmp.dts
+
+# paths  change for  every machine so lets not  track these
+code/driver/source/.Module.symvers.cmd
+code/driver/source/.modules.order.cmd
+code/driver/source/debug/nvt_data_breakpoint/.modules.order.cmd
+code/driver/source/debug/nvt_data_breakpoint/.nvt_data_breakpoint.ko.cmd
+code/driver/source/debug/nvt_data_breakpoint/.nvt_data_breakpoint.mod.cmd
+code/driver/source/debug/nvt_data_breakpoint/.nvt_data_breakpoint.mod.o.cmd
+code/driver/source/debug/nvt_data_breakpoint/.nvt_data_breakpoint.o.cmd
+code/driver/source/debug/nvt_data_breakpoint/modules.order
+code/driver/source/debug/nvt_data_breakpoint/nvt_data_breakpoint.mod
+code/driver/source/sample/fake/.fake_main.o.cmd
+code/driver/source/sample/fake/.fake.ko.cmd
+code/driver/source/sample/fake/.fake.mod.cmd
+code/driver/source/sample/fake/.fake.mod.o.cmd
+code/driver/source/sample/fake/.fake.o.cmd
+code/driver/source/sample/fake/.modules.order.cmd
+code/driver/source/sample/fake/fake.mod
+code/driver/source/sample/fake/modules.order
+code/driver/source/sample/gpio_ext_irq/.gpio_ext_irq.ko.cmd
+code/driver/source/sample/gpio_ext_irq/.gpio_ext_irq.mod.cmd
+code/driver/source/sample/gpio_ext_irq/.gpio_ext_irq.mod.o.cmd
+code/driver/source/sample/gpio_ext_irq/.gpio_ext_irq.o.cmd
+code/driver/source/sample/gpio_ext_irq/.gpio_irq.o.cmd
+code/driver/source/sample/gpio_ext_irq/.modules.order.cmd
+code/driver/source/sample/gpio_ext_irq/gpio_ext_irq.mod
+code/driver/source/sample/gpio_ext_irq/modules.order
+code/driver/source/sample/hwcpy_dmatest/.hwcpy_dmatest_main.o.cmd
+code/driver/source/sample/hwcpy_dmatest/.hwcpy_dmatest.ko.cmd
+code/driver/source/sample/hwcpy_dmatest/.hwcpy_dmatest.mod.cmd
+code/driver/source/sample/hwcpy_dmatest/.hwcpy_dmatest.mod.o.cmd
+code/driver/source/sample/hwcpy_dmatest/.hwcpy_dmatest.o.cmd
+code/driver/source/sample/hwcpy_dmatest/.modules.order.cmd
+code/driver/source/sample/hwcpy_dmatest/hwcpy_dmatest.mod
+code/driver/source/sample/hwcpy_dmatest/modules.order
+
+code/vos/drivers/source/.Module.symvers.cmd
+code/vos/drivers/source/.modules.order.cmd

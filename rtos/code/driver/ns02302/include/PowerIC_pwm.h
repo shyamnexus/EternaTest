@@ -1,0 +1,91 @@
+//#include "../../../hdal/drivers/k_driver/source/rtos_na51068/i2c/i2c.h"
+#ifndef _PWR_IC_PWM_H
+#define _PWR_IC_PWM_H
+
+#include "pwm.h"
+#include "PowerIC_i2c.h"
+
+#define PWM_POWER_IC_NONE       0
+#define PWM_POWER_IC_ON    		1
+#define PWM_POWER_IC            PWM_POWER_IC_ON
+
+#if (PWM_POWER_IC == PWM_POWER_IC_ON)
+#define PWM_TOTAL_CH    12
+
+typedef enum {
+	PWM_POWER_IC_0P_99V,
+	PWM_POWER_IC_0P_98V,
+	PWM_POWER_IC_0P_97V,
+	PWM_POWER_IC_0P_96V,
+	PWM_POWER_IC_0P_95V,//=> default voltage
+	PWM_POWER_IC_0P_94V,
+	PWM_POWER_IC_0P_93V,
+	PWM_POWER_IC_0P_92V,
+	PWM_POWER_IC_0P_91V,
+	PWM_POWER_IC_0P_90V,
+	PWM_POWER_IC_0P_89V,
+	PWM_POWER_IC_0P_88V,
+	PWM_POWER_IC_0P_87V,
+	PWM_POWER_IC_0P_86V,
+	PWM_POWER_IC_0P_85V,
+	PWM_POWER_IC_0P_84V,
+	PWM_POWER_IC_0P_83V,
+	PWM_POWER_IC_0P_82V,
+	PWM_POWER_IC_0P_81V,
+	PWM_POWER_IC_LOWEST_VOLTAGE = PWM_POWER_IC_0P_81V,
+	PWM_POWER_IC_TOTAL_VOLTAGE_LEVEL,
+
+	PWM_POWER_IC_DEFAULT_VOLTAGE = PWM_POWER_IC_0P_90V,
+	ENUM_DUMMY4WORD(POWERIC_PWM_VOLTAGE_OPTION)
+} POWERIC_PWM_VOLTAGE_OPTION;
+
+typedef enum {
+	PWM_PWR_0P_99V = 2,
+	PWM_PWR_0P_98V = 6,
+	PWM_PWR_0P_97V = 10,
+	PWM_PWR_0P_96V = 14,
+	PWM_PWR_0P_95V = 19,
+	PWM_PWR_0P_94V = 23,
+	PWM_PWR_0P_93V = 27,
+	PWM_PWR_0P_92V = 31,
+	PWM_PWR_0P_91V = 35,
+	PWM_PWR_0P_90V = 39,
+	PWM_PWR_0P_89V = 44,
+	PWM_PWR_0P_88V = 48,
+	PWM_PWR_0P_87V = 52,
+	PWM_PWR_0P_86V = 56,
+	PWM_PWR_0P_85V = 60,
+	PWM_PWR_0P_84V = 65,
+	PWM_PWR_0P_83V = 69,
+	PWM_PWR_0P_82V = 73,
+	PWM_PWR_0P_81V = 77,
+	POWERIC_PWM_VOLTAGE_VAL_CNT = PWM_POWER_IC_TOTAL_VOLTAGE_LEVEL,
+	ENUM_DUMMY4WORD(POWERIC_PWM_VOLTAGE_VAL)
+
+} POWERIC_PWM_VOLTAGE_VAL;
+
+
+//STATIC_ASSERT(PWM_POWER_IC_TOTAL_VOLTAGE_LEVEL <= 39);
+
+#if (0)
+typedef enum {
+	PWM_POWER_IC_DECREASE_VOLTAGE = PWM_POWER_IC_TOTAL_VOLTAGE_LEVEL + 0x10,
+	ENUM_DUMMY4WORD(POWERIC_PWM_VOLTAGE_CHANGE_OP)
+} POWERIC_PWM_VOLTAGE_CHANGE_OP;
+
+
+typedef struct {
+	UINT32  level_duty;
+	float   actual_voltage;
+	float   target_voltage;
+
+} Pwm_PowerIC_VoltageTBL, *pPwm_PowerIC_VoltageTBL;
+
+extern BOOL 	Pwm_PwrIC_ChangeCurrentVoltage(UINT32 op);
+extern UINT32 	Pwm_PwrIC_ShowCurrentVoltage(void);
+#endif
+extern void 	emu_pwm_pwr_gen(ULONG cnt, ULONG duty, ULONG channel);
+extern BOOL     PwrIC_pwm_Open(void);
+extern BOOL     PwrIC_pwm_ChangeCurrentVoltage(UINT32 op);
+#endif
+#endif

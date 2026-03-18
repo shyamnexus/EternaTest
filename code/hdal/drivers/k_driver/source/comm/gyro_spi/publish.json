@@ -1,0 +1,10 @@
+{
+	"jsontype": "module_publish",
+	"publish_src": [
+		"gyro_spi_drv.c",
+		"gyro_spi_export.c",
+		"gyro_spi_main.c",
+		"gyro_spi_platform.c"
+
+	]
+}
