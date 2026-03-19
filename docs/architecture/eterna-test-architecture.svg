@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg"
+     width="1280" height="720" viewBox="0 0 1280 720"
+     role="img" aria-labelledby="title desc"
+     font-family="Segoe UI, Roboto, Arial, sans-serif">
+  <title id="title">EternaTest – High-level Architecture</title>
+  <desc id="desc">Orchestrator coordinates Evaluator -> Metrics -> API. External Services feed Evaluator and API integrates with GitHub API.</desc>
+
+  <!-- ====== Styles ====== -->
+  <defs>
+    <style>
+      .title-box { fill:#163a70; rx:14; }
+      .core      { fill:#e8f0fe; stroke:#1f3b66; stroke-width:2; rx:14; }
+      .external  { fill:#ffffff; stroke:#1f3b66; stroke-width:2; rx:14; }
+      .title-txt { fill:#ffffff; font-size:32px; font-weight:600; }
+      .label     { fill:#0f1f3a; font-size:22px; font-weight:600; }
+      .note      { fill:#3a4a6b; font-size:14px; }
+      .arrow     { stroke:#1f3b66; stroke-width:3; marker-end:url(#arrowHead); }
+    </style>
+
+    <marker id="arrowHead" markerWidth="14" markerHeight="10" refX="12" refY="5" orient="auto">
+      <polygon points="0,0 12,5 0,10" fill="#1f3b66"/>
+    </marker>
+
+    <!-- Drop shadow for subtle depth -->
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="1" stdDeviation="2" flood-color="#0b1529" flood-opacity="0.15"/>
+    </filter>
+  </defs>
+
+  <!-- ====== Title ====== -->
+  <g filter="url(#shadow)">
+    <rect class="title-box" x="470" y="36" width="340" height="64"/>
+    <text class="title-txt" x="640" y="78" text-anchor="middle">EternaTest</text>
+  </g>
+
+  <!-- ====== Core Layer ====== -->
+  <!-- Evaluator -->
+  <g filter="url(#shadow)">
+    <rect class="core" x="160" y="190" width="280" height="100"/>
+    <text class="label" x="300" y="248" text-anchor="middle">Evaluator</text>
+  </g>
+
+  <!-- Metrics -->
+  <g filter="url(#shadow)">
+    <rect class="core" x="500" y="190" width="320" height="100"/>
+    <text class="label" x="660" y="248" text-anchor="middle">Metrics</text>
+  </g>
+
+  <!-- API -->
+  <g filter="url(#shadow)">
+    <rect class="core" x="900" y="190" width="200" height="100"/>
+    <text class="label" x="1000" y="248" text-anchor="middle">API</text>
+  </g>
+
+  <!-- ====== External Dependencies ====== -->
+  <g filter="url(#shadow)">
+    <rect class="external" x="140"  y="390" width="260" height="100"/>
+    <text class="label" x="270" y="440" text-anchor="middle">External Service</text>
+    <text class="note"  x="270" y="462" text-anchor="middle">(target under test)</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect class="external" x="900" y="390" width="220" height="100"/>
+    <text class="label" x="1010" y="440" text-anchor="middle">GitHub API</text>
+    <text class="note"  x="1010" y="462" text-anchor="middle">(repo/PR metadata)</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect class="external" x="500" y="560" width="320" height="100"/>
+    <text class="label" x="660" y="610" text-anchor="middle">External Service</text>
+    <text class="note"  x="660" y="632" text-anchor="middle">(optional: CI, scoring feed)</text>
+  </g>
+
+  <!-- ====== Flow Arrows ====== -->
+  <!-- Title -> Metrics -->
+  <line class="arrow" x1="640" y1="100" x2="660" y2="190"/>
+
+  <!-- Evaluator -> Metrics -> API -->
+  <line class="arrow" x1="440" y1="240" x2="500" y2="240"/>
+  <line class="arrow" x1="820" y1="240" x2="900" y2="240"/>
+
+  <!-- External -> Evaluator -->
+  <line class="arrow" x1="270" y1="390" x2="270" y2="290"/>
+
+  <!-- GitHub API -> API -->
+  <line class="arrow" x1="1010" y1="390" x2="1010" y2="290"/>
+
+  <!-- Optional External -> Metrics (downstream feed) -->
+  <line class="arrow" x1="660" y1="560" x2="660" y2="290"/>
+
+  <!-- ====== Legend (small) ====== -->
+  <g>
+    <rect x="40" y="640" width="18" height="18" class="core"/>
+    <text class="note" x="66" y="655">Core component</text>
+
+    <rect x="220" y="640" width="18" height="18" class="external"/>
+    <text class="note" x="246" y="655">External dependency</text>
+
+    <line class="arrow" x1="410" y1="649" x2="444" y2="649"/>
+    <text class="note" x="456" y="655">Data / control flow</text>
+  </g>
+</svg>
