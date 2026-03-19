@@ -2,7 +2,7 @@
 
 This document provides the system context and component responsibilities for **EternaTest**.
 
-![Architecture Diagram](./eterna-test-architecture.png)
+![Architecture Diagram](./eterna-test-architecture.svg)
 
 > Prefer SVG for diffs and scalability if available: `eterna-test-architecture.svg`.
 
