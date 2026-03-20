@@ -1,0 +1,39 @@
+flowchart TD
+    subgraph HW["HDAL Hardware Layer"]
+        SEN["GC5603 MIPI Sensor"]
+        ISP["ISP\nAE · AWB · 3DNR · WDR"]
+        VP["VideoProc"]
+        SEN --> ISP --> VP
+    end
+
+    subgraph Paths["HDAL Output Paths"]
+        E0["Encoder 0\n2944×1664 H.265\n6 Mbps"]
+        E1["Encoder 1\n1280×720 H.264"]
+        E2["Encoder 2\n640×480 H.264"]
+        E3["Encoder 3\n640×360 H.264"]
+        AI_P["AI path\n640×360 YUV"]
+        MD_P["MD path\n160×120 YUV"]
+        VQA_P["VQA path\n320×180 YUV"]
+    end
+
+    VP --> E0 & E1 & E2 & E3
+    VP --> AI_P & MD_P & VQA_P
+
+    subgraph MH["MediaHub — one ring buffer per channel"]
+        PT0["ProducerThread ch0"] --> RB0["RingBuffer ch0\n30 slots · 512 KB/slot"]
+        PT1["ProducerThread ch1"] --> RB1["RingBuffer ch1"]
+        PT2["ProducerThread ch2"] --> RB2["RingBuffer ch2"]
+        PT3["ProducerThread ch3"] --> RB3["RingBuffer ch3"]
+    end
+
+    E0 -->|hd_videoenc_pull_out_buf| PT0
+    E1 --> PT1
+    E2 --> PT2
+    E3 --> PT3
+
+    RB0 & RB1 --> RTSP["RTSP Server\nLive555\nHdalVideoSource"]
+    RB0 & RB1 --> REC["RecordingService\nMP4Recorder\nAES-256-CTR"]
+    RB0 --> G2R["Go2rtcManager\nWebRTC / HLS"]
+
+    AI_P & MD_P & VQA_P --> AE["AnalyticsEngine\nNPU · Motion · Tamper\nLPR · Face · Audio"]
+    AE -->|callbacks| EM["EventManager"]

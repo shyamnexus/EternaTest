@@ -1,0 +1,35 @@
+flowchart LR
+    subgraph Sources["Event Sources"]
+        AE["AnalyticsEngine\nmotion · detection\nline cross · tamper\nLPR · face · audio"]
+        HW["Hardware I/O\nalarm input · GPIO"]
+        SYS["System\nstorage · network\nstartup · shutdown"]
+    end
+
+    subgraph Wiring["Wired in main.cpp"]
+        CB["Analytics\nCallbacks\nSet*Callback()"]
+    end
+
+    subgraph EM["EventManager"]
+        Q["event_queue\nthread-safe"]
+        PT["ProcessingThread\nsingle background thread"]
+        RL["Rule Matching\nevents.json"]
+        LI["NotifyListeners\nfree callbacks"]
+        Q --> PT
+        PT --> RL & LI
+    end
+
+    subgraph Actions["Action Handlers — detached threads"]
+        R["RecordingHandler"]
+        S["SnapshotHandler"]
+        E["EmailHandler"]
+        W["WebhookHandler"]
+        M["MqttHandler"]
+        F["FtpHandler"]
+        IO["IoOutputHandler"]
+        L["LightHandler"]
+    end
+
+    AE --> CB --> EM
+    HW --> EM
+    SYS --> EM
+    RL --> R & S & E & W & M & F & IO & L
