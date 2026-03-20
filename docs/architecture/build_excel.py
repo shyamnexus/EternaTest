@@ -721,6 +721,339 @@ def build_config(wb):
         row += 1
 
 
+def build_design_review(wb):
+    ws = wb.create_sheet("Design & Optimisation")
+    ws.sheet_view.showGridLines = False
+    set_col_widths(ws, [3, 22, 60, 28])
+    freeze(ws, "B3")
+
+    ACCENT  = "1A5276"   # deep blue for this sheet
+    GOOD    = "D5F5E3"   # green tint — strong
+    WARN    = "FEF9E7"   # amber tint — weak / improve
+    BAD     = "FADBD8"   # red tint  — poor / missing
+
+    ws.merge_cells("B1:D1")
+    t = ws.cell(row=1, column=2, value="Design Practices & Optimisation Review")
+    t.font = Font(name="Calibri", size=16, bold=True, color=WHITE)
+    t.fill = fill(ACCENT)
+    t.alignment = center()
+    ws.row_dimensions[1].height = 32
+
+    row = 2
+
+    # ── Helper ────────────────────────────────────────────────────────────────
+    def review_header(label, bg=ACCENT):
+        nonlocal row
+        ws.merge_cells(f"B{row}:D{row}")
+        c = ws.cell(row=row, column=2, value=f"  {label}")
+        c.font = Font(name="Calibri", size=11, bold=True, color=WHITE)
+        c.fill = fill(bg)
+        c.alignment = left(wrap=False)
+        ws.row_dimensions[row].height = 20
+        row += 1
+
+    def review_col_hdr(cols):
+        nonlocal row
+        for ci, val in enumerate([""] + cols, start=1):
+            c = ws.cell(row=row, column=ci, value=val)
+            c.font = Font(name="Calibri", size=10, bold=True, color=WHITE)
+            c.fill = fill(NAVY)
+            c.alignment = center(wrap=True)
+            c.border = thin_border()
+        ws.row_dimensions[row].height = 18
+        row += 1
+
+    def review_row(vals, tint=WHITE, h=45):
+        nonlocal row
+        ws.row_dimensions[row].height = h
+        for ci, val in enumerate([""] + list(vals), start=1):
+            c = ws.cell(row=row, column=ci, value=val)
+            c.fill = fill(tint)
+            c.border = thin_border()
+            c.alignment = left(wrap=True)
+            c.font = Font(name="Calibri", size=9, bold=(ci == 2), color=NAVY if ci == 2 else DARK_GREY)
+        row += 1
+
+    # ═══════════════════════════════════════════════════════════════════
+    # SECTION A — STRONG DESIGN PRACTICES
+    # ═══════════════════════════════════════════════════════════════════
+    review_header("STRONG DESIGN PRACTICES", bg=ACCENT)
+    review_col_hdr(["Practice", "Evidence in codebase", "Benefit"])
+    practices = [
+        ("RAII — all C handles wrapped",
+         "VideoRingBuffer destructor: hd_common_mem_free or std::free.\n"
+         "Statement::~Statement(): sqlite3_finalize().\n"
+         "Database::~Database(): sqlite3_close().\n"
+         "FirmwareValidator::Impl::~Impl(): EVP_PKEY_free().\n"
+         "AudioFrameConsumer destructor: UnregisterConsumer().\n"
+         "VideoFrameConsumer (unique_ptr): decrements consumer_count.",
+         "No resource leaks regardless of execution path.\n"
+         "Exception-safe — destructor runs even on early return."),
+        ("Pimpl idiom for vendor-heavy classes",
+         "UpgradeManager, RtspServer, AacCodec, UserManager, PhysicalMemory,\n"
+         "FirmwareValidator, SystemController — all use unique_ptr<Impl>.\n"
+         "Vendor/platform headers confined to .cpp files.",
+         "Recompilation cascades avoided when vendor SDK changes.\n"
+         "Clean public headers with no vendor type pollution."),
+        ("Move semantics — noexcept move constructors",
+         "VideoFrameConsumer, MP4Recorder, Database, Statement all have\n"
+         "noexcept move ctors that move raw handles and std::move string/vector members.\n"
+         "Callbacks stored with std::move(callback) everywhere.\n"
+         "Event dequeued with std::move(event_queue_.front()).",
+         "Zero-copy ownership transfer of large objects.\n"
+         "Avoids unnecessary deep copies of std::function and std::vector."),
+        ("Tiered error handling (no exception propagation)",
+         "Result<T>/Result<void>: internal business logic.\n"
+         "std::optional<T>: read operations with no value.\n"
+         "Expected<T,E> (C++17 polyfill): firmware upgrade pipeline.\n"
+         "try/catch at webserver boundary only — converted to HTTP status + JSON.",
+         "Predictable control flow; no surprise stack unwinds.\n"
+         "API boundary always returns structured, client-consumable errors."),
+        ("Conditional compilation for portability",
+         "HDAL_PIPELINE_ENABLED: all Novatek SDK calls behind guard;\n"
+         "  stub paths let the same binary build on a developer laptop.\n"
+         "RTSP_SERVER_ENABLED: Live555 isolated behind guard.\n"
+         "MQTT_ENABLED: Paho MQTT client conditional.\n"
+         "OPENSSL_AVAILABLE: RSA key material guarded.",
+         "Single codebase runs on both target hardware and host for testing.\n"
+         "Missing optional dependencies do not break the build."),
+        ("constexpr for all hardware-sizing constants",
+         "kVideoRingBufferSlots=30, kMaxVideoFrameSize=512KB,\n"
+         "kMaxSubStreamFrameSize=128KB, kVideoPullTimeoutMs=100,\n"
+         "kAudioRingBufferSlots=256, kMaxAudioFrameSize=8192,\n"
+         "kMaxNalParamSize=256; all filesystem paths in paths.h as constexpr.",
+         "Zero runtime cost. Compiler can optimise for exact sizes.\n"
+         "Single source of truth — change one constant, all uses update."),
+        ("Coordinator pattern — no circular module dependencies",
+         "main.cpp is the only place that cross-wires modules:\n"
+         "  analytics callbacks → EventManager publish methods.\n"
+         "  HdalPipeline encoder paths → MediaHub constructor.\n"
+         "No module #includes another module's singleton header.",
+         "Clean DAG dependency graph — each module can be built and tested independently.\n"
+         "Startup order is explicit and all in one place."),
+    ]
+    for i, (p, ev, ben) in enumerate(practices):
+        review_row([p, ev, ben], tint=GOOD if i % 2 == 0 else "EBF5FB", h=55)
+
+    row += 1
+
+    # ═══════════════════════════════════════════════════════════════════
+    # SECTION B — PERFORMANCE OPTIMISATIONS
+    # ═══════════════════════════════════════════════════════════════════
+    review_header("PERFORMANCE OPTIMISATIONS", bg="1A8C4E")
+    review_col_hdr(["Optimisation", "Implementation detail", "Impact"])
+    optims = [
+        ("Lock-free SPMC ring buffer",
+         "Seqlock-style atomic<uint64_t> version per slot (odd=writing, even=ready).\n"
+         "memory_order_release/acquire pair for happens-before without mutex.\n"
+         "Double version check (before + after memcpy) catches mid-copy overwrites.\n"
+         "30 slots per channel = 1 second of video at 30 fps.",
+         "Zero mutex overhead on the read path (RTSP, recording, WebRTC).\n"
+         "Allows unlimited consumers to read the same frame concurrently."),
+        ("Cache-line alignment on shared atomics",
+         "alignas(64) on both write_pos_ and frames_written_ in VideoRingBuffer.\n"
+         "Producer writes write_pos_ every frame;\n"
+         "consumers read frames_written_ every frame — on separate cache lines.",
+         "Eliminates false sharing on multi-core SoC.\n"
+         "Avoids cache-line ping-pong on every frame at 120 writes/sec (4 channels × 30 fps)."),
+        ("DMA-capable physically-contiguous memory pool",
+         "Single hd_common_mem_alloc() at MediaHub::Initialize().\n"
+         "Encoder output buffer mmap'd at startup; NAL data accessed via\n"
+         "pointer arithmetic (vir_addr + phy_addr_offset) — near-zero-copy.\n"
+         "Falls back to std::malloc for non-HDAL builds.",
+         "Eliminates per-frame heap allocation and fragmentation.\n"
+         "DMA-capable memory allows direct kernel→user frame transfer."),
+        ("thread_local frame assembly buffer",
+         "In ProducerThread: thread_local std::vector<uint8_t> frame_buffer;\n"
+         "frame_buffer.clear(); frame_buffer.reserve(total_size);\n"
+         "Capacity grows to max frame size after first large keyframe and never shrinks.",
+         "Zero heap allocations on the producer hot path after warm-up.\n"
+         "Each channel thread has its own buffer — no sharing or locking."),
+        ("Hardware timestamp for RTP — one syscall per stream",
+         "HDAL hw encoder tick (data_pull.timestamp, µs resolution) stored in every slot.\n"
+         "RTP presentation time = base_wall_time + (hw_delta from base_hw_timestamp).\n"
+         "gettimeofday() called exactly once per stream lifetime (at first frame).\n"
+         "Sanity re-anchor on implausible deltas (>10 s, backward jump, wrap).",
+         "Eliminates gettimeofday() on every frame (~120 calls/sec avoided).\n"
+         "RTP timestamps are jitter-free even under scheduler latency."),
+        ("Narrow lock scope / snapshot pattern",
+         "RecordingService: ch_config = config_.channels[ch] under lock; long loop uses copy.\n"
+         "SetConfig(): assigns under lock, then calls SaveConfig() outside lock.\n"
+         "AnalyticsEngine: stats copied in one lock_guard; callbacks fired outside.\n"
+         "EventManager: listener list copied under lock; iterated outside.",
+         "Lock held for microseconds, not milliseconds of I/O or callbacks.\n"
+         "File writes, HDAL calls, and network operations never block other threads."),
+        ("reserve() for hot-path vectors",
+         "aac_output_buffer.reserve(AacCodec::kMaxOutputSize) — once per recording session.\n"
+         "nal_packs.reserve(data_pull.pack_num) — per frame in producer.\n"
+         "RTSP send buffer: kSendBufferSize = 8 MB set on socket once.",
+         "Vector reallocation eliminated after first frame.\n"
+         "Predictable memory footprint — no surprise allocations mid-session."),
+        ("Delta-only config persistence",
+         "config::Save() diffs g_config_tree vs g_factory_tree.\n"
+         "Only changed keys written to config.json (~hundreds of bytes).\n"
+         "Empty delta → config.json deleted (factory defaults on next boot).\n"
+         "Atomic rename() ensures no partial-write on power loss.",
+         "Flash write amplification minimised — one changed int ≠ 50 KB write.\n"
+         "Factory reset is one file delete, no re-flash."),
+        ("Interruptible sleep for fast shutdown",
+         "IRControl loops: cv.wait_for(lock, 1s/30s, stop_flag predicate).\n"
+         "FtpManager worker: cv.wait_for(lock, 60s, shutdown || !queue_empty).\n"
+         "RecordingService monitor: 50 × 100ms slices, atomic flag checked each.\n"
+         "notify_all() in every Shutdown() wakes threads immediately.",
+         "Shutdown latency bounded to <100 ms instead of up to 60 s.\n"
+         "No threads blocking shutdown — _Exit(0) reached promptly."),
+    ]
+    for i, (o, det, imp) in enumerate(optims):
+        review_row([o, det, imp], tint=GOOD if i % 2 == 0 else "EBF5FB", h=55)
+
+    row += 1
+
+    # ═══════════════════════════════════════════════════════════════════
+    # SECTION C — AREAS FOR IMPROVEMENT
+    # ═══════════════════════════════════════════════════════════════════
+    review_header("AREAS FOR IMPROVEMENT", bg="922B21")
+    review_col_hdr(["Issue", "Detail & Location", "Recommended Fix"])
+
+    PRIO_HIGH = RED_FATAL
+    PRIO_MED  = WARN
+    PRIO_LOW  = MID_GREY
+
+    issues = [
+        # (priority_tint, issue, detail, fix)
+        (PRIO_HIGH,
+         "No test coverage for 5 of 11 modules",
+         "modules/platform, modules/ai, modules/streaming, modules/recording,\n"
+         "modules/webserver — zero test source files.\n"
+         "modules/events is well covered (unit + integration + stress).\n"
+         "modules/media, config, storage, networking — partial only.",
+         "Priority: media/ (ring buffer), recording/ (MP4 segment correctness),\n"
+         "webserver/ (REST contract regression). Add a GoogleTest or Catch2 suite.\n"
+         "Mock HDAL with HDAL_PIPELINE_ENABLED=0 stub for host-machine CI."),
+        (PRIO_HIGH,
+         "TLS peer verification disabled in WebhookHandler",
+         "modules/events/src/actions/webhook_action.cpp ~line 72:\n"
+         "CURLOPT_SSL_VERIFYPEER hardcoded to 0L.\n"
+         "All outbound webhooks accept any certificate — MITM attack surface.",
+         "Enable CURLOPT_SSL_VERIFYPEER = 1L (default).\n"
+         "Bundle a CA bundle path (CURLOPT_CAINFO) or use system cert store."),
+        (PRIO_HIGH,
+         "config::Set() has no value validation",
+         "Any call can write Set<int>(\"ir.led.brightness\", 9999).\n"
+         "Validation only at each use site — manual config.json edits bypass it.\n"
+         "ConfigLoader (YAML path) already has per-subsystem validators.",
+         "Add RegisterValidator(path_prefix, ValidatorFn) to the JSON config module,\n"
+         "mirroring validateNetworkConfig/validateStorageConfig in ConfigLoader.\n"
+         "Call validators in Set() and in Init() after loading user delta."),
+        (PRIO_MED,
+         "audio_event_callback_ fired while mutex_ is held (AnalyticsEngine)",
+         "modules/ai/src/analytics.cpp ~line 2558.\n"
+         "All 7 other callbacks release mutex_ before invocation.\n"
+         "If audio callback calls GetStats() or SetConfig() → deadlock.",
+         "Move audio callback invocation outside the lock scope.\n"
+         "Pattern is established in detection_callback_, motion_callback_, etc."),
+        (PRIO_MED,
+         "MatchRules() returns raw pointers into rules_ vector (EventManager)",
+         "modules/events/src/event_manager.cpp ~line 769.\n"
+         "vector<const EventRule*> returned after rules_mutex_ is released.\n"
+         "Concurrent AddRule/DeleteRule can reallocate the vector → dangling pointer\n"
+         "dereference in ExecuteActions().",
+         "Return std::vector<EventRule> by value from MatchRules().\n"
+         "Small copy (each rule is a config struct) — negligible overhead."),
+        (PRIO_MED,
+         "OsdOverlay uses printf instead of spdlog",
+         "modules/platform/src/osd_overlay.cpp — ~30 printf() calls, zero spdlog.\n"
+         "OSD log output is invisible to log files and remote syslog.",
+         "Replace all printf('[OSD] ...') with spdlog::debug/error('[OSD] ...').\n"
+         "One-time 30-line find-and-replace."),
+        (PRIO_MED,
+         "Duplicate VideoControl::Init() in main.cpp",
+         "Called at line ~357 (early startup) and again at line ~751.\n"
+         "Second call is a silent no-op today (guarded by if(initialized_) return true),\n"
+         "but obscures whether the early init actually succeeded.",
+         "Remove the duplicate call at line ~751.\n"
+         "Add a spdlog::warn if Init() is called when already initialized."),
+        (PRIO_MED,
+         "Vendor headers leak into public hdal_pipeline.h",
+         "6 Novatek vendor headers (hdal.h, vendor_isp.h, etc.) included in the\n"
+         "public interface when HDAL_PIPELINE_ENABLED is set.\n"
+         "HD_PATH_ID, HD_DIM, HD_VIDEOCAP_SYSCAPS appear in private member declarations.",
+         "Apply Pimpl idiom to HdalPipeline:\n"
+         "move all HDAL-typed private members into struct Impl in hdal_pipeline_impl.cpp.\n"
+         "Public header exposes only the high-level API with no vendor types."),
+        (PRIO_LOW,
+         "Missing std::string_view on hot-path string parameters",
+         "All string parameters use const std::string& throughout.\n"
+         "config::Get<T>(path, default) called on every frame for some paths —\n"
+         "string literal arguments cause implicit std::string construction.",
+         "Adopt std::string_view for read-only string parameters in:\n"
+         "config::Get/Set/Has, MediaHub::CreateConsumer, EventManager::AddListener."),
+        (PRIO_LOW,
+         "Magic numbers in analytics.cpp and media_hub.cpp",
+         "analytics.cpp: tamper VQA resolution 320,180; defocus threshold 100.0f;\n"
+         "  mosaic block_size=16, blur_radius=21, denoise_strength=50.\n"
+         "media_hub.cpp: HD sub-stream cap 256*1024 (unnamed, between the two named consts).",
+         "Add constexpr names: kVqaWidth/kVqaHeight, kDefocusThreshold,\n"
+         "kMosaicBlockSize, kMaxHdSubStreamFrameSize."),
+        (PRIO_LOW,
+         "Known stubs / unimplemented features",
+         "AnalyticsEngine::ProcessFrame() — empty stub (TODO: Process frame through AI models).\n"
+         "Snapshot REST endpoint — returns HTTP 503.\n"
+         "Firmware upgrade from URL — returns error.\n"
+         "WiFi scan/connect/forget/power — 5 methods return Err('not implemented').\n"
+         "ONVIF recording job count — always returns 0.\n"
+         "OP-TEE key derivation — placeholder comment in storage.cpp.",
+         "Track in issue tracker with owner per item.\n"
+         "Until implemented, ensure stubs return clear HTTP 501 Not Implemented\n"
+         "rather than 500/503 to distinguish 'planned' from 'error'."),
+    ]
+    for tint, issue, detail, fix in issues:
+        review_row([issue, detail, fix], tint=tint, h=65)
+
+    row += 1
+
+    # ═══════════════════════════════════════════════════════════════════
+    # SECTION D — SCORECARD
+    # ═══════════════════════════════════════════════════════════════════
+    review_header("SUMMARY SCORECARD", bg=ACCENT)
+    review_col_hdr(["Area", "Rating", "Key Notes"])
+
+    scorecard = [
+        ("RAII & resource ownership",       "✅  Strong",  "unique_ptr throughout; all C handles (SQLite, HDAL, OpenSSL, curl) have RAII wrappers"),
+        ("Move semantics",                  "✅  Strong",  "noexcept move ctors; std::move on callbacks, events, config copies"),
+        ("Ring buffer design",              "✅  Strong",  "Lock-free SPMC; seqlock versioning; cache-line aligned; DMA memory pool"),
+        ("Error handling",                  "✅  Strong",  "Tiered Result/optional/Expected; no exception leakage past API boundary"),
+        ("Lock discipline",                 "✅  Good",    "Narrow scopes; snapshot pattern; 4 explicit deadlock mitigations; callbacks outside locks"),
+        ("Conditional compilation",         "✅  Good",    "4 feature guards; same code builds on laptop without HDAL SDK"),
+        ("constexpr constants",             "✅  Good",    "All hot-path capacity limits named; no magic numbers in ring buffer/audio paths"),
+        ("Hardware timestamp usage",        "✅  Good",    "gettimeofday() once per stream; RTP timestamps derived from HW tick delta"),
+        ("Config validation",               "⚠️  Weak",   "Set() accepts any value; no server-side validation at config layer"),
+        ("Logging consistency",             "⚠️  Weak",   "OsdOverlay uses printf; all other modules use spdlog"),
+        ("string_view adoption",            "⚠️  Weak",   "const std::string& everywhere; implicit constructions on hot paths"),
+        ("Vendor header isolation",         "⚠️  Weak",   "hdal_pipeline.h pulls in 6 vendor headers when HDAL_PIPELINE_ENABLED"),
+        ("TLS security",                    "❌  Risk",    "Webhook handler disables SSL peer verification (CURLOPT_SSL_VERIFYPEER=0)"),
+        ("Test coverage",                   "❌  Poor",    "5 of 11 modules have zero test files; no cross-module integration test suite"),
+        ("Known stubs",                     "⚠️  Present","ProcessFrame() empty; snapshot 503; WiFi unimplemented; OP-TEE placeholder"),
+    ]
+    rating_colors = {
+        "✅": GOOD,
+        "⚠️": WARN,
+        "❌": RED_FATAL,
+    }
+    for area, rating, notes in scorecard:
+        ws.row_dimensions[row].height = 26
+        bg = next((v for k, v in rating_colors.items() if k in rating), WHITE)
+        for ci, val in enumerate(["", area, rating, notes], start=1):
+            c = ws.cell(row=row, column=ci, value=val)
+            c.fill = fill(bg)
+            c.border = thin_border()
+            c.alignment = left(wrap=True)
+            bold = ci == 2 or ci == 3
+            c.font = Font(name="Calibri", size=10, bold=bold,
+                          color=NAVY if ci == 2 else DARK_GREY)
+        row += 1
+
+
 def build_concurrency(wb):
     ws = wb.create_sheet("Concurrency & Safety")
     ws.sheet_view.showGridLines = False
@@ -1052,17 +1385,19 @@ def main():
     build_config(wb)
     build_singletons(wb)
     build_concurrency(wb)
+    build_design_review(wb)
 
     # Tab colours
     tab_colors = {
-        "Overview":             "1B2A4A",
-        "Architecture Diagrams":"2E86C1",
-        "Design Patterns":      "1A8C4E",
-        "Module Catalogue":     "7D3C98",
-        "Startup Sequence":     "BA4A00",
-        "Configuration":        "B7950B",
-        "Singleton Inventory":  "2E4053",
-        "Concurrency & Safety": "922B21",
+        "Overview":               "1B2A4A",
+        "Architecture Diagrams":  "2E86C1",
+        "Design Patterns":        "1A8C4E",
+        "Module Catalogue":       "7D3C98",
+        "Startup Sequence":       "BA4A00",
+        "Configuration":          "B7950B",
+        "Singleton Inventory":    "2E4053",
+        "Concurrency & Safety":   "922B21",
+        "Design & Optimisation":  "1A5276",
     }
     for ws in wb.worksheets:
         if ws.title in tab_colors:
