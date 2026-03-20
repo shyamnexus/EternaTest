@@ -1,8 +1,20 @@
-# Eterna IP Camera Application — Architecture Documentation
+# Eterna IP Camera Application — Architecture
 
 > **Codebase root:** `code/application/ipcamera/`  
 > **Main binary:** `apps/ipcamd/src/main.cpp`  
-> **Status:** Logic complete; not compilable in isolation (depends on Novatek HDAL SDK and board BSP).
+> **Note:** Logic is complete; the binary depends on the Novatek HDAL SDK and board BSP to compile.
+
+---
+
+## Design Patterns at a Glance
+
+| Pattern | Where | Purpose |
+|---------|-------|---------|
+| **Singleton** `X::Instance()` | All 11 modules (35 classes) | Single shared instance per manager/engine, no manual lifetime management |
+| **Coordinator** | `apps/ipcamd/src/main.cpp` | Ordered startup/shutdown, cross-subsystem wiring, no business logic |
+| **Publish–Subscribe** | `modules/events/` | Decouple AI/hardware event sources from notification/action consumers |
+| **JSON Config per Module** | `configs/config.factory.d/*.json` | 18 factory-default files, three-layer merge, delta-only save |
+| **MediaHub Ring Buffer** | `modules/media/` | SPMC ring buffer distributes encoded video to RTSP, recording, WebRTC |
 
 ---
 
@@ -46,26 +58,7 @@ code/application/ipcamera/
 │   └── ipcamd/src/
 │       └── main.cpp                 ← Coordinator / application entry point
 ├── configs/
-│   ├── config.factory.d/            ← Per-module factory-default JSON configs
-│   │   ├── media.json
-│   │   ├── analytics.json
-│   │   ├── events.json
-│   │   ├── network.json
-│   │   ├── streaming.json
-│   │   ├── recording.json
-│   │   ├── storage.json
-│   │   ├── auth.json
-│   │   ├── isp.json
-│   │   ├── osd.json
-│   │   ├── onvif.json
-│   │   ├── ir.json
-│   │   ├── logging.json
-│   │   ├── system.json
-│   │   ├── device.json
-│   │   ├── web_portal.json
-│   │   ├── reset_button.json
-│   │   └── recording/profiles/
-│   │       └── default-24x7.json
+│   ├── config.factory.d/            ← Per-module factory-default JSON configs (18 files)
 │   └── config.d/                    ← Deployment-specific overrides (optional)
 └── modules/
     ├── ai/          ← AnalyticsEngine, NPU inference, motion/tamper/LPR/face/audio
@@ -77,7 +70,7 @@ code/application/ipcamera/
     ├── platform/    ← HdalPipeline, HdalWrapper, ISPControl, IRControl, OSD, ResetButton
     ├── recording/   ← RecordingService (MP4/raw), ScheduleManager
     ├── storage/     ← NasManager (NFS/SMB), FtpManager
-    ├── streaming/   ← RTSP server (Live555), Go2rtcManager, AudioFrameBroadcaster, OnvifMetadata
+    ├── streaming/   ← RTSP server (Live555), Go2rtcManager, AudioFrameBroadcaster
     ├── upgrade/     ← Firmware upgrade
     ├── utils/       ← AuditLogger, shared utilities
     └── webserver/   ← HTTP REST API server
@@ -89,12 +82,12 @@ code/application/ipcamera/
 
 ### 3.1 Singleton — `X::Instance()`
 
-Every manager and engine in the application is a **Meyers Singleton**: a class with a private constructor whose sole access point is a static `Instance()` method returning a reference to a function-local `static` object. The C++11 standard guarantees this initialization is thread-safe without any additional locking.
+Every manager and engine in the application is a **Meyers Singleton**: a class with a private constructor whose sole access point is a static `Instance()` method returning a reference to a function-local `static` object. The C++11 standard guarantees this initialisation is thread-safe without any additional locking.
 
-**Universal implementation (identical across all classes):**
+**Universal implementation (identical across all 35 classes):**
 
 ```cpp
-// In the .h:
+// Header
 class NetworkManager {
 public:
     static NetworkManager& Instance();
@@ -104,20 +97,20 @@ private:
     NetworkManager& operator=(const NetworkManager&) = delete;
 };
 
-// In the .cpp:
+// Source
 NetworkManager& NetworkManager::Instance() {
     static NetworkManager instance;
     return instance;
 }
 ```
 
-**Complete singleton inventory (35 classes):**
+**Complete singleton inventory:**
 
 | Class | Namespace | Module | Role |
 |-------|-----------|--------|------|
 | `EventManager` | `ipcam::events` | events | Event queue, rule matching, action dispatch |
 | `AnalyticsEngine` | `ipcam::ai` | ai | AI inference orchestration |
-| `NpuInference` | `ipcam::ai` | ai | NPU model runner |
+| `NpuInference` | `ipcam::ai` | ai | NPU model runner (YOLOv5s) |
 | `TamperDetectionEngine` | `ipcam::ai` | ai | Video tamper detection |
 | `MotionDetectionEngine` | `ipcam::ai` | ai | Pixel-based motion detection |
 | `ObjectTracker` | `ipcam::ai` | ai | Multi-object tracking |
@@ -142,7 +135,7 @@ NetworkManager& NetworkManager::Instance() {
 | `NtpManager` | `ipcam::networking` | networking | Pure-C++ NTP sync |
 | `NginxManager` | `ipcam::networking` | networking | nginx config and process control |
 | `SslManager` | `ipcam::networking` | networking | SSL certificate lifecycle |
-| `MdnsResponder` | *(global)* | networking | mDNS/DNS-SD via raw sockets (`GetInstance()`) |
+| `MdnsResponder` | *(global)* | networking | mDNS/DNS-SD via raw sockets (`GetInstance()`)¹ |
 | `Go2rtcManager` | `ipcam::streaming` | streaming | WebRTC/HLS restreamer |
 | `AudioFrameBroadcaster` | `ipcam::streaming` | streaming | Audio consumer distribution |
 | `OnvifMetadataGenerator` | `ipcam::streaming` | streaming | ONVIF metadata stream |
@@ -150,121 +143,103 @@ NetworkManager& NetworkManager::Instance() {
 | `PasswordCrypto` | *(webserver)* | webserver | Password hashing helper |
 | `ConfigLoader` | `ipcam::config` | config | YAML-based config loader (secondary path) |
 
-> **Note:** The config module also uses module-level anonymous-namespace statics (`g_config_tree`, `g_factory_tree`, `g_mutex`) protected by `std::mutex`, which achieves the same effect without a class-based singleton.
+> ¹ `MdnsResponder` is the only class that uses `GetInstance()` instead of `Instance()`. The body is identical.
+
+The config module additionally uses **anonymous-namespace module-level statics** (`g_config_tree`, `g_factory_tree`, `g_mutex`) — effectively the same pattern without a class wrapper.
 
 ---
 
 ### 3.2 Coordinator — `main.cpp`
 
-`apps/ipcamd/src/main.cpp` is the **central orchestrator**. It does not contain business logic; its responsibilities are:
+`apps/ipcamd/src/main.cpp` is the **central orchestrator**. It contains no business logic. Its responsibilities are:
 
-1. **Initialize logging** (multi-sink spdlog: rotating file at DEBUG + coloured stdout at INFO).
-2. **Install signal handlers** (`SIGINT`/`SIGTERM` → set `g_running = false`).
-3. **Parse CLI arguments** (`-c/--config` to override config directory).
-4. **Start subsystems in dependency order** — each subsystem is initialized and started before any other subsystem that depends on it.
-5. **Wire AI analytics callbacks to EventManager** — the coordinator is the only place that knows about both `AnalyticsEngine` and `EventManager`, and it stitches them together with lambda callbacks.
-6. **Block in the main loop** until a shutdown signal is received.
+1. Initialise logging (multi-sink spdlog: rotating file at DEBUG + coloured stdout at INFO).
+2. Install signal handlers (`SIGINT`/`SIGTERM` → `g_running = false`).
+3. Parse CLI arguments (`-c/--config` to override the config directory).
+4. **Start subsystems in strict dependency order** — each subsystem is up before any that depends on it.
+5. **Wire AI analytics callbacks to EventManager** — `main.cpp` is the only place that sees both `AnalyticsEngine` and `EventManager`, and it stitches them together with lambdas.
+6. Block in the main loop until a shutdown signal.
 7. **Tear down subsystems in reverse dependency order**.
 
-This pattern keeps every module completely independent — no module imports another module's singleton directly in ways that create circular dependencies; instead, all cross-cutting wiring happens in `main.cpp`.
+This keeps every module independent. No module imports another module's singleton directly in ways that create circular dependencies; all cross-cutting wiring happens in `main.cpp`.
 
-**Startup sequence (23 ordered steps):**
+**Startup sequence:**
 
-| # | Subsystem call | Dependency / note |
-|---|---------------|-------------------|
-| 1 | Logging (spdlog) | No dependencies |
-| 2 | Signal handlers | No dependencies |
-| 3 | CLI argument parsing | — |
-| 4 | `ipcam::config::Init()` | **Fatal** — all other modules read from config |
-| 5 | `NetworkManager::Instance().InitializeNetwork()` | Reads `network.json` |
-| 6 | `SystemLogger::Instance().Init()` | Non-fatal |
-| 7 | `HdalPipeline::Instance().Init()` + `.Start()` | Initialises sensor, ISP, encoders; starts nvtrtspd_ipc |
-| 8 | `MediaHub::Instance().Initialize()` + `.Start()` | **Requires** HdalPipeline running; allocates ring buffers and producer threads |
-| 9 | `AnalyticsEngine::Instance()` (lazy init) | Connects to HDAL VideoProc paths; starts NPU inference |
-| 10 | `VideoControl::Instance().Init()` | Reads current encoder state from HdalPipeline |
-| 11 | `IRControl::Instance().Init()` | Reads `ir.json`; starts auto day/night thread |
-| 12 | `ResetButton::Instance().Init()` | Reads `reset_button.json`; starts GPIO poll thread |
-| 13 | `ipcam::streaming::Initialize()` + `::Start()` | RTSP server; **requires** MediaHub running |
-| 14 | `Go2rtcManager::Instance().Start()` | Optional WebRTC/HLS; **requires** RTSP server running |
-| 15 | `ipcam::storage::Init()` | Opens SQLite DBs; **Fatal** |
-| 16 | `NasManager::Instance().Init()` | Non-fatal |
-| 17 | `EventManager::Instance().Init()` + `.Start()` | Registers all action handlers; wires analytics→event callbacks; publishes `kSystemStartup` |
-| 18 | `FtpManager::Instance().Init()` | Non-fatal |
-| 19 | `ScheduleManager::Instance().Init()` | Non-fatal |
-| 20 | `VideoControl::Instance().Init()` | Second call (explicit log marker in source) |
-| 21 | `RecordingService::Instance().Initialize()` | **Requires** storage and MediaHub |
-| 22 | `ipcam::webserver::Init()` | REST API; **Fatal** |
-| 23 | `ipcam::onvif::Init()` | ONVIF WS-Discovery; **Fatal** |
+| # | Call | Fatal? | Key dependency |
+|---|------|--------|----------------|
+| 1 | Logging (spdlog) | — | — |
+| 2 | Signal handlers | — | — |
+| 3 | CLI argument parsing | — | — |
+| 4 | `ipcam::config::Init()` | **Yes** (exit 2) | None — must be first |
+| 5 | `NetworkManager::Instance().InitializeNetwork()` | No | Config |
+| 6 | `SystemLogger::Instance().Init()` | No | Config |
+| 7 | `HdalPipeline::Instance().Init()` + `.Start()` | No | Config |
+| 8 | `MediaHub::Instance().Initialize()` + `.Start()` | No | **HdalPipeline** |
+| 9 | `AnalyticsEngine::Instance()` | No | HdalPipeline (VideoProc paths) |
+| 10 | `VideoControl::Instance().Init()` | No | HdalPipeline |
+| 11 | `IRControl::Instance().Init()` | No | Config |
+| 12 | `ResetButton::Instance().Init()` | No | Config |
+| 13 | `ipcam::streaming::Initialize()` + `::Start()` | No | **MediaHub** |
+| 14 | `Go2rtcManager::Instance().Start()` | No | RTSP server |
+| 15 | `ipcam::storage::Init()` | **Yes** (exit 3) | Config |
+| 16 | `NasManager::Instance().Init()` | No | Storage |
+| 17 | `EventManager::Instance().Init()` + `.Start()` | No | All the above |
+| 18 | `FtpManager::Instance().Init()` | No | Storage |
+| 19 | `ScheduleManager::Instance().Init()` | No | Storage |
+| 20 | `VideoControl::Instance().Init()` | No | HdalPipeline |
+| 21 | `RecordingService::Instance().Initialize()` | No | **Storage + MediaHub** |
+| 22 | `ipcam::webserver::Init()` | **Yes** (exit 4) | All the above |
+| 23 | `ipcam::onvif::Init()` | **Yes** (exit 5) | Network + Storage |
 
 **Shutdown sequence (reverse dependency order):**
 
 ```
-EventManager.Stop()          ← drains event queue first
-RecordingService.Shutdown()
-ScheduleManager.Shutdown()
-FtpManager.Shutdown()
-NasManager.Shutdown()
-AnalyticsEngine.Shutdown()
-SystemLogger.Shutdown()
-IRControl.Shutdown()
-ResetButton.Shutdown()
-Go2rtcManager.Stop()         ← must stop before RTSP server
-ipcam::streaming::Stop()     ← RTSP server
-MediaHub.Shutdown()          ← must stop before HDAL
-HdalPipeline.Shutdown()
-ipcam::onvif::Shutdown()
-ipcam::webserver::Shutdown()
-ipcam::storage::Shutdown()
-ipcam::config::Shutdown()
-_Exit(0)                     ← bypasses C++ static destructors (SQLCipher safety)
+EventManager.Stop()       → RecordingService → ScheduleManager → FtpManager → NasManager
+→ AnalyticsEngine → SystemLogger → IRControl → ResetButton
+→ Go2rtcManager → RTSP server → MediaHub → HdalPipeline
+→ ONVIF → Webserver → Storage → Config
+→ _Exit(0)   ← bypasses C++ static destructors (SQLCipher safety)
 ```
 
 ---
 
 ### 3.3 Publish–Subscribe — EventManager
 
-The application uses a **typed publish–subscribe** pattern, implemented in `modules/events/`, to decouple event sources (AI analytics, hardware I/O, storage, network) from event consumers (recording, snapshot capture, email, webhook, MQTT, FTP, alarm outputs, ONVIF).
+The application uses a **typed publish–subscribe** pattern to decouple event sources (AI analytics, hardware I/O, storage, network) from consumers (recording, snapshot, email, webhook, MQTT, FTP, alarm outputs, ONVIF).
 
 #### Core Types
 
 ```
-EventCategory  — 9 values: kMotion, kAnalytics, kLineCrossing, kIntrusion,
-                            kSystem, kIO, kStorage, kNetwork, kSchedule
+EventCategory  — 9 values:
+  kMotion · kAnalytics · kLineCrossing · kIntrusion
+  kSystem · kIO · kStorage · kNetwork · kSchedule
 
-EventType      — 40+ values: kMotionStart, kMotionEnd, kPersonDetected, kPersonLost,
-                              kVehicleDetected, kFaceDetected, kLineCrossed*, kZoneEntered,
-                              kZoneLoitering, kTamperDetected, kLprDetected, kAudioDetected,
-                              kSystemStartup, kSystemShutdown, kAlarmInputTriggered,
-                              kStorageMounted, kNetworkConnected, ...
+EventType      — 40+ values:
+  kMotionStart/End · kPersonDetected/Lost · kVehicleDetected · kFaceDetected
+  kLineCrossed* · kZoneEntered · kZoneLoitering
+  kTamperDetected/Cleared · kLprDetected · kAudioDetected
+  kSystemStartup/Shutdown · kAlarmInputTriggered · kStorageMounted/Full · ...
 
-ActionType     — 21 values: kStartRecording, kCaptureSnapshot, kSendEmail,
-                             kSendWebhook, kPublishMqtt, kUploadFtp, kPublishOnvifEvent,
-                             kTriggerAlarmOutput, kActivateLight, kPlaySiren, ...
+ActionType     — 21 values:
+  kStartRecording · kCaptureSnapshot · kSendEmail · kSendWebhook
+  kPublishMqtt · kUploadFtp · kPublishOnvifEvent
+  kTriggerAlarmOutput · kActivateLight · kPlaySiren · ...
 
-EventData      — std::variant<MotionEventData, AnalyticsEventData, LineCrossEventData,
-                              IntrusionEventData, SystemEventData, IOEventData,
-                              StorageEventData, NetworkEventData, TamperEventData,
-                              LprEventData, AudioEventData>
+EventData      — std::variant over 11 typed payload structs
 ```
 
-#### Publishing Events
+#### Publishing
 
-Any subsystem calls a convenience method on the `EventManager` singleton:
+Any subsystem calls a convenience method — it constructs a typed `Event`, enqueues it, and signals a `condition_variable`. Publishing is **non-blocking and thread-safe**.
 
 ```cpp
-// From the analytics→EventManager wiring in main.cpp:
 EventManager::Instance().PublishMotionStart({zone_id}, confidence);
 EventManager::Instance().PublishPersonDetected(detected_object);
-EventManager::Instance().PublishLineCrossed(line_id, name, direction, object_id, class_name);
-EventManager::Instance().PublishLprDetected(plate_text, confidence, x1, y1, x2, y2);
+EventManager::Instance().PublishLineCrossed(line_id, name, "any", object_id, class_name);
 EventManager::Instance().PublishSystemEvent(EventType::kSystemStartup, "ipcamd", msg, 0);
 ```
 
-Each method constructs a typed `Event`, pushes it onto an internal `std::queue<Event>`, and signals a `std::condition_variable`. Publishing is non-blocking and thread-safe.
-
 #### Subscribing (Listeners)
-
-Any subsystem can register a callback with an optional filter:
 
 ```cpp
 using EventListener = std::function<void(const Event&)>;
@@ -274,45 +249,34 @@ uint32_t id = EventManager::Instance().AddListener(
     [](const Event& e) { /* handle */ },
     [](const Event& e) { return e.type == EventType::kPersonDetected; }  // optional filter
 );
-
-// To remove:
 EventManager::Instance().RemoveListener(id);
 ```
 
-All listeners are called on the single background `ProcessingThread` after the event is dequeued. Exceptions inside listener lambdas are caught and logged; they do not terminate the processing thread.
+All listeners are called on the single background `ProcessingThread`. Exceptions are caught and logged; they never kill the thread.
 
 #### Rule-Based Action Dispatch
 
-In addition to free listeners, the EventManager maintains an `EventRule` list loaded from `events.json`. Each rule specifies:
+`EventManager` also maintains an `EventRule` list (loaded from `events.json`). Each rule specifies trigger conditions (event types, schedule, min confidence) and a list of `Action` objects. Matching events trigger `ActionHandler::Execute()` in **detached threads** so the processing thread is never blocked.
 
-- **Trigger condition** — one or more `EventType` values, optional time schedule, optional minimum confidence.
-- **Actions** — a list of `Action` objects, each specifying an `ActionType` and its typed config (e.g., recording duration, email recipients, webhook URL, MQTT topic).
-
-When an event matches a rule, the EventManager calls the registered `ActionHandler::Execute()` for each enabled action in a **detached thread** so the processing thread is never blocked.
-
-#### Analytics → EventManager Wiring
-
-`AnalyticsEngine` fires typed **analytics callbacks** whenever the AI inference detects an event. These are `std::function<>` setters. In `main.cpp`, each setter is called with a lambda that translates the AI-specific result into an `EventManager::Publish*()` call:
+#### Analytics → EventManager Wiring (done in `main.cpp`)
 
 ```
-AnalyticsEngine callbacks          EventManager publish methods
-──────────────────────────         ──────────────────────────────
-SetMotionCallback()           →    PublishMotionStart() / PublishMotionEnd()
-SetDetectionCallback()        →    PublishPersonDetected() / PublishVehicleDetected() / PublishFaceDetected()
-SetLineCrossCallback()        →    PublishLineCrossed()
-SetLoiteringCallback()        →    PublishZoneIntrusion()
-SetTamperCallback()           →    PublishTamperEvent()
-SetFaceRecognitionCallback()  →    PublishFaceDetected()
-SetLprCallback()              →    PublishLprDetected()
-SetAudioEventCallback()       →    PublishAudioDetected()
+AnalyticsEngine setter          EventManager publish method
+──────────────────────────      ──────────────────────────────────
+SetMotionCallback()        →    PublishMotionStart() / PublishMotionEnd()
+SetDetectionCallback()     →    PublishPersonDetected() / PublishVehicleDetected() / PublishFaceDetected()
+SetLineCrossCallback()     →    PublishLineCrossed()
+SetLoiteringCallback()     →    PublishZoneIntrusion()
+SetTamperCallback()        →    PublishTamperEvent()
+SetFaceRecognitionCallback()→   PublishFaceDetected()
+SetLprCallback()           →    PublishLprDetected()
+SetAudioEventCallback()    →    PublishAudioDetected()
 ```
 
 #### Action Handlers
 
-Each `ActionType` has a concrete `ActionHandler` implementation registered via `ActionHandlerFactory::RegisterAll()`:
-
-| Handler class | ActionType(s) | Backend |
-|--------------|---------------|---------|
+| Handler class | `ActionType`(s) | Backend |
+|--------------|-----------------|---------|
 | `RecordingActionHandler` | `kStartRecording` | `RecordingService::Instance()` |
 | `SnapshotActionHandler` | `kCaptureSnapshot`, `kGenerateThumbnail` | `VideoControl::Instance()` |
 | `EmailActionHandler` | `kSendEmail` | `SmtpManager` (libcurl) |
@@ -323,21 +287,19 @@ Each `ActionType` has a concrete `ActionHandler` implementation registered via `
 | `LightActionHandler` | `kActivateLight`, `kDeactivateLight` | `IRControl::Instance()` (solid/flash/strobe) |
 | `SirenActionHandler` | `kPlaySiren`, `kStopSiren` | Stub (pending audio integration) |
 
-All handlers inherit from an `ActionHandler` base class that provides:
-- `ExecuteAsync()` — wraps `Execute()` in a `std::future`
-- `SubstitutePlaceholders()` — template substitution for `{event_id}`, `{timestamp}`, `{object_class}`, `{snapshot_path}`, etc.
+All handlers inherit from `ActionHandler`, which provides `ExecuteAsync()` and `SubstitutePlaceholders()` for template strings (`{event_id}`, `{timestamp}`, `{object_class}`, `{snapshot_path}`, etc.).
 
 ---
 
 ### 3.4 JSON Configuration System
 
-The configuration system is implemented in `modules/config/` using **nlohmann/json**. It provides a **three-layer merge** strategy and a free-function API; there is no config handle or dependency-injected object.
+Implemented in `modules/config/` using **nlohmann/json**. Provides a three-layer merge strategy and a free-function API — no config handle or dependency-injected object needed.
 
 #### Access API
 
 ```cpp
-// Read (any module, any thread):
-int port     = ipcam::config::Get<int>("network.rtsp.port", 554);
+// Read (any module, any thread — config::Init() must have completed):
+int  port    = ipcam::config::Get<int>("network.rtsp.port", 554);
 bool enabled = ipcam::config::Get<bool>("streaming.rtsp.enabled", true);
 auto server  = ipcam::config::GetOptional<std::string>("network.smtp.server");
 
@@ -346,46 +308,44 @@ ipcam::config::Set<int>("network.rtsp.port", 8554);
 ipcam::config::Save();   // atomic rename; writes only the user delta
 ```
 
-**Dot-path notation** with array index support:
-- `"network.ipv4.address"` → nested object traversal
-- `"storage.channels[0].id"` → array element indexing
+**Dot-path notation** with array index support:  
+`"network.ipv4.address"` → nested object · `"storage.channels[0].id"` → array element
 
 #### Three-Layer Merge
 
-```
-Layer 1 (lowest):  config.factory.d/*.json     — per-module factory defaults (in source tree)
-Layer 2:           config.d/*.json              — deployment/SKU overrides (optional)
-                                 ▼ merged → g_factory_tree (snapshot)
-Layer 3 (highest): config.json                 — user delta only (runtime, on SD/flash)
-                                 ▼ merged → g_config_tree (live state)
-```
+| Layer | Path | Description |
+|-------|------|-------------|
+| 1 — Factory (lowest) | `config.factory.d/*.json` | Per-module defaults shipped with firmware |
+| 2 — Deployment | `config.d/*.json` | Per-SKU/deployment overrides (optional) |
+| *(snapshot)* | *(internal)* | `g_factory_tree` — baseline for delta computation |
+| 3 — User (highest) | `config.json` | Only user-changed keys; generated at runtime |
 
 Files within each layer are sorted alphabetically and merged via `json::merge_patch()`.
 
-#### Save Strategy — Delta Only
+#### Delta-Only Save
 
-`Save()` computes `diff(g_factory_tree, g_config_tree)` and writes **only the changed keys** to `config.json` via an atomic `rename()` of a `.tmp` file. If no user changes exist, `config.json` is deleted so factory defaults apply cleanly on next boot. This minimises flash writes and makes factory-reset trivial (delete `config.json`).
+`Save()` computes `diff(g_factory_tree, g_config_tree)` and writes **only the changed keys** to `config.json` via an atomic `rename()` of a `.tmp` file. If no user changes exist, `config.json` is deleted — factory defaults apply cleanly on next boot. Factory reset is therefore just deleting `config.json`.
 
 #### Factory-Default Config Files (18 files)
 
-| File | Module configured |
-|------|--------------------|
+| File | Module |
+|------|----|
 | `device.json` | Device identity, model, firmware versions, sensor capabilities |
-| `media.json` | Sensor driver, ISP tuning, encoder configs (4 streams), audio |
-| `isp.json` | Image quality sliders, white balance, exposure, NR, WDR, day/night |
+| `media.json` | Sensor driver, ISP tuning path, encoder configs (4 streams), audio |
+| `isp.json` | Image quality sliders, white balance, exposure, 3DNR/WDR, day/night |
 | `osd.json` | Per-stream OSD layout, timestamp format, logo, privacy masks |
 | `streaming.json` | RTSP server (Live555), go2rtc restreamer |
 | `network.json` | Interfaces, ports, IP config, DNS, hostname, mDNS, SMTP, SNMP, UPnP |
-| `onvif.json` | WS-Discovery, ONVIF service port |
+| `onvif.json` | WS-Discovery (UDP 3702), ONVIF service port (TCP 5000) |
 | `ir.json` | IR LED PWM, IR cut filter GPIO, auto day/night thresholds |
-| `analytics.json` | All AI modules: motion zones, object detection, line crossing, LPR, face, audio, NPU config |
-| `events.json` | Event rules (5 pre-defined), action configs, alarm I/O, notification endpoints |
+| `analytics.json` | All AI modules: motion zones, object detection, line crossing, LPR, face, audio, NPU |
+| `events.json` | 5 pre-defined event rules, action configs, alarm I/O, notification endpoints |
 | `recording.json` | Schedule profile path, NAS, FTP |
-| `recording/profiles/default-24x7.json` | Continuous 24×7 recording schedule |
-| `storage.json` | SD card mount, encryption (AES-256-CTR), SQLite DB paths |
+| `recording/profiles/default-24x7.json` | Continuous 24×7 schedule (all 7 days × 24 hours) |
+| `storage.json` | SD card mount, AES-256-CTR encryption, SQLite DB paths |
 | `auth.json` | User DB path, session TTL, password policy (PBKDF2 100k iterations) |
 | `logging.json` | spdlog sinks, access/security/audit/remote syslog, SystemLogger sources |
-| `system.json` | Timezone, NTP servers, DST, watchdog, memory thresholds, maintenance |
+| `system.json` | Timezone, NTP servers, DST, watchdog, memory thresholds |
 | `web_portal.json` | HTTP API port, threads, session limits, rate limiting, CORS |
 | `reset_button.json` | GPIO pin, hold duration, debounce, poll interval |
 
@@ -393,71 +353,38 @@ Files within each layer are sorted alphabetically and merged via `json::merge_pa
 
 ### 3.5 MediaHub — Ring Buffer & Callbacks
 
-`MediaHub` (in `modules/media/`) is the **central media distribution hub**. It decouples the single HDAL encoder output from an arbitrary number of simultaneous consumers (RTSP, recording, WebRTC, future HLS) using a **Single-Producer Multiple-Consumer (SPMC) ring buffer** per video channel.
+`MediaHub` (`modules/media/`) is the **central media distribution hub**. It decouples the single HDAL encoder output from an arbitrary number of simultaneous consumers using a **Single-Producer Multiple-Consumer (SPMC) ring buffer** per video channel.
 
-#### Architecture Diagram
-
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                       HdalPipeline                              │
-│  Sensor → ISP → VideoProc → Encoder[0] → Encoder[1] → ...      │
-└──────────────┬──────────────────┬──────────────────────────────┘
-               │ hd_videoenc_pull_out_buf()
-       ┌───────▼───────┐   ┌──────▼───────┐
-       │ ProducerThread│   │ProducerThread│  (one per active channel)
-       │  (ch 0)       │   │  (ch 1)      │
-       └───────┬───────┘   └──────┬───────┘
-               │ ring_buffer.Write()
-       ┌───────▼──────────────────▼───────┐
-       │     VideoRingBuffer (per channel) │
-       │  30 slots × max_frame_size        │  ← 1 second at 30 fps
-       │  seq-number versioned (SPMC)      │
-       │  SPS/PPS/VPS cached per slot      │
-       └───────┬────────────────┬──────────┘
-               │ frame_cv.notify_all()
-      ┌────────▼──────┐  ┌─────▼──────────┐  ┌─────▼──────┐
-      │VideoFrameConsumer│ │VideoFrameConsumer│ │VideoFrameConsumer│
-      │  "rtsp-ch0"   │  │ "recording-ch0"│  │ (future)   │
-      └────────┬──────┘  └─────┬──────────┘  └────────────┘
-               │               │
-      [HdalVideoSource]  [RecordingThread]
-      Live555 FramedSource   MP4Recorder (minimp4)
-      RTP packetisation      NAL-pack → fragmented MP4
-                             AES-256-CTR encryption
-```
-
-#### Ring Buffer Design
+#### Ring Buffer Specification
 
 | Property | Value |
 |----------|-------|
-| Slots per channel | **30** (`kVideoRingBufferSlots`) — 1 second at 30 fps |
-| Main stream max frame | 512 KB (`kMaxVideoFrameSize`) |
-| Sub-stream max frame | 128–256 KB (`kMaxSubStreamFrameSize`) |
+| Slots per channel | **30** — 1 second at 30 fps |
+| Main stream max frame size | 512 KB |
+| Sub-stream max frame size | 128–256 KB |
 | Main stream total buffer | 30 × 512 KB = **15 MB** |
-| Write concurrency | **Single producer** (one `ProducerThread` per channel) |
-| Read concurrency | **Multiple consumers** — each holds its own `next_sequence_` cursor |
-| Torn-read protection | Version field: **odd** = write in progress, **even** = ready |
+| Write concurrency | **Single producer** (`ProducerThread` per channel) |
+| Read concurrency | **Unlimited consumers** — each holds its own `next_sequence_` cursor |
+| Torn-read protection | Version field: **odd** = write in progress, **even** = ready to read |
 
-Each slot stores the full encoded frame (all NAL units concatenated), SPS/PPS/VPS parameter sets, per-NAL-unit boundary info (`NalPack` offsets), hardware timestamp, and codec type.
+Each slot stores: full encoded frame (all NAL units), SPS/PPS/VPS parameter sets, per-NAL boundary info, hardware timestamp, and codec type.
 
 #### Write Path (Producer)
 
 ```cpp
-// ProducerThread (one per channel):
+// One ProducerThread per channel:
 while (!stop_requested) {
-    hd_videoenc_pull_out_buf(enc_path, &data_pull, timeout);  // blocks until frame ready
-    // Assemble all NAL packs into flat buffer; detect IDR; cache SPS/PPS/VPS
+    hd_videoenc_pull_out_buf(enc_path, &data_pull, timeout); // blocks until frame ready
+    // Assemble NAL packs; detect IDR; cache SPS/PPS/VPS
     ring_buffer.Write(data, size, timestamp, channel, is_keyframe, codec, sps, pps, vps, nal_packs);
-    hd_videoenc_release_out_buf(enc_path, &data_pull);         // release immediately after copy
-    frame_cv.notify_all();                                     // wake all consumers
+    hd_videoenc_release_out_buf(enc_path, &data_pull);       // release immediately after copy
+    frame_cv.notify_all();                                   // wake all waiting consumers
 }
 ```
 
-The encoder output buffer is `mmap`'d at startup; NAL pack data is accessed via pointer arithmetic (`vir_addr + (phy_addr_offset)`), enabling near-zero-copy into the ring buffer slot.
+The encoder output buffer is `mmap`'d at startup; pointer arithmetic (`vir_addr + phy_addr_offset`) gives near-zero-copy into the ring buffer slot.
 
 #### Read Path (Consumer)
-
-Each consumer (`VideoFrameConsumer`) owns a monotonic `next_sequence_` cursor:
 
 ```cpp
 bool VideoFrameConsumer::WaitForFrame(VideoFrame& out_frame, int timeout_ms) {
@@ -467,24 +394,22 @@ bool VideoFrameConsumer::WaitForFrame(VideoFrame& out_frame, int timeout_ms) {
 }
 ```
 
-If the consumer has fallen behind (its target slot was overwritten), `AdvanceToValidSequence()` auto-skips to the nearest IDR after the oldest available slot, incrementing `frames_dropped_`. This prevents consumer lag from stalling the producer.
+If a consumer falls behind (its target slot was overwritten), `AdvanceToValidSequence()` auto-skips to the nearest IDR after the oldest available slot and increments `frames_dropped_`. This prevents slow consumers from stalling the producer.
 
 #### Late-Join Support
 
-On construction, each `VideoFrameConsumer` calls `ResetToKeyframe()`, which scans the ring buffer for the most recent IDR frame. This means a consumer starting mid-stream immediately gets a valid decode start point and the cached SPS/PPS/VPS needed to initialise the codec.
+On construction, each `VideoFrameConsumer` calls `ResetToKeyframe()`, which scans the ring buffer for the most recent IDR. The consumer immediately has a valid decode entry point plus cached SPS/PPS/VPS — no waiting for the next keyframe.
 
 #### Pause/Resume for Codec Changes
 
-`VideoControl::ApplyToHardware()` orchestrates live encoder parameter changes safely:
+`VideoControl::ApplyToHardware()` orchestrates live parameter changes safely:
 
 ```
-1. MediaHub::PauseChannel(ch)       — ProducerThread enters idle loop
-2. HdalPipeline::Set*(...)          — Change codec/bitrate/resolution/fps in HDAL
-3. MediaHub::ResumeChannel(ch, codec_changed)
-       — If codec changed: clear cached SPS/PPS, flush stale frames, request IDR
-       — Resume producer thread
-4. RtspServer::RefreshStream(ch)    — Rebuild Live555 subsession with new codec
-5. RecordingService::CutNow(ch)     — Rotate recording segment at codec boundary
+1. MediaHub::PauseChannel(ch)          → producer enters idle loop
+2. HdalPipeline::Set*(...)             → change codec/bitrate/resolution/fps in HDAL
+3. MediaHub::ResumeChannel(ch, changed) → clear SPS/PPS cache, flush stale frames, request IDR, resume producer
+4. RtspServer::RefreshStream(ch)        → rebuild Live555 subsession with new codec
+5. RecordingService::CutNow(ch)         → rotate MP4 segment at codec boundary
 ```
 
 ---
@@ -493,299 +418,315 @@ On construction, each `VideoFrameConsumer` calls `ResetToKeyframe()`, which scan
 
 ### `modules/ai` — AI Analytics
 
-Orchestrated by `AnalyticsEngine` (singleton). Subsystems:
+Orchestrated by `AnalyticsEngine`. All subsystems fire events via callbacks wired in `main.cpp`.
 
-- **NpuInference** — Loads YOLOv5s ONNX model, runs inference on 640×360 YUV frames from HDAL VideoProc path.
-- **MotionDetectionEngine** — Pixel-diff on 160×120 YUV; configurable zones, threshold, schedule.
-- **ObjectTracker** — Multi-object tracking; emits first-seen events per track ID.
-- **TamperDetectionEngine** — Laplacian variance + scene change; detects camera blocking/defocus/shift.
-- **VqaEngine** — Video quality analysis for scene-change triggered events.
-- **PrivacyMosaicEngine** — Applies mosaic blur to configured regions before encoding.
-- **AiispEngine** — AI-based ISP enhancement (denoising, HDR recovery) on low-light scenes.
-- Line crossing, zone intrusion, people counting, face detection, LPR, audio classification — implemented as sub-engines within `AnalyticsEngine`.
-
-All AI subsystems fire events via callbacks registered by `main.cpp` (see §3.3).
-
----
+| Sub-engine | Input | Function |
+|-----------|-------|----------|
+| `NpuInference` | 640×360 YUV from HDAL VideoProc | Runs YOLOv5s ONNX on NPU |
+| `MotionDetectionEngine` | 160×120 YUV | Pixel-diff over configurable zones |
+| `ObjectTracker` | Detection results | Multi-object tracking; emits per-track-ID events |
+| `TamperDetectionEngine` | 320×180 YUV (VQA path) | Laplacian variance + scene change |
+| `VqaEngine` | VQA path | Video quality analysis |
+| `PrivacyMosaicEngine` | VideoProc | Mosaic blur on configured regions |
+| `AiispEngine` | VideoProc | AI ISP enhancement for low-light |
+| *(inline engines)* | — | Line crossing, zone intrusion, people counting, face, LPR, audio classification |
 
 ### `modules/platform` — Hardware Abstraction
 
-- **HdalPipeline** — The sole owner of all HDAL path IDs. Opens sensor, ISP, VideoProc, up to 4 encoder paths, 1 audio path, plus dedicated AI/MD/VQA paths. Split across multiple `.cpp` files by concern: `_init`, `_lifecycle`, `_video`, `_audio`, `_config`.
-- **HdalWrapper** — Wraps `vendor_isp_*` APIs; normalises all settings to 0–100 before calling vendor enums.
-- **ISPControl** — High-level typed structs (`ImageAdjustment`, `WhiteBalance`, `ExposureSettings`, etc.) over `HdalWrapper`. Loads/saves from `isp.json`.
-- **IRControl** — IR LED brightness via PWM, IR cut filter motor via dual-GPIO H-bridge pulse, auto day/night via SW-CDS thresholds or schedule.
-- **OsdOverlay** — FreeType-based timestamp, text, logo overlays; up to 4 privacy masks per stream via HDAL OSG paths; font auto-scales with stream resolution.
-- **ResetButton** — Polls GPIO12 at 100 ms; 10-second hold triggers factory reset callback.
-- **SystemLogger** — Replaces `system_logger.sh`; collects kernel ring buffer, SoC temperature, CPU/memory/disk metrics, app log mirror; writes to SD card (30-day retention) and flash (3 MB cap).
-
----
+| Class | Responsibility |
+|-------|---------------|
+| `HdalPipeline` | Sole owner of all HDAL path IDs. Opens sensor, ISP, VideoProc, up to 4 encoder paths, 1 audio path, AI/MD/VQA dedicated paths. Split into `_init`, `_lifecycle`, `_video`, `_audio`, `_config` source files. |
+| `HdalWrapper` | Wraps `vendor_isp_*` APIs; normalises all settings to 0–100 before calling vendor enums. |
+| `ISPControl` | High-level typed structs (`ImageAdjustment`, `WhiteBalance`, `ExposureSettings`, …) over `HdalWrapper`. Loads/saves `isp.json`. |
+| `IRControl` | IR LED brightness via PWM ch. 11; IR cut filter via dual-GPIO H-bridge pulse; auto day/night via SW-CDS thresholds or schedule. |
+| `OsdOverlay` | FreeType-based timestamp/text/logo overlays; up to 4 privacy masks per stream; font auto-scales with stream resolution. |
+| `ResetButton` | Polls GPIO12 at 100 ms; 10-second hold triggers factory reset callback. |
+| `SystemLogger` | Replaces `system_logger.sh`; collects dmesg, SoC temperature, CPU/mem/disk metrics; writes to SD card (30-day retention) and flash (3 MB cap). |
 
 ### `modules/media` — Media Distribution
 
-- **MediaHub** — Ring buffer hub (described in §3.5).
-- **VideoControl** — Wraps `HdalPipeline` encoder setters; serialises concurrent API calls; orchestrates pause/resume cycle; fires `codec_change_callback_` to notify RTSP server.
-- **AudioControl** — Audio capture config; provides audio frames via `AudioFrameBroadcaster`.
-
----
+| Class | Responsibility |
+|-------|---------------|
+| `MediaHub` | Ring buffer hub — see §3.5. |
+| `VideoControl` | Serialises concurrent API calls; orchestrates pause/resume cycle; fires `codec_change_callback_` to notify RTSP server. |
+| `AudioControl` | Audio capture config; provides frames to `AudioFrameBroadcaster`. |
 
 ### `modules/streaming` — Output Streams
 
-- **RTSP server** — Live555-based; `HdalVideoSource` is a `FramedSource` subclass that calls `VideoFrameConsumer::WaitForFrame()`; strips Annex-B start codes; computes RTP timestamps from HDAL hardware timestamps. Supports H.264 and H.265.
-- **Go2rtcManager** — Manages go2rtc process for WebRTC/HLS output alongside RTSP.
-- **AudioFrameBroadcaster** — Distributes G.711 (raw) and AAC-LC (for recording) audio frames.
-- **OnvifMetadataGenerator** — ONVIF metadata stream with bounding-box XML; fed from `DetectionCallback`.
+| Component | Description |
+|-----------|-------------|
+| RTSP server | Live555-based. `HdalVideoSource` is a `FramedSource` subclass; calls `VideoFrameConsumer::WaitForFrame()`; strips Annex-B start codes; computes RTP timestamps from HDAL hardware timestamps. Supports H.264 and H.265. |
+| `Go2rtcManager` | Manages go2rtc process for WebRTC/HLS alongside RTSP. |
+| `AudioFrameBroadcaster` | Distributes G.711 (RTSP) and AAC-LC (recording) audio frames. |
+| `OnvifMetadataGenerator` | ONVIF metadata stream with bounding-box XML; fed from `DetectionCallback`. |
 
----
+### `modules/recording` — SD Card Recording
 
-### `modules/recording` — Storage Recording
-
-- **RecordingService** — One `RecordingThread` per channel; creates `VideoFrameConsumer` from `MediaHub`; writes to MP4 via `MP4Recorder` (minimp4 wrapper) or raw Annex-B file; optional AES-256-CTR encryption per segment; rotates segments on timer, forced cut, or codec change.
-- **ScheduleManager** — Polls schedule config; calls `RecordingService::Start/Stop` on schedule boundaries.
-- **MP4Recorder** — Handles Annex-B stripping, SPS/PPS/VPS `hvcC`/`avcC` box creation, fragmented MP4 writes, audio track muxing.
-
----
+| Component | Description |
+|-----------|-------------|
+| `RecordingService` | One `RecordingThread` per channel; creates `VideoFrameConsumer`; writes MP4 via `MP4Recorder` (minimp4) or raw Annex-B; optional AES-256-CTR encryption; rotates on timer, forced cut, or codec change. |
+| `ScheduleManager` | Polls schedule config; calls `RecordingService::Start/Stop` on boundary crossings. |
+| `MP4Recorder` | Handles Annex-B stripping, SPS/PPS/VPS `hvcC`/`avcC` box creation, fragmented MP4 writes, audio track muxing. |
 
 ### `modules/events` — Event System
 
-Described fully in §3.3. Source files by concern:
-
 | File | Responsibility |
 |------|---------------|
-| `event_types.h` / `.cpp` | `EventType`, `EventCategory`, `ActionType`, `EventData` variant, `Event` struct |
-| `event_rule.h` / `.cpp` | `EventRule`, `Action`, `ActionConfig` — rule matching logic |
-| `event_manager.h` / `.cpp` | Queue, processing thread, listener registry, rule engine, action dispatch |
-| `action_handler.h` / `.cpp` | Base class, factory (`RegisterAll`), `SubstitutePlaceholders` |
-| `src/actions/recording_action.cpp` | Recording action handler |
-| `src/actions/snapshot_action.cpp` | Snapshot/thumbnail action handler |
-| `src/actions/email_action.cpp` | Email action handler (SMTP via SmtpManager) |
+| `event_types.h/.cpp` | `EventType`, `EventCategory`, `ActionType`, `EventData` variant, `Event` struct |
+| `event_rule.h/.cpp` | `EventRule`, `Action`, `ActionConfig` — rule matching logic |
+| `event_manager.h/.cpp` | Queue, processing thread, listener registry, rule engine, action dispatch |
+| `action_handler.h/.cpp` | Base class, `ActionHandlerFactory::RegisterAll()`, `SubstitutePlaceholders()` |
+| `src/actions/recording_action.cpp` | Recording handler |
+| `src/actions/snapshot_action.cpp` | Snapshot / thumbnail handler |
+| `src/actions/email_action.cpp` | Email handler (SMTP via SmtpManager) |
 | `src/actions/webhook_action.cpp` | HTTP webhook handler (libcurl, with retry) |
 | `src/actions/mqtt_action.cpp` | MQTT publish handler (Paho, conditionally compiled) |
-| `src/actions/ftp_action.cpp` | FTP upload handler (via FtpManager) |
+| `src/actions/ftp_action.cpp` | FTP upload handler |
 | `src/actions/io_action.cpp` | Alarm output, white light, siren handlers |
-
----
 
 ### `modules/networking` — Network Services
 
-- **NetworkManager** — Facade over all networking concerns; IPv4/v6 config, DNS, hostname, SSL certs, nginx, NTP, SMTP, SNMP, UPnP, WiFi, link monitor.
-- **NtpManager** — Pure C++ RFC 5905 NTP implementation; no `ntpd` dependency; falls back through pool + hardcoded IP addresses (Google 216.239.35.0, Cloudflare 162.159.200.1, NIST 129.6.15.28, Apple 17.253.34.123).
-- **NginxManager** — Generates `nginx.conf` from current network settings; manages nginx process lifecycle.
-- **SslManager** — Generates self-signed certificates (2048-bit RSA, 10 years) or installs custom PEM certs; validates key/cert pairing before install.
-- **MdnsResponder** — Lightweight mDNS/DNS-SD via raw `AF_INET` sockets and `IP_ADD_MEMBERSHIP`; no avahi/dbus; announces `_http._tcp`, `_https._tcp`, `_rtsp._tcp`, `_onvif._tcp`.
-- **SmtpManager** — SMTP (none/SSL-TLS/STARTTLS) via libcurl; credentials stored in `CredentialManager`.
-- **SnmpManager** / **UpnpManager** — SNMPv1/v2c/v3 daemon config; miniupnpc-based UPnP port mapping.
-
----
+| Class | Description |
+|-------|-------------|
+| `NetworkManager` | Facade: IPv4/v6 config, DNS, hostname, SSL certs, nginx, NTP, SMTP, SNMP, UPnP, WiFi, link monitor. |
+| `NtpManager` | Pure C++ RFC 5905 NTP — no `ntpd` dependency. Fallback through pool servers then hardcoded IPs (Google 216.239.35.0, Cloudflare 162.159.200.1, NIST 129.6.15.28, Apple 17.253.34.123). |
+| `NginxManager` | Generates `nginx.conf` from current settings; manages nginx process. |
+| `SslManager` | Self-signed cert generation (2048-bit RSA, 10 years) or custom PEM install with validation. |
+| `MdnsResponder` | Lightweight mDNS/DNS-SD via raw sockets and `IP_ADD_MEMBERSHIP`; no avahi/dbus; announces `_http._tcp`, `_https._tcp`, `_rtsp._tcp`, `_onvif._tcp`. |
+| `SmtpManager` | SMTP (none/SSL-TLS/STARTTLS) via libcurl; credentials in `CredentialManager`. |
+| `SnmpManager` | SNMPv1/v2c/v3 daemon config + process management. |
+| `UpnpManager` | miniupnpc-based UPnP discovery and port mapping. |
 
 ### `modules/config` — Configuration
 
-Described fully in §3.4. Also contains:
-
-- **UserManager** — SQLite+SQLCipher-backed user/session management; PBKDF2-HMAC-SHA256 (210,000 iterations) for passwords; AES-256-GCM for ONVIF WSSE plaintext storage; brute-force lockout (5 attempts → 15 min).
-- **paths.h** — All filesystem path constants as `constexpr` strings.
-
----
+- **Config free-functions** — `ipcam::config::Get<T>()`, `Set<T>()`, `Save()`, etc. (see §3.4).
+- **UserManager** — SQLite+SQLCipher; PBKDF2-HMAC-SHA256 (210,000 iterations) for passwords; AES-256-GCM for ONVIF WSSE plaintext; brute-force lockout (5 attempts → 15 min).
+- **paths.h** — All filesystem path constants as `constexpr` strings (config dir, DB paths, SD mount, model dir, etc.).
 
 ### `modules/onvif` — ONVIF Protocol
 
-ONVIF WS-Discovery (UDP 3702) and SOAP service (TCP 5000) generated via gSOAP. Exposes Device, Media, Events, and PTZ (stub) services. `OnvifMetadataGenerator` provides the analytics event metadata stream.
-
----
+ONVIF WS-Discovery (UDP 3702) and SOAP service (TCP 5000) generated via gSOAP. Exposes Device, Media, Events, and PTZ (stub) services.
 
 ### `modules/webserver` — REST API
 
-Embedded HTTP/HTTPS server (configurable port, default 8082). Handlers in `src/handlers/` cover: device info, network config, video streams, ISP/image settings, recording, storage, users/auth, events, analytics config, system info/logs, firmware upgrade. Handler `src/handlers/analytics/` provides dedicated analytics REST endpoints.
+Embedded HTTP/HTTPS server (default port 8082). Handlers cover: device info, network, video streams, ISP/image, recording, storage, users/auth, events, analytics, system info/logs, firmware upgrade. Dedicated `src/handlers/analytics/` for AI-related endpoints.
 
 ---
 
 ## 5. Startup and Shutdown Sequence
 
-See §3.2 for the detailed table. Key dependency constraints:
-
-```
-config::Init()
-  └─ must complete before: ALL other subsystems
-
-HdalPipeline::Start()
-  └─ must complete before: MediaHub::Start()
-
-MediaHub::Start()
-  └─ must complete before: streaming::Start(), RecordingService::Initialize()
-
-storage::Init()
-  └─ must complete before: RecordingService::Initialize()
-
-EventManager::Start()
-  └─ wires analytics callbacks immediately after init
-  └─ publishes kSystemStartup
-
-On shutdown: MediaHub stops AFTER RTSP server and recording;
-             HdalPipeline stops AFTER MediaHub.
+```mermaid
+flowchart TD
+    A([Start ipcamd]) --> B[Logging + Signals]
+    B --> C[config::Init\nFATAL if fails]
+    C --> D[NetworkManager\nInitializeNetwork]
+    C --> E[SystemLogger::Init]
+    D --> F[HdalPipeline\nInit + Start]
+    F --> G[MediaHub\nInitialize + Start]
+    G --> H[AnalyticsEngine]
+    G --> I[streaming::Start\nRTSP server]
+    I --> J[Go2rtcManager::Start]
+    G --> K[storage::Init\nFATAL if fails]
+    K --> L[EventManager\nInit + Start\nwire analytics callbacks]
+    K --> M[NasManager\nFtpManager\nScheduleManager]
+    K --> N[RecordingService\nInitialize]
+    L --> O[webserver::Init\nFATAL if fails]
+    O --> P[onvif::Init\nFATAL if fails]
+    P --> Q([Main loop\nwait for SIGTERM])
+    Q --> R[Shutdown\nin reverse order]
 ```
 
 ---
 
 ## 6. Video Pipeline Data Flow
 
-```
-┌──────────────────────────────────────────────────────────────────────────┐
-│                        Hardware / HDAL SDK                               │
-│                                                                          │
-│  GC5603 MIPI Sensor → ISP (AE/AWB/3DNR/WDR) → VideoProc                │
-│                                   │                                      │
-│          ┌────────────────────────┼────────────────────────────┐         │
-│          │ AI path 640×360 YUV   │ Enc[0] 2944×1664 H.265     │         │
-│          │ MD path 160×120 YUV   │ Enc[1] 1280×720  H.264     │         │
-│          │ VQA path 320×180 YUV  │ Enc[2] 640×480   H.264     │         │
-│          │                       │ Enc[3] 640×360   H.264     │         │
-└──────────┼───────────────────────┼────────────────────────────┼─────────┘
-           │                       │                            │
-    ┌──────▼──────┐        ┌───────▼──────┐             Audio PCM path
-    │AnalyticsEng │        │  MediaHub    │                    │
-    │ NpuInference│        │  ProducerThreads × 4             HdalPipeline
-    │ MD/VQA/Tamper│       │  VideoRingBuffer × 4 (30 slots)  AudioControl
-    └──────┬──────┘        └───────┬──────────────────┘       AudioFrameBroadcaster
-           │                       │                                │
-    Analytics callbacks     frame_cv.notify_all()           G.711/AAC-LC
-    (via main.cpp wiring)          │                               │
-           │               ┌───────┴──────────┬──────────────┐    │
-           ▼               │                  │              │    │
-    EventManager    [VideoFrameConsumer] [VideoFrameConsumer] │   │
-    PublishEvent()   "rtsp-ch0..3"       "recording-ch0..3"   │   │
-                           │                  │               │   │
-                    HdalVideoSource    RecordingThread         │   │
-                    (Live555)          MP4Recorder             │   │
-                    RTP packetise      AES-256-CTR encrypt     │   │
-                    → RTSP clients     → SD card / NAS         │   │
-                                                               │   │
-                                                    Go2rtcManager  │
-                                                    (WebRTC/HLS)   │
-                                                                   │
-                                                          RTSP audio track
-                                                          MP4 audio track
+```mermaid
+flowchart TD
+    subgraph HW["HDAL Hardware Layer"]
+        SEN["GC5603 MIPI Sensor"]
+        ISP["ISP\nAE · AWB · 3DNR · WDR"]
+        VP["VideoProc"]
+        SEN --> ISP --> VP
+    end
+
+    subgraph Paths["HDAL Output Paths"]
+        E0["Encoder 0\n2944×1664 H.265\n6 Mbps"]
+        E1["Encoder 1\n1280×720 H.264"]
+        E2["Encoder 2\n640×480 H.264"]
+        E3["Encoder 3\n640×360 H.264"]
+        AI_P["AI path\n640×360 YUV"]
+        MD_P["MD path\n160×120 YUV"]
+        VQA_P["VQA path\n320×180 YUV"]
+    end
+
+    VP --> E0 & E1 & E2 & E3
+    VP --> AI_P & MD_P & VQA_P
+
+    subgraph MH["MediaHub — one ring buffer per channel"]
+        PT0["ProducerThread ch0"] --> RB0["RingBuffer ch0\n30 slots · 512 KB/slot"]
+        PT1["ProducerThread ch1"] --> RB1["RingBuffer ch1"]
+        PT2["ProducerThread ch2"] --> RB2["RingBuffer ch2"]
+        PT3["ProducerThread ch3"] --> RB3["RingBuffer ch3"]
+    end
+
+    E0 -->|hd_videoenc_pull_out_buf| PT0
+    E1 --> PT1
+    E2 --> PT2
+    E3 --> PT3
+
+    RB0 & RB1 --> RTSP["RTSP Server\nLive555\nHdalVideoSource"]
+    RB0 & RB1 --> REC["RecordingService\nMP4Recorder\nAES-256-CTR"]
+    RB0 --> G2R["Go2rtcManager\nWebRTC / HLS"]
+
+    AI_P & MD_P & VQA_P --> AE["AnalyticsEngine\nNPU · Motion · Tamper\nLPR · Face · Audio"]
+    AE -->|callbacks| EM["EventManager"]
 ```
 
 ---
 
 ## 7. Event System Data Flow
 
-```
-AI/Hardware Sources                EventManager                   Action Handlers
-──────────────────                 ────────────────               ────────────────
-AnalyticsEngine
-  MotionCallback()         ──▶    PublishMotionStart()
-  DetectionCallback()      ──▶    PublishPersonDetected()    ──▶  RecordingActionHandler
-  LineCrossCallback()      ──▶    PublishLineCrossed()       ──▶  SnapshotActionHandler
-  LoiteringCallback()      ──▶    PublishZoneIntrusion()     ──▶  EmailActionHandler
-  TamperCallback()         ──▶    PublishTamperEvent()       ──▶  WebhookActionHandler
-  LprCallback()            ──▶    PublishLprDetected()       ──▶  MqttActionHandler
-  AudioEventCallback()     ──▶    PublishAudioDetected()     ──▶  FtpUploadHandler
-                                                             ──▶  IoOutputHandler
+```mermaid
+flowchart LR
+    subgraph Sources["Event Sources"]
+        AE["AnalyticsEngine\nmotion · detection\nline cross · tamper\nLPR · face · audio"]
+        HW["Hardware I/O\nalarm input · GPIO"]
+        SYS["System\nstorage · network\nstartup · shutdown"]
+    end
 
-Platform / System
-  IRControl day/night       ──▶   PublishSystemEvent()       ──▶  (rule-matched)
-  NetworkManager            ──▶   PublishNetworkEvent()
-  StorageService            ──▶   PublishStorageEvent()
-  HW alarm input polling    ──▶   PublishIOEvent()
+    subgraph Wiring["Wired in main.cpp"]
+        CB["Analytics\nCallbacks\nSet*Callback()"]
+    end
 
-                                        │
-                                  event_queue (thread-safe)
-                                        │
-                                  ProcessingThread (single)
-                                        ├── AddToHistory()
-                                        ├── NotifyListeners()   ← free EventListener callbacks
-                                        └── MatchRules()
-                                                └── ExecuteActions() [detached thread per action]
+    subgraph EM["EventManager"]
+        Q["event_queue\nthread-safe"]
+        PT["ProcessingThread\nsingle background thread"]
+        RL["Rule Matching\nevents.json"]
+        LI["NotifyListeners\nfree callbacks"]
+        Q --> PT
+        PT --> RL & LI
+    end
+
+    subgraph Actions["Action Handlers — detached threads"]
+        R["RecordingHandler"]
+        S["SnapshotHandler"]
+        E["EmailHandler"]
+        W["WebhookHandler"]
+        M["MqttHandler"]
+        F["FtpHandler"]
+        IO["IoOutputHandler"]
+        L["LightHandler"]
+    end
+
+    AE --> CB --> EM
+    HW --> EM
+    SYS --> EM
+    RL --> R & S & E & W & M & F & IO & L
 ```
 
 ---
 
 ## 8. Configuration Layering
 
-```
-Boot time:
-─────────
-config.factory.d/
-  device.json   ─┐
-  media.json     │
-  network.json   │  sorted, merged via json::merge_patch()
-  ...            │
-  (17 more)    ──┘──▶  g_factory_tree  (baseline snapshot)
-                              │
-              config.d/*.json (deployment overrides, optional)
-                              │
-              config.json     (user delta — only changed keys)
-                              │
-                              ▼
-                        g_config_tree  (live runtime state)
+```mermaid
+flowchart TD
+    F1["config.factory.d/*.json\n18 per-module files\nshipped with firmware"]
+    F2["config.d/*.json\ndeployment overrides\noptional per SKU"]
+    FT[("g_factory_tree\nbaseline snapshot")]
+    F3["config.json\nuser delta only\nruntime — on SD/flash"]
+    CT[("g_config_tree\nlive runtime state")]
+    API["ipcam::config::Get&lt;T&gt;(dot.path, default)\nipcam::config::Set&lt;T&gt;(dot.path, value)"]
+    SAVE["Save()\ndiff factory vs runtime\nwrite delta atomically via rename()"]
 
-Runtime write:
-──────────────
-Set("network.rtsp.port", 8554)  →  g_config_tree mutated in-place
-Save()  →  diff(g_factory_tree, g_config_tree)  →  write delta to config.json (atomic rename)
+    F1 -->|"json::merge_patch()"| FT
+    F2 -->|"json::merge_patch()"| FT
+    FT -->|snapshot| CT
+    F3 -->|"json::merge_patch()\nhighest priority"| CT
+    CT --> API
+    API --> SAVE
+    SAVE -->|"delta only"| F3
 
-Factory reset:
-──────────────
-Delete config.json  →  on next boot, g_config_tree == g_factory_tree
+    style FT fill:#f0f0f0,stroke:#999
+    style CT fill:#e8f4fd,stroke:#4a9eda
 ```
+
+**Factory reset** = delete `config.json` → on next boot `g_config_tree == g_factory_tree`.
 
 ---
 
 ## 9. Dependency Map
 
-```
-                        ┌──────────────────────────────────┐
-                        │           main.cpp               │
-                        │   (Coordinator / Orchestrator)   │
-                        └──┬─────────┬──────────┬──────────┘
-                           │         │          │
-              ┌────────────▼──┐  ┌───▼───────┐  └──────────────┐
-              │  HdalPipeline │  │ ConfigSys │                  │
-              │  (HDAL SDK)   │  │ (JSON/nloh│                  │
-              └───────┬───────┘  └───────────┘                  │
-                      │ encoder paths                            │
-              ┌───────▼───────┐                                  │
-              │   MediaHub    │                                  │
-              │ (Ring Buffer) │                                  │
-              └──┬─────────┬──┘                                  │
-           RTSP  │         │  Recording                          │
-    ┌────────────▼──┐  ┌───▼──────────────┐                      │
-    │ streaming::   │  │ RecordingService  │                      │
-    │ RtspServer    │  │ ScheduleManager   │                      │
-    │ Go2rtcManager │  │ NasManager/FTP    │                      │
-    └───────────────┘  └───────────────────┘                      │
-                                                                  │
-    ┌──────────────────────────────────────────────────────────────▼──┐
-    │                     AnalyticsEngine                             │
-    │  NpuInference  MotionDetection  ObjectTracker  Tamper  LPR ...  │
-    └──────────────────────────┬──────────────────────────────────────┘
-                               │  callbacks (wired in main.cpp)
-    ┌──────────────────────────▼──────────────────────────────────────┐
-    │                       EventManager                              │
-    │  event_queue → ProcessingThread → NotifyListeners + MatchRules  │
-    └──────────────────────────┬──────────────────────────────────────┘
-                               │  action dispatch (detached threads)
-          ┌────────────────────┼────────────────────────┐
-          │                    │                        │
-    EmailHandler        WebhookHandler           RecordingHandler
-    MqttHandler         FtpHandler               SnapshotHandler
-    IoOutputHandler     ...                      ...
+```mermaid
+flowchart TD
+    MAIN["main.cpp\nCoordinator"]
 
-    ┌──────────────────────────────────────────────────────────────────┐
-    │                     NetworkManager                               │
-    │  NtpManager  NginxManager  SslManager  MdnsResponder  SMTP/SNMP │
-    └──────────────────────────────────────────────────────────────────┘
+    subgraph CFG["Configuration"]
+        CS["ipcam::config\nnlohmann/json\ng_config_tree"]
+    end
 
-    ┌──────────────────┐   ┌──────────────────┐   ┌──────────────────┐
-    │  ISPControl      │   │  IRControl       │   │  OsdOverlay      │
-    │  HdalWrapper     │   │  (day/night)     │   │  ResetButton     │
-    └──────────────────┘   └──────────────────┘   └──────────────────┘
-            │                      │                       │
-            └──────────────────────┴───────────────────────┘
-                        all read config via ipcam::config::Get<T>()
-                        all are singletons accessed via ::Instance()
+    subgraph PL["Platform"]
+        HP["HdalPipeline\nHDAL SDK"]
+        HW["HdalWrapper\nISPControl · IRControl"]
+        OSD["OsdOverlay\nResetButton · SystemLogger"]
+    end
+
+    subgraph MD["Media"]
+        MH["MediaHub\nRing Buffer"]
+        VC["VideoControl"]
+    end
+
+    subgraph AI["AI Analytics"]
+        AE["AnalyticsEngine\nNPU · Motion · Tamper\nLPR · Face · Audio"]
+    end
+
+    subgraph EV["Events"]
+        EM["EventManager\nRules · Listeners · Actions"]
+    end
+
+    subgraph ST["Streaming"]
+        RTSP["RtspServer\nLive555"]
+        G2R["Go2rtcManager"]
+        OVM["OnvifMetadata"]
+    end
+
+    subgraph RC["Recording"]
+        RS["RecordingService\nMP4Recorder"]
+        SM["ScheduleManager"]
+    end
+
+    subgraph NET["Networking"]
+        NM["NetworkManager\nNTP · mDNS · nginx · SSL"]
+    end
+
+    subgraph WEB["API / Protocol"]
+        WS["Webserver\nREST API"]
+        ONV["ONVIF\ngSOAP"]
+    end
+
+    MAIN --> CS
+    MAIN --> HP
+    MAIN --> MH
+    MAIN --> AE
+    MAIN --> EM
+
+    HP --> MH
+    HP --> VC
+    MH --> RTSP
+    MH --> RS
+    MH --> G2R
+
+    AE -->|"8 callbacks\nwired in main.cpp"| EM
+    EM --> RS
+    EM --> WS
+
+    CS -.->|"Get&lt;T&gt;()"| HP & AE & EM & NM & RS & WS
+
+    style MAIN fill:#fff3cd,stroke:#ffc107
+    style MH fill:#d1ecf1,stroke:#17a2b8
+    style EM fill:#d4edda,stroke:#28a745
+    style CS fill:#f8d7da,stroke:#dc3545
 ```
 
 ---
 
-*Document generated from source inspection of `code/application/ipcamera/` on the `cursor/eterna-architecture-documentation-7d1e` branch.*
+*Generated from source inspection of `code/application/ipcamera/` — branch `cursor/eterna-architecture-documentation-7d1e`.*
