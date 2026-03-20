@@ -1,17 +1,36 @@
 """
 Build Eterna IP Camera Architecture Excel workbook for leadership.
-Run: python3 build_excel.py
-Output: eterna_ipcamera_architecture.xlsx
+
+Setup (one-time):
+    pip install -r requirements.txt
+      — or —
+    pip install openpyxl Pillow
+
+Run:
+    python build_excel.py
+    python3 build_excel.py          # macOS / Linux
+
+Output:
+    eterna_ipcamera_architecture.xlsx   (written next to this script)
 """
 
 import os
-from openpyxl import Workbook
-from openpyxl.styles import (
-    Font, PatternFill, Alignment, Border, Side, GradientFill
-)
-from openpyxl.drawing.image import Image as XLImage
-from openpyxl.utils import get_column_letter
-from openpyxl.worksheet.page import PageMargins
+import sys
+
+try:
+    from openpyxl import Workbook
+    from openpyxl.styles import (
+        Font, PatternFill, Alignment, Border, Side, GradientFill
+    )
+    from openpyxl.drawing.image import Image as XLImage
+    from openpyxl.utils import get_column_letter
+    from openpyxl.worksheet.page import PageMargins
+except ModuleNotFoundError:
+    sys.exit(
+        "\n[ERROR] Missing dependency.\n"
+        "Run:  pip install openpyxl Pillow\n"
+        "  or: pip install -r requirements.txt\n"
+    )
 
 # ── Colour palette ────────────────────────────────────────────────────────────
 NAVY       = "1B2A4A"   # header background
@@ -23,8 +42,9 @@ WHITE      = "FFFFFF"
 RED_FATAL  = "FADBD8"   # fatal steps
 GREEN_OK   = "D5F5E3"   # ok/non-fatal
 
-DIAGRAMS = os.path.join(os.path.dirname(__file__), "diagrams")
-OUT_FILE  = os.path.join(os.path.dirname(__file__), "eterna_ipcamera_architecture.xlsx")
+BASE_DIR  = os.path.dirname(os.path.abspath(__file__))
+DIAGRAMS  = os.path.join(BASE_DIR, "diagrams")
+OUT_FILE  = os.path.join(BASE_DIR, "eterna_ipcamera_architecture.xlsx")
 
 
 # ── Helper utilities ──────────────────────────────────────────────────────────
