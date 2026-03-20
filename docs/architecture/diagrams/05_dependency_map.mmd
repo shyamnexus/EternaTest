@@ -1,0 +1,71 @@
+flowchart TD
+    MAIN["main.cpp\nCoordinator"]
+
+    subgraph CFG["Configuration"]
+        CS["ipcam::config\nnlohmann/json\ng_config_tree"]
+    end
+
+    subgraph PL["Platform"]
+        HP["HdalPipeline\nHDAL SDK"]
+        HW["HdalWrapper\nISPControl · IRControl"]
+        OSD["OsdOverlay\nResetButton · SystemLogger"]
+    end
+
+    subgraph MD["Media"]
+        MH["MediaHub\nRing Buffer"]
+        VC["VideoControl"]
+    end
+
+    subgraph AI["AI Analytics"]
+        AE["AnalyticsEngine\nNPU · Motion · Tamper\nLPR · Face · Audio"]
+    end
+
+    subgraph EV["Events"]
+        EM["EventManager\nRules · Listeners · Actions"]
+    end
+
+    subgraph ST["Streaming"]
+        RTSP["RtspServer\nLive555"]
+        G2R["Go2rtcManager"]
+        OVM["OnvifMetadata"]
+    end
+
+    subgraph RC["Recording"]
+        RS["RecordingService\nMP4Recorder"]
+        SM["ScheduleManager"]
+    end
+
+    subgraph NET["Networking"]
+        NM["NetworkManager\nNTP · mDNS · nginx · SSL"]
+    end
+
+    subgraph WEB["API / Protocol"]
+        WS["Webserver\nREST API"]
+        ONV["ONVIF\ngSOAP"]
+    end
+
+    MAIN --> CS
+    MAIN --> HP
+    MAIN --> MH
+    MAIN --> AE
+    MAIN --> EM
+
+    HP --> MH
+    HP --> VC
+    MH --> RTSP
+    MH --> RS
+    MH --> G2R
+
+    AE -->|"8 callbacks\nwired in main.cpp"| EM
+    EM --> RS
+    EM --> WS
+
+    CS -.->|"Get&lt;T&gt;()"| HP
+    CS -.->|"Get&lt;T&gt;()"| AE
+    CS -.->|"Get&lt;T&gt;()"| EM
+    CS -.->|"Get&lt;T&gt;()"| NM
+
+    style MAIN fill:#fff3cd,stroke:#ffc107
+    style MH fill:#d1ecf1,stroke:#17a2b8
+    style EM fill:#d4edda,stroke:#28a745
+    style CS fill:#f8d7da,stroke:#dc3545

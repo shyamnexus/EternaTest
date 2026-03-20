@@ -1,0 +1,18 @@
+flowchart TD
+    A([Start ipcamd]) --> B[Logging + Signals]
+    B --> C["config::Init\nFATAL if fails"]
+    C --> D[NetworkManager\nInitializeNetwork]
+    C --> E[SystemLogger::Init]
+    D --> F[HdalPipeline\nInit + Start]
+    F --> G[MediaHub\nInitialize + Start]
+    G --> H[AnalyticsEngine]
+    G --> I["streaming::Start\nRTSP server"]
+    I --> J[Go2rtcManager::Start]
+    G --> K["storage::Init\nFATAL if fails"]
+    K --> L["EventManager\nInit + Start\nwire analytics callbacks"]
+    K --> M[NasManager\nFtpManager\nScheduleManager]
+    K --> N[RecordingService\nInitialize]
+    L --> O["webserver::Init\nFATAL if fails"]
+    O --> P["onvif::Init\nFATAL if fails"]
+    P --> Q([Main loop\nwait for SIGTERM])
+    Q --> R[Shutdown\nin reverse order]

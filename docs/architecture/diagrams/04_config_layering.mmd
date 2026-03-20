@@ -1,0 +1,19 @@
+flowchart TD
+    F1["config.factory.d/*.json\n18 per-module files\nshipped with firmware"]
+    F2["config.d/*.json\ndeployment overrides\noptional per SKU"]
+    FT[("g_factory_tree\nbaseline snapshot")]
+    F3["config.json\nuser delta only\nruntime — on SD/flash"]
+    CT[("g_config_tree\nlive runtime state")]
+    API["ipcam::config::Get&lt;T&gt;(dot.path, default)\nipcam::config::Set&lt;T&gt;(dot.path, value)"]
+    SAVE["Save()\ndiff factory vs runtime\nwrite delta atomically via rename()"]
+
+    F1 -->|"json::merge_patch()"| FT
+    F2 -->|"json::merge_patch()"| FT
+    FT -->|snapshot| CT
+    F3 -->|"json::merge_patch() — highest priority"| CT
+    CT --> API
+    API --> SAVE
+    SAVE -->|"delta only"| F3
+
+    style FT fill:#f0f0f0,stroke:#999
+    style CT fill:#e8f4fd,stroke:#4a9eda
