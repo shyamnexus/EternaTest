@@ -721,6 +721,240 @@ def build_config(wb):
         row += 1
 
 
+def build_concurrency(wb):
+    ws = wb.create_sheet("Concurrency & Safety")
+    ws.sheet_view.showGridLines = False
+    freeze(ws, "B3")
+
+    # ── Title ────────────────────────────────────────────────────────────────
+    ws.merge_cells("B1:J1")
+    t = ws.cell(row=1, column=2, value="Concurrency & Thread-Safety Analysis")
+    t.font = Font(name="Calibri", size=16, bold=True, color=WHITE)
+    t.fill = fill("922B21")
+    t.alignment = center()
+    ws.row_dimensions[1].height = 32
+
+    set_col_widths(ws, [3, 20, 18, 22, 52, 46])
+
+    # ── Section 1: Thread Inventory ───────────────────────────────────────────
+    row = 2
+    section_label(ws, row, "  THREAD INVENTORY", 6, bg=NAVY)
+    row += 1
+    write_header_row(ws, row, ["", "Thread", "Owner", "Count", "Purpose", "Shutdown mechanism"])
+    row += 1
+
+    threads = [
+        ("main",                "main.cpp",         "1",    "Signal-wait loop; startup/shutdown coordinator",        "SIGTERM → g_running=false"),
+        ("ProducerThread",      "MediaHub",         "1 per active channel (max 4)",  "Pulls encoded frames from HDAL; writes to ring buffer", "stop_requested.store(true) + join()"),
+        ("ProcessingThread",    "EventManager",     "1",    "Single consumer of event queue; dispatches rules and listeners", "running_=false + notify_all + join()"),
+        ("Action threads",      "EventManager",     "N (detached)", "One per triggered action (recording, email, webhook, MQTT, FTP, I/O)", "Detached — no explicit drain (known risk R2)"),
+        ("ProcessingThread",    "AnalyticsEngine",  "1",    "Main AI inference loop (NPU + object tracking)",       "running_.store(false) + join()"),
+        ("MdProcessingThread",  "AnalyticsEngine",  "1",    "Motion detection on 160×120 YUV path",                 "md_thread_running_.store(false) + join()"),
+        ("AudioProcessingThread","AnalyticsEngine", "1",    "Audio classification",                                  "audio_thread_running_.store(false) + join()"),
+        ("RecordingThread",     "RecordingService", "1 per active channel", "MP4 write loop; consumes from MediaHub ring buffer", "stop_requested=true + join()"),
+        ("MonitorThread",       "RecordingService", "1",    "Polls SD card availability every 5 s",                  "shutdown_requested_=true + join()"),
+        ("UploadWorker",        "FtpManager",       "1",    "Queued FTP upload processing (libcurl)",                "shutdown_requested_.store(true) + notify_all + join()"),
+        ("AutoDetectionLoop",   "IRControl",        "0 or 1","Luma-threshold day/night switching",                  "auto_thread_running_.store(false) + notify_all + join()"),
+        ("ScheduleMonitorLoop", "IRControl",        "0 or 1","Time-based day/night schedule",                       "schedule_thread_running_.store(false) + notify_all + join()"),
+        ("SwCdsDetectionLoop",  "IRControl",        "0 or 1","Software CDS (ISP EV-value) day/night detection",    "sw_cds_thread_running_.store(false) + notify_all + join()"),
+        ("Live555 event loop",  "RtspServer",       "1",    "Single-threaded RTSP/RTP dispatch (Live555 framework)","live555::Medium::close()"),
+        ("Link monitor",        "NetworkManager",   "1",    "Periodic interface link-state polling",                 "Atomic flag + join()"),
+        ("SystemLogger worker", "SystemLogger",     "1",    "Periodic dmesg/temp/stats collection",                  "Atomic flag + join()"),
+    ]
+    for i, (thr, owner, count, purpose, shutdown) in enumerate(threads):
+        ws.row_dimensions[row].height = 30
+        bg = MID_GREY if i % 2 == 1 else WHITE
+        for col_idx, val in enumerate(["", thr, owner, count, purpose, shutdown], start=1):
+            c = ws.cell(row=row, column=col_idx, value=val)
+            c.fill = fill(bg)
+            c.border = thin_border()
+            c.alignment = left(wrap=True)
+            c.font = Font(name="Calibri", size=9,
+                          bold=(col_idx == 2), color=NAVY if col_idx == 2 else DARK_GREY)
+        row += 1
+
+    # ── Section 2: Key Mechanisms ─────────────────────────────────────────────
+    row += 1
+    section_label(ws, row, "  KEY CONCURRENCY MECHANISMS", 6, bg=NAVY)
+    row += 1
+    write_header_row(ws, row, ["", "Mechanism", "Where", "Pattern", "Race Condition Prevented", "Notes"])
+    row += 1
+
+    mechs = [
+        ("Seqlock-style ring buffer",
+         "MediaHub\nmedia_hub.cpp",
+         "atomic<uint64_t> version per slot\nOdd = writing, Even = ready\nRelease store / Acquire load",
+         "Torn reads of encoded video frames by multiple concurrent consumers",
+         "No mutex on read path — lock-free SPMC.\nTrailing re-read catches overwrites that started mid-memcpy."),
+        ("False-sharing prevention",
+         "MediaHub\nmedia_hub.h",
+         "alignas(64) on write_pos_ and frames_written_",
+         "Cache-line ping-pong between producer writes and consumer reads on multi-core SoC",
+         "Avoids cache-line invalidation on every frame written."),
+        ("Atomic pause/resume for codec change",
+         "MediaHub\nVideoControl",
+         "paused.store(true, release) → HDAL param change → paused.store(false, release)\nframe_mutex guards cached_sps/pps/vps",
+         "ProducerThread accessing HDAL encoder handle while parameters are being changed",
+         "PauseChannel sleeps kVideoPullTimeoutMs+50ms to let producer exit any in-progress HDAL call before the change."),
+        ("running_.exchange for idempotent stop",
+         "MediaHub",
+         "running_.exchange(false, memory_order_release)",
+         "Two concurrent Stop() calls: both attempt to join producer threads",
+         "exchange atomically reads-and-clears — only effective stopper triggers the join path."),
+        ("Copy-before-iterate (listeners)",
+         "EventManager\nevent_manager.cpp",
+         "Copy listeners_ under lock, release lock, iterate copy",
+         "Deadlock: listener callback calling AddListener/RemoveListener which acquires listeners_mutex_",
+         "Trade-off: a listener removed mid-iteration receives one final notification."),
+        ("Lock released before callbacks",
+         "AnalyticsEngine\nIRControl\nRecordingService",
+         "Narrow lock scope for stats update; callback fired after scope closes",
+         "Deadlock: callback re-entering any method that acquires the same non-recursive mutex_",
+         "Pattern applied to 7 of 8 analytics callbacks. audio_event_callback_ is an exception (Risk R3)."),
+        ("unique_lock.unlock() before re-entrant call",
+         "HdalPipeline\nIRControl",
+         "unique_lock lock(mutex); ...; lock.unlock(); CallFuncThatAcquiresMutex(); lock.lock();",
+         "Deadlock from non-recursive std::mutex + call chain that re-acquires the same lock",
+         "Rollback path re-acquires the lock via a fresh lock_guard."),
+        ("Shutdown() defers lock until after Stop()",
+         "HdalPipeline",
+         "Shutdown() calls Stop() (which locks), then acquires lock for cleanup",
+         "Deadlock: Shutdown holding lock → calls Stop() → tries to acquire same lock",
+         "Explicitly commented in source."),
+        ("Interruptible sleep via condition_variable",
+         "IRControl\nFtpManager\nRecordingService",
+         "cv.wait_for(lock, timeout, [this]{ return stop_flag.load(); })\ncv.notify_all() in Shutdown()",
+         "Up to 30-second join delay if thread uses plain sleep_for(30s)",
+         "RecordingService MonitorThread uses 50×100ms chunked sleep instead."),
+        ("Thread join as happens-before fence",
+         "MediaHub, AnalyticsEngine\nEventManager, FtpManager, IRControl",
+         "flag.store(false); thread.join(); // then access shared resources",
+         "Use-after-free of HDAL VB pool pages; concurrent MD engine access; in-flight curl transfer during cleanup",
+         "All join sites guarded with joinable() to prevent UB from joining a non-joinable thread."),
+        ("Atomic rename() for file safety",
+         "Config module\nNetworkManager",
+         "write to .tmp → rename() atomically replaces target",
+         "Partial-write corruption: reader sees truncated JSON or certificate on crash/power loss",
+         "POSIX guarantees rename() on same filesystem is atomic."),
+        ("force_segment_cut acq_rel exchange",
+         "RecordingService",
+         "store(true, release); exchange(false, acq_rel)",
+         "Double-cut: two CutNow() calls resulting in two segments being cut; missed preceding encoder-settings writes",
+         "Release on store ensures codec-change writes visible; acq_rel exchange atomically reads-and-clears."),
+    ]
+    for i, (mech, where, pattern, prevented, notes) in enumerate(mechs):
+        ws.row_dimensions[row].height = 70
+        bg = MID_GREY if i % 2 == 1 else WHITE
+        for col_idx, val in enumerate(["", mech, where, pattern, prevented, notes], start=1):
+            c = ws.cell(row=row, column=col_idx, value=val)
+            c.fill = fill(bg if col_idx != 4 else (LIGHT_BLUE if i % 2 == 0 else "EBF5FB"))
+            c.border = thin_border()
+            c.alignment = left(wrap=True)
+            if col_idx == 2:
+                c.font = Font(name="Calibri", size=10, bold=True, color=NAVY)
+            elif col_idx == 4:
+                c.font = Font(name="Courier New", size=8, color=DARK_GREY)
+            else:
+                c.font = body_font(size=9)
+        row += 1
+
+    # ── Section 3: Mutex Hierarchy ────────────────────────────────────────────
+    row += 1
+    section_label(ws, row, "  MUTEX HIERARCHY & LOCK ORDERING", 6, bg=NAVY)
+    row += 1
+    write_header_row(ws, row, ["", "Module", "Mutex / Lock", "Protects", "Lock-ordering constraint", "Notes"])
+    row += 1
+
+    mutexes = [
+        ("Config",          "g_mutex (anon ns)",        "g_config_tree, g_factory_tree, g_cache, g_initialized", "None — sole lock in module", ""),
+        ("HdalPipeline",    "g_pipeline_mutex (global)", "All HDAL path handles, stream configs, encoder state",  "None — sole lock in module", "unique_lock.unlock() before ReinitWithConfig()"),
+        ("IRControl",       "g_mutex (anon ns)",        "ir_led_settings_, ir_cut_settings_, auto_settings_, is_night_mode_, callbacks", "None — sole lock in module", "Manual unlock before SwitchTo*() calls"),
+        ("MediaHub",        "frame_mutex (per channel)", "cached_sps/pps/vps, cached_codec; pairs with frame_cv", "None — sole lock per channel", ""),
+        ("EventManager",    "queue_mutex_",             "event_queue_",                                           "queue_mutex_ must never be held when acquiring others", ""),
+        ("EventManager",    "rules_mutex_",             "rules_ vector",                                          "Independent of queue_mutex_", "Raw pointer escape from MatchRules() — Risk R3"),
+        ("EventManager",    "listeners_mutex_",         "listeners_ vector",                                      "Independent of queue_mutex_", "Copy-before-iterate to prevent deadlock on re-entrant callbacks"),
+        ("EventManager",    "config_mutex_",            "EventManagerConfig struct",                              "config_mutex_ → rules_mutex_ (in LoadConfig)", ""),
+        ("EventManager",    "history_mutex_",           "event_history_ deque",                                   "Independent",                ""),
+        ("EventManager",    "stats_mutex_",             "EventStats struct + maps",                               "Independent — also acquired inside detached action threads", ""),
+        ("AnalyticsEngine", "mutex_ (instance)",        "config_, stats_, all 8 callback members",               "None — sole lock in class", "Do NOT hold during callbacks — deadlock risk"),
+        ("RecordingService","config_mutex_",            "RecordingConfig, channel configs",                       "config_mutex_ → callback_mutex_ (in TryReconnectStorage)", ""),
+        ("RecordingService","callback_mutex_",          "segment_callback_, status_callback_, storage_callback_", "Must be acquired AFTER config_mutex_ if both needed", ""),
+        ("RecordingService","playback_mutex_",          "playback_sessions_ map",                                 "Independent",                ""),
+        ("FtpManager",      "mutex_",                   "config_, stats_, callbacks",                             "mutex_ → queue_mutex_ (in GetStats)", ""),
+        ("FtpManager",      "queue_mutex_",             "upload_queue_, upload_history_",                         "Must be acquired AFTER mutex_ if both needed", "UploadWorker reads config_ under queue_mutex_ only — Risk R6"),
+        ("NasManager",      "mutex_",                   "config_, initialized_, mount state",                     "None — sole lock in class", "TestConnection() writes config_ without lock — Risk R5"),
+    ]
+    for i, (module, mutex, protects, ordering, notes) in enumerate(mutexes):
+        ws.row_dimensions[row].height = 40
+        bg = MID_GREY if i % 2 == 1 else WHITE
+        for col_idx, val in enumerate(["", module, mutex, protects, ordering, notes], start=1):
+            c = ws.cell(row=row, column=col_idx, value=val)
+            c.fill = fill(bg)
+            c.border = thin_border()
+            c.alignment = left(wrap=True)
+            c.font = Font(name="Calibri", size=9,
+                          bold=(col_idx == 2), color=NAVY if col_idx == 2 else DARK_GREY)
+        row += 1
+
+    # ── Section 4: Residual Risks ─────────────────────────────────────────────
+    row += 1
+    section_label(ws, row, "  KNOWN RESIDUAL RISKS", 6, bg="922B21")
+    row += 1
+    write_header_row(ws, row, ["", "ID", "Module", "Description", "Severity", "Recommended Fix"])
+    row += 1
+
+    risks = [
+        ("R1", "AnalyticsEngine",
+         "audio_event_callback_ is fired while mutex_ is held. If the callback calls any AnalyticsEngine API, deadlock occurs. All other 7 callbacks correctly release the lock first.",
+         "Medium\n(deadlock if callback re-enters)",
+         "Move audio callback invocation outside the lock scope, identical to detection_callback_ pattern."),
+        ("R2", "EventManager",
+         "Detached action threads capture 'this' (EventManager pointer). If EventManager is destroyed while a detached thread is still in handler->Execute(), the subsequent stats_mutex_ access is use-after-free.",
+         "Low\n(singleton lives for process lifetime)",
+         "Track outstanding threads with atomic counter; drain in Shutdown(). Or capture std::shared_ptr<EventManager>."),
+        ("R3", "EventManager",
+         "MatchRules() returns std::vector<const EventRule*> pointing into rules_ vector. After the lock releases, a concurrent AddRule/DeleteRule can reallocate the vector, causing dangling pointer dereference in ExecuteActions().",
+         "Medium\n(rare — rule changes at runtime)",
+         "Return std::vector<EventRule> by value from MatchRules() instead of raw pointers."),
+        ("R4", "EventManager",
+         "PublishEvent() reads config_.queue_max_size and AddToHistory() reads config_.max_history_size without holding config_mutex_. SetConfig() writes these under the lock — a formal C++ data race.",
+         "Low\n(int reads are effectively atomic on ARM)",
+         "Cache as std::atomic<int>, or snapshot config fields under lock at start of PublishEvent()."),
+        ("R5", "NasManager",
+         "TestConnection(nullptr) writes config_.last_error and config_.status at lines ~179-180 without holding mutex_. Concurrent GetConfig() / SetConfig() create a data race.",
+         "Low\n(test operation, not on hot path)",
+         "Hold mutex_ for the full duration of TestConnection when config==nullptr."),
+        ("R6", "FtpManager",
+         "UploadWorker() reads config_.upload_schedule and config_.enabled while holding only queue_mutex_. SetConfig() holds mutex_, so these reads race with concurrent config changes.",
+         "Low\n(upload scheduler, not on hot path)",
+         "Snapshot relevant config fields under mutex_ at the start of each worker iteration."),
+        ("R7", "IRControl",
+         "SwCdsDetectionLoop() reads is_night_mode_ and auto_settings_.mode without g_mutex after the wait_for lock releases. Both are plain non-atomic fields written under g_mutex by other threads — formally a C++ data race.",
+         "Low\n(read-only check, worst case: one missed transition)",
+         "Make is_night_mode_ std::atomic<bool> and auto_settings_.mode std::atomic<DayNightAutoMode>."),
+        ("R8", "EventManager",
+         "Init() and Start() check initialized_/running_ with load() then set them separately — a TOCTOU window. Two concurrent Init() calls could both pass the guard.",
+         "Very Low\n(Init() only called from main during single-threaded startup)",
+         "Use initialized_.exchange(true) to atomically check-and-set."),
+    ]
+    for i, (rid, module, desc, severity, fix) in enumerate(risks):
+        ws.row_dimensions[row].height = 65
+        bg = RED_FATAL if "Medium" in severity else (MID_GREY if i % 2 == 1 else WHITE)
+        for col_idx, val in enumerate(["", rid, module, desc, severity, fix], start=1):
+            c = ws.cell(row=row, column=col_idx, value=val)
+            c.fill = fill(bg)
+            c.border = thin_border()
+            c.alignment = left(wrap=True)
+            if col_idx == 2:
+                c.font = Font(name="Calibri", size=10, bold=True, color="C0392B")
+            elif col_idx == 5:
+                c.font = Font(name="Calibri", size=9, bold=True,
+                              color="C0392B" if "Medium" in severity else "27AE60")
+            else:
+                c.font = body_font(size=9)
+        row += 1
+
+
 def build_singletons(wb):
     ws = wb.create_sheet("Singleton Inventory")
     ws.sheet_view.showGridLines = False
@@ -817,6 +1051,7 @@ def main():
     build_startup(wb)
     build_config(wb)
     build_singletons(wb)
+    build_concurrency(wb)
 
     # Tab colours
     tab_colors = {
@@ -827,6 +1062,7 @@ def main():
         "Startup Sequence":     "BA4A00",
         "Configuration":        "B7950B",
         "Singleton Inventory":  "2E4053",
+        "Concurrency & Safety": "922B21",
     }
     for ws in wb.worksheets:
         if ws.title in tab_colors:
